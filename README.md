@@ -7,7 +7,7 @@ A login-only website with email verification codes and a minimal account profile
 - Website: https://rysung2406.github.io/fulin-money-journey/
 - Supabase project, school-domain enforcement, signup hook, and row-level security are configured.
 - Brevo custom SMTP is configured on the free plan.
-- English email templates and SMTP are configured. Sign-in is enabled. A real OTP request succeeded for the project owner; mailbox verification and the signed-in profile check are still pending.
+- English email templates and SMTP are configured. Sign-in is enabled. A real HKU mailbox test passed: code delivery, user-entered OTP verification, profile creation/read, session restoration after refresh, and sign-out. The same participant ID was retained after refresh.
 - Database checks in `supabase/002_verify_access.sql` passed: profile creation, exact-domain enforcement, cross-account isolation, unverified-account denial, and write restrictions. The transaction is rolled back without keeping test users.
 - HKU Connect email verification establishes mailbox access, not current enrollment. It does not retrieve a student's name, ID, faculty, or year.
 
