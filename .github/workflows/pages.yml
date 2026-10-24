@@ -1,4 +1,4 @@
-name: Deploy login portal to GitHub Pages
+name: Deploy The Money Journey to GitHub Pages
 on:
   push:
     branches: [main]
@@ -24,7 +24,7 @@ jobs:
           cache: npm
       - name: Install locked dependencies
         run: npm ci
-      - name: Check syntax and authentication rules
+      - name: Check syntax, authentication and game rules
         run: npm run check && npm test
       - name: Bundle the current source
         run: npm run bundle

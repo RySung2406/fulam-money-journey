@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+ <defs>
+  <radialGradient id="night"><stop stop-color="#193e59"/><stop offset=".6" stop-color="#0d233b"/><stop offset="1" stop-color="#060f20"/></radialGradient>
+  <radialGradient id="halo"><stop stop-color="#f1c46d" stop-opacity=".12"/><stop offset="1" stop-color="#f1c46d" stop-opacity="0"/></radialGradient>
+  <linearGradient id="rim" x2=".3" y2="1"><stop stop-color="#d8b16f" stop-opacity=".65"/><stop offset=".45" stop-color="#8b967d" stop-opacity=".1"/><stop offset="1" stop-color="#e9bc69" stop-opacity=".45"/></linearGradient>
+  <linearGradient id="beam" x2="0" y2="1"><stop stop-color="#c3e7ff" stop-opacity=".07"/><stop offset="1" stop-color="#c3e7ff" stop-opacity="0"/></linearGradient>
+  <linearGradient id="coin" x2=".2" y2="1"><stop stop-color="#d9b363"/><stop offset=".5" stop-color="#896731"/><stop offset="1" stop-color="#3e3523"/></linearGradient>
+  <linearGradient id="floor" x2="0" y2="1"><stop stop-color="#162f43"/><stop offset="1" stop-color="#081426"/></linearGradient>
+  <g id="stack"><path d="M0 0v20c0 12 102 12 102 0V0" fill="url(#coin)"/><ellipse cx="51" cy="0" rx="51" ry="12" fill="#c3a161"/><ellipse cx="51" cy="0" rx="42" ry="8" fill="none" stroke="#ebcc87" stroke-opacity=".5"/><path d="M4 8c20 10 74 10 94 0M4 14c20 10 74 10 94 0" fill="none" stroke="#ebc976" stroke-opacity=".3"/></g>
+ </defs>
+ <path fill="url(#night)" d="M0 0h1600v1000H0z"/>
+ <ellipse cx="800" cy="460" rx="690" ry="600" fill="url(#halo)"/>
+ <g fill="none" stroke="url(#rim)">
+  <path d="M238 950V460a562 562 0 0 1 1124 0v490" stroke-width="35" opacity=".18"/>
+  <path d="M266 950V460a534 534 0 0 1 1068 0v490" stroke-width="2"/>
+  <path d="M305 950V460a495 495 0 0 1 990 0v490" stroke-width="1" opacity=".5"/>
+  <path d="M195 1000V460a605 605 0 0 1 1210 0v540" stroke-width="1" opacity=".5"/>
+ </g>
+ <g fill="#193247" stroke="#476071" stroke-opacity=".18">
+  <path d="M0 0h149v1000H0zM1451 0h149v1000h-149z"/>
+  <path d="M37 0h6v1000h-6zM1557 0h6v1000h-6z" fill="#d6b16a" opacity=".18"/>
+ </g>
+ <path d="M420 0 260 930H730L530 0ZM1070 0 890 930h480L1180 0Z" fill="url(#beam)"/>
+ <g stroke="#e8c477" stroke-width="2" opacity=".3"><path d="M230 330h28m-28 12h28m1084-12h28m-28 12h28M212 550h34m1108 0h34M212 760h34m1108 0h34"/></g>
+ <path d="M0 873Q800 820 1600 873V1000H0Z" fill="url(#floor)"/>
+ <path d="M0 874Q800 820 1600 874" fill="none" stroke="#a6b8ae" stroke-opacity=".15"/>
+ <g fill="none" stroke="#b5a573" stroke-opacity=".09"><ellipse cx="800" cy="930" rx="630" ry="68"/><ellipse cx="800" cy="930" rx="460" ry="45"/><path d="M800 855 100 1000M800 855 1500 1000M800 855v145"/></g>
+ <g opacity=".45"><use href="#stack" x="85" y="927"/><use href="#stack" x="85" y="910"/><use href="#stack" x="85" y="893"/><use href="#stack" x="159" y="951"/><use href="#stack" x="159" y="934"/><use href="#stack" x="1418" y="933"/><use href="#stack" x="1418" y="916"/><use href="#stack" x="1418" y="899"/><use href="#stack" x="1418" y="882"/><use href="#stack" x="1341" y="951"/><use href="#stack" x="1341" y="934"/></g>
+ <g fill="#f4d38a" opacity=".45"><circle cx="355" cy="210" r="2"/><circle cx="1205" cy="300" r="2"/><circle cx="430" cy="660" r="1.5"/><circle cx="1080" cy="740" r="2"/><circle cx="605" cy="385" r="1"/><circle cx="980" cy="230" r="1.5"/><circle cx="300" cy="815" r="1"/><circle cx="1270" cy="610" r="1.5"/><circle cx="720" cy="780" r="1"/><circle cx="890" cy="560" r="1"/></g>
+</svg>

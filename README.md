@@ -1,6 +1,16 @@
-# The Money Journey · HKU Email Sign-In
+# The Money Journey · Fulin One Slice
 
-A login-only website with email verification codes and a minimal account profile. Activity and game content is not included.
+An HKU email sign-in portal with the English edition of Fulin One Slice, the money-bag slicing game.
+
+## Game
+
+- Sign in with your HKU Connect email, then select **Play the money challenge**. Direct visits to `game/` return signed-out visitors to the account page.
+- The game validates the user with Supabase Auth and reads their own RLS-protected profile before starting. No additional account or payment service is needed.
+- Five rounds cover financial tools, investing, insurance, borrowing and scam awareness: 60 choices in total, with Easy, Medium and Hard speeds.
+- One to three bags fly along random sideways arcs. Drag or swipe to slice; keyboard players can Tab to an active bag and press Enter or Space. Pause, mute, fullscreen, reviews, replay and copying results are supported.
+- Correct slices earn 100 points plus combo bonuses; wrong slices lose 150. Reviews distinguish correct slices, wrong slices, avoided choices and missed choices.
+- Results stay in memory and reset on leaving or reloading the game. Only sound and difficulty preferences are saved locally. This deployment does not collect scores or provide a leaderboard.
+- Adapted from the user-selected game at https://fulam-one-slice.ryantw2406.chatgpt.site/, version 7, source commit `2530d8cbb3a045445a52f955898c60bdf06660b5`. The original Site is unchanged. All interface text, questions, explanations and resource labels in this edition are English.
 
 ## Deployment status
 
@@ -13,7 +23,7 @@ A login-only website with email verification codes and a minimal account profile
 
 ## Deployment
 
-The GitHub Actions workflow installs locked dependencies, checks syntax, runs authentication rule tests, bundles the application, and deploys `site/` to GitHub Pages. Runtime scripts are bundled locally; no third-party CDN is required.
+The GitHub Actions workflow installs locked dependencies, checks syntax, runs authentication and game tests, bundles both entry points, and deploys `site/` to GitHub Pages. Runtime scripts and game assets are served locally; no third-party CDN is required.
 
 ## Supabase configuration for a new project
 
@@ -49,4 +59,6 @@ Run `supabase/002_verify_access.sql` in the SQL editor for repeatable database c
 
 Before participant access, test real code delivery and verification, incorrect/expired codes, resend cooldown, refresh, sign-out, another device, profile reads, and two-account isolation. Confirm the deletion contact and retention arrangements, check phone/shared-device layouts, and ensure free quotas cover the event peak.
 
-GitHub Pages serves public static files. Supabase Auth and RLS protect account data.
+The 13 automated checks cover email/OTP rules, server-validated game access, rejected identities, profile failures, score deduplication, combo penalties, review categories, swipe collisions and random wave/trajectory bounds. Browser QA covered signed-out redirects, desktop and phone-width layouts, keyboard practice, pause/resume, all five rounds, results and mistake reviews. The new production sign-in-to-game journey still needs a user-entered OTP check after deployment; the earlier sign-in flow already passed a real mailbox test.
+
+GitHub Pages serves public static files, including game source and questions. The login gate controls the normal play flow; it does not make static game assets private. Supabase Auth and RLS protect account data.

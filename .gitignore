@@ -5,3 +5,5 @@ node_modules/
 .openai/
 *.zip
 screenshots/
+/site/game/auth.bundle.js
+/site/game/auth.bundle.js.LEGAL.txt
