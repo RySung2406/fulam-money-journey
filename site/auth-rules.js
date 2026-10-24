@@ -3,7 +3,7 @@ export const SCHOOL_DOMAIN = 'connect.hku.hk';
 export function normalizeSchoolEmail(value) {
   const email = String(value ?? '').trim().toLowerCase();
   if (email.length > 254 || !/^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?@connect\.hku\.hk$/.test(email)) {
-    throw new Error('請輸入完整的 HKU Connect 電郵，例如 yourname@connect.hku.hk。');
+    throw new Error('Enter your full HKU Connect email, such as yourname@connect.hku.hk.');
   }
   return email;
 }
@@ -17,7 +17,7 @@ export function isVerifiedSchoolUser(user) {
 export function normalizeOtp(value, length = 8) {
   const code = String(value ?? '').trim().replace(/[\s-]/g, '');
   if (!Number.isInteger(length) || length < 6 || length > 10 || !new RegExp(`^[0-9]{${length}}$`).test(code)) {
-    throw new Error(`請輸入電郵中的 ${length} 位數字驗證碼。`);
+    throw new Error(`Enter the ${length}-digit verification code from your email.`);
   }
   return code;
 }
@@ -36,11 +36,11 @@ export function configurationIsReady(config) {
 
 export function friendlyAuthError(error) {
   const code = error?.code || '';
-  if (['over_email_send_rate_limit', 'over_request_rate_limit'].includes(code) || error?.status === 429) return '驗證碼要求太頻密，請稍後再試。';
-  if (['otp_expired', 'invalid_credentials', 'otp_disabled'].includes(code)) return '驗證碼不正確或已過期。請重新輸入，或要求新的驗證碼。';
-  if (code === 'email_address_not_authorized' || code === 'unexpected_failure') return '暫時未能寄出驗證碼。請稍後再試，或通知活動工作人員。';
-  if (['signup_disabled', 'email_provider_disabled', 'hook_payload_invalid_content_type', 'hook_timeout'].includes(code)) return '登入服務暫未開放，請稍後再試。';
-  if (code === 'session_not_found' || code === 'refresh_token_not_found') return '登入已失效，請重新驗證學校電郵。';
-  if (error?.name === 'AuthRetryableFetchError' || error instanceof TypeError) return '連線未完成。請檢查網絡後再試，已提交的要求可能仍在處理中。';
-  return '暫時未能完成這個步驟，請稍後再試。';
+  if (['over_email_send_rate_limit', 'over_request_rate_limit'].includes(code) || error?.status === 429) return 'Too many code requests. Please try again later.';
+  if (['otp_expired', 'invalid_credentials', 'otp_disabled'].includes(code)) return 'The code is incorrect or expired. Try again or request a new code.';
+  if (code === 'email_address_not_authorized' || code === 'unexpected_failure') return 'We could not send your code. Try again later or contact the activity team.';
+  if (['signup_disabled', 'email_provider_disabled', 'hook_payload_invalid_content_type', 'hook_timeout'].includes(code)) return 'Sign-in is not available yet. Please try again later.';
+  if (code === 'session_not_found' || code === 'refresh_token_not_found') return 'Your session has expired. Please verify your HKU email again.';
+  if (error?.name === 'AuthRetryableFetchError' || error instanceof TypeError) return 'The connection was interrupted. Check your internet connection and try again. Your last request may still be processing.';
+  return 'We could not complete this step. Please try again later.';
 }

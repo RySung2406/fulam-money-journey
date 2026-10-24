@@ -24,11 +24,11 @@ function remainingSeconds() { return Math.max(0, Math.ceil((cooldownUntil - Date
 function updateButtons() {
   const seconds = remainingSeconds();
   $('send-button').disabled = busy || !client || seconds > 0;
-  $('send-button').querySelector('span').textContent = busy && view === 'email' ? '正在傳送…' : seconds > 0 && view === 'email' ? `請等候 ${seconds} 秒` : '傳送驗證碼';
+  $('send-button').querySelector('span').textContent = busy && view === 'email' ? 'Sending…' : seconds > 0 && view === 'email' ? `Please wait ${seconds}s` : 'Send verification code';
   $('verify-button').disabled = busy || !client;
-  $('verify-button').querySelector('span').textContent = busy && view === 'otp' ? '處理中…' : '驗證並登入';
+  $('verify-button').querySelector('span').textContent = busy && view === 'otp' ? 'Verifying…' : 'Verify and sign in';
   $('resend-button').disabled = busy || !client || seconds > 0;
-  $('resend-button').textContent = seconds > 0 ? `${seconds} 秒後重寄` : '重新傳送';
+  $('resend-button').textContent = seconds > 0 ? `Resend in ${seconds}s` : 'Resend code';
   $('back-button').disabled = busy;
   $('email').readOnly = busy;
   $('otp').readOnly = busy;
@@ -66,8 +66,8 @@ $('email-form').addEventListener('submit', async (event) => {
   let email;
   try { email = normalizeSchoolEmail($('email').value); }
   catch (error) { $('email').setAttribute('aria-invalid', 'true'); message('email-error', error.message); $('email').focus(); return; }
-  if (!client) { message('email-error', '登入服務尚未開放，請稍後再試。'); return; }
-  if (remainingSeconds()) { message('email-error', '請稍候再要求驗證碼。'); return; }
+  if (!client) { message('email-error', 'Sign-in is not available yet. Please try again later.'); return; }
+  if (remainingSeconds()) { message('email-error', 'Please wait before requesting another code.'); return; }
   busy = true; updateButtons();
   try {
     await requestCode(email);
@@ -95,7 +95,7 @@ $('resend-button').addEventListener('click', async () => {
   try {
     await requestCode(pendingEmail);
     startCooldown();
-    message('resend-status', '新的驗證碼已寄出，請使用最新一封電郵中的驗證碼。');
+    message('resend-status', 'A new code has been sent. Use the code from the latest email.');
   } catch (error) { message('otp-error', friendlyAuthError(error)); }
   finally { busy = false; updateButtons(); }
 });
@@ -136,8 +136,8 @@ $('otp-form').addEventListener('submit', async (event) => {
     if (error.message === 'profile-not-ready') {
       await client.auth.signOut({ scope: 'local' });
       showView('email');
-      message('email-error', '電郵驗證已完成，但帳戶資料尚未準備好。請通知活動工作人員，稍後再要求驗證碼。');
-    } else if (error.message === 'invalid-school-session') { showView('email'); message('email-error', '請使用已驗證的 HKU 學校電郵登入。'); }
+      message('email-error', 'Your email is verified, but your account details are not ready. Contact the activity team and try again later.');
+    } else if (error.message === 'invalid-school-session') { showView('email'); message('email-error', 'Please sign in with a verified HKU email.'); }
     else message('otp-error', friendlyAuthError(error));
   } finally { busy = false; updateButtons(); }
 });
@@ -160,7 +160,7 @@ $('signout-button').addEventListener('click', async () => {
     if (error) throw error;
     clearAccountScreen();
     $('email').focus();
-  } catch (error) { message('member-error', '登出尚未完成，請檢查網絡後再試。共用裝置請關閉此分頁。'); }
+  } catch (error) { message('member-error', 'Sign-out could not be completed. Check your connection and try again. Close this tab if you are on a shared device.'); }
   finally { busy = false; updateButtons(); }
 });
 
@@ -193,12 +193,12 @@ async function init() {
       try { await openVerifiedAccount(); }
       catch (error) {
         await client.auth.signOut({ scope: 'local' });
-        message('email-error', error.message === 'profile-not-ready' ? '帳戶資料尚未準備好，請通知活動工作人員。' : '登入已失效，請重新驗證學校電郵。');
+        message('email-error', error.message === 'profile-not-ready' ? 'Your account details are not ready. Please contact the activity team.' : 'Your session has expired. Please verify your HKU email again.');
       }
     }
   } catch (error) {
     client = undefined;
-    message('email-error', '登入服務暫時無法連接，請重新整理頁面或稍後再試。');
+    message('email-error', 'We could not connect to the sign-in service. Refresh this page or try again later.');
   } finally { busy = false; updateButtons(); }
 }
 init();

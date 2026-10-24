@@ -26,7 +26,7 @@ test('unconfigured, secret-key, and untrusted URL configurations remain disabled
   for (const config of [{}, {...good,authReady:false}, {...good,supabasePublishableKey:'sb_secret_abcdefghijklmnop'}, {...good,supabasePublishableKey:'eyJhbGciOiJIUzI1NiJ9.service_role'}, {...good,supabaseUrl:'http://abcxyz.supabase.co'}, {...good,supabaseUrl:'https://abcxyz.supabase.co.evil.com'}, {...good,supabaseUrl:'https://abcxyz.supabase.co/?foo=bar'}]) assert.equal(configurationIsReady(config), false);
 });
 test('provider errors are translated without leaking server details', () => {
-  assert.match(friendlyAuthError({code:'otp_expired'}), /過期/);
-  assert.match(friendlyAuthError({status:429}), /頻密/);
+  assert.match(friendlyAuthError({code:'otp_expired'}), /expired/);
+  assert.match(friendlyAuthError({status:429}), /Too many/);
   assert.ok(!friendlyAuthError({message:'secret database connection string'}).includes('secret'));
 });

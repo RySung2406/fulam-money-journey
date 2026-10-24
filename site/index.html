@@ -1,33 +1,33 @@
 <!doctype html>
-<html lang="zh-Hant">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f6f5ef">
-  <meta name="description" content="富臨錢進號：以 HKU 學校電郵登入，開展你的理財學習旅程。">
+  <meta name="description" content="The Money Journey: sign in with your HKU email and start building your financial knowledge.">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'">
-  <title>登入 · 富臨錢進號</title>
+  <title>Sign in · The Money Journey</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./style.css">
   <script src="./config.js" defer></script>
   <script src="./app.bundle.js" defer></script>
 </head>
 <body>
-  <a class="skip-link" href="#login-title">跳至登入</a>
+  <a class="skip-link" href="#login-title">Skip to sign in</a>
   <div class="page-shell">
     <header class="site-header">
-      <a class="brand" href="./" aria-label="富臨錢進號首頁">
+      <a class="brand" href="./" aria-label="The Money Journey home">
         <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M8 24V8h16M8 24 24 8M15 24h9v-9"/></svg></span>
-        <span class="brand-type">富臨錢進號<small>THE MONEY JOURNEY</small></span>
+        <span class="brand-type">The Money Journey<small>SMALL STEPS. SMARTER CHOICES.</small></span>
       </a>
-      <span class="header-tag"><span></span> 搏富臨 · HKU</span>
+      <span class="header-tag"><span></span> FULIN · HKU</span>
     </header>
     <main class="main-layout">
       <section class="journey-panel" aria-labelledby="hero-title">
         <div class="hero-copy"><span class="eyebrow">YOUR NEXT CHAPTER</span>
-          <h1 id="hero-title">學會理財，<br>從這一步開始<span>。</span></h1>
-          <p>每一次選擇，都是認識金錢的起點。<br>帶著好奇心，開始你的理財旅程。</p>
+          <h1 id="hero-title">Your money.<br>Your future<span>.</span></h1>
+          <p>Build confidence with every choice.<br>Start your financial learning journey.</p>
         </div>
         <div class="journey-art" aria-hidden="true">
           <svg viewBox="0 0 600 390" role="presentation">
@@ -47,58 +47,58 @@
             <path d="M382 325v-30" stroke="#406949" stroke-width="3"/>
           </svg>
         </div>
-        <div class="panel-bottom"><span class="mini-line"></span><span>認識金錢，也認識自己的選擇。</span><span class="edition">01 / START</span></div>
+        <div class="panel-bottom"><span class="mini-line"></span><span>Know your money. Own your choices.</span><span class="edition">01 / START</span></div>
       </section>
 
-      <section class="login-panel" aria-label="學校電郵登入">
+      <section class="login-panel" aria-label="HKU email sign-in">
         <div class="login-inner">
-          <div class="login-top"><span class="section-label">MEMBER ACCESS</span><span class="secure-label"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m10 2 6 3v5c0 4-6 7-6 7s-6-3-6-7V5z"/><path d="m7 9 2 2 4-4"/></svg>學校電郵驗證</span></div>
+          <div class="login-top"><span class="section-label">MEMBER ACCESS</span><span class="secure-label"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m10 2 6 3v5c0 4-6 7-6 7s-6-3-6-7V5z"/><path d="m7 9 2 2 4-4"/></svg>Verified HKU access</span></div>
           <div id="email-screen">
-            <h2 id="login-title" tabindex="-1">歡迎登上錢進號</h2>
-            <p class="intro">用你的 HKU 電郵，開啟專屬學習旅程。</p>
-            <div id="setup-notice" class="notice" role="status"><span class="notice-dot"></span><div><strong>登入服務準備中</strong><p>介面已開放預覽，電郵驗證尚未啟用。<br>請待活動開放後再登入。</p></div></div>
+            <h2 id="login-title" tabindex="-1">Welcome aboard</h2>
+            <p class="intro">Sign in with your HKU email to begin your journey.</p>
+            <div id="setup-notice" class="notice" role="status"><span class="notice-dot"></span><div><strong>Sign-in is coming soon</strong><p>You can preview the site while we finish setting up email verification. Please check back soon.</p></div></div>
             <form id="email-form" novalidate>
-              <label for="email">HKU 學校電郵 <span>EMAIL ADDRESS</span></label>
+              <label for="email">HKU email <span>EMAIL ADDRESS</span></label>
               <div class="input-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg><input id="email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" spellcheck="false" autocapitalize="none" placeholder="yourname@connect.hku.hk" aria-describedby="email-hint email-error" required></div>
-              <p id="email-hint" class="field-hint">只接受 @connect.hku.hk 電郵地址</p>
+              <p id="email-hint" class="field-hint">Use your @connect.hku.hk email address.</p>
               <p id="email-error" class="form-message error" role="alert" hidden></p>
-              <button class="primary-button" id="send-button" type="submit" disabled><span>傳送驗證碼</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button>
-              <p class="password-note"><svg viewBox="0 0 18 18" aria-hidden="true"><rect x="4" y="8" width="10" height="7" rx="2"/><path d="M6 8V5a3 3 0 0 1 6 0v3"/></svg>毋須密碼，也不會要求你的 HKU Portal 密碼。</p>
+              <button class="primary-button" id="send-button" type="submit" disabled><span>Send verification code</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button>
+              <p class="password-note"><svg viewBox="0 0 18 18" aria-hidden="true"><rect x="4" y="8" width="10" height="7" rx="2"/><path d="M6 8V5a3 3 0 0 1 6 0v3"/></svg>No password needed. We never ask for your HKU Portal password.</p>
             </form>
           </div>
 
           <div id="otp-screen" hidden>
-            <button id="back-button" class="back-button" type="button">← 更改電郵</button>
-            <h2 id="otp-title" tabindex="-1">查看你的收件匣</h2>
-            <p class="intro">驗證碼已寄往<br><strong id="sent-email" class="sent-email"></strong></p>
+            <button id="back-button" class="back-button" type="button">← Change email</button>
+            <h2 id="otp-title" tabindex="-1">Check your inbox</h2>
+            <p class="intro">We sent your code to<br><strong id="sent-email" class="sent-email"></strong></p>
             <form id="otp-form" novalidate>
-              <label for="otp">電郵驗證碼 <span>VERIFICATION CODE</span></label>
+              <label for="otp">Verification code <span>8 DIGITS</span></label>
               <input id="otp" class="otp-input" name="otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="16" placeholder="00000000" aria-describedby="otp-hint otp-error" required>
-              <p id="otp-hint" class="field-hint">輸入最新一封電郵中的驗證碼。</p>
+              <p id="otp-hint" class="field-hint">Enter the 8-digit code from the latest email. It expires in 10 minutes.</p>
               <p id="otp-error" class="form-message error" role="alert" hidden></p>
-              <button id="verify-button" class="primary-button" type="submit"><span>驗證並登入</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button>
+              <button id="verify-button" class="primary-button" type="submit"><span>Verify and sign in</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button>
             </form>
-            <div class="resend-row"><span>未收到？可先檢查垃圾郵件。</span><button id="resend-button" class="text-button" type="button" disabled>重新傳送</button></div>
+            <div class="resend-row"><span>No email? Check your spam folder.</span><button id="resend-button" class="text-button" type="button" disabled>Resend code</button></div>
             <p id="resend-status" class="form-message" role="status" hidden></p>
           </div>
 
           <div id="member-screen" hidden>
             <div class="success-icon" aria-hidden="true">✓</div>
-            <h2 id="member-title" tabindex="-1">你已成功登入</h2>
-            <p class="intro">歡迎登上富臨錢進號。</p>
-            <div class="member-card"><span class="section-label">YOUR ACCOUNT</span><strong id="member-email"></strong><span class="verified-chip">✓ 學校電郵已驗證</span><dl><div><dt>參與編號</dt><dd id="participant-code">—</dd></div></dl></div>
-            <p class="coming-soon">活動內容準備中，稍後在這裡與你見面。</p>
+            <h2 id="member-title" tabindex="-1">You are signed in</h2>
+            <p class="intro">Welcome to The Money Journey.</p>
+            <div class="member-card"><span class="section-label">YOUR ACCOUNT</span><strong id="member-email"></strong><span class="verified-chip">✓ HKU email verified</span><dl><div><dt>Participant ID</dt><dd id="participant-code">—</dd></div></dl></div>
+            <p class="coming-soon">Your next chapter is on its way. Activities will appear here when they are ready.</p>
             <p id="member-error" class="form-message error" role="alert" hidden></p>
-            <button id="signout-button" class="secondary-button" type="button">登出帳戶</button>
+            <button id="signout-button" class="secondary-button" type="button">Sign out</button>
           </div>
-          <div class="login-bottom"><div class="divider"></div><p>首次驗證成功後，系統會自動建立活動帳戶。</p><button id="privacy-open" type="button" class="privacy-link">了解我們如何使用你的資料 <span aria-hidden="true">↗</span></button></div>
+          <div class="login-bottom"><div class="divider"></div><p>Your account is created when you first verify your email.</p><button id="privacy-open" type="button" class="privacy-link">How we use your information <span aria-hidden="true">↗</span></button></div>
         </div>
       </section>
     </main>
-    <footer class="site-footer"><span>© 2026 搏富臨 · 富臨錢進號</span><span>一起向理財目標前進 <span aria-hidden="true">↗</span></span></footer>
+    <footer class="site-footer"><span>© 2026 Fulin · The Money Journey</span><span>One step closer to your goals <span aria-hidden="true">↗</span></span></footer>
   </div>
 
-  <dialog id="privacy-dialog" aria-labelledby="privacy-title"><button id="privacy-close" class="dialog-close" type="button" aria-label="關閉資料說明">×</button><span class="section-label">YOUR PRIVACY</span><h2 id="privacy-title">你的資料，用在這裡</h2><p>本網站由「搏富臨」活動團隊營運。登入時會使用你的學校電郵，建立帳戶並識別你自己的活動紀錄。</p><ul><li>目前僅保存帳戶、電郵驗證狀態及系統產生的參與編號。</li><li>電郵與帳戶資料由 Supabase 處理；驗證信由活動配置的寄信服務發送。</li><li>電郵不會公開顯示。活動分析應使用參與編號。</li><li>電郵驗證只確認你能使用該信箱，不等同確認現時在讀身份。</li><li>如需刪除活動帳戶，請聯絡活動團隊。</li></ul><p class="dialog-note">網站無須存取你的收件匣，也不會要求學校帳戶密碼。共用裝置使用後，請登出帳戶。</p><button id="privacy-done" class="secondary-button" type="button">我明白了</button></dialog>
-  <noscript><p class="noscript-note">請啟用 JavaScript 以使用電郵驗證登入。</p></noscript>
+  <dialog id="privacy-dialog" aria-labelledby="privacy-title"><button id="privacy-close" class="dialog-close" type="button" aria-label="Close privacy information">×</button><span class="section-label">YOUR PRIVACY</span><h2 id="privacy-title">Your information, explained</h2><p>The Fulin activity team runs this website. We use your HKU email to create an account and identify your own activity records.</p><ul><li>We currently store account details, email verification status, and a generated participant ID.</li><li>Supabase processes account and email information. Brevo sends verification emails.</li><li>Your email is not displayed publicly. Activity analysis should use participant IDs.</li><li>Email verification confirms access to your mailbox, not your current student status.</li><li>Contact the activity team if you want to delete your account.</li></ul><p class="dialog-note">We do not access your inbox or ask for your university password. Sign out after using a shared device.</p><button id="privacy-done" class="secondary-button" type="button">Got it</button></dialog>
+  <noscript><p class="noscript-note">Please enable JavaScript to sign in with an email verification code.</p></noscript>
 </body>
 </html>
