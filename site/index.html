@@ -10,6 +10,7 @@
   <title>The Money Journey · Fulin One Slice</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./hub.css">
   <script src="./config.js" defer></script>
   <script src="./app.bundle.js" defer></script>
 </head>
@@ -88,6 +89,7 @@
             <p class="intro">Welcome to The Money Journey.</p>
             <div class="member-card"><span class="section-label">YOUR ACCOUNT</span><strong id="member-email"></strong><span class="verified-chip">✓ HKU email verified</span><dl><div><dt>Participant ID</dt><dd id="participant-code">—</dd></div></dl></div>
             <div class="activity-card"><span class="section-label">YOUR FIRST CHALLENGE</span><h3>Fulin One Slice</h3><p>Slice the right money bags across five finance rounds. Choose your pace and learn from every choice.</p><a class="primary-button" href="./game/">Play the money challenge <span aria-hidden="true">→</span></a><small>60 choices · 3 difficulty levels · Phone or desktop</small></div>
+            <a class="member-hub-link" href="./hub/">Open the activity hub ↗</a>
             <p id="member-error" class="form-message error" role="alert" hidden></p>
             <button id="signout-button" class="secondary-button" type="button">Sign out</button>
           </div>
@@ -95,6 +97,16 @@
         </div>
       </section>
     </main>
+    <section class="entrances" aria-labelledby="entrances-title">
+      <div class="entrances-heading"><h2 id="entrances-title">Explore your journey</h2><a href="./hub/">View activity hub ↗</a></div>
+      <nav class="entrance-grid" aria-label="Activities">
+        <a class="entrance-card" href="./hub/#questionnaire"><span>01</span><strong>Questionnaire<br>&amp; Community</strong><small>Coming soon</small></a>
+        <a class="entrance-card" href="./hub/#sponsors"><span>02</span><strong>Sponsors</strong><small>Coming soon</small></a>
+        <a class="entrance-card" href="./hub/#check-in"><span>03</span><strong>Daily Check-in</strong><small>Coming soon</small></a>
+        <a class="entrance-card" href="./hub/#leaderboard"><span>04</span><strong>Leaderboard</strong><small>Daily participation · Coming soon</small></a>
+        <a class="entrance-card" href="./hub/#rewards"><span>05</span><strong>Rewards</strong><small>Coming soon</small></a>
+      </nav>
+    </section>
     <footer class="site-footer"><span>© 2026 Fulin · The Money Journey</span><span>One step closer to your goals <span aria-hidden="true">↗</span></span></footer>
   </div>
 

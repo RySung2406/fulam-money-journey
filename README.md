@@ -12,6 +12,12 @@ An HKU email sign-in portal with the English edition of Fulin One Slice, the mon
 - Results stay in memory and reset on leaving or reloading the game. Only sound and difficulty preferences are saved locally. This deployment does not collect scores or provide a leaderboard.
 - Adapted from the user-selected game at https://fulam-one-slice.ryantw2406.chatgpt.site/, version 7, source commit `2530d8cbb3a045445a52f955898c60bdf06660b5`. The original Site is unchanged. All interface text, questions, explanations and resource labels in this edition are English.
 
+## Activity hub entrances
+
+The home page and signed-in account link to `hub/`, with entry points for Questionnaire & Community, Sponsors, Daily Check-in, Leaderboard and Rewards. These sections are intentionally **Coming soon**, as requested: details and destinations will be supplied later. The questionnaire section explains the intended completion-to-WhatsApp flow but currently has no form, completion tracking or invite link. Daily check-ins do not yet submit data, rankings are empty, and no prizes or sponsor relationships are claimed.
+
+The planned leaderboard basis is daily participation, selected by the user. Before activation, add the questionnaire and verified completion flow, WhatsApp invite, sponsor details, daily task/submission rules, and reward eligibility/redemption terms. No new database tables, API permissions, payment services or tracking are introduced by these entrances.
+
 ## Deployment status
 
 - Website: https://rysung2406.github.io/fulin-money-journey/
