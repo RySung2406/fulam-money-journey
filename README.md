@@ -4,8 +4,9 @@
 
 ## 狀態
 
-- 前端及 SQL 已準備；`site/config.js` 預設 `authReady: false`。
-- 未設定真實 Supabase 專案及正式寄信服務前，網站不會寄出驗證碼或模擬登入。
+- 網站已發布至 https://rysung2406.github.io/fulin-money-journey/ ，Supabase 專案、學校網域限制及 RLS 已設定。
+- 正式寄信服務仍待選定及配置；`site/config.js` 保持 `authReady: false`，網站不會寄出驗證碼或模擬登入。
+- 資料庫測試 `supabase/002_verify_access.sql` 已通過：帳戶資料建立、網域限制、跨帳戶讀取隔離、未驗證帳戶拒絕及寫入權限。測試使用交易回滾，不保留測試帳戶。
 - HKU Connect 電郵只證明信箱持有權，不代表現時在讀身份；亦不會自動取得姓名、學號、學院或年級。
 
 ## 免費 GitHub Pages 部署
@@ -18,7 +19,7 @@
 2. 在 SQL editor 執行 `supabase/001_school_auth.sql` **一次**。它限制帳戶網域、建立 profiles 及啟用 RLS。用戶不能直接新增、修改或刪除 profiles，亦不能讀取他人資料。
 3. Authentication → Hooks → Before User Created，選擇 `public.hku_email_signup_hook`。即使 hook 未開啟，資料庫 trigger 仍限制新帳戶及後續更改電郵的網域。
 4. Authentication → Email：啟用 Email，確認 email confirmation 開啟，停用其他登入方式及匿名登入。本網站不提供更改電郵功能。
-5. 設定 Email OTP 長度 **6**、有效期 **600 秒**，將 Magic Link email template 改為 `supabase/email-template.html`（使用 `{{ .Token }}`）。不要把它配置成要求密碼的註冊流程。
+5. 保留 Email OTP 長度 **8**、有效期設定為 **600 秒**，將 Magic Link email template 改為 `supabase/email-template.html`（使用 `{{ .Token }}`）。不要把它配置成要求密碼的註冊流程。
 6. 將 Site URL 設為部署後的確實網址。僅允許該網址作 redirect；本頁不處理 URL 中的 access token。
 7. 配置自訂 SMTP。Supabase 預設 SMTP 僅限專案團隊測試，不能作正式活動寄信。須確認所選服務的免費配額、網域及每小時限制；本專案不自動購買服務或訂閱。
 8. 在 `site/config.js` 填寫公開 Project URL 及 `sb_publishable_...` key。不得填入 service_role、secret、SMTP 密碼或資料庫密碼。
@@ -43,6 +44,8 @@ npm run check
 ```
 
 對有真實連接的部署，另測試：正確電郵 OTP、錯誤／過期 OTP、重寄冷卻、重整、登出、另一裝置登入、不同帳戶 RLS、未驗證帳戶、非 HKU 網域 signup 及更改電郵。沒有真實寄信前不應宣稱端對端登入已通過。
+
+資料庫層可在 SQL editor 執行 `supabase/002_verify_access.sql`；成功時回傳 PASS。此測試沒有寄信，不能取代上述真實 OTP 登入驗證。
 
 ## 開放前檢查
 

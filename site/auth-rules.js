@@ -14,7 +14,7 @@ export function isVerifiedSchoolUser(user) {
   } catch { return false; }
 }
 
-export function normalizeOtp(value, length = 6) {
+export function normalizeOtp(value, length = 8) {
   const code = String(value ?? '').trim().replace(/[\s-]/g, '');
   if (!Number.isInteger(length) || length < 6 || length > 10 || !new RegExp(`^[0-9]{${length}}$`).test(code)) {
     throw new Error(`請輸入電郵中的 ${length} 位數字驗證碼。`);

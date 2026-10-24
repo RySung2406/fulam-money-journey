@@ -15,9 +15,10 @@ test('a school-looking address without verified server identity never passes', (
   assert.equal(isVerifiedSchoolUser(null), false);
 });
 test('OTP preserves leading zeroes and rejects malformed input', () => {
-  assert.equal(normalizeOtp('012 345'), '012345');
-  assert.equal(normalizeOtp('012-345'), '012345');
-  for (const code of ['12345','1234567','12345x','<script>','１２３４５６']) assert.throws(() => normalizeOtp(code));
+  assert.equal(normalizeOtp('0123 4567'), '01234567');
+  assert.equal(normalizeOtp('0123-4567'), '01234567');
+  assert.equal(normalizeOtp('012345', 6), '012345');
+  for (const code of ['12345','123456','1234567','123456789','1234567x','<script>','１２３４５６７８']) assert.throws(() => normalizeOtp(code));
 });
 test('unconfigured, secret-key, and untrusted URL configurations remain disabled', () => {
   const good = {authReady:true,supabaseUrl:'https://abcxyz.supabase.co',supabasePublishableKey:'sb_publishable_abcdefghijklmnopqrstuv'};

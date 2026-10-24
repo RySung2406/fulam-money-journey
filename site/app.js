@@ -125,7 +125,7 @@ $('otp-form').addEventListener('submit', async (event) => {
   if (busy || !client || !pendingEmail) return;
   clearMessages();
   let token;
-  try { token = normalizeOtp($('otp').value, config.otpLength || 6); }
+  try { token = normalizeOtp($('otp').value, config.otpLength || 8); }
   catch (error) { message('otp-error', error.message); $('otp').focus(); return; }
   busy = true; updateButtons();
   try {
