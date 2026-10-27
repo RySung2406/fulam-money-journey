@@ -54,8 +54,32 @@ The GitHub Actions workflow installs locked dependencies, checks syntax, runs au
 
 ## Development and verification
 
+Use Node.js 22 or later. Open `fulin-money-journey.code-workspace` in VS Code, then use its terminal:
+
 ```sh
 npm ci
+npm run dev
+```
+
+Open **http://127.0.0.1:5173/fulin-money-journey/**. The server listens only on this PC, preserves the GitHub Pages subdirectory, and rebuilds JavaScript in memory when source files change. Refresh the browser to see edits. Stop it with **Ctrl+C**. If the port is busy, use `npm run dev -- --port 5174` and open the matching URL.
+
+After installing dependencies, **F5** runs the `Fulin: open local website` configuration in Microsoft Edge. The VS Code **Terminal → Run Task** menu also offers start, build, test and syntax-check tasks. If a development server is already running on port 5173, stop it before starting another through F5.
+
+For Codex, install the recommended **OpenAI Codex** extension (`openai.chatgpt`), open its sidebar, and sign in with your ChatGPT account if prompted. OpenAI's [official extension guide](https://learn.chatgpt.com/docs/codex/ide) explains the editor setup.
+
+### Local website and database
+
+The local website uses the same hosted Supabase project as the published website, through the public configuration in `site/config.js`. Authentication and profile records remain online; running the website locally does not create a separate database on your PC. Real sign-ins use the existing email provider and create real accounts. No database password or service-role key is needed to run this frontend.
+
+The existing database schema is in `supabase/001_school_auth.sql`; it is a **one-time setup for a new empty project**. Do not rerun it against the already configured production project. Open the existing project in the Supabase dashboard to manage database settings. A separate local Supabase environment requires additional CLI and Docker setup and its own local auth/configuration.
+
+Existing project: [Supabase dashboard](https://supabase.com/dashboard/project/tqkywfishsnhrhkhngym), [database tables](https://supabase.com/dashboard/project/tqkywfishsnhrhkhngym/editor). Dashboard administration requires your Supabase account; frontend development uses only the public client configuration.
+
+### Publish and verify
+
+The published URL is **https://rysung2406.github.io/fulin-money-journey/**. Local changes appear online after they are committed and pushed to `main` and the **Deploy The Money Journey to GitHub Pages** workflow succeeds. Review the change and run the checks before pushing. GitHub Pages hosts the static website; Supabase continues to host authentication and the database. The workflow does not apply database migrations.
+
+```sh
 npm run bundle
 npm test
 npm run check
