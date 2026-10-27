@@ -32,7 +32,7 @@ Before activating questionnaires or check-ins, implement verified-account storag
 
 ## Deployment status
 
-- Website: https://rysung2406.github.io/fulin-money-journey/
+- Website: https://rysung2406.github.io/fulam-money-journey/
 - Supabase project, school-domain enforcement, signup hook, and row-level security are configured.
 - Brevo custom SMTP is configured on the free plan.
 - English email templates and SMTP are configured. Sign-in is enabled. A real HKU mailbox test passed: code delivery, user-entered OTP verification, profile creation/read, session restoration after refresh, and sign-out. The same participant ID was retained after refresh.
@@ -67,14 +67,14 @@ The GitHub Actions workflow installs locked dependencies, checks syntax, runs au
 
 ## Development and verification
 
-Use Node.js 22 or later. Open `fulin-money-journey.code-workspace` in VS Code, then use its terminal:
+Use Node.js 22 or later. Open `fulam-money-journey.code-workspace` in VS Code, then use its terminal:
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Open **http://127.0.0.1:5173/fulin-money-journey/**. The server listens only on this PC, preserves the GitHub Pages subdirectory, and rebuilds JavaScript in memory when source files change. Refresh the browser to see edits. Stop it with **Ctrl+C**. If the port is busy, use `npm run dev -- --port 5174` and open the matching URL.
+Open **http://127.0.0.1:5173/fulam-money-journey/**. The server listens only on this PC, preserves the GitHub Pages subdirectory, and rebuilds JavaScript in memory when source files change. Refresh the browser to see edits. Stop it with **Ctrl+C**. If the port is busy, use `npm run dev -- --port 5174` and open the matching URL.
 
 After installing dependencies, **F5** runs the `FuLam: open local website` configuration in Microsoft Edge. The VS Code **Terminal → Run Task** menu also offers start, build, test and syntax-check tasks. If a development server is already running on port 5173, stop it before starting another through F5.
 
@@ -90,7 +90,7 @@ Existing project: [Supabase dashboard](https://supabase.com/dashboard/project/tq
 
 ### Publish and verify
 
-The published URL is **https://rysung2406.github.io/fulin-money-journey/**. Local changes appear online after they are committed and pushed to `main` and the **Deploy The Money Journey to GitHub Pages** workflow succeeds. Review the change and run the checks before pushing. GitHub Pages hosts the static website; Supabase continues to host authentication and the database. The workflow does not apply database migrations.
+The published URL is **https://rysung2406.github.io/fulam-money-journey/**. Local changes appear online after they are committed and pushed to `main` and the **Deploy The Money Journey to GitHub Pages** workflow succeeds. Review the change and run the checks before pushing. GitHub Pages hosts the static website; Supabase continues to host authentication and the database. The workflow does not apply database migrations.
 
 ```sh
 npm run bundle

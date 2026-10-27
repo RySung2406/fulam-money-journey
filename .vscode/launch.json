@@ -2,12 +2,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Fulin: open local website",
+      "name": "FuLam: open local website",
       "type": "msedge",
       "request": "launch",
-      "url": "http://127.0.0.1:5173/fulin-money-journey/",
+      "url": "http://127.0.0.1:5173/fulam-money-journey/",
       "webRoot": "${workspaceFolder}/site",
-      "preLaunchTask": "Fulin: start website"
+      "preLaunchTask": "FuLam: start website"
     }
   ]
 }

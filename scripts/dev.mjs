@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { context } from 'esbuild';
 
 const root = fileURLToPath(new URL('../site/', import.meta.url));
-const base = '/fulin-money-journey/';
+const base = '/fulam-money-journey/';
 let host = '127.0.0.1';
 const args = process.argv.slice(2);
 let portText = process.env.PORT || '5173';
@@ -127,7 +127,7 @@ async function stop(exitCode = 0) {
 process.once('SIGINT', () => void stop());
 process.once('SIGTERM', () => void stop());
 
-console.log('Starting Fulin development server...');
+console.log('Starting FuLam development server...');
 try {
   for (const [entry, output] of [['app.js', 'app.bundle.js'], ['game-auth.js', 'game/auth.bundle.js']]) {
     const build = await context({
@@ -161,7 +161,7 @@ try {
     await stop(1);
   });
   server.listen(port, host, () => {
-    console.log(`Fulin development server ready: http://${host}:${port}${base}`);
+    console.log(`FuLam development server ready: http://${host}:${port}${base}`);
     console.log('JavaScript rebuilds automatically. Refresh the browser after edits. Press Ctrl+C to stop.');
     console.log('Database: site/config.js connects to the existing hosted Supabase project.');
   });

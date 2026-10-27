@@ -2,7 +2,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Fulin: start website",
+      "label": "FuLam: start website",
       "type": "npm",
       "script": "dev",
       "isBackground": true,
@@ -17,28 +17,28 @@
         },
         "background": {
           "activeOnStart": true,
-          "beginsPattern": "^Starting Fulin development server",
-          "endsPattern": "^Fulin development server ready:"
+          "beginsPattern": "^Starting FuLam development server",
+          "endsPattern": "^FuLam development server ready:"
         }
       },
       "presentation": { "reveal": "always", "panel": "dedicated" }
     },
     {
-      "label": "Fulin: build for deployment",
+      "label": "FuLam: build for deployment",
       "type": "npm",
       "script": "bundle",
       "group": { "kind": "build", "isDefault": true },
       "problemMatcher": []
     },
     {
-      "label": "Fulin: test",
+      "label": "FuLam: test",
       "type": "npm",
       "script": "test",
       "group": { "kind": "test", "isDefault": true },
       "problemMatcher": []
     },
     {
-      "label": "Fulin: check syntax",
+      "label": "FuLam: check syntax",
       "type": "npm",
       "script": "check",
       "problemMatcher": []
