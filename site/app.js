@@ -1,4 +1,5 @@
-import { normalizeSchoolEmail, normalizeOtp, isVerifiedSchoolUser, configurationIsReady, friendlyAuthError } from './auth-rules.js';
+import { normalizeSchoolEmail, normalizeOtp, isVerifiedSchoolUser, configurationIsReady, friendlyAuthError, sessionMustBeCleared } from './auth-rules.js';
+import { persistentAuthOptions } from './auth-session.js';
 
 const $ = (id) => document.getElementById(id);
 const config = window.FULIN_CONFIG || {};
@@ -9,6 +10,11 @@ let busy = false;
 let cooldownTimer;
 let view = 'email';
 let transition = 0;
+let accountUserId;
+
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted) window.location.reload();
+});
 
 function message(id, text = '') {
   $(id).textContent = text;
@@ -114,6 +120,7 @@ async function openVerifiedAccount() {
   if (profileError || !profile?.participant_code) throw new Error('profile-not-ready');
   $('member-email').textContent = data.user.email;
   $('participant-code').textContent = profile.participant_code;
+  accountUserId = data.user.id;
   $('otp').value = '';
   pendingEmail = '';
   clearMessages();
@@ -128,22 +135,29 @@ $('otp-form').addEventListener('submit', async (event) => {
   try { token = normalizeOtp($('otp').value, config.otpLength || 8); }
   catch (error) { message('otp-error', error.message); $('otp').focus(); return; }
   busy = true; updateButtons();
+  let verified = false;
   try {
     const { error } = await client.auth.verifyOtp({ email: pendingEmail, token, type: 'email' });
     if (error) throw error;
+    verified = true;
     await openVerifiedAccount();
   } catch (error) {
-    if (error.message === 'profile-not-ready') {
+    if (verified && !sessionMustBeCleared(error)) {
+      showView('email');
+      message('email-error', 'Your sign-in is saved, but we could not load your account. Refresh to retry without requesting another code, or contact the activity team.');
+    } else if (error.message === 'invalid-school-session') { showView('email'); message('email-error', 'Please sign in with a verified HKU email.'); }
+    else if (verified && sessionMustBeCleared(error)) {
       await client.auth.signOut({ scope: 'local' });
       showView('email');
-      message('email-error', 'Your email is verified, but your account details are not ready. Contact the activity team and try again later.');
-    } else if (error.message === 'invalid-school-session') { showView('email'); message('email-error', 'Please sign in with a verified HKU email.'); }
+      message('email-error', 'Your session has expired. Please verify your HKU email again.');
+    }
     else message('otp-error', friendlyAuthError(error));
   } finally { busy = false; updateButtons(); }
 });
 
 function clearAccountScreen() {
   transition += 1;
+  accountUserId = undefined;
   $('member-email').textContent = '';
   $('participant-code').textContent = '—';
   $('email').value = '';
@@ -160,7 +174,7 @@ $('signout-button').addEventListener('click', async () => {
     if (error) throw error;
     clearAccountScreen();
     $('email').focus();
-  } catch (error) { message('member-error', 'Sign-out could not be completed. Check your connection and try again. Close this tab if you are on a shared device.'); }
+  } catch (error) { message('member-error', 'Sign-out could not be completed. Check your connection and try again. This browser is still signed in.'); }
   finally { busy = false; updateButtons(); }
 });
 
@@ -180,20 +194,28 @@ async function init() {
   try {
     const { createClient } = await import('@supabase/supabase-js');
     client = createClient(config.supabaseUrl, config.supabasePublishableKey, {
-      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false, storage: window.sessionStorage, storageKey: 'fulin.auth.session' }
+      auth: persistentAuthOptions()
     });
     $('setup-notice').hidden = true;
-    client.auth.onAuthStateChange((event) => {
+    client.auth.onAuthStateChange((event, session) => {
       // Keep the callback synchronous to avoid an auth client lock deadlock.
       if (event === 'SIGNED_OUT') { clearAccountScreen(); updateButtons(); }
+      if (event === 'SIGNED_IN' && accountUserId && session?.user?.id !== accountUserId) {
+        clearAccountScreen();
+        window.location.reload();
+      }
     });
     const { data, error } = await client.auth.getSession();
     if (error) throw error;
     if (data.session) {
       try { await openVerifiedAccount(); }
       catch (error) {
-        await client.auth.signOut({ scope: 'local' });
-        message('email-error', error.message === 'profile-not-ready' ? 'Your account details are not ready. Please contact the activity team.' : 'Your session has expired. Please verify your HKU email again.');
+        if (sessionMustBeCleared(error)) {
+          await client.auth.signOut({ scope: 'local' });
+          message('email-error', 'Your session has expired. Please verify your HKU email again.');
+        } else {
+          message('email-error', 'Your sign-in is saved, but we could not verify your account right now. Refresh to retry without requesting another code, or contact the activity team.');
+        }
       }
     }
   } catch (error) {
@@ -202,3 +224,4 @@ async function init() {
   } finally { busy = false; updateButtons(); }
 }
 init();
+

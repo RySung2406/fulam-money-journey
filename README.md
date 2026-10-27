@@ -46,7 +46,8 @@ The GitHub Actions workflow installs locked dependencies, checks syntax, runs au
 ## Account data and security
 
 - Supabase Auth generates and verifies codes. The frontend does not persist them.
-- Session credentials use tab-scoped `sessionStorage`. Signing out clears the local session.
+- Session credentials use browser-persistent `localStorage`, shared by the account and game pages. Closing a tab or restarting the browser keeps the session; Supabase refreshes valid sessions automatically. Signing out clears this browser's session and notifies other open tabs. Private browsing, clearing site data, or a revoked/expired session can require verification again. Users on the previous tab-only version need to sign in once after updating; old tab sessions are not migrated, so stale tabs cannot restore a signed-out account.
+- A temporary network or profile-load failure keeps the saved session and asks the participant to refresh. Server-validated HKU identity and profile checks still gate account and game access. Sign out explicitly on shared devices.
 - Profiles contain only the Auth UUID, a generated participant code, and the creation time. Auth manages email addresses.
 - Restored sessions are validated with server-side `getUser()`. RLS checks the actual user's email confirmation and exact school domain.
 - Unverified, non-school, and anonymous users cannot read profiles. Verified users can read only their own profile.
@@ -89,6 +90,7 @@ Run `supabase/002_verify_access.sql` in the SQL editor for repeatable database c
 
 Before participant access, test real code delivery and verification, incorrect/expired codes, resend cooldown, refresh, sign-out, another device, profile reads, and two-account isolation. Confirm the deletion contact and retention arrangements, check phone/shared-device layouts, and ensure free quotas cover the event peak.
 
-The 13 automated checks cover email/OTP rules, server-validated game access, rejected identities, profile failures, score deduplication, combo penalties, review categories, swipe collisions and random wave/trajectory bounds. Browser QA covered signed-out redirects, desktop and phone-width layouts, keyboard practice, pause/resume, all five rounds, results and mistake reviews. The new production sign-in-to-game journey still needs a user-entered OTP check after deployment; the earlier sign-in flow already passed a real mailbox test.
+Automated checks cover email/OTP rules, server-validated game access, rejected identities, profile failures, browser-persistent sign-in across new clients, expired-token refresh without another OTP, sign-out persistence, temporary error handling, score deduplication, combo penalties, review categories, swipe collisions and random wave/trajectory bounds. Session lifecycle tests use the real Supabase client with simulated storage and network responses. Earlier browser QA covered signed-out redirects, desktop and phone-width layouts, keyboard practice, pause/resume, all five rounds, results and mistake reviews. After this persistence update, a real browser sign-in, close/reopen and cross-tab sign-out check still needs a user-entered OTP; the earlier sign-in flow already passed a real mailbox test.
 
 GitHub Pages serves public static files, including game source and questions. The login gate controls the normal play flow; it does not make static game assets private. Supabase Auth and RLS protect account data.
+

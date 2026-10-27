@@ -34,6 +34,13 @@ export function configurationIsReady(config) {
   } catch { return false; }
 }
 
+export function sessionMustBeCleared(error) {
+  return error?.message === 'invalid-school-session'
+    || error?.name === 'AuthSessionMissingError'
+    || ['session_not_found', 'refresh_token_not_found', 'refresh_token_already_used', 'user_not_found', 'user_banned', 'bad_jwt'].includes(error?.code)
+    || error?.status === 401 || error?.status === 403;
+}
+
 export function friendlyAuthError(error) {
   const code = error?.code || '';
   if (['over_email_send_rate_limit', 'over_request_rate_limit'].includes(code) || error?.status === 429) return 'Too many code requests. Please try again later.';
@@ -44,3 +51,4 @@ export function friendlyAuthError(error) {
   if (error?.name === 'AuthRetryableFetchError' || error instanceof TypeError) return 'The connection was interrupted. Check your internet connection and try again. Your last request may still be processing.';
   return 'We could not complete this step. Please try again later.';
 }
+
