@@ -28,7 +28,7 @@ The category filter is keyboard operable and persisted in the URL (`?content=str
 
 ### Still pending
 
-Before activating questionnaires or check-ins, implement verified-account storage, RLS, safe submission retries, unique submission constraints, and disclosure/retention details. Before community/rewards activation, supply the invite, admission process, eligibility, scoring and redemption rules. This redesign does not change Supabase schema, permissions, SMTP limits or data collection.
+Before activating questionnaires or check-ins, implement verified-account storage, RLS, safe submission retries, unique submission constraints, and disclosure/retention details. The participant community invitation is configured. Before rewards activation, supply eligibility, scoring and redemption rules. This redesign does not change Supabase schema, permissions, SMTP limits or data collection.
 
 ## Deployment status
 
@@ -119,4 +119,4 @@ The homepage and activity hub show the supplied official partner strip unchanged
 
 UI UX Pro Max guidance informed the larger body typography, contrast, spacing, responsive card layout and restrained motion. Desktop body text is generally 18–20px and mobile body text 17–18px. Existing authentication, database policies and gameplay mechanics are preserved.
 
-Validation for this refinement: 17 existing auth/session/game tests passed; invitation-link checks covered missing, valid, deceptive-host, script and credential-bearing URLs. Browser checks covered the homepage, filters/dialog, login, programme logos, a signed-in visual fixture, and 320/390/768px layouts. The authenticated visual state was a local fixture; no real OTP was sent for this visual update. The real WhatsApp invitation still needs to be supplied.
+Validation for this refinement: 17 existing auth/session/game tests passed; invitation-link checks covered missing, valid, deceptive-host, script and credential-bearing URLs. Browser checks covered the homepage, filters/dialog, login, programme logos, a signed-in visual fixture, and 320/390/768px layouts. The authenticated visual state was a local fixture; no real OTP was sent for this visual update. The participant WhatsApp invitation supplied by the project owner is configured and active for the signed-in invitation card.

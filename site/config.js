@@ -5,5 +5,5 @@ window.FULIN_CONFIG = Object.freeze({
   authReady: true,
   otpLength: 8,
   // Participant community invite (not the internal team chat). Add a verified HTTPS chat.whatsapp.com link.
-  whatsappCommunityUrl: ""
+  whatsappCommunityUrl: "https://chat.whatsapp.com/HrA6jkRlXX9CLXdgJoMZGf"
 });
