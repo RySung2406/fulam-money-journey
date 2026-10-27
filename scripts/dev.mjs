@@ -6,16 +6,22 @@ import { context } from 'esbuild';
 
 const root = fileURLToPath(new URL('../site/', import.meta.url));
 const base = '/fulin-money-journey/';
-const host = '127.0.0.1';
+let host = '127.0.0.1';
 const args = process.argv.slice(2);
 let portText = process.env.PORT || '5173';
 for (let index = 0; index < args.length; index += 1) {
   if (args[index] === '--port' && args[index + 1]) portText = args[++index];
   else if (args[index].startsWith('--port=')) portText = args[index].slice(7);
+  else if (args[index] === '--host' && args[index + 1]) host = args[++index];
+  else if (args[index] === '--strictPort') { /* The server already fails if the port is busy. */ }
   else {
-    console.error('Usage: npm run dev -- [--port 5173]');
+    console.error('Usage: npm run dev -- [--port 5173] [--host 127.0.0.1] [--strictPort]');
     process.exit(1);
   }
+}
+if (!['127.0.0.1', '0.0.0.0', 'localhost'].includes(host)) {
+  console.error('Choose a local bind address for --host.');
+  process.exit(1);
 }
 const port = Number(portText);
 if (!/^\d+$/.test(portText) || !Number.isInteger(port) || port < 1 || port > 65535) {

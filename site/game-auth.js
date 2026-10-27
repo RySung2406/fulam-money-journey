@@ -5,7 +5,7 @@ import { verifyGameAccess } from './game-access.js';
 
 const config = window.FULIN_CONFIG || {};
 const status = document.getElementById('access-status');
-const returnToAccount = () => window.location.replace('../');
+const returnToAccount = () => window.location.replace('../account/');
 let accountUserId;
 window.addEventListener('pageshow', (event) => {
   // A back/forward cache restore must recheck access after sign-out.

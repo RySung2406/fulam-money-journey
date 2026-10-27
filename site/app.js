@@ -11,17 +11,31 @@ let cooldownTimer;
 let view = 'email';
 let transition = 0;
 let accountUserId;
+let initializing = true;
+
+const translatedMessages = new Map([
+  ['Enter your full HKU Connect email, such as yourname@connect.hku.hk.', '請輸入完整的 HKU Connect 電郵，例如 yourname@connect.hku.hk。'],
+  ['Too many code requests. Please try again later.', '驗證碼要求過於頻繁，請稍後再試。'],
+  ['The code is incorrect or expired. Try again or request a new code.', '驗證碼不正確或已過期。請檢查最新電郵，或重新索取驗證碼。'],
+  ['We could not send your code. Try again later or contact the activity team.', '暫時未能發送驗證碼，請稍後再試或聯絡活動團隊。'],
+  ['Sign-in is not available yet. Please try again later.', '登入服務暫時未能使用，請稍後再試。'],
+  ['Your session has expired. Please verify your HKU email again.', '登入已失效，請再次驗證 HKU 電郵。'],
+  ['The connection was interrupted. Check your internet connection and try again. Your last request may still be processing.', '連線中斷。請檢查網絡後再試；剛才的要求可能仍在處理中。'],
+  ['We could not complete this step. Please try again later.', '暫時未能完成這一步，請稍後再試。']
+]);
 
 window.addEventListener('pageshow', (event) => {
   if (event.persisted) window.location.reload();
 });
 
 function message(id, text = '') {
-  $(id).textContent = text;
+  const otpError = text.match(/^Enter the (\d+)-digit verification code from your email\.$/);
+  $(id).textContent = translatedMessages.get(text) || (otpError ? `請輸入電郵內的 ${otpError[1]} 位數字驗證碼。` : text);
   $(id).hidden = !text;
 }
 function showView(next, focus = true) {
   view = next;
+  document.body.dataset.authView = next;
   for (const name of ['email', 'otp', 'member']) $(`${name}-screen`).hidden = name !== next;
   if (focus) $(next === 'email' ? 'email' : next === 'otp' ? 'otp' : 'member-title').focus();
 }
@@ -30,11 +44,11 @@ function remainingSeconds() { return Math.max(0, Math.ceil((cooldownUntil - Date
 function updateButtons() {
   const seconds = remainingSeconds();
   $('send-button').disabled = busy || !client || seconds > 0;
-  $('send-button').querySelector('span').textContent = busy && view === 'email' ? 'Sending…' : seconds > 0 && view === 'email' ? `Please wait ${seconds}s` : 'Send verification code';
+  $('send-button').querySelector('span').textContent = initializing ? '正在連接…' : busy && view === 'email' ? '正在發送…' : seconds > 0 && view === 'email' ? `請等候 ${seconds} 秒` : '發送驗證碼';
   $('verify-button').disabled = busy || !client;
-  $('verify-button').querySelector('span').textContent = busy && view === 'otp' ? 'Verifying…' : 'Verify and sign in';
+  $('verify-button').querySelector('span').textContent = busy && view === 'otp' ? '正在驗證…' : '驗證並登入';
   $('resend-button').disabled = busy || !client || seconds > 0;
-  $('resend-button').textContent = seconds > 0 ? `Resend in ${seconds}s` : 'Resend code';
+  $('resend-button').textContent = seconds > 0 ? `${seconds} 秒後可重發` : '重新發送';
   $('back-button').disabled = busy;
   $('email').readOnly = busy;
   $('otp').readOnly = busy;
@@ -73,7 +87,7 @@ $('email-form').addEventListener('submit', async (event) => {
   try { email = normalizeSchoolEmail($('email').value); }
   catch (error) { $('email').setAttribute('aria-invalid', 'true'); message('email-error', error.message); $('email').focus(); return; }
   if (!client) { message('email-error', 'Sign-in is not available yet. Please try again later.'); return; }
-  if (remainingSeconds()) { message('email-error', 'Please wait before requesting another code.'); return; }
+  if (remainingSeconds()) { message('email-error', '請稍候，再要求另一個驗證碼。'); return; }
   busy = true; updateButtons();
   try {
     await requestCode(email);
@@ -101,12 +115,12 @@ $('resend-button').addEventListener('click', async () => {
   try {
     await requestCode(pendingEmail);
     startCooldown();
-    message('resend-status', 'A new code has been sent. Use the code from the latest email.');
+    message('resend-status', '新驗證碼已發送，請使用最新電郵內的驗證碼。');
   } catch (error) { message('otp-error', friendlyAuthError(error)); }
   finally { busy = false; updateButtons(); }
 });
 
-async function openVerifiedAccount() {
+async function openVerifiedAccount(focus = true) {
   const attempt = ++transition;
   // getUser validates the session with the Auth server. Never trust only cached UI state.
   const { data, error } = await client.auth.getUser();
@@ -124,7 +138,7 @@ async function openVerifiedAccount() {
   $('otp').value = '';
   pendingEmail = '';
   clearMessages();
-  showView('member');
+  showView('member', focus);
 }
 
 $('otp-form').addEventListener('submit', async (event) => {
@@ -144,8 +158,8 @@ $('otp-form').addEventListener('submit', async (event) => {
   } catch (error) {
     if (verified && !sessionMustBeCleared(error)) {
       showView('email');
-      message('email-error', 'Your sign-in is saved, but we could not load your account. Refresh to retry without requesting another code, or contact the activity team.');
-    } else if (error.message === 'invalid-school-session') { showView('email'); message('email-error', 'Please sign in with a verified HKU email.'); }
+      message('email-error', '登入已保存，但暫時未能載入帳戶。請重新整理頁面，無需再索取驗證碼；或聯絡活動團隊。');
+    } else if (error.message === 'invalid-school-session') { showView('email'); message('email-error', '請以已驗證的 HKU 電郵登入。'); }
     else if (verified && sessionMustBeCleared(error)) {
       await client.auth.signOut({ scope: 'local' });
       showView('email');
@@ -174,7 +188,7 @@ $('signout-button').addEventListener('click', async () => {
     if (error) throw error;
     clearAccountScreen();
     $('email').focus();
-  } catch (error) { message('member-error', 'Sign-out could not be completed. Check your connection and try again. This browser is still signed in.'); }
+  } catch (error) { message('member-error', '未能完成登出，請檢查網絡後再試。此瀏覽器目前仍維持登入。'); }
   finally { busy = false; updateButtons(); }
 });
 
@@ -182,6 +196,7 @@ const dialog = $('privacy-dialog');
 $('privacy-open').addEventListener('click', () => dialog.showModal());
 $('privacy-close').addEventListener('click', () => dialog.close());
 $('privacy-done').addEventListener('click', () => dialog.close());
+if (window.location.hash === '#privacy') dialog.showModal();
 dialog.addEventListener('click', (event) => {
   const bounds = dialog.getBoundingClientRect();
   if (event.target === dialog && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) dialog.close();
@@ -189,7 +204,7 @@ dialog.addEventListener('click', (event) => {
 
 async function init() {
   updateButtons();
-  if (!configurationIsReady(config)) { $('setup-notice').hidden = false; return; }
+  if (!configurationIsReady(config)) { initializing = false; $('setup-notice').hidden = false; updateButtons(); return; }
   busy = true; updateButtons();
   try {
     const { createClient } = await import('@supabase/supabase-js');
@@ -208,20 +223,20 @@ async function init() {
     const { data, error } = await client.auth.getSession();
     if (error) throw error;
     if (data.session) {
-      try { await openVerifiedAccount(); }
+      try { await openVerifiedAccount(false); }
       catch (error) {
         if (sessionMustBeCleared(error)) {
           await client.auth.signOut({ scope: 'local' });
           message('email-error', 'Your session has expired. Please verify your HKU email again.');
         } else {
-          message('email-error', 'Your sign-in is saved, but we could not verify your account right now. Refresh to retry without requesting another code, or contact the activity team.');
+          message('email-error', '登入已保存，但暫時未能確認帳戶。請重新整理頁面，無需再索取驗證碼；或聯絡活動團隊。');
         }
       }
     }
   } catch (error) {
     client = undefined;
-    message('email-error', 'We could not connect to the sign-in service. Refresh this page or try again later.');
-  } finally { busy = false; updateButtons(); }
+    message('email-error', '暫時未能連接登入服務。請重新整理頁面，或稍後再試。');
+  } finally { initializing = false; busy = false; updateButtons(); }
 }
 init();
 

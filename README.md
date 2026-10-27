@@ -1,6 +1,6 @@
 # The Money Journey · Fulin One Slice
 
-An HKU email sign-in portal with the English edition of Fulin One Slice, the money-bag slicing game.
+A Traditional Chinese financial-education website with an editorial content hub, persistent HKU email sign-in and the English edition of Fulin One Slice.
 
 ## Game
 
@@ -12,11 +12,23 @@ An HKU email sign-in portal with the English edition of Fulin One Slice, the mon
 - Results stay in memory and reset on leaving or reloading the game. Only sound and difficulty preferences are saved locally. This deployment does not collect scores or provide a leaderboard.
 - Adapted from the user-selected game at https://fulam-one-slice.ryantw2406.chatgpt.site/, version 7, source commit `2530d8cbb3a045445a52f955898c60bdf06660b5`. The original Site is unchanged. All interface text, questions, explanations and resource labels in this edition are English.
 
-## Activity hub entrances
+## Website and content (October 2026 redesign)
 
-The home page and signed-in account link to `hub/`, with entry points for Questionnaire & Community, Sponsors, Daily Check-in, Leaderboard and Rewards. These sections are intentionally **Coming soon**, as requested: details and destinations will be supplied later. The questionnaire section explains the intended completion-to-WhatsApp flow but currently has no form, completion tracking or invite link. Daily check-ins do not yet submit data, rankings are empty, and no prizes or sponsor relationships are claimed.
+- `/`: public homepage, game introduction, four content categories, pretest entrance and community introduction. Warm ivory, forest green and amber, optimized hero image and locally hosted Lucide icons.
+- `/account/`: the existing OTP flow and persistent sign-in, now in a dedicated page. Verified users see My Journey, their own participant code, the game entrance and clear pending states. No fictional participation totals or scores.
+- `/questionnaire/`: **placeholder only** for Before we start / the first questionnaire and knowledge pretest. There is no form or submission API. It does not block the currently available game.
+- `/hub/`: daily check-in, community, leaderboard, rewards and supporters. Existing hash URLs remain usable. These features are not yet collecting data or awarding points.
+- `/game/`: existing English game, now returning to `/account/` for sign-in and account links. Authentication and database policies are unchanged.
 
-The planned leaderboard basis is daily participation, selected by the user. Before activation, add the questionnaire and verified completion flow, WhatsApp invite, sponsor details, daily task/submission rules, and reward eligibility/redemption terms. No new database tables, API permissions, payment services or tracking are introduced by these entrances.
+### Adding original content
+
+The public content area has four categories: street interviews, explainers, AI videos and interviews. Each is honestly marked coming soon until a real release is supplied. `site/content-data.js` holds each category's first release title, description and URL. Set `url` to a verified HTTPS destination (for example, the team's published video) to enable the “watch” link in its detail dialog. The link opens in a new tab; no third-party player or tracking is loaded automatically. Update the matching title/copy in `site/index.html` when publishing a particular episode. Extend the catalogue and cards together for multiple releases per category. Do not label unreviewed uploads as published.
+
+The category filter is keyboard operable and persisted in the URL (`?content=street#stories`). Dialogs support Escape and restore focus to their trigger. Most content is readable without JavaScript. Motion is limited to a brief initial entrance, button feedback and a 240ms filter transition; `prefers-reduced-motion` disables nonessential movement. No ongoing animation loop or animation dependency is loaded.
+
+### Still pending
+
+Before activating questionnaires or check-ins, implement verified-account storage, RLS, safe submission retries, unique submission constraints, and disclosure/retention details. Before community/rewards activation, supply the invite, admission process, eligibility, scoring and redemption rules. This redesign does not change Supabase schema, permissions, SMTP limits or data collection.
 
 ## Deployment status
 
@@ -94,3 +106,7 @@ Automated checks cover email/OTP rules, server-validated game access, rejected i
 
 GitHub Pages serves public static files, including game source and questions. The login gate controls the normal play flow; it does not make static game assets private. Supabase Auth and RLS protect account data.
 
+
+### Redesign validation
+
+The existing 17 auth/session/game tests and the JavaScript syntax/build checks pass. Public navigation, mobile content filters/dialogs, pretest entry and the signed-out game route were checked in a browser. Responsive layouts were inspected at 320, 390 and desktop widths; automated accessibility checks cover the public, login and My Journey fixture states. The My Journey visual check uses a local fixture, not a live signed-in account. Real OTP delivery and cross-device session behavior were not repeated for this visual update.
