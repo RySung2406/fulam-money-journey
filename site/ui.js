@@ -16,7 +16,7 @@ menu?.addEventListener('click', event => { if (event.target.closest('a')) closeM
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && menu && !menu.hidden) { closeMenu(); menuButton.focus(); }
 });
-matchMedia('(min-width:761px)').addEventListener('change', event => { if (event.matches) closeMenu(); });
+matchMedia('(min-width:1001px)').addEventListener('change', event => { if (event.matches) closeMenu(); });
 
 const reducedMotion = matchMedia('(prefers-reduced-motion:reduce)');
 const filters = [...document.querySelectorAll('[data-filter]')];
@@ -64,7 +64,7 @@ cards.forEach(card => {
     if (!storyDialog) return;
     document.getElementById('story-dialog-title').textContent = content.title;
     document.getElementById('story-dialog-description').textContent = content.description;
-    document.getElementById('story-dialog-status').textContent = url ? '將於新分頁開啟作品。' : '內容準備中，正式推出後會在這裡觀看。';
+    document.getElementById('story-dialog-status').textContent = url ? '將於新分頁開啟作品。' : '內容準備中；推出後會在 WhatsApp 社群分享，這裡也會提供觀看入口。';
     const watch = document.getElementById('story-watch');
     watch.hidden = !url;
     if (url) watch.href = url; else watch.removeAttribute('href');

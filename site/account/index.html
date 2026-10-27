@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#F6F5EF">
-  <meta name="description" content="登入富臨錢進號，開啟你的理財學習旅程。">
+  <meta name="description" content="登入 FuLam 富臨錢進號，加入 WhatsApp 理財學習社群，在網站參與遊戲與打卡。">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'">
   <title>My Journey · 富臨錢進號</title>
@@ -12,12 +12,13 @@
   <link rel="stylesheet" href="../theme.css">
   <link rel="stylesheet" href="../account.css">
   <script src="../config.js" defer></script>
+  <script src="../community-links.js" defer></script>
   <script src="../app.bundle.js" defer></script>
 </head>
 <body class="account-page" data-auth-view="email">
   <a class="skip-link" href="#account-main">跳至主要內容</a>
   <header class="account-header container">
-    <a class="account-brand" href="../" aria-label="富臨錢進號首頁"><span class="account-brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="m22 9-5 10-10 5 5-10z"/><path d="m12 14 5 5"/></svg></span><span>富臨錢進號<small>THE MONEY JOURNEY</small></span></a>
+    <a class="account-brand" href="../" aria-label="富臨錢進號首頁"><span class="account-brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="m22 9-5 10-10 5 5-10z"/><path d="m12 14 5 5"/></svg></span><span>富臨錢進號<small>FuLam · MONEY JOURNEY</small></span></a>
     <a class="account-back" href="../">返回首頁 <span aria-hidden="true">↗</span></a>
   </header>
 
@@ -25,17 +26,17 @@
     <div class="auth-shell">
       <section class="account-intro" aria-labelledby="intro-title">
         <span class="account-eyebrow">A LITTLE WISER, EVERY DAY</span>
-        <h1 id="intro-title">每個選擇，<br>向自己靠近<br><em>一點。</em></h1>
-        <p>理財不只關於數字。<br>從生活出發，建立自己的判斷。</p>
+        <h1 id="intro-title">理財路上，<br>一起學，<br><em>一起前進。</em></h1>
+        <p>從大學生活出發，學懂個人理財。<br>在 WhatsApp 學習與交流，<br>回到網站玩遊戲、做打卡。</p>
         <div class="account-orbit" aria-hidden="true"><svg viewBox="0 0 420 250"><ellipse cx="212" cy="135" rx="173" ry="64" transform="rotate(-25 212 135)"/><ellipse cx="212" cy="135" rx="121" ry="46" transform="rotate(-25 212 135)"/><path d="m245 82-29 72-70 29 29-72z"/><path d="m175 111 41 43"/><circle cx="85" cy="179" r="10"/><circle cx="338" cy="93" r="6"/></svg></div>
-        <div class="account-intro-foot"><span>小步前進 · 自主選擇</span><span>01 — START</span></div>
+        <div class="account-intro-foot"><span>一同學習 · 自主選擇</span><span>01 — START</span></div>
       </section>
 
       <section class="auth-panel" aria-label="HKU 電郵登入">
         <div class="auth-panel-top"><span class="account-eyebrow">YOUR JOURNEY STARTS HERE</span><span class="secure-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 7 3v6c0 4-7 8-7 8s-7-4-7-8V6z"/><path d="m8 11 3 3 5-5"/></svg>HKU 電郵驗證</span></div>
         <div id="email-screen">
           <h2 id="login-title" tabindex="-1">歡迎上車。</h2>
-          <p class="auth-intro">用 HKU 電郵登入，<br>開始你的理財旅程。</p>
+          <p class="auth-intro">驗證 HKU 電郵後，加入我們的 WhatsApp 社群，接收理財內容與活動消息。</p>
           <div id="setup-notice" class="account-notice" role="status" hidden><strong>登入服務尚未開放</strong><p>你可以先瀏覽內容，稍後再回來。</p></div>
           <form id="email-form" novalidate>
             <label for="email">HKU 電郵地址</label>
@@ -67,27 +68,38 @@
     </div>
 
     <section id="member-screen" class="journey-dashboard" aria-labelledby="member-title" hidden>
-      <div class="journey-heading"><div><span class="account-eyebrow">MAKE ROOM FOR BETTER CHOICES</span><h1 id="member-title" tabindex="-1">My Journey<span>.</span></h1><p>歡迎回來。今天，從一個小挑戰開始。</p></div><span class="verified-label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 7 3v6c0 4-7 8-7 8s-7-4-7-8V6z"/><path d="m8 11 3 3 5-5"/></svg>HKU 電郵已驗證</span></div>
+      <div class="journey-heading"><div><span class="account-eyebrow">MAKE ROOM FOR BETTER CHOICES</span><h1 id="member-title" tabindex="-1">My Journey<span>.</span></h1><p>歡迎加入。下一步，到 WhatsApp 和我們一起學。</p></div><span class="verified-label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 7 3v6c0 4-7 8-7 8s-7-4-7-8V6z"/><path d="m8 11 3 3 5-5"/></svg>HKU 電郵已驗證</span></div>
       <div class="journey-grid">
         <div class="journey-primary-column">
-          <section class="journey-feature" aria-labelledby="game-card-title"><span class="account-eyebrow">YOUR NEXT MOVE</span><div class="journey-feature-copy"><h2 id="game-card-title">先由一局開始。</h2><p>富臨一刀：五個理財回合，<br>練習分辨每個選擇。</p><a class="account-primary account-amber" href="../game/">開始理財挑戰 <span aria-hidden="true">→</span></a><span class="journey-feature-detail">3 種難度 · 手機與電腦均可遊玩</span></div><div class="journey-coin" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42"/><circle cx="50" cy="50" r="32"/><path d="m68 30-12 26-26 14 12-28zM42 42l14 14"/></svg></div></section>
+          <section class="journey-feature community-feature" aria-labelledby="community-card-title">
+            <div class="community-heading"><span class="account-eyebrow">YOUR NEXT STEP · 一起學習</span><span class="community-symbol" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M27 15a11 11 0 0 1-11 11 12 12 0 0 1-5-1l-7 2 2-7a11 11 0 1 1 21-5Z"/><path d="M10 13h12M10 18h8"/></svg></span></div>
+            <div class="journey-feature-copy">
+              <h2 id="community-card-title">加入 WhatsApp 社群，<br>讓學習繼續。</h2>
+              <p>題目、題解、內容分享與討論，都會在社群發放。加入後，和大家一起看懂理財、交流每個選擇。</p>
+              <a class="account-primary account-amber" data-community-invite hidden target="_blank" rel="noopener noreferrer">加入 WhatsApp 社群 <span aria-hidden="true">↗</span></a>
+              <p class="community-pending" data-community-pending>邀請連結準備中，請留意團隊公布。</p>
+              <span class="journey-feature-detail">連結會開啟 WhatsApp；加入前可先查看社群資訊。</span>
+            </div>
+            <div class="learning-locations"><div><span>在 WhatsApp</span><strong>接收題目、看題解、分享討論</strong></div><div><span>在這個網站</span><strong>玩理財遊戲、參與每日打卡</strong></div></div>
+          </section>
+          <section class="journey-game" aria-labelledby="game-card-title"><div><span class="account-eyebrow">PLAY ON THE WEBSITE</span><h2 id="game-card-title">學到的，來試一試。</h2><p>富臨一刀 · FuLam One Slice<br>五個理財回合，練習更好的判斷。</p><span class="journey-game-detail">3 種難度 · 手機與電腦均可遊玩</span></div><a class="account-primary" href="../game/">開始理財挑戰 <span aria-hidden="true">→</span></a></section>
           <a class="questionnaire-entrance" href="../questionnaire/"><span class="questionnaire-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg></span><div><span class="account-eyebrow">BEFORE WE START</span><h2>開始之前，先讓我們了解你。</h2><p>前測問卷即將開放。你現在可以先體驗遊戲。</p></div><span class="entrance-arrow" aria-hidden="true">↗</span></a>
-          <section class="journey-progress" aria-labelledby="progress-title"><div class="journey-section-title"><h2 id="progress-title">我的旅程</h2><span>一步一步，慢慢來。</span></div><ol><li><span class="progress-mark is-complete" aria-hidden="true">✓</span><span>HKU 電郵驗證</span><span class="progress-state is-verified">已完成</span></li><li><span class="progress-mark" aria-hidden="true">02</span><span>首次問卷與前測</span><span class="progress-state">即將開放</span></li><li><span class="progress-mark" aria-hidden="true">03</span><span>理財挑戰</span><a href="../game/">開始遊玩 <span aria-hidden="true">↗</span></a></li><li><span class="progress-mark" aria-hidden="true">04</span><span>每日打卡</span><span class="progress-state">即將開放</span></li></ol><p class="progress-footnote">目前遊戲成績只保留於當次遊玩，未加入個人進度統計。</p></section>
+          <section class="journey-progress" aria-labelledby="progress-title"><div class="journey-section-title"><h2 id="progress-title">我的旅程</h2><span>一步一步，慢慢來。</span></div><ol><li><span class="progress-mark is-complete" aria-hidden="true">✓</span><span>HKU 電郵驗證</span><span class="progress-state is-verified">已完成</span></li><li><span class="progress-mark" aria-hidden="true">02</span><span>WhatsApp 社群</span><a href="#community-card-title">查看邀請 <span aria-hidden="true">↗</span></a></li><li><span class="progress-mark" aria-hidden="true">03</span><span>首次問卷與前測</span><span class="progress-state">即將開放</span></li><li><span class="progress-mark" aria-hidden="true">04</span><span>理財挑戰</span><a href="../game/">開始遊玩 <span aria-hidden="true">↗</span></a></li><li><span class="progress-mark" aria-hidden="true">05</span><span>每日打卡</span><span class="progress-state">即將開放</span></li></ol><p class="progress-footnote">目前遊戲成績只保留於當次遊玩，未加入個人進度統計。</p></section>
         </div>
         <aside class="journey-side-column" aria-label="帳戶與活動資訊">
           <section class="account-details"><span class="account-eyebrow">YOUR ACCOUNT</span><div class="account-avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg></div><h2>你的參加者帳戶</h2><strong id="member-email"></strong><dl><div><dt>參加者編號</dt><dd id="participant-code">—</dd></div></dl><p id="member-error" class="form-message error" role="alert" hidden></p><button id="signout-button" class="account-secondary" type="button">登出此瀏覽器</button></section>
-          <section class="journey-small-card"><span class="account-eyebrow">DAILY CHECK-IN</span><h2>每天一點，<br>判斷更好一點。</h2><p>先學概念，再判斷事件；<br>翌日一起看解釋。</p><span class="progress-state">打卡任務即將開放</span></section>
+          <section class="journey-small-card"><span class="account-eyebrow">DAILY CHECK-IN</span><h2>每天一點，<br>判斷更好一點。</h2><p>在 WhatsApp 接收題目，回到網站打卡；翌日在社群一起看題解、交流想法。</p><span class="progress-state">打卡任務即將開放</span></section>
           <a class="journey-content-link" href="../#stories"><div><span class="account-eyebrow">THE MONEY EDIT</span><h2>換個角度，看看理財。</h2><p>街訪 · 講解 · AI 影片 · 訪談</p></div><span aria-hidden="true">↗</span></a>
-          <a class="journey-rewards-link" href="../hub/#rewards">社群、排名與獎勵 <span>籌備中 ↗</span></a>
+          <a class="journey-rewards-link" href="../hub/#rewards">排名與獎勵 <span>籌備中 ↗</span></a>
         </aside>
       </div>
     </section>
 
-    <div class="account-privacy-bar"><span>你的電郵不會公開顯示。</span><button id="privacy-open" type="button">我們如何使用你的資料 <span aria-hidden="true">↗</span></button></div>
+    <div class="account-privacy-bar"><span>本網站不會公開顯示你的電郵。</span><button id="privacy-open" type="button">我們如何使用你的資料 <span aria-hidden="true">↗</span></button></div>
   </main>
-  <footer class="account-footer container"><span>© 2026 搏富臨 · 富臨錢進號</span><span>SMALL STEPS. SMARTER CHOICES.</span></footer>
+  <footer class="account-footer container"><span>© 2026 搏富臨 · 富臨錢進號</span><span>個人理財教育計劃 · 搏富臨</span></footer>
 
-  <dialog id="privacy-dialog" aria-labelledby="privacy-title"><button id="privacy-close" class="dialog-close" type="button" aria-label="關閉資料用途說明">×</button><span class="account-eyebrow">YOUR PRIVACY</span><h2 id="privacy-title">你的資料，清楚交代。</h2><p>本網站由搏富臨活動團隊營運。我們使用 HKU 電郵建立帳戶，並識別屬於你的活動紀錄。</p><ul><li>目前儲存帳戶資料、電郵驗證狀態及系統產生的參加者編號。</li><li>Supabase 處理帳戶及電郵資料，Brevo 用於寄送驗證碼。</li><li>此瀏覽器會記住登入，直至你登出、清除網站資料或登入狀態失效。</li><li>你的電郵不會公開顯示；活動分析應使用參加者編號。</li><li>電郵驗證只確認你能使用該信箱，並不證明目前在學。</li><li>如需刪除帳戶，請聯絡活動團隊。</li></ul><p class="dialog-note">我們不會讀取你的信箱，也不會索取大學密碼。請在使用共用裝置後登出。</p><button id="privacy-done" class="account-secondary" type="button">明白了</button></dialog>
+  <dialog id="privacy-dialog" aria-labelledby="privacy-title"><button id="privacy-close" class="dialog-close" type="button" aria-label="關閉資料用途說明">×</button><span class="account-eyebrow">YOUR PRIVACY</span><h2 id="privacy-title">你的資料，清楚交代。</h2><p>本網站由搏富臨活動團隊營運。我們使用 HKU 電郵建立帳戶，並識別屬於你的活動紀錄。</p><ul><li>目前儲存帳戶資料、電郵驗證狀態及系統產生的參加者編號。</li><li>Supabase 處理帳戶及電郵資料，Brevo 用於寄送驗證碼。</li><li>此瀏覽器會記住登入，直至你登出、清除網站資料或登入狀態失效。</li><li>你的電郵不會公開顯示；活動分析應使用參加者編號。</li><li>電郵驗證只確認你能使用該信箱，並不證明目前在學。</li><li>加入 WhatsApp 社群屬自願，會前往 WhatsApp 平台；請先查看其私隱設定及社群資訊。</li><li>如需刪除帳戶，請聯絡活動團隊。</li></ul><p class="dialog-note">我們不會讀取你的信箱，也不會索取大學密碼。請在使用共用裝置後登出。</p><button id="privacy-done" class="account-secondary" type="button">明白了</button></dialog>
   <noscript><p class="account-noscript">請啟用 JavaScript，以使用電郵驗證碼登入。</p></noscript>
 </body>
 </html>

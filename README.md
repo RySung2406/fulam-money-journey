@@ -1,6 +1,6 @@
-# The Money Journey · Fulin One Slice
+# The Money Journey · FuLam One Slice
 
-A Traditional Chinese financial-education website with an editorial content hub, persistent HKU email sign-in and the English edition of Fulin One Slice.
+A Traditional Chinese financial-education website with an editorial content hub, persistent HKU email sign-in and the English edition of FuLam One Slice.
 
 ## Game
 
@@ -76,7 +76,7 @@ npm run dev
 
 Open **http://127.0.0.1:5173/fulin-money-journey/**. The server listens only on this PC, preserves the GitHub Pages subdirectory, and rebuilds JavaScript in memory when source files change. Refresh the browser to see edits. Stop it with **Ctrl+C**. If the port is busy, use `npm run dev -- --port 5174` and open the matching URL.
 
-After installing dependencies, **F5** runs the `Fulin: open local website` configuration in Microsoft Edge. The VS Code **Terminal → Run Task** menu also offers start, build, test and syntax-check tasks. If a development server is already running on port 5173, stop it before starting another through F5.
+After installing dependencies, **F5** runs the `FuLam: open local website` configuration in Microsoft Edge. The VS Code **Terminal → Run Task** menu also offers start, build, test and syntax-check tasks. If a development server is already running on port 5173, stop it before starting another through F5.
 
 For Codex, install the recommended **OpenAI Codex** extension (`openai.chatgpt`), open its sidebar, and sign in with your ChatGPT account if prompted. OpenAI's [official extension guide](https://learn.chatgpt.com/docs/codex/ide) explains the editor setup.
 
@@ -110,3 +110,13 @@ GitHub Pages serves public static files, including game source and questions. Th
 ### Redesign validation
 
 The existing 17 auth/session/game tests and the JavaScript syntax/build checks pass. Public navigation, mobile content filters/dialogs, pretest entry and the signed-out game route were checked in a browser. Responsive layouts were inspected at 320, 390 and desktop widths; automated accessibility checks cover the public, login and My Journey fixture states. The My Journey visual check uses a local fixture, not a live signed-in account. Real OTP delivery and cross-device session behavior were not repeated for this visual update.
+
+### FuLam community-first refinement (October 2026)
+
+The signed-in My Journey starts with the WhatsApp community invitation: questions, explanations, original content and discussion happen in WhatsApp; games and future check-in submissions happen on this website. The first questionnaire remains a placeholder. Set `whatsappCommunityUrl` in `site/config.js` to the verified participant community invitation (not the internal team chat). Empty or invalid invitations show a clear pending message; only HTTPS `chat.whatsapp.com` invitations enable the external link. Opening an invite does not mark anyone as joined.
+
+The homepage and activity hub show the supplied official partner strip unchanged, with the official programme name and separate co-organizer/funder credits. Source: https://www.ifec.org.hk/web/tc/other-resources/activities-and-events/personal-finance-ambassador-programme-2627-application.page . The project is created by the HKU student team 搏富臨; these are programme-level institutional roles.
+
+UI UX Pro Max guidance informed the larger body typography, contrast, spacing, responsive card layout and restrained motion. Desktop body text is generally 18–20px and mobile body text 17–18px. Existing authentication, database policies and gameplay mechanics are preserved.
+
+Validation for this refinement: 17 existing auth/session/game tests passed; invitation-link checks covered missing, valid, deceptive-host, script and credential-bearing URLs. Browser checks covered the homepage, filters/dialog, login, programme logos, a signed-in visual fixture, and 320/390/768px layouts. The authenticated visual state was a local fixture; no real OTP was sent for this visual update. The real WhatsApp invitation still needs to be supplied.
