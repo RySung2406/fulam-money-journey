@@ -268,3 +268,6 @@
  .learning-card,.pretest-card,.community-strip { padding:24px; }
  .hero .eyebrow { font-size:13px; letter-spacing:.03em; }
 }
+
+/* Merge game test entrance */
+.merge-test{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-top:20px;padding:28px 32px;border:1px solid #d6dccc;border-radius:20px;background:#f2f1e3}.merge-test h3{font-size:clamp(24px,2.5vw,31px);margin:12px 0 7px;color:#203d31}.merge-test p{margin:0;color:#52685b;font-size:16px;line-height:1.7}.merge-test>a{flex-shrink:0}@media(max-width:700px){.merge-test{align-items:flex-start;flex-direction:column;padding:24px;gap:18px}.merge-test>a{width:100%;justify-content:center}}
