@@ -16,7 +16,7 @@ A Traditional Chinese financial-education website with an editorial content hub,
 
 - `/`: public homepage, game introduction, four content categories, pretest entrance and community introduction. Warm ivory, forest green and amber, optimized hero image and locally hosted Lucide icons.
 - `/account/`: the existing OTP flow and persistent sign-in, now in a dedicated page. Verified users see My Journey, their own participant code, the game entrance and clear pending states. No fictional participation totals or scores.
-- `/questionnaire/`: **placeholder only** for Before we start / the first questionnaire and knowledge pretest. There is no form or submission API. It does not block the currently available game.
+- `/questionnaire/`: links to the HKU student pre-survey on Microsoft Forms. HKU Connect sign-in is required; Microsoft Forms says the form owner can see respondents’ names and email addresses. The website does not verify form completion or store its responses.
 - `/hub/`: daily check-in, community, leaderboard, rewards and supporters. Existing hash URLs remain usable. These features are not yet collecting data or awarding points.
 - `/game/`: existing English game, now returning to `/account/` for sign-in and account links. Authentication and database policies are unchanged.
 
@@ -28,7 +28,7 @@ The category filter is keyboard operable and persisted in the URL (`?content=str
 
 ### Still pending
 
-Before activating questionnaires or check-ins, implement verified-account storage, RLS, safe submission retries, unique submission constraints, and disclosure/retention details. The participant community invitation is configured. Before rewards activation, supply eligibility, scoring and redemption rules. This redesign does not change Supabase schema, permissions, SMTP limits or data collection.
+Before adding website-side questionnaire storage or activating check-ins, implement verified-account storage, RLS, safe submission retries, unique submission constraints, and disclosure/retention details. Microsoft Forms collects the linked pre-survey independently. The participant community invitation is configured. Before rewards activation, supply eligibility, scoring and redemption rules. This link does not change Supabase schema, permissions or SMTP limits.
 
 ## Deployment status
 
@@ -113,7 +113,7 @@ The existing 17 auth/session/game tests and the JavaScript syntax/build checks p
 
 ### FuLam community-first refinement (October 2026)
 
-The signed-in My Journey starts with the WhatsApp community invitation: questions, explanations, original content and discussion happen in WhatsApp; games and future check-in submissions happen on this website. The first questionnaire remains a placeholder. Set `whatsappCommunityUrl` in `site/config.js` to the verified participant community invitation (not the internal team chat). Empty or invalid invitations show a clear pending message; only HTTPS `chat.whatsapp.com` invitations enable the external link. Opening an invite does not mark anyone as joined.
+The signed-in My Journey starts with the WhatsApp community invitation: questions, explanations, original content and discussion happen in WhatsApp; games and future check-in submissions happen on this website. The first questionnaire links to Microsoft Forms; website-side completion verification is not implemented. Set `whatsappCommunityUrl` in `site/config.js` to the verified participant community invitation (not the internal team chat). Empty or invalid invitations show a clear pending message; only HTTPS `chat.whatsapp.com` invitations enable the external link. Opening an invite does not mark anyone as joined.
 
 The homepage and activity hub show the supplied official partner strip unchanged, with the official programme name and separate co-organizer/funder credits. Source: https://www.ifec.org.hk/web/tc/other-resources/activities-and-events/personal-finance-ambassador-programme-2627-application.page . The project is created by the HKU student team 搏富臨; these are programme-level institutional roles.
 
