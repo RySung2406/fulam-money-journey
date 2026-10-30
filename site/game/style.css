@@ -115,3 +115,6 @@ body.immersive-game{overflow:hidden;overscroll-behavior:none;height:100dvh}
 @media(max-width:650px){.hero h1{font-size:44px}.header-tag{display:none}.hero-actions{flex-wrap:wrap}.hero-meta{gap:8px 14px}.strip-item small{font-size:9px;line-height:1.6}.review-bottom{flex-direction:column}.review-bottom>span{max-width:none}.decision-top{flex-wrap:wrap}.question-bar h1{overflow-wrap:break-word}.immersive-game .choice-target{--bag-width:clamp(100px,29vw,138px)}.immersive-game .choice-target .option-label{font-size:11px}.immersive-game .ready-card p{font-size:11px}.immersive-game .ready-card h2{font-size:19px}.wave-progress{gap:6px}.wave-line{display:none}.combo-block{min-width:0}.game-tools{gap:6px}.step-dot{width:17px}.round-number{margin-left:3px}.hero .eyebrow{font-size:8px}.rule-points span{font-size:11px;padding:7px}}
 
 .account-return{display:block;text-align:center;margin:18px 0 0;color:var(--mint);font-size:12px;text-underline-offset:4px}
+
+/* The educational disclaimer remains visible on the game entry screen. */
+.site-footer{flex-wrap:wrap}.site-footer .investment-risk{flex-basis:100%;margin:0 0 14px;color:#9aabb5;font-size:11px;line-height:1.6;letter-spacing:normal}

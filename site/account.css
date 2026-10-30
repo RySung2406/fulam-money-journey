@@ -72,7 +72,7 @@
 .account-privacy-bar button{background:none;border:0;font-size:14px;min-height:44px;padding:5px 0;color:#385d43}
 .account-privacy-bar button:hover{text-decoration:underline;text-underline-offset:4px}
 .account-footer{display:flex;justify-content:space-between;gap:16px;padding:24px 0 34px;border-top:1px solid var(--account-line);font-size:14px;letter-spacing:.04em;color:#566550}
-.account-footer>span:last-child{font-size:14px;letter-spacing:.12em}
+.account-footer>span:nth-child(2){font-size:14px;letter-spacing:.12em}
 
 .account-page[data-auth-view=member] .auth-shell{display:none}
 
@@ -265,7 +265,7 @@ to{opacity:1;transform:translateY(0)}
 .journey-rewards-link{grid-column:1/-1}
 .account-privacy-bar{flex-wrap:wrap;gap:0 15px;padding:22px 0}
 .account-footer{padding:22px 0 28px;font-size:14px}
-.account-footer>span:last-child{font-size:14px;letter-spacing:.06em}
+.account-footer>span:nth-child(2){font-size:14px;letter-spacing:.06em}
 .account-back{font-size:14px;gap:10px}
 .account-brand{font-size:19px;gap:10px}
 .account-brand small{font-size:14px}
@@ -322,9 +322,9 @@ to{opacity:1;transform:translateY(0)}
 
 .auth-bottom p,.password-note,.field-hint,.form-message { font-size:15px; }
 
-.account-privacy-bar,.account-privacy-bar button,.account-footer,.account-footer>span:last-child { font-size:14px; }
+.account-privacy-bar,.account-privacy-bar button,.account-footer,.account-footer>span:nth-child(2) { font-size:14px; }
 
-.account-footer>span:last-child { letter-spacing:.02em; }
+.account-footer>span:nth-child(2) { letter-spacing:.02em; }
 
 .journey-heading h1 { font-size:clamp(40px,5vw,64px); }
 
@@ -524,7 +524,7 @@ to{opacity:1;transform:translateY(0)}
 
   .account-footer { align-items:flex-start; font-size:14px; }
 
-  .account-footer>span:last-child { font-size:14px; }
+  .account-footer>span:nth-child(2) { font-size:14px; }
 
   .account-privacy-bar { align-items:flex-start; flex-direction:column; padding-block:20px; }
 
@@ -537,3 +537,8 @@ to{opacity:1;transform:translateY(0)}
  .account-page .account-back { max-width:none; }
  .account-brand,.account-brand>span:last-child { min-width:0; }
 }
+
+/* Investment education and risk notice */
+.account-footer{flex-wrap:wrap}
+.account-footer-disclaimer{flex-basis:100%;margin:0;line-height:1.7;letter-spacing:0}
+.account-footer-disclaimer small{display:block;margin-top:4px;font-size:10px;letter-spacing:.06em}

@@ -132,3 +132,7 @@
  .header-inner .brand-name small { font-size:10px; letter-spacing:0; }
  .menu-toggle { flex-shrink:0; }
 }
+
+/* Investment education and risk notice */
+.investment-footer-notice{max-width:680px;line-height:1.7}
+.investment-footer-notice small{display:block;margin-top:4px;font-size:10px;letter-spacing:.06em}
