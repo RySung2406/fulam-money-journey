@@ -123,7 +123,7 @@ Validation for that refinement: 17 existing auth/session/game tests passed; invi
 
 ### Survey-first onboarding (October 2026)
 
-After a successful HKU email sign-in or restoration of a saved session, `/account/` starts at the survey step. The primary link opens the existing Microsoft Forms questionnaire in a new tab, with its 10–12 minute estimate, HKU Connect sign-in requirement and name/email disclosure. Participants return to the account page and select the submission-confirmation button to reveal the WhatsApp invitation. A back button returns to the survey step; account details and sign-out remain available in both steps.
+After a successful HKU email sign-in or restoration of a saved session, `/account/` starts at the survey step. The primary link opens the existing Microsoft Forms questionnaire in a new tab, with its 10–12 minute estimate, HKU Connect sign-in requirement and name/email disclosure. Participants return to the account page and select the submission-confirmation button to reveal the WhatsApp invitation and the `@fulam_money` Instagram profile. A back button returns to the survey step; account details and sign-out remain available in both steps.
 
 The confirmation is the participant's own statement, not verification from Microsoft Forms. Step selection exists only in the current page's memory: reloading or reopening the account page starts at the survey again. No completion flag is stored in the browser or database, and questionnaire responses are not collected by this website. The flow neither verifies WhatsApp membership nor marks an invitation click as a successful join. It does not change authentication, profile access, database policies or game access.
 

@@ -101,6 +101,10 @@
 .onboarding-note{font-size:14px;line-height:1.8;color:var(--account-muted);margin:12px 0 0}
 .onboarding-privacy{font-size:13px;line-height:1.8;color:var(--account-muted);margin:24px 0 0;padding-top:18px;border-top:1px solid var(--account-line)}
 .onboarding-card .community-pending{font-size:16px;line-height:1.8;margin:22px 0 0;padding:16px;background:#f8eddb;border-radius:10px}
+.onboarding-social{margin-top:25px;padding-top:22px;border-top:1px solid var(--account-line)}
+.onboarding-social-label{display:block;margin-bottom:10px;font-size:15px;font-weight:600;color:var(--account-ink)}
+.onboarding-instagram{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:54px;padding:13px 20px;border:1px solid #b7c7b7;border-radius:10px;color:var(--account-ink);font-size:16px;font-weight:600;text-decoration:none;transition:background-color .2s}
+.onboarding-instagram:hover{background:#eef1e8}
 .onboarding-back{margin-top:20px}
 .onboarding-account{display:flex;align-items:flex-start;justify-content:space-between;gap:12px 24px;flex-wrap:wrap;font-size:14px;padding:16px 4px 0}
 .onboarding-account details{flex:1;min-width:0}
