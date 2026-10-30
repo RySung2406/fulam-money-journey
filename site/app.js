@@ -39,6 +39,25 @@ function showView(next, focus = true) {
   for (const name of ['email', 'otp', 'member']) $(`${name}-screen`).hidden = name !== next;
   if (focus) $(next === 'email' ? 'email' : next === 'otp' ? 'otp' : 'member-title').focus();
 }
+function showOnboardingStep(step, focus = true) {
+  const survey = step === 'survey';
+  $('survey-step').hidden = !survey;
+  $('community-step').hidden = survey;
+  $('survey-step-label').toggleAttribute('aria-current', survey);
+  $('community-step-label').toggleAttribute('aria-current', !survey);
+  if (survey) $('survey-step-label').setAttribute('aria-current', 'step');
+  else $('community-step-label').setAttribute('aria-current', 'step');
+  if (focus) $(survey ? 'survey-title' : 'community-card-title').focus();
+}
+$('survey-continue').addEventListener('click', () => {
+  // This is the participant's confirmation, not verification from Microsoft Forms.
+  if (busy || view !== 'member' || !accountUserId) return;
+  showOnboardingStep('community');
+});
+$('survey-back').addEventListener('click', () => {
+  if (busy || view !== 'member' || !accountUserId) return;
+  showOnboardingStep('survey');
+});
 function clearMessages() { ['email-error', 'otp-error', 'member-error', 'resend-status'].forEach((id) => message(id)); }
 function remainingSeconds() { return Math.max(0, Math.ceil((cooldownUntil - Date.now()) / 1000)); }
 function updateButtons() {
@@ -138,6 +157,7 @@ async function openVerifiedAccount(focus = true) {
   $('otp').value = '';
   pendingEmail = '';
   clearMessages();
+  showOnboardingStep('survey', false);
   showView('member', focus);
 }
 
@@ -172,6 +192,7 @@ $('otp-form').addEventListener('submit', async (event) => {
 function clearAccountScreen() {
   transition += 1;
   accountUserId = undefined;
+  showOnboardingStep('survey', false);
   $('member-email').textContent = '';
   $('participant-code').textContent = '—';
   $('email').value = '';

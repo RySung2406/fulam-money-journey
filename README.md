@@ -4,7 +4,7 @@ A Traditional Chinese financial-education website with an editorial content hub,
 
 ## Game
 
-- Sign in with your HKU Connect email, then select **Play the money challenge**. Direct visits to `game/` return signed-out visitors to the account page.
+- Sign in with your HKU Connect email, then open the game from the homepage or visit `game/`. Direct visits to `game/` return signed-out visitors to the account page; the account page now shows survey-first onboarding instead of a game dashboard.
 - The game validates the user with Supabase Auth and reads their own RLS-protected profile before starting. No additional account or payment service is needed.
 - Five rounds cover financial tools, investing, insurance, borrowing and scam awareness: 60 choices in total, with Easy, Medium and Hard speeds.
 - One to three bags fly along random sideways arcs. Drag or swipe to slice; keyboard players can Tab to an active bag and press Enter or Space. Pause, mute, fullscreen, reviews, replay and copying results are supported.
@@ -15,7 +15,7 @@ A Traditional Chinese financial-education website with an editorial content hub,
 ## Website and content (October 2026 redesign)
 
 - `/`: public homepage, game introduction, four content categories, pretest entrance and community introduction. Warm ivory, forest green and amber, optimized hero image and locally hosted Lucide icons.
-- `/account/`: the existing OTP flow and persistent sign-in, now in a dedicated page. Verified users see My Journey, their own participant code, the game entrance and clear pending states. No fictional participation totals or scores.
+- `/account/`: the existing OTP flow and persistent sign-in, followed by a compact two-step journey: the Microsoft Forms survey first, then the WhatsApp invitation after the participant confirms submission. Email and participant code remain available under account details, with a visible sign-out control. The previous dashboard, progress list and game cards are no longer shown here.
 - `/questionnaire/`: links to the HKU student pre-survey on Microsoft Forms. HKU Connect sign-in is required; Microsoft Forms says the form owner can see respondents’ names and email addresses. The website does not verify form completion or store its responses.
 - `/hub/`: daily check-in, community, leaderboard, rewards and supporters. Existing hash URLs remain usable. These features are not yet collecting data or awarding points.
 - `/game/`: existing English game, now returning to `/account/` for sign-in and account links. Authentication and database policies are unchanged.
@@ -107,16 +107,26 @@ Automated checks cover email/OTP rules, server-validated game access, rejected i
 GitHub Pages serves public static files, including game source and questions. The login gate controls the normal play flow; it does not make static game assets private. Supabase Auth and RLS protect account data.
 
 
-### Redesign validation
+### Earlier redesign validation
 
-The existing 17 auth/session/game tests and the JavaScript syntax/build checks pass. Public navigation, mobile content filters/dialogs, pretest entry and the signed-out game route were checked in a browser. Responsive layouts were inspected at 320, 390 and desktop widths; automated accessibility checks cover the public, login and My Journey fixture states. The My Journey visual check uses a local fixture, not a live signed-in account. Real OTP delivery and cross-device session behavior were not repeated for this visual update.
+For the earlier redesign, the 17 auth/session/game tests and the JavaScript syntax/build checks passed. Public navigation, mobile content filters/dialogs, pretest entry and the signed-out game route were checked in a browser. Responsive layouts were inspected at 320, 390 and desktop widths; automated accessibility checks covered the public, login and then-current My Journey fixture states. The My Journey visual check used a local fixture, not a live signed-in account. Real OTP delivery and cross-device session behavior were not repeated for that visual update. These results describe the earlier dashboard, not validation of the subsequent onboarding layout.
 
-### FuLam community-first refinement (October 2026)
+### Earlier community-first refinement (October 2026)
 
-The signed-in My Journey starts with the WhatsApp community invitation: questions, explanations, original content and discussion happen in WhatsApp; games and future check-in submissions happen on this website. The first questionnaire links to Microsoft Forms; website-side completion verification is not implemented. Set `whatsappCommunityUrl` in `site/config.js` to the verified participant community invitation (not the internal team chat). Empty or invalid invitations show a clear pending message; only HTTPS `chat.whatsapp.com` invitations enable the external link. Opening an invite does not mark anyone as joined.
+The earlier signed-in My Journey dashboard started with the WhatsApp community invitation. The survey-first flow described below now replaces that dashboard. Questions, explanations, original content and discussion happen in WhatsApp; games and future check-in submissions remain on this website. Microsoft Forms collects the first questionnaire independently; website-side completion verification is not implemented.
 
 The homepage and activity hub show the supplied official partner strip unchanged, with the official programme name and separate co-organizer/funder credits. Source: https://www.ifec.org.hk/web/tc/other-resources/activities-and-events/personal-finance-ambassador-programme-2627-application.page . The project is created by the HKU student team 搏富臨; these are programme-level institutional roles.
 
-UI UX Pro Max guidance informed the larger body typography, contrast, spacing, responsive card layout and restrained motion. Desktop body text is generally 18–20px and mobile body text 17–18px. Existing authentication, database policies and gameplay mechanics are preserved.
+UI UX Pro Max guidance informed that refinement's larger body typography, contrast, spacing, responsive card layout and restrained motion. Its desktop body text was generally 18–20px and mobile body text 17–18px. Existing authentication, database policies and gameplay mechanics were preserved.
 
-Validation for this refinement: 17 existing auth/session/game tests passed; invitation-link checks covered missing, valid, deceptive-host, script and credential-bearing URLs. Browser checks covered the homepage, filters/dialog, login, programme logos, a signed-in visual fixture, and 320/390/768px layouts. The authenticated visual state was a local fixture; no real OTP was sent for this visual update. The participant WhatsApp invitation supplied by the project owner is configured and active for the signed-in invitation card.
+Validation for that refinement: 17 existing auth/session/game tests passed; invitation-link checks covered missing, valid, deceptive-host, script and credential-bearing URLs. Browser checks covered the homepage, filters/dialog, login, programme logos, a signed-in visual fixture, and 320/390/768px layouts. The authenticated visual state was a local fixture; no real OTP was sent for that visual update.
+
+### Survey-first onboarding (October 2026)
+
+After a successful HKU email sign-in or restoration of a saved session, `/account/` starts at the survey step. The primary link opens the existing Microsoft Forms questionnaire in a new tab, with its 10–12 minute estimate, HKU Connect sign-in requirement and name/email disclosure. Participants return to the account page and select the submission-confirmation button to reveal the WhatsApp invitation. A back button returns to the survey step; account details and sign-out remain available in both steps.
+
+The confirmation is the participant's own statement, not verification from Microsoft Forms. Step selection exists only in the current page's memory: reloading or reopening the account page starts at the survey again. No completion flag is stored in the browser or database, and questionnaire responses are not collected by this website. The flow neither verifies WhatsApp membership nor marks an invitation click as a successful join. It does not change authentication, profile access, database policies or game access.
+
+Set `whatsappCommunityUrl` in `site/config.js` to the verified participant community invitation (not the internal team chat). The project owner's invitation remains configured. Empty or invalid invitations show a clear pending message; only HTTPS `chat.whatsapp.com` invitations enable the external link. Joining is voluntary. The homepage and existing game routes remain available through the normal site navigation.
+
+Validation: all 17 existing tests, JavaScript syntax checks and both browser builds passed. Local browser fixtures exercised fresh OTP sign-in, saved-session restoration, survey opening without advancing, explicit continuation, back navigation, sign-out/reset, invalid invitation handling and profile-load failure. Layouts were inspected at 320 px, 390 px and 1280 px; a narrow-header overflow was corrected. Auth responses and external destinations were mocked, so these checks sent no real OTP, submitted no questionnaire and joined no group.

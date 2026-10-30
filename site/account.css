@@ -75,6 +75,52 @@
 .account-footer>span:last-child{font-size:14px;letter-spacing:.12em}
 
 .account-page[data-auth-view=member] .auth-shell{display:none}
+
+/* Keep the signed-in journey focused on one action at a time. */
+.onboarding{max-width:680px;margin:8px auto 28px}
+.onboarding-heading{text-align:center;margin-bottom:28px}
+.onboarding-verified{display:inline-flex;align-items:center;gap:8px;color:var(--account-muted);font-size:14px}
+.onboarding-verified svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.onboarding-heading h1{font-size:clamp(27px,3.5vw,38px);font-weight:650;line-height:1.4;letter-spacing:-.025em;margin:12px 0 0}
+.onboarding-steps{display:grid;grid-template-columns:1fr 1fr;gap:16px;list-style:none;margin:0 0 24px;padding:0}
+.onboarding-steps li{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:2px solid var(--account-line);color:var(--account-muted);font-size:17px;font-weight:600}
+.onboarding-steps li[aria-current=step]{color:var(--account-ink);border-color:var(--account-ink)}
+.onboarding-step-number{display:grid;place-items:center;flex-shrink:0;width:38px;height:38px;border:1px solid var(--account-line);border-radius:50%;font-size:14px;font-variant-numeric:tabular-nums}
+[aria-current=step]>.onboarding-step-number{background:var(--account-ink);color:#fffef9;border-color:var(--account-ink)}
+.onboarding-steps small{display:block;font-size:12px;font-weight:500;letter-spacing:.1em;line-height:1.5;margin-top:2px}
+.onboarding-card{padding:38px 42px 32px;border:1px solid var(--account-line);border-radius:20px;background:#fffef9;box-shadow:0 12px 40px #214b3b05}
+.onboarding-icon{display:grid;place-items:center;width:52px;height:52px;border-radius:14px;background:#f8e5cc;color:#214b3b;margin-bottom:24px}
+.onboarding-icon svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.onboarding-card>.account-eyebrow{font-size:12px;color:var(--account-muted);letter-spacing:.1em}
+.onboarding-card h2{font-size:29px;line-height:1.4;font-weight:650;letter-spacing:-.025em;margin:10px 0 12px}
+.onboarding-copy{font-size:18px;line-height:1.8;color:var(--account-muted);margin:0 0 16px}
+.onboarding-meta{font-size:14px;line-height:1.8;color:var(--account-muted);margin:0 0 24px}
+.onboarding-card .account-primary{font-size:17px;min-height:58px}
+.onboarding-card .onboarding-continue{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;font-size:16px;min-height:54px;margin-top:22px;background:transparent;border:1px solid #b7c7b7;color:var(--account-ink);border-radius:10px;padding:13px 20px}
+.onboarding-card .onboarding-continue:hover:enabled{background:#eef1e8}
+.onboarding-note{font-size:14px;line-height:1.8;color:var(--account-muted);margin:12px 0 0}
+.onboarding-privacy{font-size:13px;line-height:1.8;color:var(--account-muted);margin:24px 0 0;padding-top:18px;border-top:1px solid var(--account-line)}
+.onboarding-card .community-pending{font-size:16px;line-height:1.8;margin:22px 0 0;padding:16px;background:#f8eddb;border-radius:10px}
+.onboarding-back{margin-top:20px}
+.onboarding-account{display:flex;align-items:flex-start;justify-content:space-between;gap:12px 24px;flex-wrap:wrap;font-size:14px;padding:16px 4px 0}
+.onboarding-account details{flex:1;min-width:0}
+.onboarding-account summary{cursor:pointer;padding:8px 0;min-height:44px;width:fit-content}
+.onboarding-account summary:focus-visible{outline:3px solid #b66326;outline-offset:4px}
+.onboarding-account-details{display:flex;flex-direction:column;gap:4px;margin-top:10px;color:var(--account-muted);overflow-wrap:anywhere}
+.onboarding-account-details strong{font-weight:500}
+.onboarding-account .form-message{flex-basis:100%;margin:0}
+@media(max-width:540px){
+  .onboarding{margin-top:0}
+  .onboarding-heading{margin-bottom:18px}
+  .onboarding-steps{gap:16px;margin-bottom:18px}
+  .onboarding-steps li{gap:9px;font-size:16px}
+  .onboarding-step-number{width:32px;height:32px;font-size:12px}
+  .onboarding-card{padding:26px 22px 24px;border-radius:16px}
+  .onboarding-icon{width:44px;height:44px;margin-bottom:20px}
+  .onboarding-card h2{font-size:25px}
+  .onboarding-copy{font-size:17px}
+  .onboarding-card .account-primary,.onboarding-card .onboarding-continue{padding-inline:15px;font-size:16px}
+}
 .journey-heading{display:flex;justify-content:space-between;gap:24px;align-items:center;margin:10px 0 40px}
 .journey-heading .account-eyebrow{color:#566550}
 .journey-heading h1{font-size:clamp(40px,5vw,64px);font-weight:650;line-height:1.1;letter-spacing:-.055em;margin:14px 0 20px}
@@ -484,5 +530,6 @@ to{opacity:1;transform:translateY(0)}
 @media(max-width:760px) {
  .account-intro h1 br:nth-of-type(2) { display:initial; }
  .account-back { flex-shrink:0; white-space:nowrap; }
+ .account-page .account-back { max-width:none; }
  .account-brand,.account-brand>span:last-child { min-width:0; }
 }
