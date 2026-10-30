@@ -4,46 +4,95 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#F6F5EF">
-  <meta name="description" content="登入富臨錢進號，填寫理財問卷，加入 WhatsApp 群組及追蹤 Instagram。">
+  <meta name="description" content="登入 FuLam 21 天理財計劃：填寫問卷、加入 WhatsApp 社群，查看打卡、排名、Booth 與獎勵。">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'">
   <title>My Journey · 富臨錢進號</title>
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../theme.css">
   <link rel="stylesheet" href="../account.css">
-  <script src="../config.js" defer></script>
-  <script src="../community-links.js" defer></script>
-  <script src="../app.bundle.js" defer></script>
+  <script src="../config.js" defer>
+</script>
+  <script src="../community-links.js" defer>
+</script>
+  <script src="../app.bundle.js" defer>
+</script>
 </head>
 <body class="account-page" data-auth-view="email">
   <a class="skip-link" href="#account-main">跳至主要內容</a>
   <header class="account-header container">
-    <a class="account-brand" href="../" aria-label="富臨錢進號首頁"><span class="account-brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="m22 9-5 10-10 5 5-10z"/><path d="m12 14 5 5"/></svg></span><span>富臨錢進號<small>FuLam · MONEY JOURNEY</small></span></a>
-    <a class="account-back" href="../">返回首頁 <span aria-hidden="true">↗</span></a>
+    <a class="account-brand" href="../" aria-label="富臨錢進號首頁">
+<span class="account-brand-mark" aria-hidden="true">
+<svg viewBox="0 0 32 32">
+<path d="m22 9-5 10-10 5 5-10z"/>
+<path d="m12 14 5 5"/>
+</svg>
+</span>
+<span>富臨錢進號<small>FuLam · MONEY JOURNEY</small>
+</span>
+</a>
+    <a class="account-back" href="../">返回首頁 <span aria-hidden="true">↗</span>
+</a>
   </header>
 
   <main id="account-main" class="account-main container">
     <div class="auth-shell">
       <section class="account-intro" aria-labelledby="intro-title">
-        <span class="account-eyebrow">A LITTLE WISER, EVERY DAY</span>
-        <h1 id="intro-title">理財路上，<br>一起學，<br><em>一起前進。</em></h1>
-        <p>從大學生活出發，學懂個人理財。<br>先填寫問卷，再加入 WhatsApp 群組，<br>並追蹤 Instagram，一起學習與交流。</p>
-        <div class="account-orbit" aria-hidden="true"><svg viewBox="0 0 420 250"><ellipse cx="212" cy="135" rx="173" ry="64" transform="rotate(-25 212 135)"/><ellipse cx="212" cy="135" rx="121" ry="46" transform="rotate(-25 212 135)"/><path d="m245 82-29 72-70 29 29-72z"/><path d="m175 111 41 43"/><circle cx="85" cy="179" r="10"/><circle cx="338" cy="93" r="6"/></svg></div>
-        <div class="account-intro-foot"><span>一同學習 · 自主選擇</span><span>01 — START</span></div>
+        <span class="account-eyebrow">FULAM · 21 DAY JOURNEY</span>
+        <h1 id="intro-title">21 天，<br>一起養成<br>
+<em>理財習慣。</em>
+</h1>
+        <p>填問卷 → 加入 WhatsApp → 每日打卡</p>
+        <div class="account-orbit" aria-hidden="true">
+<svg viewBox="0 0 420 250">
+<ellipse cx="212" cy="135" rx="173" ry="64" transform="rotate(-25 212 135)"/>
+<ellipse cx="212" cy="135" rx="121" ry="46" transform="rotate(-25 212 135)"/>
+<path d="m245 82-29 72-70 29 29-72z"/>
+<path d="m175 111 41 43"/>
+<circle cx="85" cy="179" r="10"/>
+<circle cx="338" cy="93" r="6"/>
+</svg>
+</div>
+        <div class="account-intro-foot">
+<span>一同學習 · 自主選擇</span>
+<span>01 — START</span>
+</div>
       </section>
 
       <section class="auth-panel" aria-label="HKU 電郵登入">
-        <div class="auth-panel-top"><span class="account-eyebrow">YOUR JOURNEY STARTS HERE</span><span class="secure-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 7 3v6c0 4-7 8-7 8s-7-4-7-8V6z"/><path d="m8 11 3 3 5-5"/></svg>HKU 電郵驗證</span></div>
+        <div class="auth-panel-top">
+<span class="account-eyebrow">YOUR JOURNEY STARTS HERE</span>
+<span class="secure-note">
+<svg viewBox="0 0 24 24" aria-hidden="true">
+<path d="m12 3 7 3v6c0 4-7 8-7 8s-7-4-7-8V6z"/>
+<path d="m8 11 3 3 5-5"/>
+</svg>HKU 電郵驗證</span>
+</div>
         <div id="email-screen">
           <h2 id="login-title" tabindex="-1">歡迎上車。</h2>
-          <p class="auth-intro">由於活動資源有限，每日打卡、攤位活動及獎勵暫時只開放予已驗證 HKU 電郵的參加者。遊戲、理財內容及社群公開；活動功能仍在籌備中。</p>
-          <div id="setup-notice" class="account-notice" role="status" hidden><strong>登入服務尚未開放</strong><p>你可以先瀏覽內容，稍後再回來。</p></div>
+          <p class="auth-intro">打卡及 Booth 僅限 HKU 學生，名額有限。請先驗證學校電郵。</p>
+          <div id="setup-notice" class="account-notice" role="status" hidden>
+<strong>登入服務尚未開放</strong>
+<p>你可以先瀏覽內容，稍後再回來。</p>
+</div>
           <form id="email-form" novalidate>
             <label for="email">HKU 電郵地址</label>
-            <div class="account-input-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg><input id="email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" spellcheck="false" autocapitalize="none" placeholder="yourname@connect.hku.hk" aria-describedby="email-hint email-error" required></div>
+            <div class="account-input-wrap">
+<svg viewBox="0 0 24 24" aria-hidden="true">
+<rect x="3" y="5" width="18" height="14" rx="3"/>
+<path d="m4 7 8 6 8-6"/>
+</svg>
+<input id="email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" spellcheck="false" autocapitalize="none" placeholder="yourname@connect.hku.hk" aria-describedby="email-hint email-error" required>
+</div>
             <p id="email-hint" class="field-hint">請使用 @connect.hku.hk 電郵。</p>
-            <p id="email-error" class="form-message error" role="alert" hidden></p>
-            <button class="account-primary" id="send-button" type="submit" disabled><span>發送驗證碼</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button>
+            <p id="email-error" class="form-message error" role="alert" hidden>
+</p>
+            <button class="account-primary" id="send-button" type="submit" disabled>
+<span>發送驗證碼</span>
+<svg viewBox="0 0 24 24" aria-hidden="true">
+<path d="M4 12h15m-6-6 6 6-6 6"/>
+</svg>
+</button>
             <p class="password-note">無需密碼，也不會索取你的 HKU Portal 密碼。</p>
           </form>
         </div>
@@ -51,71 +100,291 @@
         <div id="otp-screen" hidden>
           <button id="back-button" class="account-text-button" type="button">← 更改電郵</button>
           <h2 id="otp-title" tabindex="-1">查看你的收件匣。</h2>
-          <p class="auth-intro">驗證碼已發送至<br><strong id="sent-email" class="sent-email"></strong></p>
+          <p class="auth-intro">驗證碼已發送至<br>
+<strong id="sent-email" class="sent-email">
+</strong>
+</p>
           <form id="otp-form" novalidate>
             <label for="otp">8 位數字驗證碼</label>
             <input id="otp" class="otp-input" name="otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="16" spellcheck="false" placeholder="00000000" aria-describedby="otp-hint otp-error" required>
             <p id="otp-hint" class="field-hint">請輸入最新電郵內的驗證碼；有效時間為 10 分鐘。</p>
-            <p id="otp-error" class="form-message error" role="alert" hidden></p>
-            <button id="verify-button" class="account-primary" type="submit"><span>驗證並登入</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button>
+            <p id="otp-error" class="form-message error" role="alert" hidden>
+</p>
+            <button id="verify-button" class="account-primary" type="submit">
+<span>驗證並登入</span>
+<svg viewBox="0 0 24 24" aria-hidden="true">
+<path d="M4 12h15m-6-6 6 6-6 6"/>
+</svg>
+</button>
           </form>
-          <div class="resend-row"><span>未收到？也看看垃圾郵件匣。</span><button id="resend-button" class="account-text-button" type="button" disabled>重新發送</button></div>
-          <p id="resend-status" class="form-message" role="status" hidden></p>
+          <div class="resend-row">
+<span>未收到？也看看垃圾郵件匣。</span>
+<button id="resend-button" class="account-text-button" type="button" disabled>重新發送</button>
+</div>
+          <p id="resend-status" class="form-message" role="status" hidden>
+</p>
         </div>
 
-        <div class="auth-bottom"><p>首次使用會建立參加者帳戶，驗證電郵後即可登入。同一瀏覽器會記住登入；使用共用裝置時，記得登出。</p><a href="../#stories">還未準備好？先看看我們的內容 <span aria-hidden="true">↗</span></a></div>
+        <div class="auth-bottom">
+<p>首次登入會建立帳戶。使用共用裝置後，請登出。</p>
+<a href="../#stories">先看看內容與遊戲 <span aria-hidden="true">↗</span>
+</a>
+</div>
       </section>
     </div>
 
     <section id="member-screen" class="onboarding" aria-labelledby="member-title" hidden>
       <header class="onboarding-heading">
-        <span class="onboarding-verified"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 7 3v6c0 4-7 8-7 8s-7-4-7-8V6z"/><path d="m8 11 3 3 5-5"/></svg>HKU 電郵已驗證</span>
-        <h1 id="member-title" tabindex="-1">兩個步驟，開始旅程。</h1>
+        <span class="onboarding-verified">
+<svg viewBox="0 0 24 24" aria-hidden="true">
+<path d="m12 3 7 3v6c0 4-7 8-7 8s-7-4-7-8V6z"/>
+<path d="m8 11 3 3 5-5"/>
+</svg>HKU 電郵已驗證</span>
+        <h1 id="member-title" tabindex="-1">開始你的 21 天旅程。</h1>
       </header>
       <ol class="onboarding-steps" aria-label="參加步驟">
-        <li id="survey-step-label" aria-current="step"><span class="onboarding-step-number" aria-hidden="true">01</span><span>填寫問卷<small>SURVEY</small></span></li>
-        <li id="community-step-label"><span class="onboarding-step-number" aria-hidden="true">02</span><span>加入社群<small>COMMUNITY</small></span></li>
+        <li id="survey-step-label" aria-current="step">
+<span class="onboarding-step-number" aria-hidden="true">01</span>
+<span>填寫問卷<small>SURVEY</small>
+</span>
+</li>
+        <li id="community-step-label">
+<span class="onboarding-step-number" aria-hidden="true">02</span>
+<span>加入社群<small>COMMUNITY</small>
+</span>
+</li>
+        <li id="dashboard-step-label">
+<span class="onboarding-step-number" aria-hidden="true">03</span>
+<span>每日打卡<small>CHECK-IN</small>
+</span>
+</li>
       </ol>
 
       <section id="survey-step" class="onboarding-card" aria-labelledby="survey-title">
-        <span class="onboarding-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3h6v4H9zM9 12h6M9 16h4"/></svg></span>
+        <span class="onboarding-icon" aria-hidden="true">
+<svg viewBox="0 0 24 24">
+<rect x="5" y="4" width="14" height="17" rx="2"/>
+<path d="M9 3h6v4H9zM9 12h6M9 16h4"/>
+</svg>
+</span>
         <span class="account-eyebrow">STEP 01 · SURVEY</span>
         <h2 id="survey-title" tabindex="-1">先填寫理財問卷。</h2>
         <p class="onboarding-copy">讓我們了解你的理財習慣與學習興趣。</p>
-        <p class="onboarding-meta">約 10–12 分鐘 · 使用 HKU Connect 帳戶填答</p>
-        <a id="survey-link" class="account-primary" href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=dY4N6LlSOUijWIeruTs1Z-VOzApBm_VOvTm0gGA8MWtUQzBETkdRRTZPVURPRjI3N041OE1PUFFEWi4u" target="_blank" rel="noopener noreferrer" aria-describedby="survey-return-note">填寫問卷 <span aria-hidden="true">↗</span></a>
-        <p id="survey-return-note" class="onboarding-note">問卷會在新分頁開啟。提交後，請返回此頁繼續。</p>
-        <button id="survey-continue" class="account-secondary onboarding-continue" type="button">已提交問卷，下一步 <span aria-hidden="true">→</span></button>
+        <p class="onboarding-meta">約 2–5 分鐘 · 使用 HKU Connect 帳戶填答</p>
+        <a id="survey-link" class="account-primary" href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=dY4N6LlSOUijWIeruTs1Z-VOzApBm_VOvTm0gGA8MWtUQzBETkdRRTZPVURPRjI3N041OE1PUFFEWi4u" target="_blank" rel="noopener noreferrer" aria-describedby="survey-return-note">填寫問卷 <span aria-hidden="true">↗</span>
+</a>
+        <p id="survey-return-note" class="onboarding-note">填妥後，返回此頁繼續。</p>
+        <button id="survey-continue" class="account-secondary onboarding-continue" type="button">下一步：加入社群 <span aria-hidden="true">→</span>
+</button>
         <p class="onboarding-privacy">問卷由 Microsoft Forms 收集，表單擁有人可看到你的姓名及電郵。</p>
       </section>
 
       <section id="community-step" class="onboarding-card" aria-labelledby="community-card-title" hidden>
-        <span class="onboarding-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 11a9 9 0 0 1-9 9 10 10 0 0 1-4-1l-5 2 1-6a9 9 0 1 1 17-4Z"/><path d="M8 9h8M8 13h5"/></svg></span>
+        <span class="onboarding-icon" aria-hidden="true">
+<svg viewBox="0 0 24 24">
+<path d="M21 11a9 9 0 0 1-9 9 10 10 0 0 1-4-1l-5 2 1-6a9 9 0 1 1 17-4Z"/>
+<path d="M8 9h8M8 13h5"/>
+</svg>
+</span>
         <span class="account-eyebrow">STEP 02 · COMMUNITY</span>
         <h2 id="community-card-title" tabindex="-1">加入我們的社群。</h2>
-        <p class="onboarding-copy">加入 WhatsApp 群組，並追蹤 Instagram，接收活動消息及理財內容。</p>
-        <a class="account-primary" data-community-invite hidden target="_blank" rel="noopener noreferrer">前往 WhatsApp 加入群組 <span aria-hidden="true">↗</span></a>
-        <p class="community-pending" data-community-pending>群組邀請連結準備中，請稍後再試或聯絡活動團隊。</p>
-        <p class="onboarding-note">加入屬自願；開啟邀請後，可先查看群組資訊再決定加入。</p>
+        <p class="onboarding-copy">題目、題解與活動消息，都在 WhatsApp。</p>
+        <a class="account-primary" data-community-invite hidden target="_blank" rel="noopener noreferrer">加入 WhatsApp 社群 <span aria-hidden="true">↗</span>
+</a>
+        <p class="community-pending" data-community-pending>社群連結準備中。</p>
+        <p class="onboarding-note">加入後，返回這裡查看打卡。</p>
         <div class="onboarding-social">
           <span class="onboarding-social-label">追蹤我們的 Instagram</span>
-          <a class="onboarding-instagram" href="https://www.instagram.com/fulam_money/" target="_blank" rel="noopener noreferrer">@fulam_money <span aria-hidden="true">↗</span></a>
+          <a class="onboarding-instagram" href="https://www.instagram.com/fulam_money/" target="_blank" rel="noopener noreferrer">@fulam_money <span aria-hidden="true">↗</span>
+</a>
         </div>
+        <button id="community-continue" class="account-primary onboarding-dashboard-button" type="button">進入打卡總覽 <span aria-hidden="true">→</span>
+</button>
         <button id="survey-back" class="account-text-button onboarding-back" type="button">← 返回問卷</button>
       </section>
 
+
+      <section id="dashboard-step" class="member-dashboard" aria-labelledby="dashboard-title" hidden>
+        <nav class="dashboard-nav" aria-label="活動總覽">
+          <a href="#daily-check-in">打卡</a>
+<a href="#member-ranking">排名</a>
+<a href="#member-booth">Booth</a>
+<a href="#member-rewards">獎勵</a>
+        </nav>
+        <section id="daily-check-in" class="check-in-panel" aria-labelledby="dashboard-title">
+          <div class="check-in-heading">
+<div>
+<span class="account-eyebrow">21 DAY CHALLENGE</span>
+<h2 id="dashboard-title" tabindex="-1">每日一小步。</h2>
+</div>
+<span class="dashboard-status">活動準備中</span>
+</div>
+          <p>活動開始後，在這裡完成每日打卡。</p>
+          <ol class="check-in-calendar" aria-label="21 天打卡：活動尚未開始">
+          <li>
+<span>01</span>
+<small>待開始</small>
+</li>
+          <li>
+<span>02</span>
+<small>待開始</small>
+</li>
+          <li>
+<span>03</span>
+<small>待開始</small>
+</li>
+          <li>
+<span>04</span>
+<small>待開始</small>
+</li>
+          <li>
+<span>05</span>
+<small>待開始</small>
+</li>
+          <li>
+<span>06</span>
+<small>待開始</small>
+</li>
+          <li>
+<span>07</span>
+<small>待開始</small>
+</li>
+          <li>
+<span>08</span>
+<small>待開始</small>
+</li>
+          <li>
+<span>09</span>
+<small>待開始</small>
+</li>
+          <li>
+<span>10</span>
+<small>待開始</small>
+</li>
+          <li>
+<span>11</span>
+<small>待開始</small>
+</li>
+          <li>
+<span>12</span>
+<small>待開始</small>
+</li>
+          <li>
+<span>13</span>
+<small>待開始</small>
+</li>
+          <li>
+<span>14</span>
+<small>待開始</small>
+</li>
+          <li>
+<span>15</span>
+<small>待開始</small>
+</li>
+          <li>
+<span>16</span>
+<small>待開始</small>
+</li>
+          <li>
+<span>17</span>
+<small>待開始</small>
+</li>
+          <li>
+<span>18</span>
+<small>待開始</small>
+</li>
+          <li>
+<span>19</span>
+<small>待開始</small>
+</li>
+          <li>
+<span>20</span>
+<small>待開始</small>
+</li>
+          <li>
+<span>21</span>
+<small>待開始</small>
+</li>
+          </ol>
+          <div class="check-in-bottom">
+<span>開始日期稍後公布</span>
+<button class="account-primary" type="button" disabled>尚未開放打卡</button>
+</div>
+        </section>
+        <div class="dashboard-cards">
+          <section id="member-ranking" class="dashboard-card">
+<span class="account-eyebrow">RANKING</span>
+<h2>參與排名</h2>
+<strong class="dashboard-empty">尚未開榜</strong>
+<p>活動開始後更新。</p>
+</section>
+          <section id="member-booth" class="dashboard-card">
+<span class="account-eyebrow">HKU ONLY</span>
+<h2>校園 Booth</h2>
+<strong class="dashboard-empty">即將公布</strong>
+<p>時間、地點及名額稍後公布。</p>
+</section>
+          <section id="member-rewards" class="dashboard-card">
+<span class="account-eyebrow">REWARDS</span>
+<h2>活動獎勵</h2>
+<strong class="dashboard-empty">準備中</strong>
+<p>獎勵及領取安排稍後公布。</p>
+</section>
+        </div>
+        <div class="dashboard-footer-links">
+<a data-community-invite hidden target="_blank" rel="noopener noreferrer">前往 WhatsApp 社群 ↗</a>
+<button id="onboarding-review" class="account-text-button" type="button">查看問卷與社群</button>
+</div>
+      </section>
+
       <div class="onboarding-account">
-        <details><summary>帳戶資料</summary><div class="onboarding-account-details"><strong id="member-email"></strong><span>參加者編號：<span id="participant-code">—</span></span></div></details>
+        <details>
+<summary>帳戶資料</summary>
+<div class="onboarding-account-details">
+<strong id="member-email">
+</strong>
+<span>參加者編號：<span id="participant-code">—</span>
+</span>
+</div>
+</details>
         <button id="signout-button" class="account-text-button" type="button">登出</button>
-        <p id="member-error" class="form-message error" role="alert" hidden></p>
+        <p id="member-error" class="form-message error" role="alert" hidden>
+</p>
       </div>
     </section>
 
-    <div class="account-privacy-bar"><span>本網站不會公開顯示你的電郵。</span><button id="privacy-open" type="button">我們如何使用你的資料 <span aria-hidden="true">↗</span></button></div>
+    <div class="account-privacy-bar">
+<span>本網站不會公開顯示你的電郵。</span>
+<button id="privacy-open" type="button">我們如何使用你的資料 <span aria-hidden="true">↗</span>
+</button>
+</div>
   </main>
-  <footer class="account-footer container"><span>© 2026 搏富臨 · 富臨錢進號</span><span>個人理財教育計劃 · 搏富臨</span><p class="account-footer-disclaimer">內容僅供一般教育用途，並非個人化投資建議或推介。投資涉及風險，價格可升可跌，可能損失本金；過往表現不保證未來回報。<small lang="en">GENERAL EDUCATION · NOT PERSONAL INVESTMENT ADVICE · INVESTING INVOLVES RISK</small></p></footer>
+  <footer class="account-footer container">
+<span>© 2026 搏富臨 · 富臨錢進號</span>
+<span>個人理財教育計劃 · 搏富臨</span>
+<p class="account-footer-disclaimer">內容僅供一般教育用途，並非個人化投資建議或推介。投資涉及風險，價格可升可跌，可能損失本金；過往表現不保證未來回報。<small lang="en">GENERAL EDUCATION · NOT PERSONAL INVESTMENT ADVICE · INVESTING INVOLVES RISK</small>
+</p>
+</footer>
 
-  <dialog id="privacy-dialog" aria-labelledby="privacy-title"><button id="privacy-close" class="dialog-close" type="button" aria-label="關閉資料用途說明">×</button><span class="account-eyebrow">YOUR PRIVACY</span><h2 id="privacy-title">你的資料，清楚交代。</h2><p>本網站由搏富臨活動團隊營運。我們使用 HKU 電郵建立帳戶，並識別屬於你的活動紀錄。</p><ul><li>目前儲存帳戶資料、電郵驗證狀態及系統產生的參加者編號。</li><li>Supabase 處理帳戶及電郵資料，Brevo 用於寄送驗證碼。</li><li>此瀏覽器會記住登入，直至你登出、清除網站資料或登入狀態失效。</li><li>你的電郵不會公開顯示；活動分析應使用參加者編號。</li><li>電郵驗證只確認你能使用該信箱，並不證明目前在學。</li><li>加入 WhatsApp 社群屬自願，會前往 WhatsApp 平台；請先查看其私隱設定及社群資訊。</li><li>如需刪除帳戶，請聯絡活動團隊。</li></ul><p class="dialog-note">我們不會讀取你的信箱，也不會索取大學密碼。請在使用共用裝置後登出。</p><button id="privacy-done" class="account-secondary" type="button">明白了</button></dialog>
-  <noscript><p class="account-noscript">請啟用 JavaScript，以使用電郵驗證碼登入。</p></noscript>
+  <dialog id="privacy-dialog" aria-labelledby="privacy-title">
+<button id="privacy-close" class="dialog-close" type="button" aria-label="關閉資料用途說明">×</button>
+<span class="account-eyebrow">YOUR PRIVACY</span>
+<h2 id="privacy-title">你的資料，清楚交代。</h2>
+<p>本網站由搏富臨活動團隊營運。我們使用 HKU 電郵建立帳戶，並識別屬於你的活動紀錄。</p>
+<ul>
+<li>目前儲存帳戶資料、電郵驗證狀態及系統產生的參加者編號。</li>
+<li>Supabase 處理帳戶及電郵資料，Brevo 用於寄送驗證碼。</li>
+<li>此瀏覽器會記住登入及你停留的參加步驟；不會以此判定問卷提交或社群加入狀態。</li>
+<li>你的電郵不會公開顯示；活動分析應使用參加者編號。</li>
+<li>電郵驗證只確認你能使用該信箱，並不證明目前在學。</li>
+<li>加入 WhatsApp 社群屬自願，會前往 WhatsApp 平台；請先查看其私隱設定及社群資訊。</li>
+<li>如需刪除帳戶，請聯絡活動團隊。</li>
+</ul>
+<p class="dialog-note">我們不會讀取你的信箱，也不會索取大學密碼。請在使用共用裝置後登出。</p>
+<button id="privacy-done" class="account-secondary" type="button">明白了</button>
+</dialog>
+  <noscript>
+<p class="account-noscript">請啟用 JavaScript，以使用電郵驗證碼登入。</p>
+</noscript>
 </body>
 </html>

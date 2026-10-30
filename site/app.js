@@ -40,24 +40,36 @@ function showView(next, focus = true) {
   if (focus) $(next === 'email' ? 'email' : next === 'otp' ? 'otp' : 'member-title').focus();
 }
 function showOnboardingStep(step, focus = true) {
-  const survey = step === 'survey';
-  $('survey-step').hidden = !survey;
-  $('community-step').hidden = survey;
-  $('survey-step-label').toggleAttribute('aria-current', survey);
-  $('community-step-label').toggleAttribute('aria-current', !survey);
-  if (survey) $('survey-step-label').setAttribute('aria-current', 'step');
-  else $('community-step-label').setAttribute('aria-current', 'step');
-  if (focus) $(survey ? 'survey-title' : 'community-card-title').focus();
+  const steps = ['survey', 'community', 'dashboard'];
+  const current = steps.includes(step) ? step : 'survey';
+  for (const name of steps) {
+    $(`${name}-step`).hidden = name !== current;
+    $(`${name}-step-label`).removeAttribute('aria-current');
+  }
+  $(`${current}-step-label`).setAttribute('aria-current', 'step');
+  $('member-screen').classList.toggle('show-dashboard', current === 'dashboard');
+  $('member-title').textContent = current === 'dashboard' ? '你的 21 天理財旅程。' : '開始你的 21 天旅程。';
+  if (focus) $({ survey: 'survey-title', community: 'community-card-title', dashboard: 'dashboard-title' }[current]).focus();
+}
+function savedJourneyStep() {
+  try { return localStorage.getItem(`fulam.journey.view.${accountUserId}`) || 'survey'; }
+  catch { return 'survey'; }
+}
+function navigateJourney(step) {
+  if (busy || view !== 'member' || !accountUserId) return;
+  // This stores navigation only, never proof of Forms submission or community membership.
+  try { localStorage.setItem(`fulam.journey.view.${accountUserId}`, step); }
+  catch { /* The journey remains usable when browser storage is unavailable. */ }
+  showOnboardingStep(step);
 }
 $('survey-continue').addEventListener('click', () => {
-  // This is the participant's confirmation, not verification from Microsoft Forms.
-  if (busy || view !== 'member' || !accountUserId) return;
-  showOnboardingStep('community');
+  navigateJourney('community');
 });
 $('survey-back').addEventListener('click', () => {
-  if (busy || view !== 'member' || !accountUserId) return;
-  showOnboardingStep('survey');
+  navigateJourney('survey');
 });
+$('community-continue').addEventListener('click', () => navigateJourney('dashboard'));
+$('onboarding-review').addEventListener('click', () => navigateJourney('survey'));
 function clearMessages() { ['email-error', 'otp-error', 'member-error', 'resend-status'].forEach((id) => message(id)); }
 function remainingSeconds() { return Math.max(0, Math.ceil((cooldownUntil - Date.now()) / 1000)); }
 function updateButtons() {
@@ -157,7 +169,7 @@ async function openVerifiedAccount(focus = true) {
   $('otp').value = '';
   pendingEmail = '';
   clearMessages();
-  showOnboardingStep('survey', false);
+  showOnboardingStep(savedJourneyStep(), false);
   showView('member', focus);
 }
 

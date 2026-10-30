@@ -4,8 +4,8 @@ A Traditional Chinese financial-education website with an editorial content hub,
 
 ## Game
 
-- Sign in with your HKU Connect email, then open the game from the homepage or visit `game/`. Direct visits to `game/` return signed-out visitors to the account page; the account page now shows survey-first onboarding instead of a game dashboard.
-- The game validates the user with Supabase Auth and reads their own RLS-protected profile before starting. No additional account or payment service is needed.
+- FuLam One Slice at `game/` is a public beta and requires no sign-in. The money-merge beta has been taken offline, including its direct page.
+- HKU sign-in is reserved for programme activities. It validates the user with Supabase Auth and reads their own RLS-protected profile before showing the account.
 - Five rounds cover financial tools, investing, insurance, borrowing and scam awareness: 60 choices in total, with Easy, Medium and Hard speeds.
 - One to three bags fly along random sideways arcs. Drag or swipe to slice; keyboard players can Tab to an active bag and press Enter or Space. Pause, mute, fullscreen, reviews, replay and copying results are supported.
 - Correct slices earn 100 points plus combo bonuses; wrong slices lose 150. Reviews distinguish correct slices, wrong slices, avoided choices and missed choices.
@@ -14,17 +14,17 @@ A Traditional Chinese financial-education website with an editorial content hub,
 
 ## Website and content (October 2026 redesign)
 
-- `/`: public homepage, game introduction, four content categories, pretest entrance and community introduction. Warm ivory, forest green and amber, optimized hero image and locally hosted Lucide icons.
-- `/account/`: the existing OTP flow and persistent sign-in, followed by a compact two-step journey: the Microsoft Forms survey first, then the WhatsApp invitation after the participant confirms submission. Email and participant code remain available under account details, with a visible sign-out control. The previous dashboard, progress list and game cards are no longer shown here.
+- `/`: concise public homepage led by the WhatsApp 21-day programme, followed by Instagram, four content categories, the public game and the HKU booth. Warm ivory, forest green and amber, with large type and reduced-motion support.
+- `/account/`: HKU email verification, then the 2–5 minute Microsoft Forms questionnaire, WhatsApp invitation and activity dashboard. Navigation progress is remembered per verified user on this browser; it does not verify a Forms submission or WhatsApp membership. The dashboard shows the pending 21-day programme, ranking, booth and rewards. Account details and sign-out remain available.
 - `/questionnaire/`: links to the HKU student pre-survey on Microsoft Forms. HKU Connect sign-in is required; Microsoft Forms says the form owner can see respondents’ names and email addresses. The website does not verify form completion or store its responses.
 - `/hub/`: daily check-in, community, leaderboard, rewards and supporters. Existing hash URLs remain usable. These features are not yet collecting data or awarding points.
-- `/game/`: existing English game, now returning to `/account/` for sign-in and account links. Authentication and database policies are unchanged.
+- `/game/`: public English game. Authentication and database policies are unchanged.
 
 ### Adding original content
 
 The public content area has four categories: street interviews, explainers, AI videos and interviews. Each is honestly marked coming soon until a real release is supplied. `site/content-data.js` holds each category's first release title, description and URL. Set `url` to a verified HTTPS destination (for example, the team's published video) to enable the “watch” link in its detail dialog. The link opens in a new tab; no third-party player or tracking is loaded automatically. Update the matching title/copy in `site/index.html` when publishing a particular episode. Extend the catalogue and cards together for multiple releases per category. Do not label unreviewed uploads as published.
 
-The category filter is keyboard operable and persisted in the URL (`?content=street#stories`). Dialogs support Escape and restore focus to their trigger. Most content is readable without JavaScript. Motion is limited to a brief initial entrance, button feedback and a 240ms filter transition; `prefers-reduced-motion` disables nonessential movement. No ongoing animation loop or animation dependency is loaded.
+The four homepage content cards open accessible detail dialogs. Dialogs support Escape and restore focus to their trigger. Most content is readable without JavaScript. Motion is limited to a brief entrance and button feedback; `prefers-reduced-motion` disables nonessential movement. Partner logos use separate original assets at approximately 2× display density; sources are recorded in `site/assets/logos/README.md`.
 
 ### Still pending
 
@@ -59,7 +59,7 @@ The GitHub Actions workflow installs locked dependencies, checks syntax, runs au
 
 - Supabase Auth generates and verifies codes. The frontend does not persist them.
 - Session credentials use browser-persistent `localStorage`, shared by the account and game pages. Closing a tab or restarting the browser keeps the session; Supabase refreshes valid sessions automatically. Signing out clears this browser's session and notifies other open tabs. Private browsing, clearing site data, or a revoked/expired session can require verification again. Users on the previous tab-only version need to sign in once after updating; old tab sessions are not migrated, so stale tabs cannot restore a signed-out account.
-- A temporary network or profile-load failure keeps the saved session and asks the participant to refresh. Server-validated HKU identity and profile checks still gate account and game access. Sign out explicitly on shared devices.
+- A temporary network or profile-load failure keeps the saved session and asks the participant to refresh. Server-validated HKU identity and profile checks still gate account access. The public game does not read account data. Sign out explicitly on shared devices.
 - Profiles contain only the Auth UUID, a generated participant code, and the creation time. Auth manages email addresses.
 - Restored sessions are validated with server-side `getUser()`. RLS checks the actual user's email confirmation and exact school domain.
 - Unverified, non-school, and anonymous users cannot read profiles. Verified users can read only their own profile.
