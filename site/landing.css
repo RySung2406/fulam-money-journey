@@ -286,15 +286,14 @@
 .plan-calendar span:last-child { background:#f0bd83; border-color:#f0bd83; color:#254735; font-weight:700; }
 .plan-preview-bottom { display:flex; justify-content:space-between; gap:7px; align-items:baseline; border-top:1px solid #587563; padding-top:20px; font-size:16px; }
 .plan-preview-bottom small { font-size:12px; color:#d5e0d4; }
-.instagram-strip { display:flex; justify-content:space-between; align-items:center; gap:24px; padding:28px 32px; background:#efe8dd; border:1px solid #e1d8ca; border-radius:14px; margin-bottom:64px; }
-.instagram-copy { display:flex; align-items:center; gap:24px; }
-.instagram-icon { width:48px; height:48px; flex-shrink:0; color:#9a542b; }
-.instagram-strip .eyebrow { font-size:11px; }
-.instagram-strip .eyebrow::before { display:none; }
-.instagram-strip h2 { font-size:27px; margin:5px 0; line-height:1.4; }
-.instagram-strip h2 span { font-weight:450; font-size:21px; margin-left:8px; }
-.instagram-strip p { color:var(--muted); font-size:17px; }
-.instagram-strip > a { flex-shrink:0; }
+/* Instagram is a quiet secondary action within the hero. */
+.hero-social { margin-top:18px; }
+.instagram-link { display:inline-flex; align-items:center; gap:9px; min-height:44px; font-size:16px; line-height:1.5; color:var(--muted); border-radius:5px; transition:color .2s var(--ease); }
+.instagram-link strong { color:var(--ink); font-size:16px; font-weight:600; margin-left:4px; }
+.instagram-link:hover { color:var(--ink); }
+.instagram-link:hover strong { text-decoration:underline; text-underline-offset:4px; }
+.instagram-link .instagram-icon { width:22px; height:22px; flex-shrink:0; }
+.instagram-link > .icon { width:16px; height:16px; flex-shrink:0; }
 .public-home .section { padding-block:64px; }
 .public-home .section-heading { margin-bottom:30px; }
 .public-home .section-heading h2 { font-size:clamp(30px,3vw,39px); margin-top:12px; }
@@ -310,8 +309,35 @@
 .booth-label { display:flex; flex-wrap:wrap; gap:12px; align-items:center; font-size:14px; color:var(--muted); }
 .public-home .daily-feature > .icon { margin:25px 0 18px; width:32px; height:32px; }
 .public-home .daily-feature p { margin-bottom:18px; }
-.public-home .programme-support { padding-top:40px; }
-.public-home .programme-heading h2 { margin-top:0; }
+/* Programme attribution belongs in a compact footer rail. */
+.public-home .site-footer { margin-top:12px; background:#fff; }
+.public-home .programme-support { display:grid; grid-template-columns:minmax(260px,1fr) auto; align-items:center; gap:40px; padding:32px 0 28px; border-top:0; border-bottom:1px solid var(--line); }
+.public-home .programme-heading h2 { font-size:20px; margin:0 0 6px; line-height:1.5; }
+.public-home .programme-heading p { font-size:15px; }
+.public-home .programme-source { min-height:44px; margin-top:2px; padding-bottom:0; border:0; font-size:14px; font-weight:550; }
+.public-home .programme-source:hover { text-decoration:underline; text-underline-offset:4px; }
+.public-home .programme-logos { display:flex; flex-direction:row; justify-content:flex-end; align-items:flex-start; gap:32px; margin:0; padding:0; border:0; border-radius:0; background:transparent; }
+.public-home .programme-logo-group { width:auto; max-width:none; }
+.public-home .programme-logo-group h3 { font-size:13px; font-weight:500; margin:0 0 12px; }
+.public-home .programme-logo-row { gap:20px; min-height:60px; }
+.public-home .programme-logos .logo-sjs { width:64px; }
+.public-home .programme-logos .logo-ifec { width:104px; }
+.public-home .programme-logos .logo-hkex { width:152px; }
+.public-home .footer-top { padding-block:28px; }
+@media(max-width:900px) {
+ .public-home .programme-support { grid-template-columns:1fr; gap:18px; }
+ .public-home .programme-logos { justify-content:flex-start; }
+}
+@media(max-width:540px) {
+ .public-home .programme-support { padding-block:28px; gap:16px; }
+ .public-home .programme-heading h2 { font-size:19px; }
+ .public-home .programme-logos { gap:22px 24px; flex-wrap:wrap; }
+ .public-home .programme-logo-row { gap:14px; min-height:48px; }
+ .public-home .programme-logos .logo-sjs { width:48px; }
+ .public-home .programme-logos .logo-ifec { width:86px; }
+ .public-home .programme-logos .logo-hkex { width:124px; }
+ .hero-social { margin-top:14px; }
+}
 @media(max-width:1000px) {
  .public-home .hero { gap:32px; }
  .public-home .hero h1 { font-size:clamp(44px,5.6vw,60px); }
@@ -333,12 +359,6 @@
  .plan-preview-top { font-size:11px; }
  .plan-calendar { margin:22px 0; }
  .plan-preview-bottom { font-size:16px; }
- .instagram-strip { padding:24px; margin-bottom:36px; flex-direction:column; align-items:flex-start; gap:20px; }
- .instagram-copy { align-items:flex-start; gap:16px; }
- .instagram-icon { width:36px; height:36px; margin-top:4px; }
- .instagram-strip h2 { font-size:23px; }
- .instagram-strip h2 span { display:block; margin:3px 0 0; font-size:21px; }
- .instagram-strip > a { width:100%; }
  .public-home .section { padding-block:44px; }
  .public-home .section-heading { gap:12px; }
  .public-home .section-heading h2 { font-size:30px; }
@@ -357,5 +377,4 @@
  .plan-preview { padding:22px; }
  .plan-preview-bottom small { display:block; margin-top:2px; }
  .plan-calendar { gap:6px; }
- .instagram-strip p { font-size:17px; }
 }

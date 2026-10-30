@@ -14,6 +14,7 @@ let accountUserId;
 let initializing = true;
 
 const translatedMessages = new Map([
+  ['Enter your HKU email ending in @connect.hku.hk, @graduate.hku.hk or @hku.hk.', '請輸入 HKU 學生、校友或教職員電郵（@connect.hku.hk、@graduate.hku.hk、@hku.hk）。'],
   ['Enter your full HKU Connect email, such as yourname@connect.hku.hk.', '請輸入完整的 HKU Connect 電郵，例如 yourname@connect.hku.hk。'],
   ['Too many code requests. Please try again later.', '驗證碼要求過於頻繁，請稍後再試。'],
   ['The code is incorrect or expired. Try again or request a new code.', '驗證碼不正確或已過期。請檢查最新電郵，或重新索取驗證碼。'],
@@ -68,6 +69,9 @@ $('survey-continue').addEventListener('click', () => {
 $('survey-back').addEventListener('click', () => {
   navigateJourney('survey');
 });
+for (const step of ['survey', 'community', 'dashboard']) {
+  $(`${step}-step-label`).addEventListener('click', () => navigateJourney(step));
+}
 $('community-continue').addEventListener('click', () => navigateJourney('dashboard'));
 $('onboarding-review').addEventListener('click', () => navigateJourney('survey'));
 function clearMessages() { ['email-error', 'otp-error', 'member-error', 'resend-status'].forEach((id) => message(id)); }

@@ -70,7 +70,7 @@
 </div>
         <div id="email-screen">
           <h2 id="login-title" tabindex="-1">歡迎上車。</h2>
-          <p class="auth-intro">打卡及 Booth 僅限 HKU 學生，名額有限。請先驗證學校電郵。</p>
+          <p class="auth-intro">學生、校友及教職員均可使用 HKU 電郵登入。</p>
           <div id="setup-notice" class="account-notice" role="status" hidden>
 <strong>登入服務尚未開放</strong>
 <p>你可以先瀏覽內容，稍後再回來。</p>
@@ -84,7 +84,7 @@
 </svg>
 <input id="email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" spellcheck="false" autocapitalize="none" placeholder="yourname@connect.hku.hk" aria-describedby="email-hint email-error" required>
 </div>
-            <p id="email-hint" class="field-hint">請使用 @connect.hku.hk 電郵。</p>
+            <p id="email-hint" class="field-hint">支援 @connect.hku.hk、@graduate.hku.hk 及 @hku.hk。</p>
             <p id="email-error" class="form-message error" role="alert" hidden>
 </p>
             <button class="account-primary" id="send-button" type="submit" disabled>
@@ -142,22 +142,10 @@
 </svg>HKU 電郵已驗證</span>
         <h1 id="member-title" tabindex="-1">開始你的 21 天旅程。</h1>
       </header>
-      <ol class="onboarding-steps" aria-label="參加步驟">
-        <li id="survey-step-label" aria-current="step">
-<span class="onboarding-step-number" aria-hidden="true">01</span>
-<span>填寫問卷<small>SURVEY</small>
-</span>
-</li>
-        <li id="community-step-label">
-<span class="onboarding-step-number" aria-hidden="true">02</span>
-<span>加入社群<small>COMMUNITY</small>
-</span>
-</li>
-        <li id="dashboard-step-label">
-<span class="onboarding-step-number" aria-hidden="true">03</span>
-<span>每日打卡<small>CHECK-IN</small>
-</span>
-</li>
+      <ol class="onboarding-steps" aria-label="我的旅程導覽">
+        <li><button id="survey-step-label" class="onboarding-step-button" type="button" aria-current="step" aria-controls="survey-step"><span class="onboarding-step-number" aria-hidden="true">01</span><span>填寫問卷<small>SURVEY</small></span></button></li>
+        <li><button id="community-step-label" class="onboarding-step-button" type="button" aria-controls="community-step"><span class="onboarding-step-number" aria-hidden="true">02</span><span>加入社群<small>COMMUNITY</small></span></button></li>
+        <li><button id="dashboard-step-label" class="onboarding-step-button" type="button" aria-controls="dashboard-step"><span class="onboarding-step-number" aria-hidden="true">03</span><span>每日打卡<small>CHECK-IN</small></span></button></li>
       </ol>
 
       <section id="survey-step" class="onboarding-card" aria-labelledby="survey-title">
@@ -333,7 +321,7 @@
         </div>
         <div class="dashboard-footer-links">
 <a data-community-invite hidden target="_blank" rel="noopener noreferrer">前往 WhatsApp 社群 ↗</a>
-<button id="onboarding-review" class="account-text-button" type="button">查看問卷與社群</button>
+<button id="onboarding-review" class="account-text-button" type="button">返回問卷</button>
 </div>
       </section>
 
@@ -355,7 +343,7 @@
 
     <div class="account-privacy-bar">
 <span>本網站不會公開顯示你的電郵。</span>
-<button id="privacy-open" type="button">我們如何使用你的資料 <span aria-hidden="true">↗</span>
+<button id="privacy-open" type="button">資料與私隱 <span aria-hidden="true">↗</span>
 </button>
 </div>
   </main>
@@ -369,18 +357,10 @@
   <dialog id="privacy-dialog" aria-labelledby="privacy-title">
 <button id="privacy-close" class="dialog-close" type="button" aria-label="關閉資料用途說明">×</button>
 <span class="account-eyebrow">YOUR PRIVACY</span>
-<h2 id="privacy-title">你的資料，清楚交代。</h2>
-<p>本網站由搏富臨活動團隊營運。我們使用 HKU 電郵建立帳戶，並識別屬於你的活動紀錄。</p>
-<ul>
-<li>目前儲存帳戶資料、電郵驗證狀態及系統產生的參加者編號。</li>
-<li>Supabase 處理帳戶及電郵資料，Brevo 用於寄送驗證碼。</li>
-<li>此瀏覽器會記住登入及你停留的參加步驟；不會以此判定問卷提交或社群加入狀態。</li>
-<li>你的電郵不會公開顯示；活動分析應使用參加者編號。</li>
-<li>電郵驗證只確認你能使用該信箱，並不證明目前在學。</li>
-<li>加入 WhatsApp 社群屬自願，會前往 WhatsApp 平台；請先查看其私隱設定及社群資訊。</li>
-<li>如需刪除帳戶，請聯絡活動團隊。</li>
-</ul>
-<p class="dialog-note">我們不會讀取你的信箱，也不會索取大學密碼。請在使用共用裝置後登出。</p>
+<h2 id="privacy-title">資料與私隱</h2>
+<p>我們使用 HKU 電郵建立帳戶，並產生參加者編號；電郵不會公開顯示。</p>
+<p>我們不會讀取你的信箱或索取大學密碼。共用裝置使用後，請登出。</p>
+<p>加入 WhatsApp 社群屬自願。如需刪除帳戶，請聯絡活動團隊。</p>
 <button id="privacy-done" class="account-secondary" type="button">明白了</button>
 </dialog>
   <noscript>

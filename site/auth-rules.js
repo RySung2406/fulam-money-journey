@@ -1,9 +1,11 @@
-export const SCHOOL_DOMAIN = 'connect.hku.hk';
+export const SCHOOL_DOMAINS = Object.freeze(['connect.hku.hk', 'graduate.hku.hk', 'hku.hk']);
+const schoolEmailPattern = /^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?@((?:connect\.|graduate\.)?hku\.hk)$/;
 
 export function normalizeSchoolEmail(value) {
   const email = String(value ?? '').trim().toLowerCase();
-  if (email.length > 254 || !/^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?@connect\.hku\.hk$/.test(email)) {
-    throw new Error('Enter your full HKU Connect email, such as yourname@connect.hku.hk.');
+  const match = email.match(schoolEmailPattern);
+  if (email.length > 254 || !match || !SCHOOL_DOMAINS.includes(match[1])) {
+    throw new Error('Enter your HKU email ending in @connect.hku.hk, @graduate.hku.hk or @hku.hk.');
   }
   return email;
 }

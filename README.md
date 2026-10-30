@@ -1,6 +1,6 @@
 # The Money Journey · FuLam One Slice
 
-A Traditional Chinese financial-education website with an editorial content hub, persistent HKU email sign-in and the English edition of FuLam One Slice.
+A Traditional Chinese financial-education website with an editorial content hub, persistent HKU member email sign-in and the English edition of FuLam One Slice.
 
 ## Game
 
@@ -15,7 +15,7 @@ A Traditional Chinese financial-education website with an editorial content hub,
 ## Website and content (October 2026 redesign)
 
 - `/`: concise public homepage led by the WhatsApp 21-day programme, followed by Instagram, four content categories, the public game and the HKU booth. Warm ivory, forest green and amber, with large type and reduced-motion support.
-- `/account/`: HKU email verification, then the 2–5 minute Microsoft Forms questionnaire, WhatsApp invitation and activity dashboard. Navigation progress is remembered per verified user on this browser; it does not verify a Forms submission or WhatsApp membership. The dashboard shows the pending 21-day programme, ranking, booth and rewards. Account details and sign-out remain available.
+- `/account/`: HKU member email verification (`connect.hku.hk`, `graduate.hku.hk`, `hku.hk`), then the 2–5 minute Microsoft Forms questionnaire, WhatsApp invitation and activity dashboard. Navigation progress is remembered per verified user on this browser; it does not verify a Forms submission or WhatsApp membership. The dashboard shows the pending 21-day programme, ranking, booth and rewards. The three step buttons allow direct navigation in either direction. Account details and sign-out remain available.
 - `/questionnaire/`: links to the HKU student pre-survey on Microsoft Forms. HKU Connect sign-in is required; Microsoft Forms says the form owner can see respondents’ names and email addresses. The website does not verify form completion or store its responses.
 - `/hub/`: daily check-in, community, leaderboard, rewards and supporters. Existing hash URLs remain usable. These features are not yet collecting data or awarding points.
 - `/game/`: public English game. Authentication and database policies are unchanged.
@@ -37,7 +37,7 @@ Before adding website-side questionnaire storage or activating check-ins, implem
 - Brevo custom SMTP is configured on the free plan.
 - English email templates and SMTP are configured. Sign-in is enabled. A real HKU mailbox test passed: code delivery, user-entered OTP verification, profile creation/read, session restoration after refresh, and sign-out. The same participant ID was retained after refresh.
 - Database checks in `supabase/002_verify_access.sql` passed: profile creation, exact-domain enforcement, cross-account isolation, unverified-account denial, and write restrictions. The transaction is rolled back without keeping test users.
-- HKU Connect email verification establishes mailbox access, not current enrollment. It does not retrieve a student's name, ID, faculty, or year.
+- HKU email verification establishes mailbox access, not current enrollment. It does not retrieve a student's name, ID, faculty, or year.
 
 ## Deployment
 
@@ -46,7 +46,7 @@ The GitHub Actions workflow installs locked dependencies, checks syntax, runs au
 ## Supabase configuration for a new project
 
 1. Create a Free project without paid add-ons.
-2. Run `supabase/001_school_auth.sql` once. This creates profiles, enables RLS, and restricts account email domains. Clients cannot insert, update, or delete profile records.
+2. Run `supabase/001_school_auth.sql` once. This creates profiles, enables RLS, and restricts account email domains. Then apply `supabase/003_hku_member_email_domains.sql` to allow the three exact HKU member domains. Existing deployments only need this upgrade migration. Clients cannot insert, update, or delete profile records.
 3. Under Authentication → Hooks → Before User Created, enable `public.hku_email_signup_hook`. A database trigger also restricts inserts and subsequent email changes.
 4. Enable Email with email confirmation. Leave anonymous and other sign-in providers disabled. This website does not offer email changes or password-based sign-up.
 5. Set Email OTP length to **8** and expiration to **600 seconds**. Use `supabase/email-template.html` for Magic link or OTP and Confirm sign up. The template must contain `{{ .Token }}`.

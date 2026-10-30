@@ -2,9 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { normalizeSchoolEmail, isVerifiedSchoolUser, normalizeOtp, configurationIsReady, friendlyAuthError } from '../site/auth-rules.js';
 
-test('only an exact HKU Connect email domain passes; deceptive domains and display-name syntax fail', () => {
+test('exact HKU student, alumni and staff email domains pass; deceptive domains and display-name syntax fail', () => {
   assert.equal(normalizeSchoolEmail('  Student.Name@CONNECT.HKU.HK '), 'student.name@connect.hku.hk');
-  for (const input of ['student@gmail.com','student@hku.hk','student@connect.hku.hk.attacker.com','student@evilconnect.hku.hk','student@sub.connect.hku.hk','student@connect.hku.hk\n@example.com','Name <student@connect.hku.hk>','student@@connect.hku.hk','@connect.hku.hk','student+other@connect.hku.hk']) assert.throws(() => normalizeSchoolEmail(input), input);
+  assert.equal(normalizeSchoolEmail('  Alumni.Name@GRADUATE.HKU.HK '), 'alumni.name@graduate.hku.hk');
+  assert.equal(normalizeSchoolEmail('Staff.Name@HKU.HK'), 'staff.name@hku.hk');
+  for (const input of ['student@gmail.com','staff@sub.hku.hk','staff@hku.hk.attacker.com','staff@evilhku.hk','alumni@graduate.hku.hk.attacker.com','alumni@sub.graduate.hku.hk','alumni@alumni.hku.hk','student@connect.hku.hk.attacker.com','student@evilconnect.hku.hk','student@sub.connect.hku.hk','student@connect.hku.hk\n@example.com','Name <student@connect.hku.hk>','student@@connect.hku.hk','@connect.hku.hk','student+other@connect.hku.hk']) assert.throws(() => normalizeSchoolEmail(input), input);
 });
 test('a school-looking address without verified server identity never passes', () => {
   const user = { id: 'user-1', email: 'student@connect.hku.hk', email_confirmed_at: '2026-10-24T00:00:00Z', is_anonymous: false };
@@ -13,6 +15,11 @@ test('a school-looking address without verified server identity never passes', (
   assert.equal(isVerifiedSchoolUser({...user,is_anonymous:true}), false);
   assert.equal(isVerifiedSchoolUser({...user,email:'student@example.com'}), false);
   assert.equal(isVerifiedSchoolUser(null), false);
+  for (const email of ['alumni@graduate.hku.hk', 'staff@hku.hk']) {
+    assert.equal(isVerifiedSchoolUser({...user,email}), true);
+    assert.equal(isVerifiedSchoolUser({...user,email,email_confirmed_at:null}), false);
+    assert.equal(isVerifiedSchoolUser({...user,email,is_anonymous:true}), false);
+  }
 });
 test('OTP preserves leading zeroes and rejects malformed input', () => {
   assert.equal(normalizeOtp('0123 4567'), '01234567');
