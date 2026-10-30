@@ -1,5 +1,6 @@
 import { normalizeSchoolEmail, normalizeOtp, isVerifiedSchoolUser, configurationIsReady, friendlyAuthError, sessionMustBeCleared } from './auth-rules.js';
 import { persistentAuthOptions } from './auth-session.js';
+import { createCheckInController } from './check-in.js';
 
 const $ = (id) => document.getElementById(id);
 const config = window.FULIN_CONFIG || {};
@@ -12,6 +13,44 @@ let view = 'email';
 let transition = 0;
 let accountUserId;
 let initializing = true;
+const checkIns = createCheckInController({ getClient: () => client, onChange: renderCheckIns });
+
+function renderCheckIns(state = checkIns.state) {
+  const loading = state.phase === 'idle' || state.phase === 'loading';
+  const unavailable = state.phase === 'error' && state.days.length === 0;
+  const saving = state.phase === 'submitting';
+  const nextDay = state.days.find(day => day.is_open && !state.records.some(row => row.day_number === day.day_number))?.day_number;
+  const openDays = state.days.filter(day => day.is_open);
+  const completed = state.records.length;
+  $('check-in-status').textContent = loading ? '正在載入…' : state.phase === 'error' ? '暫未能載入' : nextDay ? `第 ${nextDay} 日已開放` : completed ? '打卡已記錄' : '暫未開放';
+  $('check-in-description').textContent = '題目與題解在 WhatsApp，打卡紀錄保存在這裡。';
+  $('check-in-progress').textContent = loading ? '正在讀取你的紀錄…' : state.phase === 'error' ? '請重新載入紀錄' : `已完成 ${completed} / 21 天`;
+  $('check-in-calendar').setAttribute('aria-label', `21 天打卡${loading ? '，正在載入' : unavailable ? '，暫未能載入紀錄' : `，已完成 ${completed} 天`}`);
+  for (const cell of $('check-in-calendar').querySelectorAll('[data-check-in-day]')) {
+    const day = Number(cell.dataset.checkInDay);
+    const record = state.records.find(row => row.day_number === day);
+    const isOpen = openDays.some(row => row.day_number === day);
+    const label = record ? '已完成' : loading ? '載入中' : unavailable ? '未載入' : isOpen ? '可打卡' : '未開放';
+    cell.dataset.state = record ? 'completed' : isOpen ? 'open' : 'locked';
+    cell.querySelector('small').textContent = label;
+    cell.setAttribute('aria-label', `第 ${day} 日：${label}`);
+  }
+  const button = $('check-in-button');
+  button.textContent = saving ? '正在保存…' : loading ? '正在載入…' : state.phase === 'error' ? '暫未能打卡' : nextDay ? `第 ${nextDay} 日打卡` : completed ? '已完成打卡 ✓' : '尚未開放打卡';
+  button.disabled = busy || state.phase !== 'ready' || !nextDay || !state.studentConfirmed;
+  button.setAttribute('aria-busy', String(saving));
+  $('check-in-eligibility').hidden = !nextDay || loading || state.phase === 'error';
+  $('student-confirmation').checked = state.studentConfirmed;
+  $('student-confirmation').disabled = busy || saving || loading;
+  $('check-in-message').textContent = state.message;
+  $('check-in-message').hidden = !state.message;
+  $('check-in-message').classList.toggle('error', state.isError);
+  $('check-in-retry').hidden = !state.isError;
+  $('check-in-retry').disabled = busy || loading || saving;
+}
+$('student-confirmation').addEventListener('change', (event) => checkIns.setStudentConfirmed(event.target.checked));
+$('check-in-button').addEventListener('click', () => { if (!busy && view === 'member') void checkIns.submit(); });
+$('check-in-retry').addEventListener('click', () => { if (!busy && view === 'member') void checkIns.refresh(); });
 
 const translatedMessages = new Map([
   ['Enter your HKU email ending in @connect.hku.hk, @graduate.hku.hk or @hku.hk.', '請輸入 HKU 學生、校友或教職員電郵（@connect.hku.hk、@graduate.hku.hk、@hku.hk）。'],
@@ -90,6 +129,7 @@ function updateButtons() {
   $('signout-button').disabled = busy;
   $('email-form').setAttribute('aria-busy', String(busy && view === 'email'));
   $('otp-form').setAttribute('aria-busy', String(busy && view === 'otp'));
+  renderCheckIns();
 }
 function startCooldown() {
   cooldownUntil = Date.now() + 60_000;
@@ -175,6 +215,7 @@ async function openVerifiedAccount(focus = true) {
   clearMessages();
   showOnboardingStep(savedJourneyStep(), false);
   showView('member', focus);
+  void checkIns.setUser(accountUserId);
 }
 
 $('otp-form').addEventListener('submit', async (event) => {
@@ -208,6 +249,7 @@ $('otp-form').addEventListener('submit', async (event) => {
 function clearAccountScreen() {
   transition += 1;
   accountUserId = undefined;
+  void checkIns.setUser(undefined);
   showOnboardingStep('survey', false);
   $('member-email').textContent = '';
   $('participant-code').textContent = '—';

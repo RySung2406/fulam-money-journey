@@ -97,6 +97,10 @@
 .hub-end { display:flex; align-items:center; gap:30px; margin-top:40px; }
 .journey-copy h1 { font-size:clamp(36px,4vw,54px); margin:25px 0; }
 .pretest-card>.text-link { margin-top:20px; }
+.pretest-card .posttest-entry { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top:28px; padding-top:24px; border-top:1px solid var(--line); }
+.pretest-card .posttest-entry .eyebrow { font-size:12px; letter-spacing:.1em; }
+.pretest-card .posttest-entry h3 { font-family:inherit; font-size:22px; font-weight:600; line-height:1.4; margin-top:5px; letter-spacing:-.02em; }
+.posttest-locked { flex-shrink:0; min-height:44px; padding:9px 15px; border:1px solid #d5dbd0; border-radius:8px; background:#edf0e7; color:#65705e; font-size:16px; font-weight:550; cursor:not-allowed; }
 @media(prefers-reduced-motion:no-preference) {
   .hero-copy { animation:hero-in .75s var(--ease) both; }
   .hero-visual { animation:art-in 1s var(--ease) both; }

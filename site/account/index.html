@@ -156,15 +156,19 @@
 </svg>
 </span>
         <span class="account-eyebrow">STEP 01 · SURVEY</span>
-        <h2 id="survey-title" tabindex="-1">先填寫理財問卷。</h2>
+        <h2 id="survey-title" tabindex="-1">先填寫前測問卷。</h2>
         <p class="onboarding-copy">讓我們了解你的理財習慣與學習興趣。</p>
         <p class="onboarding-meta">約 2–5 分鐘 · 使用 HKU Connect 帳戶填答</p>
-        <a id="survey-link" class="account-primary" href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=dY4N6LlSOUijWIeruTs1Z-VOzApBm_VOvTm0gGA8MWtUQzBETkdRRTZPVURPRjI3N041OE1PUFFEWi4u" target="_blank" rel="noopener noreferrer" aria-describedby="survey-return-note">填寫問卷 <span aria-hidden="true">↗</span>
+        <a id="survey-link" class="account-primary" href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=dY4N6LlSOUijWIeruTs1Z-VOzApBm_VOvTm0gGA8MWtUQzBETkdRRTZPVURPRjI3N041OE1PUFFEWi4u" target="_blank" rel="noopener noreferrer" aria-describedby="survey-return-note">填寫前測問卷 <span aria-hidden="true">↗</span>
 </a>
         <p id="survey-return-note" class="onboarding-note">填妥後，返回此頁繼續。</p>
         <button id="survey-continue" class="account-secondary onboarding-continue" type="button">下一步：加入社群 <span aria-hidden="true">→</span>
 </button>
         <p class="onboarding-privacy">問卷由 Microsoft Forms 收集，表單擁有人可看到你的姓名及電郵。</p>
+        <section class="posttest-entry" aria-labelledby="posttest-title">
+          <div><span class="account-eyebrow">POST-SURVEY</span><h3 id="posttest-title">後測問卷</h3></div>
+          <button class="posttest-locked" type="button" disabled aria-label="後測問卷暫未開放">暫未開放</button>
+        </section>
       </section>
 
       <section id="community-step" class="onboarding-card" aria-labelledby="community-card-title" hidden>
@@ -205,106 +209,49 @@
 <span class="account-eyebrow">21 DAY CHALLENGE</span>
 <h2 id="dashboard-title" tabindex="-1">每日一小步。</h2>
 </div>
-<span class="dashboard-status">活動準備中</span>
+<span id="check-in-status" class="dashboard-status">正在載入</span>
 </div>
-          <p>活動開始後，在這裡完成每日打卡。</p>
-          <ol class="check-in-calendar" aria-label="21 天打卡：活動尚未開始">
-          <li>
-<span>01</span>
-<small>待開始</small>
-</li>
-          <li>
-<span>02</span>
-<small>待開始</small>
-</li>
-          <li>
-<span>03</span>
-<small>待開始</small>
-</li>
-          <li>
-<span>04</span>
-<small>待開始</small>
-</li>
-          <li>
-<span>05</span>
-<small>待開始</small>
-</li>
-          <li>
-<span>06</span>
-<small>待開始</small>
-</li>
-          <li>
-<span>07</span>
-<small>待開始</small>
-</li>
-          <li>
-<span>08</span>
-<small>待開始</small>
-</li>
-          <li>
-<span>09</span>
-<small>待開始</small>
-</li>
-          <li>
-<span>10</span>
-<small>待開始</small>
-</li>
-          <li>
-<span>11</span>
-<small>待開始</small>
-</li>
-          <li>
-<span>12</span>
-<small>待開始</small>
-</li>
-          <li>
-<span>13</span>
-<small>待開始</small>
-</li>
-          <li>
-<span>14</span>
-<small>待開始</small>
-</li>
-          <li>
-<span>15</span>
-<small>待開始</small>
-</li>
-          <li>
-<span>16</span>
-<small>待開始</small>
-</li>
-          <li>
-<span>17</span>
-<small>待開始</small>
-</li>
-          <li>
-<span>18</span>
-<small>待開始</small>
-</li>
-          <li>
-<span>19</span>
-<small>待開始</small>
-</li>
-          <li>
-<span>20</span>
-<small>待開始</small>
-</li>
-          <li>
-<span>21</span>
-<small>待開始</small>
-</li>
+          <p id="check-in-description">正在讀取你的打卡紀錄。</p>
+          <ol id="check-in-calendar" class="check-in-calendar" aria-label="21 天打卡紀錄">
+            <li data-check-in-day="1" data-state="locked" aria-label="第 1 日，正在載入"><span>01</span><small>—</small></li>
+            <li data-check-in-day="2" data-state="locked" aria-label="第 2 日，正在載入"><span>02</span><small>—</small></li>
+            <li data-check-in-day="3" data-state="locked" aria-label="第 3 日，正在載入"><span>03</span><small>—</small></li>
+            <li data-check-in-day="4" data-state="locked" aria-label="第 4 日，正在載入"><span>04</span><small>—</small></li>
+            <li data-check-in-day="5" data-state="locked" aria-label="第 5 日，正在載入"><span>05</span><small>—</small></li>
+            <li data-check-in-day="6" data-state="locked" aria-label="第 6 日，正在載入"><span>06</span><small>—</small></li>
+            <li data-check-in-day="7" data-state="locked" aria-label="第 7 日，正在載入"><span>07</span><small>—</small></li>
+            <li data-check-in-day="8" data-state="locked" aria-label="第 8 日，正在載入"><span>08</span><small>—</small></li>
+            <li data-check-in-day="9" data-state="locked" aria-label="第 9 日，正在載入"><span>09</span><small>—</small></li>
+            <li data-check-in-day="10" data-state="locked" aria-label="第 10 日，正在載入"><span>10</span><small>—</small></li>
+            <li data-check-in-day="11" data-state="locked" aria-label="第 11 日，正在載入"><span>11</span><small>—</small></li>
+            <li data-check-in-day="12" data-state="locked" aria-label="第 12 日，正在載入"><span>12</span><small>—</small></li>
+            <li data-check-in-day="13" data-state="locked" aria-label="第 13 日，正在載入"><span>13</span><small>—</small></li>
+            <li data-check-in-day="14" data-state="locked" aria-label="第 14 日，正在載入"><span>14</span><small>—</small></li>
+            <li data-check-in-day="15" data-state="locked" aria-label="第 15 日，正在載入"><span>15</span><small>—</small></li>
+            <li data-check-in-day="16" data-state="locked" aria-label="第 16 日，正在載入"><span>16</span><small>—</small></li>
+            <li data-check-in-day="17" data-state="locked" aria-label="第 17 日，正在載入"><span>17</span><small>—</small></li>
+            <li data-check-in-day="18" data-state="locked" aria-label="第 18 日，正在載入"><span>18</span><small>—</small></li>
+            <li data-check-in-day="19" data-state="locked" aria-label="第 19 日，正在載入"><span>19</span><small>—</small></li>
+            <li data-check-in-day="20" data-state="locked" aria-label="第 20 日，正在載入"><span>20</span><small>—</small></li>
+            <li data-check-in-day="21" data-state="locked" aria-label="第 21 日，正在載入"><span>21</span><small>—</small></li>
           </ol>
+          <label id="check-in-eligibility" class="check-in-eligibility" hidden>
+            <input id="student-confirmation" type="checkbox" aria-describedby="check-in-description">
+            <span>我目前是 HKU 學生</span>
+          </label>
           <div class="check-in-bottom">
-<span>開始日期稍後公布</span>
-<button class="account-primary" type="button" disabled>尚未開放打卡</button>
-</div>
+            <span id="check-in-progress">正在載入紀錄…</span>
+            <button id="check-in-button" class="account-primary" type="button" disabled>正在載入…</button>
+          </div>
+          <p id="check-in-message" class="check-in-message" role="status" aria-live="polite" hidden></p>
+          <button id="check-in-retry" class="account-text-button check-in-retry" type="button" hidden>重新載入</button>
         </section>
         <div class="dashboard-cards">
           <section id="member-ranking" class="dashboard-card">
 <span class="account-eyebrow">RANKING</span>
 <h2>參與排名</h2>
 <strong class="dashboard-empty">尚未開榜</strong>
-<p>活動開始後更新。</p>
+<p>排名稍後更新。</p>
 </section>
           <section id="member-booth" class="dashboard-card">
 <span class="account-eyebrow">HKU ONLY</span>
@@ -319,6 +266,10 @@
 <p>獎勵及領取安排稍後公布。</p>
 </section>
         </div>
+        <section class="posttest-entry dashboard-posttest" aria-labelledby="dashboard-posttest-title">
+          <div><span class="account-eyebrow">POST-SURVEY</span><h3 id="dashboard-posttest-title">後測問卷</h3></div>
+          <button class="posttest-locked" type="button" disabled aria-label="後測問卷暫未開放">暫未開放</button>
+        </section>
         <div class="dashboard-footer-links">
 <a data-community-invite hidden target="_blank" rel="noopener noreferrer">前往 WhatsApp 社群 ↗</a>
 <button id="onboarding-review" class="account-text-button" type="button">返回問卷</button>
@@ -358,7 +309,7 @@
 <button id="privacy-close" class="dialog-close" type="button" aria-label="關閉資料用途說明">×</button>
 <span class="account-eyebrow">YOUR PRIVACY</span>
 <h2 id="privacy-title">資料與私隱</h2>
-<p>我們使用 HKU 電郵建立帳戶，並產生參加者編號；電郵不會公開顯示。</p>
+<p>我們使用 HKU 電郵建立帳戶、產生參加者編號，並保存打卡紀錄；電郵不會公開顯示。</p>
 <p>我們不會讀取你的信箱或索取大學密碼。共用裝置使用後，請登出。</p>
 <p>加入 WhatsApp 社群屬自願。如需刪除帳戶，請聯絡活動團隊。</p>
 <button id="privacy-done" class="account-secondary" type="button">明白了</button>
