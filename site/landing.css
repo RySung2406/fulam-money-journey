@@ -93,6 +93,7 @@
 .story-dialog small { display:block; color:var(--muted); font-size:14px; margin-bottom:24px; }
 .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 .hub-sections { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+.hub-sections #rewards { grid-column:1/-1; }
 .hub-sections .pretest-card h2 { margin-top:24px; font-size:26px; }
 .hub-end { display:flex; align-items:center; gap:30px; margin-top:40px; }
 .journey-copy h1 { font-size:clamp(36px,4vw,54px); margin:25px 0; }
