@@ -22,6 +22,17 @@ function renderCheckIns(state = checkIns.state) {
   const nextDay = state.days.find(day => day.is_open && !state.records.some(row => row.day_number === day.day_number))?.day_number;
   const openDays = state.days.filter(day => day.is_open);
   const completed = state.records.length;
+  const rewardTarget = Math.ceil(21 * 0.8);
+  const rewardKnown = !loading && state.phase !== 'error';
+  $('rewards-progress-text').textContent = !rewardKnown
+    ? (loading ? '正在載入紀錄…' : '暫未能載入紀錄')
+    : completed >= rewardTarget ? `已達成目標 · ${completed} / 21 天` : `已完成 ${completed} / ${rewardTarget} 天 · 還差 ${rewardTarget - completed} 天`;
+  const rewardBar = $('rewards-progress-bar');
+  rewardBar.hidden = !rewardKnown;
+  if (rewardKnown) {
+    rewardBar.value = Math.min(completed, rewardTarget);
+    rewardBar.setAttribute('aria-valuetext', `已完成 ${completed} 天，獎勵門檻為 ${rewardTarget} 天`);
+  }
   $('check-in-status').textContent = loading ? '正在載入…' : state.phase === 'error' ? '暫未能載入' : nextDay ? `第 ${nextDay} 日已開放` : completed ? '打卡已記錄' : '暫未開放';
   $('check-in-description').textContent = '題目與題解在 WhatsApp，打卡紀錄保存在這裡。';
   $('check-in-progress').textContent = loading ? '正在讀取你的紀錄…' : state.phase === 'error' ? '請重新載入紀錄' : `已完成 ${completed} / 21 天`;
