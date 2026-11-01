@@ -2,29 +2,95 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#082b30"><meta name="description" content="富臨錢進號・捕財達人。長按連射，連擊捕財，升級你的黃金炮台。免費離線單機小遊戲。">
+<meta name="theme-color" content="#082b30"><meta name="description" content="富臨錢進號・捕財達人。無限暢玩，12 級炮台與 6 款道具。長按連射，連擊捕財，挑戰巨型魚群。免費離線單機小遊戲。">
 <title>捕財達人 · 富臨錢進號</title>
 <style>
 :root{color-scheme:dark;--bg:#061c23;--panel:#0d343b;--line:#ffffff1d;--gold:#ffdb85;--mint:#9be8cf;--white:#f7f6e9;--muted:#a7c8ca;--font:system-ui,-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 20% 0%,#184346 0,transparent 50%),var(--bg);color:var(--white);font-family:var(--font);min-height:100svh}button{font:inherit;cursor:pointer;color:inherit;border:0;-webkit-tap-highlight-color:transparent}button:focus-visible,a:focus-visible,canvas:focus-visible{outline:3px solid #d7fff0;outline-offset:4px}button:disabled{cursor:not-allowed;opacity:.5}button:not(:disabled):active{transform:translateY(2px)}button{transition:background .16s,transform .16s,opacity .16s}button svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}button:hover:not(:disabled){filter:brightness(1.1)}.wrap{max-width:1312px;margin:auto;padding:24px 32px 16px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:23px}.brand{display:flex;align-items:center;gap:13px}.brand-mark{width:45px;height:45px;border:1px solid #e5cb8755;border-radius:50%;display:grid;place-items:center;color:var(--gold);background:#ffda7a08}.brand-mark svg{width:28px;fill:none;stroke:currentColor;stroke-width:1.6}.brand-name{font-size:17px;font-weight:800;letter-spacing:.13em}.eyebrow{white-space:nowrap;font-size:10px;letter-spacing:.24em;color:var(--mint);margin-top:5px;font-weight:650}.top-actions{display:flex;gap:8px;align-items:center}.best{font-size:12px;color:var(--muted);margin-right:14px}.best strong{color:var(--gold);margin-left:7px;font-size:16px;font-variant-numeric:tabular-nums}.icon-btn{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#ffffff08;border:1px solid var(--line)}.heading{display:flex;justify-content:space-between;align-items:flex-end;margin:0 0 18px}.heading h1{margin:0;font-size:31px;letter-spacing:.09em}.heading small{display:block;font-size:10px;letter-spacing:.23em;font-weight:600;color:var(--gold);margin-bottom:7px}.tag{font-size:12px;color:var(--muted)}.tag i{display:inline-block;width:6px;height:6px;background:var(--mint);border-radius:50%;margin-right:7px}.scene{position:relative;height:min(64vw,640px);min-height:490px;border:1px solid #73cdb335;border-radius:22px;overflow:hidden;background:#07303a;isolation:isolate;box-shadow:0 28px 65px #0005}canvas{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair}.hud{position:absolute;left:26px;right:26px;top:23px;display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none}.score-label{font-size:11px;letter-spacing:.16em;color:#c6e3db}.score-value{font-size:37px;font-weight:850;letter-spacing:-.04em;color:#ffe5a2;line-height:1.15;text-shadow:0 2px 15px #001b22;font-variant-numeric:tabular-nums}.score-sub{font-size:11px;color:#aed3cf;margin-top:6px}.hud-right{display:flex;gap:14px;align-items:center}.timer{border:1px solid #c9e4d030;background:#062b32b8;border-radius:40px;padding:10px 16px;text-align:center;min-width:81px}.timer b{display:block;font-size:23px;font-variant-numeric:tabular-nums}.timer small{font-size:9px;color:var(--muted);letter-spacing:.1em}.timer.urgent{color:#ffb59e;border-color:#f48b6955}.hud-pause{pointer-events:auto;background:#062b32ba}.combo{position:absolute;left:50%;top:25px;transform:translateX(-50%) scale(.95);text-align:center;opacity:0;transition:opacity .16s,transform .16s;pointer-events:none}.combo.show{opacity:1;transform:translateX(-50%) scale(1)}.combo b{display:block;font-size:26px;font-style:italic;color:#ffe6a1;letter-spacing:.02em}.combo small{font-size:10px;color:#d5f0e6}.event{position:absolute;top:119px;left:50%;transform:translateX(-50%);max-width:80%;padding:9px 20px;border:1px solid #ffdb8544;border-radius:40px;background:#062b32d9;color:var(--gold);font-weight:700;font-size:13px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s}.event.visible{opacity:1}.dock{position:absolute;bottom:19px;left:20px;right:20px;display:flex;justify-content:space-between;align-items:flex-end;pointer-events:none}.abilities{display:flex;gap:9px;pointer-events:auto}.ability{width:77px;min-height:76px;display:flex;flex-direction:column;gap:5px;align-items:center;justify-content:center;background:#08323ce8;border:1px solid #9be8cf3a;border-radius:14px;box-shadow:0 5px 15px #0002}.ability svg{color:var(--mint);width:24px;height:24px}.ability span{font-size:12px;font-weight:700}.ability small{font-size:10px;color:#b9d7d2}.ability:disabled{opacity:.65}.upgrade{display:flex;align-items:center;gap:11px;padding:12px 16px;min-height:67px;border-radius:14px;background:linear-gradient(145deg,#f5d17e,#dbb461);color:#2d3024;text-align:left;pointer-events:auto;box-shadow:0 5px 20px #06151c66}.upgrade svg{width:23px;height:23px}.upgrade b{display:block;font-size:13px}.upgrade small{display:block;font-size:11px;opacity:.85;margin-top:3px}.upgrade:disabled{background:#173c40;color:#b9ccbf;border:1px solid #9be8cf2b;opacity:.85}.level{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);pointer-events:none;font-size:10px;letter-spacing:.17em;color:#ffdfa5;background:#08282cbd;border:1px solid #e2c07933;border-radius:15px;padding:5px 10px;white-space:nowrap}.mission{position:absolute;bottom:119px;left:24px;pointer-events:none;font-size:11px;color:#bde4db;display:flex;align-items:center;gap:8px}.mission .bar{width:58px;height:3px;background:#aad9cd24;overflow:hidden;border-radius:3px}.mission .bar i{display:block;height:100%;background:var(--mint);width:0%;transition:width .2s}.footer{display:flex;justify-content:space-between;align-items:center;color:#91b8bd;font-size:11px;gap:15px;padding-top:17px}.keys{display:flex;align-items:center;gap:15px}.key{color:#d4e6db}.footer button{font-size:11px;color:#a8c6c7;background:none;padding:5px}.overlay{position:absolute;inset:0;z-index:10;display:grid;grid-template-columns:minmax(0,1fr);place-items:center;padding:18px;background:linear-gradient(90deg,#03232c3b,#03232c11,#03232c3b);backdrop-filter:blur(3px)}.overlay[hidden]{display:none}.card{width:min(420px,100%);min-width:0;max-width:100%;padding:28px 31px 25px;background:linear-gradient(150deg,#154751f5,#082b35f7);border:1px solid #b9e2c83d;border-radius:22px;box-shadow:0 30px 80px #00161e88;text-align:center;max-height:100%;overflow:auto}.card .label{font-size:10px;font-weight:650;letter-spacing:.24em;color:var(--mint);margin-bottom:13px}.card h2{font-size:36px;line-height:1.2;margin:0 0 12px;letter-spacing:.04em}.card h2 em{font-style:normal;color:var(--gold)}.card p{font-size:13px;line-height:1.8;color:#c2dbd7;margin:0 0 18px}.welcome-icon{width:71px;height:65px;margin:0 auto 13px}.welcome-icon svg{width:100%;height:100%}.difficulty{display:flex;gap:5px;padding:5px;background:#041f28a1;border:1px solid #ffffff0c;border-radius:12px;margin:20px 0 14px}.difficulty button{flex:1;background:none;border-radius:8px;color:#a4c4c4;min-height:40px;font-size:13px}.difficulty button.selected{background:#29605f;color:#e7f8e7}.primary{width:100%;min-height:51px;border-radius:12px;background:linear-gradient(120deg,#ffe5a1,#eabd64);color:#263128;box-shadow:0 4px 0 #99794488;font-weight:800;font-size:16px;letter-spacing:.05em}.secondary{min-height:44px;margin-top:10px;background:transparent;color:#bedbd4;font-size:13px;border:1px solid #ffffff1d;border-radius:10px;padding:9px 20px}.micro{font-size:10px;color:#9bbfbc;margin-top:15px;line-height:1.7}.how{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:20px 0 17px;border-top:1px solid #ffffff13;padding-top:16px}.how span{font-size:11px;color:#accbc7;line-height:1.7}.how b{display:block;color:#e2e9d4;font-size:12px}.result-score{font-size:62px;color:var(--gold);font-weight:850;letter-spacing:-.04em;margin:7px 0;line-height:1.1}.result-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:20px 0}.result-grid div{background:#ffffff06;padding:12px 3px;border-radius:9px}.result-grid b{display:block;font-size:21px;color:#e7efdc}.result-grid span{font-size:10px;color:var(--muted)}.badge{display:inline-block;color:#ffe2a4;border:1px solid #e9ca793a;background:#d0ac5010;padding:5px 12px;border-radius:15px;font-size:11px;margin-bottom:10px}.license{text-align:left;font:10px/1.55 ui-monospace,monospace;white-space:pre-wrap;color:#b3d2cd;max-height:190px;overflow:auto;background:#041f28;padding:12px;border-radius:8px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.touch-hint{display:none}.game-active .heading small{color:#91b8bd}.freeze-veil{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 90px #80eaff44;opacity:0;transition:opacity .25s;border-radius:inherit}.freeze-veil.on{opacity:1}.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#e5eadb;color:#20352f;font-size:12px;padding:11px 20px;border-radius:9px;z-index:100;opacity:0;pointer-events:none;transition:opacity .2s}.toast.on{opacity:1}
 @media(min-width:1500px){.wrap{padding-top:32px}}@media(max-width:750px){.wrap{padding:17px 14px 13px}.top{margin-bottom:19px}.brand-name{font-size:14px}.brand-mark{width:38px;height:38px}.eyebrow{font-size:8px}.best{display:none}.top-actions{gap:6px}.icon-btn{width:42px;height:42px}.heading{margin-bottom:13px}.heading h1{font-size:26px}.tag{font-size:10px}.scene{height:calc(100svh - 205px);min-height:480px;max-height:760px;border-radius:18px}.hud{left:17px;right:15px;top:17px}.hud-right{gap:8px}.score-value{font-size:29px}.timer{padding:7px 11px;min-width:65px}.timer b{font-size:21px}.score-label{font-size:9px}.score-sub{font-size:10px}.combo{top:88px}.combo b{font-size:21px}.combo small{font-size:9px}.event{top:143px;font-size:11px;padding:8px 13px}.dock{left:10px;right:10px;bottom:21px}.abilities{gap:6px}.ability{width:57px;min-height:65px;border-radius:12px;gap:3px}.ability svg{width:20px;height:20px}.ability span{font-size:11px}.ability small{font-size:9px}.upgrade{gap:6px;padding:10px;min-height:62px;max-width:117px}.upgrade svg{width:17px}.upgrade b{font-size:11px}.upgrade small{font-size:10px}.level{font-size:8px;bottom:10px;padding:4px 6px}.mission{bottom:113px;left:16px;font-size:10px}.mission .bar{width:42px}.card{padding:22px 23px;width:min(340px,100%)}.card h2{font-size:31px}.card p{font-size:12px;margin-bottom:12px}.welcome-icon{height:48px;width:55px;margin-bottom:8px}.card .label{font-size:8px;margin-bottom:9px}.difficulty{margin:16px 0 13px}.how{margin:17px 0 10px;padding-top:13px}.micro{font-size:9px;margin-top:12px}.footer{padding-top:12px;font-size:10px;flex-wrap:wrap;gap:7px}.keys{gap:10px}.desktop-hint{display:none}.touch-hint{display:inline}.footer button{font-size:10px}.result-score{font-size:49px}.result-grid{margin:15px 0}.heading small{font-size:9px}.brand{gap:10px}}@media(max-height:600px) and (orientation:landscape){.wrap{padding:10px 18px}.top,.heading{display:none}.scene{height:calc(100svh - 55px);min-height:280px;max-height:none}.card{padding:15px 25px;width:min(450px,100%)}.card h2 br{display:none}.welcome-icon,.how,.micro{display:none}.card h2{font-size:26px}.card p{margin-bottom:5px}.difficulty{margin:10px 0}.footer{padding-top:7px}.result-grid{margin:10px 0}.result-score{font-size:35px}}@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 @media(max-width:350px){.overlay{padding:12px}.card{padding:18px 15px}.card h2{font-size:26px}.how{display:none}.welcome-icon{height:40px}.card p{font-size:11px}.card .label{font-size:7px;letter-spacing:.18em}.level{bottom:98px}.brand{gap:7px}.brand-name{font-size:12px}.eyebrow{font-size:7px}}
 .back-link{display:inline-flex;align-items:center;min-height:44px;color:#c7e4da;text-decoration:none;font-size:12px}.back-link:hover{text-decoration:underline}.footer .keys{flex-wrap:wrap;gap:8px 15px}
+
+/* Endless edition: keep the water clear and put the complete arsenal within reach. */
+.scene{height:min(52vw,560px);min-height:440px}
+.timer b{font-size:28px;line-height:1}.timer small{display:block;margin-top:4px}
+.mission{bottom:20px;left:20px;max-width:calc(50% - 76px);flex-wrap:wrap;gap:6px;line-height:1.5;font-size:11px}
+.control-panel{margin-top:14px;padding:18px 20px 20px;background:linear-gradient(135deg,#10373d,#092a32);border:1px solid #9be8cf24;border-radius:18px}
+.control-top{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:16px}
+.cannon-progress{min-width:0}
+.control-label{display:block;font-size:10px;color:var(--muted);letter-spacing:.12em;margin-bottom:7px}
+.level{position:static;display:inline-block;transform:none;font-size:12px;letter-spacing:.06em;background:none;border:0;padding:0;white-space:normal;line-height:1.5;font-weight:750}
+.effect-status{font-size:11px;line-height:1.5;color:#b4dcd3;margin:5px 0 0;min-height:17px}
+.abilities{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.ability{position:relative;width:100%;min-width:0;min-height:91px;padding:10px 5px;gap:5px;border-radius:12px;box-shadow:none;background:#092a32}
+.ability-symbol{display:flex;align-items:center;justify-content:center;gap:7px}
+.ability-symbol svg{width:25px;height:25px;flex:none}
+.ability kbd{display:grid;place-items:center;width:17px;height:18px;border:1px solid #b4dcd32a;border-radius:4px;color:#9dbfbb;font:10px/1 var(--font)}
+.ability span{font-size:12px}.ability small{font-size:11px;line-height:1.3;text-align:center;min-height:14px}
+.ability-rapid svg{color:#ffd78c}.ability-double svg{color:#ffe7a3}.ability-bomb svg{color:#ffb397}.ability-lure svg{color:#c9b5ff}
+.ability:not(:disabled):hover{background:#17444a;border-color:#9be8cf7a}.ability:disabled{opacity:.65}
+.ability.active,.ability.active:disabled{opacity:1;background:#17484a;border-color:#a5e7c8;box-shadow:inset 0 0 0 1px #a5e7c824,0 0 18px #9be8cf0b}.ability.active small{color:#e0ffdd}
+.upgrade{flex:none;min-width:196px;min-height:62px;max-width:none;justify-content:center;padding:12px 18px;gap:10px;border-radius:12px}
+.upgrade b{font-size:14px}.upgrade small{font-size:11px;line-height:1.5}.upgrade svg{width:24px;height:24px;flex:none}
+.footer button{min-height:44px;padding-inline:8px}.difficulty button{min-height:44px}.icon-btn{width:44px;height:44px;flex-shrink:0}
+@media(max-width:750px){
+ .wrap{padding:14px 12px calc(12px + env(safe-area-inset-bottom))}
+ .top{margin-bottom:15px}.heading{margin-bottom:12px}.heading small{font-size:8px}.heading h1{font-size:25px}.tag{font-size:10px}
+ .scene{height:clamp(380px,calc(100svh - 430px),580px);min-height:380px;max-height:580px}
+ .hud{left:14px;right:12px;top:14px}.hud-right{gap:7px}.score-value{font-size:28px}.score-sub{font-size:10px}.timer{padding:8px 10px;min-width:61px}.timer b{font-size:26px}.timer small{font-size:8px}
+ .combo{top:88px}.event{top:135px;font-size:11px;max-width:calc(100% - 24px);white-space:normal;text-align:center;padding:7px 12px}
+ .mission{bottom:14px;left:12px;max-width:calc(50% - 48px);font-size:9px;gap:4px}.mission .bar{width:42px}
+ .card{padding:18px 21px}.card .welcome-icon,.card .how,.card .micro{display:none}.card h2{font-size:26px}.card h2 br{display:none}.card .difficulty{margin:12px 0}.card .label{margin-bottom:9px}
+ .control-panel{margin-top:10px;padding:12px;border-radius:15px}
+ .control-top{gap:8px;margin-bottom:12px;align-items:flex-start}
+ .control-label{font-size:9px;letter-spacing:.03em;margin-bottom:5px}.level{font-size:11px}.effect-status{font-size:10px;line-height:1.5;max-width:190px;margin-top:4px}
+ .upgrade{min-width:123px;max-width:46%;min-height:61px;padding:10px;gap:6px}.upgrade svg{width:18px;height:18px}.upgrade b{font-size:12px}.upgrade small{font-size:10px}
+ .abilities{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+ .ability{min-height:72px;padding:8px 3px;gap:3px}.ability-symbol svg{width:21px;height:21px}.ability span{font-size:11px}.ability small{font-size:10px}.ability kbd{display:none}
+ .footer{padding-top:6px;gap:0 10px;line-height:1.5}.footer .keys{gap:0 12px}.back-link{font-size:11px}
+}
+@media(max-width:350px){
+ .wrap{padding-inline:10px}.brand-name{font-size:12px}.brand-mark{width:32px;height:32px}.brand{gap:7px}.top-actions{gap:4px}.eyebrow{font-size:7px;letter-spacing:.14em}
+ .heading h1{font-size:23px}.tag{font-size:9px}.heading small{letter-spacing:.13em}
+ .card{padding:17px 14px}.card h2{font-size:23px}
+ .control-panel{padding:10px}.control-label{font-size:8px}.upgrade{min-width:117px;padding:9px 7px}.upgrade b{font-size:11px}.effect-status{font-size:9px}
+ .score-value{font-size:25px}.score-sub{font-size:9px}.timer{min-width:54px;padding:8px}.hud-right{gap:5px}
+}
+@media(max-height:600px) and (orientation:landscape){
+ .wrap{padding:10px 18px}.scene{height:calc(100svh - 40px);min-height:280px;max-height:none}
+ .control-panel{padding:12px 14px}.control-top{margin-bottom:10px}.abilities{grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}.ability{min-height:72px;padding:7px 3px}.ability span{font-size:10px}.ability small{font-size:9px}
+ .mission{bottom:12px;max-width:calc(50% - 70px)}.level{position:static;transform:none}.effect-status{max-width:none}
+}
+
 </style>
 </head>
 <body>
 <div class="wrap">
 <header class="top"><div class="brand"><div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M4 18c4-8 13-12 21-5l4-3-1 10-4-3c-8 7-15 5-20 1Z"/><path d="M14 9v14M18 10v12M3 26q6-4 12 0t14 0"/></svg></div><div><div class="brand-name">富臨錢進號</div><div class="eyebrow">FULAM · ARCADE CLUB</div></div></div><div class="top-actions"><span class="best">個人最佳 <strong id="best">0</strong></span><button class="icon-btn" id="sound" aria-label="關閉音效" title="開關音效"><svg viewBox="0 0 24 24"><path d="m11 5-6 4H2v6h3l6 4Z"/><path id="soundWaves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></svg></button><button class="icon-btn" id="help" aria-label="玩法說明" title="玩法說明"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 8.8a2.5 2.5 0 1 1 4 2c-1 .7-1.5 1.2-1.5 2.7M12 17h.01"/></svg></button></div></header>
-<div class="heading"><div><small>CATCH A LITTLE FORTUNE</small><h1>捕財達人</h1></div><span class="tag"><i></i>90 秒・滿載而歸</span></div>
+<div class="heading"><div><small>CATCH A LITTLE FORTUNE</small><h1>捕財達人</h1></div><span class="tag"><i></i>無限暢玩・自由捕財</span></div>
 <main class="scene" id="scene">
-<canvas id="game" tabindex="0" aria-label="捕財遊戲畫面。按住滑鼠或手指連射；鍵盤左右方向瞄準，空白鍵發射，1 大漁網，2 冰凍，U 升級，P 暫停。"></canvas>
+<canvas id="game" tabindex="0" aria-label="捕財遊戲畫面。按住滑鼠或手指連射；鍵盤左右方向瞄準，空白鍵發射，1 大漁網，2 冰凍，3 狂熱連射，4 雙倍金幣，5 深海炸彈，6 黃金誘餌，U 升級，P 暫停。"></canvas>
 <div class="freeze-veil" id="freezeVeil"></div>
-<div class="hud"><div><div class="score-label">本局捕財</div><div class="score-value" id="score">0</div><div class="score-sub">可用金幣 <span id="wallet">0</span> · 捕獲 <span id="caught">0</span></div></div><div class="hud-right"><div class="timer" id="timerBox"><b id="timer">90</b><small>SECONDS</small></div><button class="icon-btn hud-pause" id="pause" aria-label="暫停遊戲" disabled><svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" stroke-width="3"/></svg></button></div></div>
+<div class="hud"><div><div class="score-label">本局捕財</div><div class="score-value" id="score">0</div><div class="score-sub">可用金幣 <span id="wallet">0</span> · 捕獲 <span id="caught">0</span></div></div><div class="hud-right"><div class="timer" id="timerBox"><b id="timer">∞</b><small>無限暢玩</small></div><button class="icon-btn hud-pause" id="pause" aria-label="暫停遊戲" disabled><svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" stroke-width="3"/></svg></button></div></div>
 <div class="combo" id="combo"><b id="comboNum">3 COMBO</b><small id="comboSub">連捕加成 ×1.1</small></div><div class="event" id="event" role="status"></div>
 <div class="mission" id="mission"><span id="missionLabel">小目標 · 捕獲 10 條</span><span class="bar"><i id="missionFill"></i></span></div>
-<div class="dock"><div class="abilities"><button class="ability" id="net" disabled aria-label="大漁網技能，鍵盤1"><svg viewBox="0 0 24 24"><circle cx="12" cy="10" r="7"/><path d="m7 5 10 10M5 8l9 9m-5-14 10 10M7 15 17 5M5 12l9-9m-4 14 9-9M12 17v5"/></svg><span>大漁網</span><small id="netCount">準備就緒</small></button><button class="ability" id="freeze" disabled aria-label="冰凍魚群技能，鍵盤2"><svg viewBox="0 0 24 24"><path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7M9 4l3 3 3-3M9 20l3-3 3 3M3.5 10l4-1-1-4M17.5 19l-1-4 4-1M3.5 14l4 1-1 4M17.5 5l-1 4 4 1"/></svg><span>冰凍</span><small id="freezeCount">慢速 5 秒</small></button></div><button class="upgrade" id="upgrade" disabled><svg viewBox="0 0 24 24"><path d="m5 11 7-7 7 7M5 18l7-7 7 7"/></svg><span><b id="upgradeTitle">升級炮台</b><small id="upgradePrice">80 金幣 → Lv.2</small></span></button></div><div class="level" id="level">CANNON · LV.1</div>
 <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="dialogTitle"></div>
 </main>
-<footer class="footer"><div class="keys"><a class="back-link" href="../#play">← 返回遊戲區</a><span class="key"><span class="desktop-hint">長按滑鼠</span><span class="touch-hint">長按畫面</span> · 連續發射</span><span class="desktop-hint">1 / 2 技能 · U 升級 · P 暫停</span><span class="touch-hint">捕財 · 連擊 · 升級</span></div><div>純遊戲積分 <span aria-hidden="true">·</span> <button id="credits">製作與授權</button></div></footer>
+<section class="control-panel" aria-label="炮台升級與道具">
+  <div class="control-top">
+    <div class="cannon-progress"><span class="control-label">炮台養成 · 12 級火力</span><span class="level" id="level">CANNON · LV.1</span><p id="effectStatus" class="effect-status">捕財升級，解鎖更多道具。</p></div>
+    <button class="upgrade" id="upgrade" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 11 7-7 7 7M5 18l7-7 7 7"/></svg><span><b id="upgradeTitle">升級炮台</b><small id="upgradePrice">80 金幣 → Lv.2</small></span></button>
+  </div>
+  <div class="abilities" role="group" aria-label="捕財道具">
+<button class="ability ability-net" id="net" type="button" disabled aria-label="大漁網技能，鍵盤1" aria-describedby="netCount"><span class="ability-symbol"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="10" r="7"/><path d="m7 5 10 10M5 8l9 9m-5-14 10 10M7 15 17 5M5 12l9-9m-4 14 9-9M12 17v5"/></svg><kbd aria-hidden="true">1</kbd></span><span>大漁網</span><small id="netCount">準備就緒</small></button>
+<button class="ability ability-freeze" id="freeze" type="button" disabled aria-label="冰凍技能，鍵盤2" aria-describedby="freezeCount"><span class="ability-symbol"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7M9 4l3 3 3-3M9 20l3-3 3 3M3.5 10l4-1-1-4M17.5 19l-1-4 4-1M3.5 14l4 1-1 4M17.5 5l-1 4 4 1"/></svg><kbd aria-hidden="true">2</kbd></span><span>冰凍</span><small id="freezeCount">慢速 5 秒</small></button>
+<button class="ability ability-rapid" id="rapid" type="button" disabled aria-label="狂熱連射技能，鍵盤3" aria-describedby="rapidCount"><span class="ability-symbol"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m13 2-9 12h7l-1 8 10-13h-7l1-7ZM2 5h4M1 9h3M20 16h3M18 20h4"/></svg><kbd aria-hidden="true">3</kbd></span><span>狂熱連射</span><small id="rapidCount">Lv.3 解鎖</small></button>
+<button class="ability ability-double" id="double" type="button" disabled aria-label="雙倍金幣技能，鍵盤4" aria-describedby="doubleCount"><span class="ability-symbol"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="10" r="6"/><path d="M16 8a6 6 0 1 1-9 9M8 7h2a1.5 1.5 0 0 1 0 3H8v3h3M16 13l3 4m0-4-3 4"/></svg><kbd aria-hidden="true">4</kbd></span><span>雙倍金幣</span><small id="doubleCount">Lv.5 解鎖</small></button>
+<button class="ability ability-bomb" id="bomb" type="button" disabled aria-label="深海炸彈技能，鍵盤5" aria-describedby="bombCount"><span class="ability-symbol"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="14" r="7"/><path d="m13 7 2-3 4 2M17 4l1-2M21 6h2M19 10l2 2M6 12l2-2"/></svg><kbd aria-hidden="true">5</kbd></span><span>深海炸彈</span><small id="bombCount">Lv.7 解鎖</small></button>
+<button class="ability ability-lure" id="lure" type="button" disabled aria-label="黃金誘餌技能，鍵盤6" aria-describedby="lureCount"><span class="ability-symbol"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 13c5-7 11-7 15-2l4-3v10l-4-3c-4 5-10 5-15-2ZM10 2v4M7 4h6M12 18v4"/><circle cx="7" cy="12" r=".8"/></svg><kbd aria-hidden="true">6</kbd></span><span>黃金誘餌</span><small id="lureCount">Lv.9 解鎖</small></button>
+  </div>
+</section>
+
+<footer class="footer"><div class="keys"><a class="back-link" href="../#play">← 返回遊戲區</a><span class="key"><span class="desktop-hint">長按滑鼠</span><span class="touch-hint">長按畫面</span> · 連續發射</span><span class="desktop-hint">1–6 道具 · U 升級 · P 暫停</span><span class="touch-hint">捕財 · 連擊 · 升級</span></div><div>純遊戲積分 <span aria-hidden="true">·</span> <button id="credits">製作與授權</button></div></footer>
 </div><div class="toast" id="toast" role="status"></div><div class="sr-only" id="live" aria-live="polite"></div>
 <script>
 /* Original FuLam vector artwork. No third-party image or audio assets. */
@@ -217,6 +283,13 @@ window.FuLamArt = (() => {
 
   function drawCannon(c,x,y,angle,level=1,recoil=0,time=0){
     c.save();c.translate(x,y);
+    const accent=level>=10?'#f6b1eb':level>=7?'#c6b3ff':level>=4?'#9be8cf':'#ffdc85';
+    if(level>=7){
+      c.save();c.globalAlpha=.3;c.strokeStyle=accent;c.lineWidth=1.5;
+      c.beginPath();c.ellipse(0,7,54,35,0,0,TAU);c.stroke();
+      for(let i=0;i<4;i++){const a=i*TAU/4+time*.2;ellipse(c,Math.cos(a)*54,7+Math.sin(a)*35,2.5,2.5,accent);}
+      c.restore();
+    }
     c.shadowColor='#00141d';c.shadowBlur=20;c.shadowOffsetY=7;
     ellipse(c,0,13,49,23,'#092b36','#3c6663',2);
     ellipse(c,0,7,40,29,gradient(c,0,-24,0,38,[[0,'#ffe7a3'],[.4,'#b7904d'],[.55,'#725a35'],[1,'#c7a45c']]),'#f9d687',1.2);
@@ -228,8 +301,8 @@ window.FuLamArt = (() => {
     }
     c.save();c.rotate(angle);c.translate(-Math.min(1,recoil)*6,0);
     if(level>=3){
-      for(const sy of [-11,11]){
-        c.fillStyle='#a1b4a3';c.strokeStyle='#c9e0be';c.lineWidth=1;c.beginPath();c.roundRect(16,sy-4,36,8,3);c.fill();c.stroke();
+      for(const sy of (level>=7?[-20,-11,11,20]:[-11,11])){
+        c.fillStyle='#386764';c.strokeStyle=accent;c.lineWidth=1;c.beginPath();c.roundRect(16,sy-4,level>=10?44:36,8,3);c.fill();c.stroke();
       }
     }
     c.shadowColor='#000c';c.shadowBlur=6;c.shadowOffsetY=3;
@@ -237,16 +310,16 @@ window.FuLamArt = (() => {
     c.strokeStyle='#ffe7a2';c.lineWidth=1.3;c.beginPath();c.roundRect(4,-11,57,22,7);c.fill();c.stroke();
     c.shadowColor='transparent';
     c.fillStyle='#174c50';c.beginPath();c.roundRect(18,-7,29,14,2);c.fill();
-    for(let i=0;i<3;i++){c.fillStyle='#69e2c9';c.fillRect(23+i*7,-5,3,10);}
+    for(let i=0;i<3;i++){c.fillStyle=accent;c.fillRect(23+i*7,-5,3,10);}
     c.fillStyle='#cfa45c';c.strokeStyle='#ffe7a2';c.beginPath();c.roundRect(51,-15,13,30,4);c.fill();c.stroke();
     c.fillStyle='#072e38';c.fillRect(60,-8,4,16);
     if(recoil>.2){c.shadowColor='#a2fff1';c.shadowBlur=13;ellipse(c,66,0,4+recoil*4,5,'#c8fff2');c.shadowColor='transparent';}
     c.restore();
     ellipse(c,0,0,21,21,gradient(c,-12,-19,15,22,[[0,'#a1e1c3'],[.3,'#337d77'],[1,'#0b3c48']]),'#e9c87c',2);
     ellipse(c,0,0,13,13,'#103944','#69bda4',1);
-    c.fillStyle='#f1d28b';c.font='bold 20px Georgia';c.textAlign='center';c.textBaseline='middle';c.fillText('$',0,1);
+    c.fillStyle=accent;c.font='bold 20px Georgia';c.textAlign='center';c.textBaseline='middle';c.fillText('$',0,1);
     // Ring displays cannon upgrades without requiring tiny text.
-    for(let i=0;i<Math.min(5,level);i++){ellipse(c,-((Math.min(5,level)-1)*4)+i*8,33,2.3,2.3,'#ffdc85');}
+    for(let i=0;i<12;i++){const a=Math.PI*.15+i*Math.PI*.7/11;ellipse(c,Math.cos(a)*43,7+Math.sin(a)*29,1.7,1.7,i<level?accent:'#426463');}
     c.restore();
   }
 
@@ -501,7 +574,6 @@ function create(kind, count, width, height, direction = 1) {
 window.FuLamFormations = Object.freeze({ create });
 })();
 
-
 </script>
 <script>
 const UPSTREAM_LICENSE="MIT License\n\nCopyright (c) 2026 大帅老猿\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n\n";
@@ -512,10 +584,34 @@ const UPSTREAM_LICENSE="MIT License\n\nCopyright (c) 2026 大帅老猿\n\nPermis
 const $=id=>document.getElementById(id), canvas=$('game'), ctx=canvas.getContext('2d'), scene=$('scene'), overlay=$('overlay'), Art=window.FuLamArt;
 const TAU=Math.PI*2, rnd=(a,b)=>a+Math.random()*(b-a), clamp=(v,a,b)=>Math.max(a,Math.min(b,v)), fmt=v=>Math.floor(v).toLocaleString('en-US');
 const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-let w=1000,h=600,dpr=1,mode='welcome',difficulty='normal',last=0,time=0,round=0,remaining=90,score=0,wallet=0,caught=0,shots=0,hits=0,level=1,combo=0,maxCombo=0,lastCatch=-10,missionIndex=0,bossSpawned=0;
+let w=1000,h=600,dpr=1,mode='welcome',difficulty='normal',last=0,time=0,round=0,score=0,wallet=0,caught=0,shots=0,hits=0,level=1,combo=0,maxCombo=0,lastCatch=-10,missionIndex=0,bossSpawned=0,nextBossAt=20,saveClock=5,startingBest=0;
 let fish=[],bullets=[],particles=[],rings=[],floaters=[],coins=[],aim={x:500,y:240},pointerDown=false,keys=new Set(),shotClock=0,spawnClock=0,recoil=0,shake=0,freezeTime=0,netCooldown=0,freezeCooldown=0,hudClock=0,eventTime=0,sessionStarted=false;
 let angle=-Math.PI/2,demoSpawn=0,modalReturn='welcome',oldFocus=null,toastTimeout,resultRecord=false;
-const upgradeCosts=[80,180,320];
+let rapidCooldown=0,doubleCooldown=0,bombCooldown=0,lureCooldown=0,rapidTime=0,doubleTime=0;
+// Each cost upgrades TO this level; the first cannon is free.
+const cannons=[
+ {name:'黃金新手',cost:0,damage:1,spread:[0],interval:.20,speed:690},
+ {name:'強化炮管',cost:80,damage:2,spread:[0],interval:.19,speed:710},
+ {name:'雙管快射',cost:180,damage:2,spread:[-.055,.055],interval:.19,speed:730},
+ {name:'三重散射',cost:300,damage:2,spread:[-.12,0,.12],interval:.18,speed:750},
+ {name:'黃金重炮',cost:450,damage:3,spread:[-.12,0,.12],interval:.18,speed:770},
+ {name:'疾風炮台',cost:650,damage:3,spread:[-.13,0,.13],interval:.15,speed:790},
+ {name:'深海破浪',cost:900,damage:4,spread:[-.14,0,.14],interval:.15,speed:810},
+ {name:'四連齊射',cost:1200,damage:4,spread:[-.18,-.06,.06,.18],interval:.15,speed:830},
+ {name:'金潮獵手',cost:1600,damage:5,spread:[-.18,-.06,.06,.18],interval:.14,speed:850},
+ {name:'五星火網',cost:2100,damage:5,spread:[-.22,-.11,0,.11,.22],interval:.14,speed:870},
+ {name:'海王重炮',cost:2700,damage:6,spread:[-.23,-.115,0,.115,.23],interval:.13,speed:890},
+ {name:'深海財神',cost:3400,damage:8,spread:[-.24,-.12,0,.12,.24],interval:.12,speed:920}
+];
+const maxLevel=cannons.length;
+const itemDefs={
+ net:{name:'大漁網',unlock:1,cooldown:16,ready:'範圍捕捉'},
+ freeze:{name:'冰凍',unlock:1,cooldown:20,ready:'慢速 5 秒'},
+ rapid:{name:'狂熱連射',unlock:3,cooldown:24,ready:'加速 8 秒'},
+ double:{name:'雙倍金幣',unlock:5,cooldown:30,ready:'雙倍 8 秒'},
+ bomb:{name:'深海炸彈',unlock:7,cooldown:28,ready:'大範圍爆破'},
+ lure:{name:'黃金誘餌',unlock:9,cooldown:32,ready:'召喚高值魚群'}
+};
 const defs={coin:{name:'金幣魚',value:10,hp:1,size:20,speed:72,color:'#ffe294'},save:{name:'儲蓄魚',value:20,hp:2,size:27,speed:60,color:'#9be8cf'},fund:{name:'基金鰩',value:35,hp:3,size:32,speed:52,color:'#c1b4ff'},stock:{name:'股票魚',value:55,hp:4,size:34,speed:90,color:'#ffb78b'},whale:{name:'金庫巨鯨',value:260,hp:18,size:72,speed:34,color:'#ffdb85'},shark:{name:'騙局鯊魚',value:180,hp:13,size:56,speed:59,color:'#f8a7d8'}};
 const modes={easy:{speed:.78,hp:.85,spawn:1.5,label:'輕鬆'},normal:{speed:1,hp:1,spawn:1.6,label:'標準'},hard:{speed:1.27,hp:1.2,spawn:1.35,label:'挑戰'}};
 const missions=[{n:10,bonus:50},{n:25,bonus:100},{n:45,bonus:180},{n:70,bonus:250},{n:100,bonus:400}];
@@ -526,38 +622,191 @@ function initAudio(){if(!prefs.sound)return;try{if(!ac){ac=new(window.AudioConte
 function tone(freq,duration=.1,type='sine',vol=.12,delay=0,end){if(!prefs.sound||!ac||ac.state!=='running')return;const t=ac.currentTime+delay,osc=ac.createOscillator(),gain=ac.createGain();osc.type=type;osc.frequency.setValueAtTime(freq,t);if(end)osc.frequency.exponentialRampToValueAtTime(end,t+duration);gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(vol,t+.008);gain.gain.exponentialRampToValueAtTime(.0001,t+duration);osc.connect(gain);gain.connect(audioBus);osc.start(t);osc.stop(t+duration+.02)}
 function sound(kind){if(!prefs.sound||!ac)return;if(kind==='fire'){if(ac.currentTime-lastSound<.08)return;lastSound=ac.currentTime;tone(260,.065,'triangle',.12,0,95)}else if(kind==='coin'){tone(1000,.13,'sine',.3);tone(1500,.16,'sine',.17,.055)}else if(kind==='hit')tone(160,.05,'triangle',.07);else if(kind==='upgrade'){[440,554,659,880].forEach((f,i)=>tone(f,.19,'sine',.3,i*.075))}else if(kind==='net'){tone(90,.4,'triangle',.4,0,430);tone(580,.4,'sine',.2,.08,160)}else if(kind==='freeze'){[1200,1600,2100].forEach((f,i)=>tone(f,.25,'sine',.17,i*.08))}else if(kind==='boss'){tone(110,.4,'triangle',.35);tone(165,.5,'triangle',.25,.2)}else if(kind==='end'){[523,659,784,1047].forEach((f,i)=>tone(f,.35,'sine',.25,i*.12))}}
 function syncSound(){$('sound').setAttribute('aria-label',prefs.sound?'關閉音效':'開啟音效');$('sound').setAttribute('aria-pressed',String(prefs.sound));$('soundWaves').setAttribute('d',prefs.sound?'M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14':'m16 9 6 6m0-6-6 6')}
-function resize(){const box=scene.getBoundingClientRect(),ow=w,oh=h;w=Math.round(box.width);h=Math.round(box.height);dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);if(ow&&oh){for(const f of fish){f.x*=w/ow;f.baseY=clamp(f.baseY*h/oh,...swimBounds());f.y=f.baseY}for(const b of bullets){b.x*=w/ow;b.y*=h/oh}aim.x*=w/ow;aim.y*=h/oh}if(!sessionStarted)aim={x:w/2,y:h*.4}}
+function resize(){
+ const box=scene.getBoundingClientRect(),ow=w,oh=h;
+ w=Math.max(1,Math.round(box.width));h=Math.max(1,Math.round(box.height));dpr=Math.min(devicePixelRatio||1,2);
+ canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);
+ if(ow&&oh){for(const f of fish){f.x*=w/ow;f.size=fishSize(f.type);f.baseY=clamp(f.baseY*h/oh,...swimBounds(f.size));f.y=f.baseY}
+ for(const b of bullets){b.x*=w/ow;b.y*=h/oh}aim.x*=w/ow;aim.y*=h/oh}
+ if(!sessionStarted)aim={x:w/2,y:h*.4};
+}
 new ResizeObserver(resize).observe(scene);
-function origin(){return {x:w/2,y:h-(w<310?140:55)}}
-function swimBounds(){const top=Math.min(115,h*.3);return [top,Math.max(top+35,h-170)]}
-function spawn(type,opts={}){const d=defs[type],dir=opts.dir|| (Math.random()<.5?1:-1),sz=d.size*(w<600?.8:1),y=opts.y??rnd(...swimBounds()),hp=Math.max(1,Math.round(d.hp*(opts.demo?1:modes[difficulty].hp)));fish.push({type,x:opts.x??(dir===1?-sz*3:w+sz*3),y,baseY:y,size:sz,angle:dir===1?0:Math.PI,dir,speed:opts.speed??d.speed*(opts.demo?0.55:modes[difficulty].speed),phase:opts.phase??rnd(0,TAU),hp,maxHp:hp,hit:0,dead:false,age:0,seen:false,school:!!opts.school});}
-function school(demo=false){if(fish.length>32)return;const dir=Math.random()<.5?1:-1,types=['coin','coin','save','fund'],type=types[Math.floor(Math.random()*types.length)],kind=['line','wave','v','circle'][Math.floor(Math.random()*4)],count=w<600?4:6,points=FuLamFormations.create(kind,count,w,h,dir),speed=defs[type].speed*(demo?.55:modes[difficulty].speed);const [lo,hi]=swimBounds(),ys=points.map(p=>p.y),minY=Math.min(...ys),maxY=Math.max(...ys),spread=maxY-minY,scale=Math.min(1,(hi-lo)/Math.max(1,spread)),center=clamp((minY+maxY)/2,lo+spread*scale/2,hi-spread*scale/2);for(const p of points){spawn(type,{x:p.x,y:center+(p.y-(minY+maxY)/2)*scale,dir,speed,phase:p.phase,school:true,demo})}}
+function origin(){return {x:w/2,y:h-55}}
+function swimBounds(size=38){
+ const lo=Math.min(h*.4,96+size*.72+12),hi=Math.max(lo,h-105-size*.7-12);return [lo,hi];
+}
+function fishSize(type){
+ const boss=type==='whale'||type==='shark',base=defs[type].size*(boss?1.3:1.55)*(w<600?.9:1);
+ return Math.min(base,w*(boss?.26:.16),h*.20);
+}
+function fishLimit(){return w<600?30:42}
+function mission(){
+ if(missionIndex<missions.length)return {...missions[missionIndex],previous:missionIndex?missions[missionIndex-1].n:0};
+ const extra=missionIndex-missions.length;return {n:150+extra*50,bonus:Math.min(1000,450+extra*50),previous:100+extra*50};
+}
+function persistBest(){if(score>prefs.best[difficulty]){prefs.best[difficulty]=score;save()}}
+function resetItems(){freezeTime=rapidTime=doubleTime=netCooldown=freezeCooldown=rapidCooldown=doubleCooldown=bombCooldown=lureCooldown=0}
+function cooldownFor(id){return {net:netCooldown,freeze:freezeCooldown,rapid:rapidCooldown,double:doubleCooldown,bomb:bombCooldown,lure:lureCooldown}[id]}
+function canUse(id){return mode==='playing'&&level>=itemDefs[id].unlock&&cooldownFor(id)<=0}
+function activeSeconds(id){return id==='freeze'?freezeTime:id==='rapid'?rapidTime:id==='double'?doubleTime:0}
+function visibleFish(f){return !f.dead&&f.x>-f.size&&f.x<w+f.size}
+function spawn(type,opts={}){
+ if(fish.filter(f=>!f.dead).length>=fishLimit())return false;
+ const d=defs[type],dir=opts.dir||(Math.random()<.5?1:-1),sz=fishSize(type),y=clamp(opts.y??rnd(...swimBounds(sz)),...swimBounds(sz)),boss=type==='whale'||type==='shark';
+ const growth=opts.demo?1:boss?(1+(level-1)*.5)*(1+Math.min(1.2,Math.floor(round/120)*.12)):1+(level-1)*.12;
+ const hp=Math.max(1,Math.round(d.hp*(opts.demo?1:modes[difficulty].hp)*growth));
+ const value=Math.round(d.value*(boss?1+Math.min(1.5,(level-1)*.10):1));
+ fish.push({type,x:opts.x??(dir===1?-sz*3:w+sz*3),y,baseY:y,size:sz,angle:dir===1?0:Math.PI,dir,speed:opts.speed??d.speed*(opts.demo?.55:modes[difficulty].speed),phase:opts.phase??rnd(0,TAU),hp,maxHp:hp,value,hit:0,dead:false,age:0,seen:false,school:!!opts.school});return true;
+}
+function school(demo=false){
+ if(fish.filter(f=>!f.dead).length>fishLimit()-6)return;
+ const dir=Math.random()<.5?1:-1,types=['coin','coin','save','fund'],type=types[Math.floor(Math.random()*types.length)],kind=['line','wave','v','circle'][Math.floor(Math.random()*4)],count=w<600?4:6,points=FuLamFormations.create(kind,count,w,h,dir),speed=defs[type].speed*(demo?.55:modes[difficulty].speed);
+ const [lo,hi]=swimBounds(fishSize(type)),ys=points.map(p=>p.y),minY=Math.min(...ys),maxY=Math.max(...ys),spread=maxY-minY,scale=Math.min(1,(hi-lo)/Math.max(1,spread)),center=clamp((minY+maxY)/2,lo+spread*scale/2,hi-spread*scale/2);
+ for(const p of points)spawn(type,{x:p.x,y:center+(p.y-(minY+maxY)/2)*scale,dir,speed,phase:p.phase,school:true,demo});
+}
 function seedDemo(){fish=[];for(let i=0;i<9;i++)spawn(['coin','save','fund','stock'][i%4],{demo:true,x:rnd(0,w),y:rnd(110,Math.max(150,h-145))});spawn('whale',{demo:true,x:w*.8,y:h*.35,dir:-1})}
 function notify(msg,seconds=2){$('event').textContent=msg;$('event').classList.add('visible');eventTime=seconds;$('live').textContent=msg}
 function toast(msg){$('toast').textContent=msg;$('toast').classList.add('on');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>$('toast').classList.remove('on'),2200)}
 const welcomeIcon='<div class="welcome-icon" aria-hidden="true"><svg viewBox="0 0 90 75"><defs><linearGradient id="goldg" x2=".8" y2="1"><stop stop-color="#ffeca6"/><stop offset="1" stop-color="#d1a84e"/></linearGradient></defs><path d="M10 36C29 12 57 14 70 29L84 19 81 50 69 43C48 64 21 54 10 36Z" fill="url(#goldg)"/><path d="m30 23 9-13 13 9m-22 32 12 14 10-12" fill="#ba8a38"/><circle cx="26" cy="32" r="4" fill="#174444"/><circle cx="25" cy="31" r="1.3" fill="white"/><path d="M50 26v23M55 29h-8a5 5 0 0 0 0 9h6a5 5 0 0 1 0 9h-9" fill="none" stroke="#846124" stroke-width="2.8" stroke-linecap="round"/><path d="M8 63q7-6 16 0t16 0t16 0t16 0" fill="none" stroke="#9be8cf" stroke-width="2"/></svg></div>';
 function openModal(html){oldFocus=document.activeElement;pointerDown=false;keys.clear();overlay.innerHTML='<div class="card">'+html+'</div>';overlay.hidden=false;requestAnimationFrame(()=>{const first=overlay.querySelector('[data-autofocus]')||overlay.querySelector('button');first?.focus({preventScroll:true})})}
 function closeModal(){overlay.hidden=true;overlay.innerHTML='';canvas.focus({preventScroll:true})}
-function showWelcome(){mode='welcome';sessionStarted=false;$('pause').disabled=true;document.body.classList.remove('game-active');freezeTime=0;score=0;wallet=0;caught=0;level=1;remaining=90;combo=0;missionIndex=0;bullets=[];particles=[];rings=[];floaters=[];coins=[];netCooldown=0;freezeCooldown=0;eventTime=0;seedDemo();openModal(welcomeIcon+'<div class="label">FULAM · FORTUNE FISHING</div><h2 id="dialogTitle">把好運，<br><em>網進口袋。</em></h2><p>瞄準魚群，長按連射。<br>捕財、升級，享受金幣爆開嘅一刻。</p><div class="difficulty" role="group" aria-label="遊戲難度"><button data-diff="easy">輕鬆</button><button data-diff="normal">標準</button><button data-diff="hard">挑戰</button></div><button class="primary" id="start" data-autofocus>開炮捕財 <span aria-hidden="true">↗</span></button><div class="how"><span><b>01 · 長按連射</b>發射免費</span><span><b>02 · 連捕加成</b>金幣越捕越多</span><span><b>03 · 升級炮台</b>挑戰金庫巨鯨</span></div><div class="micro">一局 90 秒 · 遊戲積分不代表投資回報</div>');overlay.querySelectorAll('[data-diff]').forEach(b=>{b.classList.toggle('selected',b.dataset.diff===difficulty);b.setAttribute('aria-pressed',String(b.dataset.diff===difficulty));b.onclick=()=>{difficulty=b.dataset.diff;overlay.querySelectorAll('[data-diff]').forEach(e=>{e.classList.toggle('selected',e===b);e.setAttribute('aria-pressed',String(e===b))});updateHud()}});$('start').onclick=start;updateHud()}
-function start(){initAudio();mode='playing';sessionStarted=true;round=0;remaining=90;score=wallet=caught=shots=hits=0;level=1;combo=maxCombo=0;lastCatch=-10;missionIndex=0;bossSpawned=0;fish=[];bullets=[];particles=[];floaters=[];coins=[];rings=[];freezeTime=netCooldown=freezeCooldown=0;shotClock=0;spawnClock=.5;pointerDown=false;keys.clear();aim={x:w/2,y:h*.35};angle=-Math.PI/2;closeModal();document.body.classList.add('game-active');for(let i=0;i<9;i++)spawn(['coin','save','coin','fund','stock'][i%5],{x:rnd(w*.06,w*.94),y:rnd(130,Math.max(150,h-200))});notify('長按連射 · 捕財後可升級炮台',3);updateHud()}
-function pause(){if(mode!=='playing')return;mode='paused';openModal('<div class="label">GAME PAUSED</div><h2 id="dialogTitle">遊戲已暫停</h2><p>按下繼續即可返回。<br>剩餘 '+Math.ceil(remaining)+' 秒，繼續捕財！</p><button class="primary" id="resume" data-autofocus>繼續遊戲</button><button class="secondary" id="restart">重新開始</button>');$('resume').onclick=resume;$('restart').onclick=showWelcome;updateHud()}
+function showWelcome(){
+ mode='welcome';sessionStarted=false;$('pause').disabled=true;document.body.classList.remove('game-active');resetItems();score=wallet=caught=round=0;level=1;combo=0;missionIndex=0;bullets=[];particles=[];rings=[];floaters=[];coins=[];eventTime=0;seedDemo();
+ openModal(welcomeIcon+'<div class="label">FULAM · ENDLESS FISHING</div><h2 id="dialogTitle">想捕幾耐，<br><em>就捕幾耐。</em></h2><p>瞄準大魚，長按連射。<br>12 級炮台、6 款道具，慢慢解鎖。</p><div class="difficulty" role="group" aria-label="遊戲難度"><button data-diff="easy">輕鬆</button><button data-diff="normal">標準</button><button data-diff="hard">挑戰</button></div><button class="primary" id="start" data-autofocus>開炮捕財 <span aria-hidden="true">↗</span></button><div class="how"><span><b>01 · 無限時</b>隨時暫停結算</span><span><b>02 · 12 級炮台</b>越升火力越強</span><span><b>03 · 6 款道具</b>升級逐步解鎖</span></div><div class="micro">遊戲積分不代表投資回報 · 最佳分數自動儲存</div>');
+ overlay.querySelectorAll('[data-diff]').forEach(b=>{b.classList.toggle('selected',b.dataset.diff===difficulty);b.setAttribute('aria-pressed',String(b.dataset.diff===difficulty));b.onclick=()=>{difficulty=b.dataset.diff;overlay.querySelectorAll('[data-diff]').forEach(e=>{e.classList.toggle('selected',e===b);e.setAttribute('aria-pressed',String(e===b))});updateHud()}});$('start').onclick=start;updateHud();
+}
+function start(){
+ initAudio();mode='playing';sessionStarted=true;round=0;score=wallet=caught=shots=hits=0;level=1;combo=maxCombo=0;lastCatch=-10;missionIndex=0;bossSpawned=0;nextBossAt=20;saveClock=5;startingBest=prefs.best[difficulty];resultRecord=false;
+ fish=[];bullets=[];particles=[];floaters=[];coins=[];rings=[];resetItems();shotClock=0;spawnClock=.5;pointerDown=false;keys.clear();aim={x:w/2,y:h*.35};angle=-Math.PI/2;closeModal();document.body.classList.add('game-active');
+ for(let i=0;i<9;i++)spawn(['coin','save','coin','fund','stock'][i%5],{x:rnd(w*.06,w*.94)});
+ notify('無限時捕財 · 升級解鎖更多道具',3);updateHud();
+}
+function pause(){
+ if(mode!=='playing')return;persistBest();mode='paused';
+ openModal('<div class="label">GAME PAUSED</div><h2 id="dialogTitle">遊戲已暫停</h2><p>無限時，隨時繼續捕財。<br>本局 '+fmt(score)+' 分 · 炮台 Lv.'+level+'</p><button class="primary" id="resume" data-autofocus>繼續遊戲</button><button class="secondary" id="finishSession">結算離場</button><div class="micro">結算後可重新開局 · 最佳分數已儲存</div>');
+ $('resume').onclick=resume;$('finishSession').onclick=()=>finish();updateHud();
+}
 function resume(){mode='playing';closeModal();initAudio();updateHud()}
-function finish(commit=true){mode='ended';pointerDown=false;keys.clear();if(commit){const prev=prefs.best[difficulty];resultRecord=score>prev;prefs.best[difficulty]=Math.max(prev,score);save();sound('end')}const record=resultRecord;const rank=score>=3500?'深海財神':score>=2000?'金庫大戶':score>=900?'捕財高手':'新晉捕手';openModal('<div class="label">YOUR CATCH OF THE DAY</div><h2 id="dialogTitle">滿載而歸！</h2><div class="result-score">'+fmt(score)+'</div><div class="badge">'+(record?'刷新個人最佳 · ':modes[difficulty].label+'模式 · ')+rank+'</div><div class="result-grid"><div><b>'+caught+'</b><span>捕獲魚數</span></div><div><b>'+maxCombo+'</b><span>最高連擊</span></div><div><b>Lv.'+level+'</b><span>炮台等級</span></div></div><p>再開一局，挑戰更大嘅魚群。</p><button class="primary" id="again" data-autofocus>再捕一局</button><button class="secondary" id="home">返回首頁</button><div class="micro">最佳紀錄儲存在此瀏覽器 · 純遊戲積分</div>');$('again').onclick=start;$('home').onclick=showWelcome;$('live').textContent='遊戲結束。本局 '+score+' 分，捕獲 '+caught+' 條。';updateHud()}
-function help(){if(mode==='help'||mode==='credits')return;modalReturn=mode;if(mode==='playing')pointerDown=false;mode='help';openModal('<div class="label">HOW TO PLAY</div><h2 id="dialogTitle">開炮就啱。</h2><p style="text-align:left">長按畫面連續發射，移動手指或滑鼠瞄準。發射唔扣金幣！<br><br>捕獲魚群累積積分，短時間連捕有額外加成。金幣可以升級炮台，升級唔會扣總積分。<br><br><b style="color:var(--gold)">大漁網</b>：在瞄準位置範圍捕捉，冷卻 16 秒。<br><b style="color:var(--mint)">冰凍</b>：魚群慢速 5 秒，冷卻 20 秒。<br><br>每局有金庫巨鯨同騙局鯊魚登場，集中火力拎大獎。</p><p style="font-size:11px">鍵盤：← → 瞄準 · 空白鍵射擊<br>1 漁網 · 2 冰凍 · U 升級 · P 暫停</p><button class="primary" id="helpClose" data-autofocus>知道了</button>');$('helpClose').onclick=returnModal;updateHud()}
+function finish(commit=true){
+ mode='ended';pointerDown=false;keys.clear();if(commit){resultRecord=score>startingBest;persistBest();sound('end')}
+ const rank=score>=20000?'深海財神':score>=8000?'金庫大戶':score>=2000?'捕財高手':'新晉捕手';
+ openModal('<div class="label">YOUR CATCH OF THE DAY</div><h2 id="dialogTitle">滿載而歸！</h2><div class="result-score">'+fmt(score)+'</div><div class="badge">'+(resultRecord?'刷新個人最佳 · ':modes[difficulty].label+'模式 · ')+rank+'</div><div class="result-grid"><div><b>'+caught+'</b><span>捕獲魚數</span></div><div><b>'+maxCombo+'</b><span>最高連擊</span></div><div><b>Lv.'+level+'</b><span>炮台等級</span></div></div><p>今次捕財 '+Math.floor(round/60)+' 分 '+Math.floor(round%60)+' 秒。<br>想玩隨時再出海。</p><button class="primary" id="again" data-autofocus>重新開局</button><button class="secondary" id="home">返回遊戲首頁</button><div class="micro">最佳紀錄儲存在此瀏覽器 · 純遊戲積分</div>');
+ $('again').onclick=start;$('home').onclick=showWelcome;$('live').textContent='本局已結算，共 '+score+' 分，捕獲 '+caught+' 條。';updateHud();
+}
+function help(){
+ if(mode==='help'||mode==='credits')return;modalReturn=mode;if(mode==='playing')pointerDown=false;mode='help';
+ openModal('<div class="label">HOW TO PLAY</div><h2 id="dialogTitle">無限捕財。</h2><p style="text-align:left">長按畫面連射，移動手指或滑鼠瞄準。發射免費，無限時；想離場可按暫停，再選「結算離場」。<br><br>金幣可升級 12 級炮台，唔會扣總積分。魚潮、巨鯨同捕財小目標會持續出現。<br><br><b>1 大漁網</b>：範圍捕捉，冷卻 16 秒。<br><b>2 冰凍</b>：慢速 5 秒，冷卻 20 秒。<br><b>3 狂熱連射 · Lv.3</b>：射速加倍 8 秒，冷卻 24 秒。<br><b>4 雙倍金幣 · Lv.5</b>：捕魚收益加倍 8 秒，冷卻 30 秒。<br><b>5 深海炸彈 · Lv.7</b>：大範圍爆破，冷卻 28 秒。<br><b>6 黃金誘餌 · Lv.9</b>：召喚高值魚群，冷卻 32 秒。</p><p style="font-size:11px">鍵盤：← → 瞄準 · 空白鍵射擊<br>1–6 道具 · U 升級 · P 暫停</p><button class="primary" id="helpClose" data-autofocus>知道了</button>');
+ $('helpClose').onclick=returnModal;updateHud();
+}
 function returnModal(){if(modalReturn==='playing'){resume()}else if(modalReturn==='paused'){mode='playing';pause()}else if(modalReturn==='ended'){mode='ended';finishWithoutSound()}else showWelcome()}
 function finishWithoutSound(){finish(false)}
 function addParticles(x,y,color,n=15){n=reduced?Math.min(n,5):n;for(let i=0;i<n&&particles.length<250;i++){const a=rnd(0,TAU),s=rnd(25,150);particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:rnd(.3,.8),max:.8,r:rnd(1.5,4),color})}}
 function floater(x,y,text,color='#ffe3a0',big=false){floaters.push({x,y,text,color,life:1.1,max:1.1,big});if(floaters.length>30)floaters.shift()}
-function capture(f){if(f.dead)return;f.dead=true;caught++;combo=round-lastCatch<2.6?combo+1:1;lastCatch=round;maxCombo=Math.max(maxCombo,combo);const mult=1+Math.min(1,Math.floor(combo/5)*.15),gain=Math.round(defs[f.type].value*mult);score+=gain;wallet+=gain;addParticles(f.x,f.y,defs[f.type].color,24);rings.push({x:f.x,y:f.y,r:10,end:f.size*2.3,life:.45,max:.45,color:defs[f.type].color,net:false});floater(f.x,f.y-15,'+'+gain,defs[f.type].color,f.type==='whale'||f.type==='shark');for(let i=0;i<(reduced?2:Math.min(8,Math.ceil(gain/15)));i++)coins.push({x:f.x+rnd(-12,12),y:f.y+rnd(-12,12),sx:f.x,sy:f.y,age:0,delay:i*.035,life:.8+Math.random()*.2,spin:rnd(0,TAU),vx:rnd(-60,60)});sound('coin');if(f.type==='whale'||f.type==='shark'){notify(f.type==='whale'?'金庫巨鯨入袋！':'騙局鯊魚擊破！',2.5);shake=reduced?0:5;sound('upgrade')}const m=missions[missionIndex];if(m&&caught>=m.n){score+=m.bonus;wallet+=m.bonus;missionIndex++;notify('捕財小目標完成 · +'+m.bonus+' 金幣',2.5);sound('upgrade')}if(caught%8===0)netCooldown=Math.max(0,netCooldown-3)}
+function capture(f){
+ if(f.dead)return;f.dead=true;caught++;combo=round-lastCatch<2.6?combo+1:1;lastCatch=round;maxCombo=Math.max(maxCombo,combo);
+ const mult=(1+Math.min(1,Math.floor(combo/5)*.15))*(doubleTime>0?2:1),gain=Math.round(f.value*mult);score+=gain;wallet+=gain;
+ addParticles(f.x,f.y,defs[f.type].color,24);rings.push({x:f.x,y:f.y,r:10,end:f.size*2.3,life:.45,max:.45,color:defs[f.type].color,net:false});floater(f.x,f.y-15,'+'+gain,defs[f.type].color,f.type==='whale'||f.type==='shark');
+ for(let i=0;i<(reduced?2:Math.min(8,Math.ceil(gain/15)))&&coins.length<180;i++)coins.push({x:f.x+rnd(-12,12),y:f.y+rnd(-12,12),sx:f.x,sy:f.y,age:0,delay:i*.035,life:.8+Math.random()*.2,spin:rnd(0,TAU),vx:rnd(-60,60)});
+ sound('coin');if(f.type==='whale'||f.type==='shark'){notify(f.type==='whale'?'金庫巨鯨入袋！':'騙局鯊魚擊破！',2.5);shake=reduced?0:5;sound('upgrade')}
+ const m=mission();if(caught>=m.n){score+=m.bonus;wallet+=m.bonus;missionIndex++;notify('捕財小目標完成 · +'+m.bonus+' 金幣',2.5);sound('upgrade')}
+ if(caught%8===0)netCooldown=Math.max(0,netCooldown-3);
+}
 function damage(f,amount){if(f.dead)return;f.hp-=amount;f.hit=.16;addParticles(f.x,f.y,'#e2f7d6',3);if(f.hp<=0)capture(f);else sound('hit')}
-function fire(){if(mode!=='playing')return;const o=origin(),spreads=level===4?[-.12,0,.12]:level===3?[-.06,.06]:[0];for(const spread of spreads){const a=angle+spread;bullets.push({x:o.x+Math.cos(a)*40,y:o.y+Math.sin(a)*40,px:o.x,py:o.y,vx:Math.cos(a)*690,vy:Math.sin(a)*690,age:0,damage:level>=2?2:1,r:level>=2?4.8:3.8})}shots+=spreads.length;recoil=1;sound('fire')}
-function useNet(){if(mode!=='playing'||netCooldown>0)return;initAudio();netCooldown=16;const x=clamp(aim.x,25,w-25),y=clamp(aim.y,110,h-140),r=w<600?112:155;rings.push({x,y,r:0,end:r,life:.75,max:.75,color:'#ffdf8d',net:true});for(const f of fish){if(!f.dead&&Math.hypot(f.x-x,f.y-y)<r+f.size*.5)damage(f,5+level*2)}shake=reduced?0:2;sound('net');updateHud()}
-function useFreeze(){if(mode!=='playing'||freezeCooldown>0)return;initAudio();freezeCooldown=20;freezeTime=5;sound('freeze');notify('冰凍時間 · 5 秒慢速捕財',2);updateHud()}
-function upgrade(){if(mode!=='playing'||level>=4)return;const price=upgradeCosts[level-1];if(wallet<price){toast('再捕 '+(price-wallet)+' 金幣就可以升級');return}wallet-=price;level++;sound('upgrade');shake=reduced?0:3;const o=origin();addParticles(o.x,o.y-20,'#ffe29a',32);notify('炮台 Lv.'+level+' · '+['','','火力提升','雙重射擊','三重散射'][level],2.5);updateHud()}
-function updateHud(){$('score').textContent=fmt(score);$('wallet').textContent=fmt(wallet);$('caught').textContent=caught;$('timer').textContent=Math.max(0,Math.ceil(remaining));$('timerBox').classList.toggle('urgent',remaining<=15);$('best').textContent=fmt(prefs.best[difficulty]);$('level').textContent='CANNON · LV.'+level;$('pause').disabled=mode!=='playing';$('net').disabled=mode!=='playing'||netCooldown>0;$('freeze').disabled=mode!=='playing'||freezeCooldown>0;$('netCount').textContent=netCooldown>0?Math.ceil(netCooldown)+' 秒冷卻':'準備就緒';$('freezeCount').textContent=freezeTime>0?Math.ceil(freezeTime)+' 秒生效':freezeCooldown>0?Math.ceil(freezeCooldown)+' 秒冷卻':'慢速 5 秒';$('upgrade').disabled=mode!=='playing'||level===4||wallet<upgradeCosts[level-1];$('upgradeTitle').textContent=level===4?'滿級火力':'升級炮台';$('upgradePrice').textContent=level===4?'三重散射已就緒':upgradeCosts[level-1]+' 金幣 → Lv.'+(level+1);const m=missions[missionIndex];$('missionLabel').textContent=m?'捕獲 '+caught+' / '+m.n+' · 獎勵 '+m.bonus:'所有捕財小目標達成';$('missionFill').style.width=m?Math.min(100,caught/m.n*100)+'%':'100%';$('combo').classList.toggle('show',combo>=3&&round-lastCatch<2.6&&mode==='playing');$('comboNum').textContent=combo+' COMBO';$('comboSub').textContent='連捕加成 ×'+(1+Math.min(1,Math.floor(combo/5)*.15)).toFixed(2);$('freezeVeil').classList.toggle('on',freezeTime>0&&mode==='playing');$('event').classList.toggle('visible',eventTime>0&&mode==='playing')}
+function fire(){
+ if(mode!=='playing'||bullets.length>180)return;const o=origin(),cannon=cannons[level-1];
+ for(const spread of cannon.spread){const a=angle+spread;bullets.push({x:o.x+Math.cos(a)*40,y:o.y+Math.sin(a)*40,px:o.x,py:o.y,vx:Math.cos(a)*cannon.speed,vy:Math.sin(a)*cannon.speed,age:0,damage:cannon.damage,r:Math.min(6,3.8+level*.25)})}
+ shots+=cannon.spread.length;recoil=1;sound('fire');
+}
+function useNet(){
+ if(!canUse('net'))return;initAudio();netCooldown=itemDefs.net.cooldown;
+ const x=clamp(aim.x,25,w-25),y=clamp(aim.y,...swimBounds(0)),r=w<600?125:175;
+ rings.push({x,y,r:0,end:r,life:.75,max:.75,color:'#ffdf8d',net:true});
+ for(const f of fish)if(visibleFish(f)&&Math.hypot(f.x-x,f.y-y)<r+f.size*.7)damage(f,5+level*2);
+ shake=reduced?0:2;sound('net');updateHud();
+}
+function useFreeze(){if(!canUse('freeze'))return;initAudio();freezeCooldown=itemDefs.freeze.cooldown;freezeTime=5;sound('freeze');notify('冰凍時間 · 5 秒慢速捕財',2);updateHud()}
+function useRapid(){if(!canUse('rapid'))return;initAudio();rapidCooldown=itemDefs.rapid.cooldown;rapidTime=8;shotClock=0;sound('upgrade');notify('狂熱連射 · 8 秒雙倍射速',2);updateHud()}
+function useDouble(){if(!canUse('double'))return;initAudio();doubleCooldown=itemDefs.double.cooldown;doubleTime=8;sound('coin');notify('雙倍金幣 · 8 秒捕魚收益 ×2',2);updateHud()}
+function useBomb(){
+ if(!canUse('bomb'))return;initAudio();bombCooldown=itemDefs.bomb.cooldown;
+ const x=clamp(aim.x,25,w-25),y=clamp(aim.y,...swimBounds(0)),r=w<600?190:280;
+ rings.push({x,y,r:0,end:r,life:.9,max:.9,color:'#ffaf85',net:false});addParticles(x,y,'#ffbd84',45);
+ for(const f of fish)if(visibleFish(f)&&Math.hypot(f.x-x,f.y-y)<r+f.size*.7)damage(f,24+level*7);
+ shake=reduced?0:7;sound('net');notify('深海炸彈 · 魚群大豐收',2);updateHud();
+}
+function useLure(){
+ if(!canUse('lure'))return;const slots=fishLimit()-fish.filter(f=>!f.dead).length;
+ if(slots<3){toast('魚群太多，捕幾條再放魚餌');return}
+ initAudio();lureCooldown=itemDefs.lure.cooldown;const count=Math.min(slots,w<600?6:9);
+ for(let i=0;i<count;i++){const type=i%3===0?'stock':'fund',x=w*(.14+.72*(i/Math.max(1,count-1)));spawn(type,{x,dir:i%2?1:-1,speed:defs[type].speed*.55,y:rnd(...swimBounds(fishSize(type)))})}
+ sound('upgrade');notify('黃金誘餌 · 高值魚群入場',2.5);updateHud();
+}
+function upgrade(){
+ if(mode!=='playing'||level>=maxLevel)return;const next=cannons[level],price=next.cost;
+ if(wallet<price){toast('再捕 '+(price-wallet)+' 金幣就可以升級');return}
+ wallet-=price;level++;sound('upgrade');shake=reduced?0:3;const o=origin();addParticles(o.x,o.y-20,'#ffe29a',32);
+ const unlocked=Object.values(itemDefs).find(item=>item.unlock===level);
+ notify('Lv.'+level+' '+next.name+(unlocked?' · 解鎖'+unlocked.name:''),3);updateHud();
+}
+function updateHud(){
+ $('score').textContent=fmt(score);$('wallet').textContent=fmt(wallet);$('caught').textContent=caught;$('timer').textContent='∞';$('timerBox').classList.remove('urgent');$('best').textContent=fmt(Math.max(prefs.best[difficulty],score));
+ $('level').textContent='LV.'+level+' / '+maxLevel+' · '+cannons[level-1].name;$('pause').disabled=mode!=='playing';
+ for(const [id,item] of Object.entries(itemDefs)){
+  const locked=level<item.unlock,cooldown=cooldownFor(id),active=activeSeconds(id),button=$(id);
+  button.disabled=mode!=='playing'||locked||cooldown>0;button.classList.toggle('active',active>0);button.classList.toggle('locked',locked);
+  $(id+'Count').textContent=locked?'Lv.'+item.unlock+' 解鎖':active>0?Math.ceil(active)+' 秒生效':cooldown>0?Math.ceil(cooldown)+' 秒冷卻':item.ready;
+  button.setAttribute('title',item.name+' · '+$(id+'Count').textContent);
+ }
+ const effects=[];if(freezeTime>0)effects.push('冰凍 '+Math.ceil(freezeTime)+'s');if(rapidTime>0)effects.push('連射 ×2 '+Math.ceil(rapidTime)+'s');if(doubleTime>0)effects.push('金幣 ×2 '+Math.ceil(doubleTime)+'s');
+ $('effectStatus').textContent=effects.join(' · ')||(level===maxLevel?'全部道具已解鎖 · 自由組合火力':'升級炮台，解鎖更多道具');
+ const next=cannons[level];$('upgrade').disabled=mode!=='playing'||!next||wallet<next.cost;$('upgradeTitle').textContent=next?'升級炮台':'已達最高等級';$('upgradePrice').textContent=next?fmt(next.cost)+' 金幣 → Lv.'+(level+1):cannons[level-1].name+' · 五重火力';
+ const m=mission();$('missionLabel').textContent='捕獲 '+caught+' / '+m.n+' · 獎勵 '+fmt(m.bonus);$('missionFill').style.width=clamp((caught-m.previous)/(m.n-m.previous)*100,0,100)+'%';
+ $('combo').classList.toggle('show',combo>=3&&round-lastCatch<2.6&&mode==='playing');$('comboNum').textContent=combo+' COMBO';$('comboSub').textContent='連捕加成 ×'+(1+Math.min(1,Math.floor(combo/5)*.15)).toFixed(2);
+ $('freezeVeil').classList.toggle('on',freezeTime>0&&mode==='playing');$('event').classList.toggle('visible',eventTime>0&&mode==='playing');
+}
 function moveFish(dt,demo=false){for(const f of fish){f.age+=dt;f.x+=f.dir*f.speed*dt*(freezeTime>0&&!demo?.18:1);f.y=f.baseY+Math.sin(time*1.8+f.phase)*(f.type==='whale'?8:12);f.angle=(f.dir===1?0:Math.PI)+Math.cos(time*1.8+f.phase)*.06;f.hit=Math.max(0,f.hit-dt);if(f.x>-f.size*2&&f.x<w+f.size*2)f.seen=true}fish=fish.filter(f=>!f.dead&&((f.dir===1&&f.x<w+f.size*4)||(f.dir===-1&&f.x>-f.size*4))&&f.age<65)}
-function step(dt,elapsed=dt){const playing=mode==='playing';if(playing){round+=elapsed;remaining=Math.max(0,90-round);if(remaining<=0){finish();return}freezeTime=Math.max(0,freezeTime-elapsed);netCooldown=Math.max(0,netCooldown-elapsed);freezeCooldown=Math.max(0,freezeCooldown-elapsed);eventTime=Math.max(0,eventTime-elapsed);if(keys.has('ArrowLeft')||keys.has('ArrowRight')){angle=clamp(angle+(keys.has('ArrowLeft')?-1:1)*dt*1.7,-Math.PI+.16,-.16);const o=origin();aim={x:o.x+Math.cos(angle)*h*.65,y:o.y+Math.sin(angle)*h*.65}}else{const o=origin();angle=clamp(Math.atan2(Math.min(aim.y,o.y-24)-o.y,aim.x-o.x),-Math.PI+.16,-.16)}shotClock-=dt;if((pointerDown||keys.has(' '))&&shotClock<=0){fire();shotClock=[0,.2,.18,.18,.17][level]}spawnClock-=dt;if(spawnClock<=0){spawnClock=modes[difficulty].spawn;if(fish.length<35){if(Math.random()<.32)school();else{const q=Math.random();spawn(q<.35?'coin':q<.6?'save':q<.82?'fund':'stock')}}}if(round>20&&bossSpawned===0){spawn('whale',{dir:1,y:h*.45});bossSpawned=1;notify('金庫巨鯨出現 · 集中火力！',3);sound('boss')}if(round>43&&bossSpawned===1){spawn('shark',{dir:-1,y:h*.4});bossSpawned=2;notify('騙局鯊魚出沒 · 擊破拎大獎',3);sound('boss')}if(round>66&&bossSpawned===2){spawn('whale',{dir:-1,y:h*.4});school();bossSpawned=3;notify('最後魚潮 · 把握機會！',3);sound('boss')}moveFish(dt);for(const b of bullets){b.px=b.x;b.py=b.y;b.x+=b.vx*dt;b.y+=b.vy*dt;b.age+=dt;for(const f of fish){if(f.dead)continue;const dx=b.x-b.px,dy=b.y-b.py,t=clamp(((f.x-b.px)*dx+(f.y-b.py)*dy)/(dx*dx+dy*dy||1),0,1),nx=b.px+dx*t,ny=b.py+dy*t;if(Math.hypot(f.x-nx,f.y-ny)<f.size*.8+b.r){b.dead=true;hits++;damage(f,b.damage);rings.push({x:nx,y:ny,r:3,end:30,life:.25,max:.25,color:'#c2f2e0',net:false});break}}}bullets=bullets.filter(b=>!b.dead&&b.x>-30&&b.x<w+30&&b.y>-30&&b.y<h+20&&b.age<3);if(round-lastCatch>2.6)combo=0;}else if(mode==='welcome'){demoSpawn-=dt;if(demoSpawn<0){demoSpawn=2.7;school(true)}moveFish(dt,true)}if(playing||mode==='welcome'){for(const p of particles){p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=75*dt}particles=particles.filter(p=>p.life>0);for(const r of rings)r.life-=dt;rings=rings.filter(r=>r.life>0);for(const f of floaters){f.life-=dt;f.y-=dt*35}floaters=floaters.filter(f=>f.life>0);for(const c of coins)c.age+=dt;coins=coins.filter(c=>c.age<c.life+c.delay);recoil=Math.max(0,recoil-dt*7);shake=Math.max(0,shake-dt*15)}hudClock-=dt;if(hudClock<=0){updateHud();hudClock=.09}}
-function draw(){ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);ctx.save();if(shake&&!reduced)ctx.translate(rnd(-shake,shake),rnd(-shake,shake));Art.drawBackground(ctx,w,h,time,reduced?.2:1);for(const f of fish){if(f.dead||f.x<-f.size*3||f.x>w+f.size*3)continue;Art.drawFish(ctx,f,time);if(f.hp<f.maxHp&&f.maxHp>2){const bw=f.size*1.2,x=f.x-bw/2,y=f.y-f.size*.85;ctx.fillStyle='#001d28aa';ctx.beginPath();ctx.roundRect(x,y,bw,4,2);ctx.fill();ctx.fillStyle=defs[f.type].color;ctx.beginPath();ctx.roundRect(x,y,bw*Math.max(0,f.hp)/f.maxHp,4,2);ctx.fill()}if(f.type==='whale'||f.type==='shark'){ctx.font='600 '+(w<600?10:11)+'px system-ui';ctx.textAlign='center';ctx.fillStyle=defs[f.type].color;ctx.shadowColor='#001d28';ctx.shadowBlur=5;ctx.fillText(defs[f.type].name+' · '+defs[f.type].value,f.x,f.y+f.size*.9+15);ctx.shadowBlur=0}}
+function step(dt,elapsed=dt){
+ const playing=mode==='playing';
+ if(playing){
+  round+=elapsed;
+  freezeTime=Math.max(0,freezeTime-elapsed);rapidTime=Math.max(0,rapidTime-elapsed);doubleTime=Math.max(0,doubleTime-elapsed);
+  netCooldown=Math.max(0,netCooldown-elapsed);freezeCooldown=Math.max(0,freezeCooldown-elapsed);rapidCooldown=Math.max(0,rapidCooldown-elapsed);doubleCooldown=Math.max(0,doubleCooldown-elapsed);bombCooldown=Math.max(0,bombCooldown-elapsed);lureCooldown=Math.max(0,lureCooldown-elapsed);eventTime=Math.max(0,eventTime-elapsed);
+  saveClock-=elapsed;if(saveClock<=0){persistBest();saveClock=5}
+  if(keys.has('ArrowLeft')||keys.has('ArrowRight')){angle=clamp(angle+(keys.has('ArrowLeft')?-1:1)*dt*1.7,-Math.PI+.16,-.16);const o=origin();aim={x:o.x+Math.cos(angle)*h*.65,y:o.y+Math.sin(angle)*h*.65}}
+  else{const o=origin();angle=clamp(Math.atan2(Math.min(aim.y,o.y-24)-o.y,aim.x-o.x),-Math.PI+.16,-.16)}
+  shotClock-=dt;if((pointerDown||keys.has(' '))&&shotClock<=0){fire();shotClock=cannons[level-1].interval/(rapidTime>0?2:1)}
+  spawnClock-=dt;if(spawnClock<=0){spawnClock=modes[difficulty].spawn*(1-Math.min(.35,(level-1)*.035));if(fish.length<fishLimit()){if(Math.random()<.32)school();else{const q=Math.random();spawn(q<.35?'coin':q<.6?'save':q<.82?'fund':'stock')}}}
+  if(round>=nextBossAt){
+   if(fish.filter(f=>!f.dead).length>=fishLimit()){const index=fish.findIndex(f=>f.type!=='whale'&&f.type!=='shark');if(index>=0)fish.splice(index,1)}
+   const type=bossSpawned%2===0?'whale':'shark';
+   if(spawn(type,{dir:bossSpawned%2===0?1:-1})){bossSpawned++;nextBossAt=round+32;notify('第 '+bossSpawned+' 波 · '+defs[type].name+'出現！',3);sound('boss');if(bossSpawned%3===0)school()}
+   else nextBossAt=round+3;
+  }
+  moveFish(dt);
+  for(const b of bullets){
+   b.px=b.x;b.py=b.y;b.x+=b.vx*dt;b.y+=b.vy*dt;b.age+=dt;
+   for(const f of fish){
+    if(f.dead)continue;
+    // Test the swept bullet segment against the enlarged fish's rotated body ellipse.
+    const cs=Math.cos(f.angle),sn=Math.sin(f.angle),rx=f.size*1.15+b.r,ry=f.size*.63+b.r;
+    const ax=((b.px-f.x)*cs+(b.py-f.y)*sn)/rx,ay=(-(b.px-f.x)*sn+(b.py-f.y)*cs)/ry;
+    const bx=((b.x-f.x)*cs+(b.y-f.y)*sn)/rx,by=(-(b.x-f.x)*sn+(b.y-f.y)*cs)/ry;
+    const dx=bx-ax,dy=by-ay,t=clamp(-(ax*dx+ay*dy)/(dx*dx+dy*dy||1),0,1);
+    if(Math.hypot(ax+dx*t,ay+dy*t)<=1){b.dead=true;hits++;damage(f,b.damage);rings.push({x:b.px+(b.x-b.px)*t,y:b.py+(b.y-b.py)*t,r:3,end:30,life:.25,max:.25,color:'#c2f2e0',net:false});break}
+   }
+  }
+  bullets=bullets.filter(b=>!b.dead&&b.x>-30&&b.x<w+30&&b.y>-30&&b.y<h+20&&b.age<3);if(round-lastCatch>2.6)combo=0;
+ }else if(mode==='welcome'){demoSpawn-=dt;if(demoSpawn<0){demoSpawn=2.7;school(true)}moveFish(dt,true)}
+ if(playing||mode==='welcome'){
+  for(const p of particles){p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=75*dt}particles=particles.filter(p=>p.life>0);
+  for(const r of rings)r.life-=dt;rings=rings.filter(r=>r.life>0).slice(-120);
+  for(const f of floaters){f.life-=dt;f.y-=dt*35}floaters=floaters.filter(f=>f.life>0);
+  for(const c of coins)c.age+=dt;coins=coins.filter(c=>c.age<c.life+c.delay);
+  recoil=Math.max(0,recoil-dt*7);shake=Math.max(0,shake-dt*15);
+ }
+ hudClock-=dt;if(hudClock<=0){updateHud();hudClock=.09}
+}
+function draw(){ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);ctx.save();if(shake&&!reduced)ctx.translate(rnd(-shake,shake),rnd(-shake,shake));Art.drawBackground(ctx,w,h,time,reduced?.2:1);for(const f of fish){if(f.dead||f.x<-f.size*3||f.x>w+f.size*3)continue;Art.drawFish(ctx,f,time);if(f.hp<f.maxHp&&f.maxHp>2){const bw=f.size*1.2,x=f.x-bw/2,y=f.y-f.size*.85;ctx.fillStyle='#001d28aa';ctx.beginPath();ctx.roundRect(x,y,bw,4,2);ctx.fill();ctx.fillStyle=defs[f.type].color;ctx.beginPath();ctx.roundRect(x,y,bw*Math.max(0,f.hp)/f.maxHp,4,2);ctx.fill()}if(f.type==='whale'||f.type==='shark'){ctx.font='600 '+(w<600?10:11)+'px system-ui';ctx.textAlign='center';ctx.fillStyle=defs[f.type].color;ctx.shadowColor='#001d28';ctx.shadowBlur=5;ctx.fillText(defs[f.type].name+' · '+f.value,f.x,f.y+f.size*.9+15);ctx.shadowBlur=0}}
 for(const b of bullets){ctx.strokeStyle='#ffdc7f55';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(b.x-b.vx*.024,b.y-b.vy*.024);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.fillStyle='#fff1bd';ctx.shadowColor='#ffd269';ctx.shadowBlur=10;ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,TAU);ctx.fill();ctx.shadowBlur=0}
 for(const r of rings){const progress=1-r.life/r.max,rad=r.end*(1-Math.pow(1-progress,3)),alpha=r.life/r.max;ctx.save();ctx.globalAlpha=alpha;ctx.strokeStyle=r.color;ctx.lineWidth=r.net?2:1.4;ctx.beginPath();ctx.arc(r.x,r.y,rad,0,TAU);ctx.stroke();if(r.net){ctx.globalAlpha=alpha*.17;ctx.fillStyle=r.color;ctx.fill();ctx.globalAlpha=alpha*.65;ctx.beginPath();ctx.arc(r.x,r.y,rad,0,TAU);ctx.clip();ctx.lineWidth=1;for(let v=-rad*2;v<rad*2;v+=22){ctx.beginPath();ctx.moveTo(r.x-rad,r.y+v-rad);ctx.lineTo(r.x+rad,r.y+v+rad);ctx.stroke();ctx.beginPath();ctx.moveTo(r.x-rad,r.y+v+rad);ctx.lineTo(r.x+rad,r.y+v-rad);ctx.stroke()}}ctx.restore()}
 for(const p of particles){ctx.globalAlpha=clamp(p.life/p.max,0,1);ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,TAU);ctx.fill()}ctx.globalAlpha=1;
@@ -568,11 +817,11 @@ for(const f of floaters){ctx.save();ctx.globalAlpha=clamp(f.life/.3,0,1);ctx.fon
 function loop(now){const elapsed=last?Math.max(0,(now-last)/1000):0,dt=Math.min(.04,elapsed);last=now;if(mode==='playing'||mode==='welcome')time+=dt;step(dt,elapsed);draw();requestAnimationFrame(loop)}
 function locate(e){const r=canvas.getBoundingClientRect();aim={x:(e.clientX-r.left)*w/r.width,y:(e.clientY-r.top)*h/r.height}}
 canvas.addEventListener('pointerdown',e=>{if(mode!=='playing'||(e.pointerType==='mouse'&&e.button!==0))return;e.preventDefault();initAudio();locate(e);pointerDown=true;shotClock=0;canvas.setPointerCapture(e.pointerId);canvas.focus({preventScroll:true})});canvas.addEventListener('pointermove',e=>{if(mode==='playing')locate(e)});canvas.addEventListener('pointerup',()=>pointerDown=false);canvas.addEventListener('pointercancel',()=>pointerDown=false);canvas.addEventListener('lostpointercapture',()=>pointerDown=false);canvas.addEventListener('contextmenu',e=>e.preventDefault());
-window.addEventListener('keydown',e=>{if(!overlay.hidden){if(e.key==='Tab'){const els=[...overlay.querySelectorAll('button:not(:disabled),a[href],input')],first=els[0],end=els.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();end?.focus()}else if(!e.shiftKey&&document.activeElement===end){e.preventDefault();first?.focus()}}if(e.key==='Escape'){if(mode==='paused')resume();else if(mode==='help'||mode==='credits')returnModal()}return}if(mode!=='playing')return;if([' ','ArrowLeft','ArrowRight'].includes(e.key)){if(document.activeElement!==canvas&&document.activeElement?.tagName==='BUTTON')return;e.preventDefault();keys.add(e.key);initAudio()}if(e.repeat)return;const k=e.key.toLowerCase();if(k==='1')useNet();if(k==='2')useFreeze();if(k==='u')upgrade();if(k==='p'||k==='escape')pause()});window.addEventListener('keyup',e=>keys.delete(e.key));window.addEventListener('blur',()=>{pointerDown=false;keys.clear();if(mode==='playing')pause()});document.addEventListener('visibilitychange',()=>{if(document.hidden&&mode==='playing')pause()});
-$('sound').onclick=()=>{prefs.sound=!prefs.sound;if(prefs.sound)initAudio();syncSound();save()};$('pause').onclick=pause;$('help').onclick=help;$('net').onclick=useNet;$('freeze').onclick=useFreeze;$('upgrade').onclick=upgrade;
-$('credits').onclick=()=>{if(mode==='help'||mode==='credits')return;modalReturn=mode;mode='credits';openModal('<div class="label">MADE FOR FULAM</div><h2 id="dialogTitle">捕財達人</h2><p style="text-align:left">富臨錢進號 · 離線單機版 v1.0<br>沿用 Fishing Joy 的魚群編排程式，重製為 Canvas 遊戲。畫面、魚種、炮台、音效及計分玩法為此版本重新製作。<br><br>原始專案：imtonyjaa/ggemu-fishing-joy<br>授權：MIT · Copyright (c) 2026 大帅老猿</p><pre class="license" id="licenseText"></pre><button class="primary" id="creditsClose" data-autofocus>返回遊戲</button>');$('licenseText').textContent=UPSTREAM_LICENSE;$('creditsClose').onclick=returnModal;updateHud()};
+window.addEventListener('keydown',e=>{if(!overlay.hidden){if(e.key==='Tab'){const els=[...overlay.querySelectorAll('button:not(:disabled),a[href],input')],first=els[0],end=els.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();end?.focus()}else if(!e.shiftKey&&document.activeElement===end){e.preventDefault();first?.focus()}}if(e.key==='Escape'){if(mode==='paused')resume();else if(mode==='help'||mode==='credits')returnModal()}return}if(mode!=='playing')return;if([' ','ArrowLeft','ArrowRight'].includes(e.key)){if(document.activeElement!==canvas&&document.activeElement?.tagName==='BUTTON')return;e.preventDefault();keys.add(e.key);initAudio()}if(e.repeat)return;const k=e.key.toLowerCase();if(k==='1')useNet();if(k==='2')useFreeze();if(k==='3')useRapid();if(k==='4')useDouble();if(k==='5')useBomb();if(k==='6')useLure();if(k==='u')upgrade();if(k==='p'||k==='escape')pause()});window.addEventListener('keyup',e=>keys.delete(e.key));window.addEventListener('blur',()=>{pointerDown=false;keys.clear();if(mode==='playing')pause()});document.addEventListener('visibilitychange',()=>{if(document.hidden){if(sessionStarted)persistBest();if(mode==='playing')pause()}});window.addEventListener('pagehide',()=>{if(sessionStarted)persistBest()});
+$('sound').onclick=()=>{prefs.sound=!prefs.sound;if(prefs.sound)initAudio();syncSound();save()};$('pause').onclick=pause;$('help').onclick=help;$('net').onclick=useNet;$('freeze').onclick=useFreeze;$('rapid').onclick=useRapid;$('double').onclick=useDouble;$('bomb').onclick=useBomb;$('lure').onclick=useLure;$('upgrade').onclick=upgrade;
+$('credits').onclick=()=>{if(mode==='help'||mode==='credits')return;modalReturn=mode;mode='credits';openModal('<div class="label">MADE FOR FULAM</div><h2 id="dialogTitle">捕財達人</h2><p style="text-align:left">富臨錢進號 · 無限時單機版 v2.0<br>沿用 Fishing Joy 的魚群編排程式，重製為 Canvas 遊戲。畫面、魚種、炮台、音效及計分玩法為此版本重新製作。<br><br>原始專案：imtonyjaa/ggemu-fishing-joy<br>授權：MIT · Copyright (c) 2026 大帅老猿</p><pre class="license" id="licenseText"></pre><button class="primary" id="creditsClose" data-autofocus>返回遊戲</button>');$('licenseText').textContent=UPSTREAM_LICENSE;$('creditsClose').onclick=returnModal;updateHud()};
 // Small read-only state snapshot makes local gameplay QA possible without changing outcomes.
-window.FuLamGame={getState:()=>({mode,difficulty,score,wallet,caught,shots,hits,level,remaining,round,maxCombo,netCooldown,freezeCooldown,freezeTime,fishCount:fish.length,fish:fish.filter(f=>!f.dead&&f.x>0&&f.x<w).map(f=>({x:f.x,y:f.y,hp:f.hp,type:f.type})),width:w,height:h}),version:'1.0'};
+window.FuLamGame={getState:()=>({mode,difficulty,endless:true,timeLimit:null,score,wallet,caught,shots,hits,level,maxLevel,round,maxCombo,missionIndex,mission:mission(),bossSpawned,nextBossAt,netCooldown,freezeCooldown,freezeTime,rapidCooldown,doubleCooldown,bombCooldown,lureCooldown,rapidTime,doubleTime,cannon:{...cannons[level-1],spread:[...cannons[level-1].spread]},nextUpgradeCost:cannons[level]?.cost??null,abilities:Object.fromEntries(Object.entries(itemDefs).map(([id,item])=>[id,{...item,unlocked:level>=item.unlock,cooldownRemaining:cooldownFor(id),activeRemaining:activeSeconds(id)}])),fishCount:fish.filter(f=>!f.dead).length,bulletCount:bullets.length,particleCount:particles.length,coinCount:coins.length,ringCount:rings.length,fish:fish.filter(f=>!f.dead&&f.x>0&&f.x<w).map(f=>({x:f.x,y:f.y,baseY:f.baseY,hp:f.hp,maxHp:f.maxHp,type:f.type,size:f.size,value:f.value,bounds:swimBounds(f.size)})),width:w,height:h}),version:'2.0'};
 resize();syncSound();showWelcome();requestAnimationFrame(loop);
 })();
 
