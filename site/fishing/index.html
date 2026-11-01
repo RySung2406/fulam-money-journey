@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#082b30"><meta name="description" content="富臨錢進號・捕財達人。長按連射，連擊捕財，升級你的黃金炮台。免費離線單機小遊戲。">
+<title>捕財達人 · 富臨錢進號</title>
+<style>
+:root{color-scheme:dark;--bg:#061c23;--panel:#0d343b;--line:#ffffff1d;--gold:#ffdb85;--mint:#9be8cf;--white:#f7f6e9;--muted:#a7c8ca;--font:system-ui,-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 20% 0%,#184346 0,transparent 50%),var(--bg);color:var(--white);font-family:var(--font);min-height:100svh}button{font:inherit;cursor:pointer;color:inherit;border:0;-webkit-tap-highlight-color:transparent}button:focus-visible,a:focus-visible,canvas:focus-visible{outline:3px solid #d7fff0;outline-offset:4px}button:disabled{cursor:not-allowed;opacity:.5}button:not(:disabled):active{transform:translateY(2px)}button{transition:background .16s,transform .16s,opacity .16s}button svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}button:hover:not(:disabled){filter:brightness(1.1)}.wrap{max-width:1312px;margin:auto;padding:24px 32px 16px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:23px}.brand{display:flex;align-items:center;gap:13px}.brand-mark{width:45px;height:45px;border:1px solid #e5cb8755;border-radius:50%;display:grid;place-items:center;color:var(--gold);background:#ffda7a08}.brand-mark svg{width:28px;fill:none;stroke:currentColor;stroke-width:1.6}.brand-name{font-size:17px;font-weight:800;letter-spacing:.13em}.eyebrow{white-space:nowrap;font-size:10px;letter-spacing:.24em;color:var(--mint);margin-top:5px;font-weight:650}.top-actions{display:flex;gap:8px;align-items:center}.best{font-size:12px;color:var(--muted);margin-right:14px}.best strong{color:var(--gold);margin-left:7px;font-size:16px;font-variant-numeric:tabular-nums}.icon-btn{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#ffffff08;border:1px solid var(--line)}.heading{display:flex;justify-content:space-between;align-items:flex-end;margin:0 0 18px}.heading h1{margin:0;font-size:31px;letter-spacing:.09em}.heading small{display:block;font-size:10px;letter-spacing:.23em;font-weight:600;color:var(--gold);margin-bottom:7px}.tag{font-size:12px;color:var(--muted)}.tag i{display:inline-block;width:6px;height:6px;background:var(--mint);border-radius:50%;margin-right:7px}.scene{position:relative;height:min(64vw,640px);min-height:490px;border:1px solid #73cdb335;border-radius:22px;overflow:hidden;background:#07303a;isolation:isolate;box-shadow:0 28px 65px #0005}canvas{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair}.hud{position:absolute;left:26px;right:26px;top:23px;display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none}.score-label{font-size:11px;letter-spacing:.16em;color:#c6e3db}.score-value{font-size:37px;font-weight:850;letter-spacing:-.04em;color:#ffe5a2;line-height:1.15;text-shadow:0 2px 15px #001b22;font-variant-numeric:tabular-nums}.score-sub{font-size:11px;color:#aed3cf;margin-top:6px}.hud-right{display:flex;gap:14px;align-items:center}.timer{border:1px solid #c9e4d030;background:#062b32b8;border-radius:40px;padding:10px 16px;text-align:center;min-width:81px}.timer b{display:block;font-size:23px;font-variant-numeric:tabular-nums}.timer small{font-size:9px;color:var(--muted);letter-spacing:.1em}.timer.urgent{color:#ffb59e;border-color:#f48b6955}.hud-pause{pointer-events:auto;background:#062b32ba}.combo{position:absolute;left:50%;top:25px;transform:translateX(-50%) scale(.95);text-align:center;opacity:0;transition:opacity .16s,transform .16s;pointer-events:none}.combo.show{opacity:1;transform:translateX(-50%) scale(1)}.combo b{display:block;font-size:26px;font-style:italic;color:#ffe6a1;letter-spacing:.02em}.combo small{font-size:10px;color:#d5f0e6}.event{position:absolute;top:119px;left:50%;transform:translateX(-50%);max-width:80%;padding:9px 20px;border:1px solid #ffdb8544;border-radius:40px;background:#062b32d9;color:var(--gold);font-weight:700;font-size:13px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s}.event.visible{opacity:1}.dock{position:absolute;bottom:19px;left:20px;right:20px;display:flex;justify-content:space-between;align-items:flex-end;pointer-events:none}.abilities{display:flex;gap:9px;pointer-events:auto}.ability{width:77px;min-height:76px;display:flex;flex-direction:column;gap:5px;align-items:center;justify-content:center;background:#08323ce8;border:1px solid #9be8cf3a;border-radius:14px;box-shadow:0 5px 15px #0002}.ability svg{color:var(--mint);width:24px;height:24px}.ability span{font-size:12px;font-weight:700}.ability small{font-size:10px;color:#b9d7d2}.ability:disabled{opacity:.65}.upgrade{display:flex;align-items:center;gap:11px;padding:12px 16px;min-height:67px;border-radius:14px;background:linear-gradient(145deg,#f5d17e,#dbb461);color:#2d3024;text-align:left;pointer-events:auto;box-shadow:0 5px 20px #06151c66}.upgrade svg{width:23px;height:23px}.upgrade b{display:block;font-size:13px}.upgrade small{display:block;font-size:11px;opacity:.85;margin-top:3px}.upgrade:disabled{background:#173c40;color:#b9ccbf;border:1px solid #9be8cf2b;opacity:.85}.level{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);pointer-events:none;font-size:10px;letter-spacing:.17em;color:#ffdfa5;background:#08282cbd;border:1px solid #e2c07933;border-radius:15px;padding:5px 10px;white-space:nowrap}.mission{position:absolute;bottom:119px;left:24px;pointer-events:none;font-size:11px;color:#bde4db;display:flex;align-items:center;gap:8px}.mission .bar{width:58px;height:3px;background:#aad9cd24;overflow:hidden;border-radius:3px}.mission .bar i{display:block;height:100%;background:var(--mint);width:0%;transition:width .2s}.footer{display:flex;justify-content:space-between;align-items:center;color:#91b8bd;font-size:11px;gap:15px;padding-top:17px}.keys{display:flex;align-items:center;gap:15px}.key{color:#d4e6db}.footer button{font-size:11px;color:#a8c6c7;background:none;padding:5px}.overlay{position:absolute;inset:0;z-index:10;display:grid;grid-template-columns:minmax(0,1fr);place-items:center;padding:18px;background:linear-gradient(90deg,#03232c3b,#03232c11,#03232c3b);backdrop-filter:blur(3px)}.overlay[hidden]{display:none}.card{width:min(420px,100%);min-width:0;max-width:100%;padding:28px 31px 25px;background:linear-gradient(150deg,#154751f5,#082b35f7);border:1px solid #b9e2c83d;border-radius:22px;box-shadow:0 30px 80px #00161e88;text-align:center;max-height:100%;overflow:auto}.card .label{font-size:10px;font-weight:650;letter-spacing:.24em;color:var(--mint);margin-bottom:13px}.card h2{font-size:36px;line-height:1.2;margin:0 0 12px;letter-spacing:.04em}.card h2 em{font-style:normal;color:var(--gold)}.card p{font-size:13px;line-height:1.8;color:#c2dbd7;margin:0 0 18px}.welcome-icon{width:71px;height:65px;margin:0 auto 13px}.welcome-icon svg{width:100%;height:100%}.difficulty{display:flex;gap:5px;padding:5px;background:#041f28a1;border:1px solid #ffffff0c;border-radius:12px;margin:20px 0 14px}.difficulty button{flex:1;background:none;border-radius:8px;color:#a4c4c4;min-height:40px;font-size:13px}.difficulty button.selected{background:#29605f;color:#e7f8e7}.primary{width:100%;min-height:51px;border-radius:12px;background:linear-gradient(120deg,#ffe5a1,#eabd64);color:#263128;box-shadow:0 4px 0 #99794488;font-weight:800;font-size:16px;letter-spacing:.05em}.secondary{min-height:44px;margin-top:10px;background:transparent;color:#bedbd4;font-size:13px;border:1px solid #ffffff1d;border-radius:10px;padding:9px 20px}.micro{font-size:10px;color:#9bbfbc;margin-top:15px;line-height:1.7}.how{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:20px 0 17px;border-top:1px solid #ffffff13;padding-top:16px}.how span{font-size:11px;color:#accbc7;line-height:1.7}.how b{display:block;color:#e2e9d4;font-size:12px}.result-score{font-size:62px;color:var(--gold);font-weight:850;letter-spacing:-.04em;margin:7px 0;line-height:1.1}.result-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:20px 0}.result-grid div{background:#ffffff06;padding:12px 3px;border-radius:9px}.result-grid b{display:block;font-size:21px;color:#e7efdc}.result-grid span{font-size:10px;color:var(--muted)}.badge{display:inline-block;color:#ffe2a4;border:1px solid #e9ca793a;background:#d0ac5010;padding:5px 12px;border-radius:15px;font-size:11px;margin-bottom:10px}.license{text-align:left;font:10px/1.55 ui-monospace,monospace;white-space:pre-wrap;color:#b3d2cd;max-height:190px;overflow:auto;background:#041f28;padding:12px;border-radius:8px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.touch-hint{display:none}.game-active .heading small{color:#91b8bd}.freeze-veil{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 90px #80eaff44;opacity:0;transition:opacity .25s;border-radius:inherit}.freeze-veil.on{opacity:1}.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#e5eadb;color:#20352f;font-size:12px;padding:11px 20px;border-radius:9px;z-index:100;opacity:0;pointer-events:none;transition:opacity .2s}.toast.on{opacity:1}
+@media(min-width:1500px){.wrap{padding-top:32px}}@media(max-width:750px){.wrap{padding:17px 14px 13px}.top{margin-bottom:19px}.brand-name{font-size:14px}.brand-mark{width:38px;height:38px}.eyebrow{font-size:8px}.best{display:none}.top-actions{gap:6px}.icon-btn{width:42px;height:42px}.heading{margin-bottom:13px}.heading h1{font-size:26px}.tag{font-size:10px}.scene{height:calc(100svh - 205px);min-height:480px;max-height:760px;border-radius:18px}.hud{left:17px;right:15px;top:17px}.hud-right{gap:8px}.score-value{font-size:29px}.timer{padding:7px 11px;min-width:65px}.timer b{font-size:21px}.score-label{font-size:9px}.score-sub{font-size:10px}.combo{top:88px}.combo b{font-size:21px}.combo small{font-size:9px}.event{top:143px;font-size:11px;padding:8px 13px}.dock{left:10px;right:10px;bottom:21px}.abilities{gap:6px}.ability{width:57px;min-height:65px;border-radius:12px;gap:3px}.ability svg{width:20px;height:20px}.ability span{font-size:11px}.ability small{font-size:9px}.upgrade{gap:6px;padding:10px;min-height:62px;max-width:117px}.upgrade svg{width:17px}.upgrade b{font-size:11px}.upgrade small{font-size:10px}.level{font-size:8px;bottom:10px;padding:4px 6px}.mission{bottom:113px;left:16px;font-size:10px}.mission .bar{width:42px}.card{padding:22px 23px;width:min(340px,100%)}.card h2{font-size:31px}.card p{font-size:12px;margin-bottom:12px}.welcome-icon{height:48px;width:55px;margin-bottom:8px}.card .label{font-size:8px;margin-bottom:9px}.difficulty{margin:16px 0 13px}.how{margin:17px 0 10px;padding-top:13px}.micro{font-size:9px;margin-top:12px}.footer{padding-top:12px;font-size:10px;flex-wrap:wrap;gap:7px}.keys{gap:10px}.desktop-hint{display:none}.touch-hint{display:inline}.footer button{font-size:10px}.result-score{font-size:49px}.result-grid{margin:15px 0}.heading small{font-size:9px}.brand{gap:10px}}@media(max-height:600px) and (orientation:landscape){.wrap{padding:10px 18px}.top,.heading{display:none}.scene{height:calc(100svh - 55px);min-height:280px;max-height:none}.card{padding:15px 25px;width:min(450px,100%)}.card h2 br{display:none}.welcome-icon,.how,.micro{display:none}.card h2{font-size:26px}.card p{margin-bottom:5px}.difficulty{margin:10px 0}.footer{padding-top:7px}.result-grid{margin:10px 0}.result-score{font-size:35px}}@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+@media(max-width:350px){.overlay{padding:12px}.card{padding:18px 15px}.card h2{font-size:26px}.how{display:none}.welcome-icon{height:40px}.card p{font-size:11px}.card .label{font-size:7px;letter-spacing:.18em}.level{bottom:98px}.brand{gap:7px}.brand-name{font-size:12px}.eyebrow{font-size:7px}}
+.back-link{display:inline-flex;align-items:center;min-height:44px;color:#c7e4da;text-decoration:none;font-size:12px}.back-link:hover{text-decoration:underline}.footer .keys{flex-wrap:wrap;gap:8px 15px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><div class="brand"><div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M4 18c4-8 13-12 21-5l4-3-1 10-4-3c-8 7-15 5-20 1Z"/><path d="M14 9v14M18 10v12M3 26q6-4 12 0t14 0"/></svg></div><div><div class="brand-name">富臨錢進號</div><div class="eyebrow">FULAM · ARCADE CLUB</div></div></div><div class="top-actions"><span class="best">個人最佳 <strong id="best">0</strong></span><button class="icon-btn" id="sound" aria-label="關閉音效" title="開關音效"><svg viewBox="0 0 24 24"><path d="m11 5-6 4H2v6h3l6 4Z"/><path id="soundWaves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></svg></button><button class="icon-btn" id="help" aria-label="玩法說明" title="玩法說明"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 8.8a2.5 2.5 0 1 1 4 2c-1 .7-1.5 1.2-1.5 2.7M12 17h.01"/></svg></button></div></header>
+<div class="heading"><div><small>CATCH A LITTLE FORTUNE</small><h1>捕財達人</h1></div><span class="tag"><i></i>90 秒・滿載而歸</span></div>
+<main class="scene" id="scene">
+<canvas id="game" tabindex="0" aria-label="捕財遊戲畫面。按住滑鼠或手指連射；鍵盤左右方向瞄準，空白鍵發射，1 大漁網，2 冰凍，U 升級，P 暫停。"></canvas>
+<div class="freeze-veil" id="freezeVeil"></div>
+<div class="hud"><div><div class="score-label">本局捕財</div><div class="score-value" id="score">0</div><div class="score-sub">可用金幣 <span id="wallet">0</span> · 捕獲 <span id="caught">0</span></div></div><div class="hud-right"><div class="timer" id="timerBox"><b id="timer">90</b><small>SECONDS</small></div><button class="icon-btn hud-pause" id="pause" aria-label="暫停遊戲" disabled><svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" stroke-width="3"/></svg></button></div></div>
+<div class="combo" id="combo"><b id="comboNum">3 COMBO</b><small id="comboSub">連捕加成 ×1.1</small></div><div class="event" id="event" role="status"></div>
+<div class="mission" id="mission"><span id="missionLabel">小目標 · 捕獲 10 條</span><span class="bar"><i id="missionFill"></i></span></div>
+<div class="dock"><div class="abilities"><button class="ability" id="net" disabled aria-label="大漁網技能，鍵盤1"><svg viewBox="0 0 24 24"><circle cx="12" cy="10" r="7"/><path d="m7 5 10 10M5 8l9 9m-5-14 10 10M7 15 17 5M5 12l9-9m-4 14 9-9M12 17v5"/></svg><span>大漁網</span><small id="netCount">準備就緒</small></button><button class="ability" id="freeze" disabled aria-label="冰凍魚群技能，鍵盤2"><svg viewBox="0 0 24 24"><path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7M9 4l3 3 3-3M9 20l3-3 3 3M3.5 10l4-1-1-4M17.5 19l-1-4 4-1M3.5 14l4 1-1 4M17.5 5l-1 4 4 1"/></svg><span>冰凍</span><small id="freezeCount">慢速 5 秒</small></button></div><button class="upgrade" id="upgrade" disabled><svg viewBox="0 0 24 24"><path d="m5 11 7-7 7 7M5 18l7-7 7 7"/></svg><span><b id="upgradeTitle">升級炮台</b><small id="upgradePrice">80 金幣 → Lv.2</small></span></button></div><div class="level" id="level">CANNON · LV.1</div>
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="dialogTitle"></div>
+</main>
+<footer class="footer"><div class="keys"><a class="back-link" href="../#play">← 返回遊戲區</a><span class="key"><span class="desktop-hint">長按滑鼠</span><span class="touch-hint">長按畫面</span> · 連續發射</span><span class="desktop-hint">1 / 2 技能 · U 升級 · P 暫停</span><span class="touch-hint">捕財 · 連擊 · 升級</span></div><div>純遊戲積分 <span aria-hidden="true">·</span> <button id="credits">製作與授權</button></div></footer>
+</div><div class="toast" id="toast" role="status"></div><div class="sr-only" id="live" aria-live="polite"></div>
+<script>
+/* Original FuLam vector artwork. No third-party image or audio assets. */
+window.FuLamArt = (() => {
+  'use strict';
+  const sprites = new Map();
+  const backgrounds = new Map();
+  const palettes = {
+    coin: ['#fff2a7', '#ffcb4e', '#b66a1f', '#ffed93'],
+    save: ['#c2ffe2', '#40dca3', '#087b70', '#ffe4a1'],
+    fund: ['#e8d9ff', '#b39af4', '#5143a4', '#aaf7f1'],
+    stock: ['#ffe4b3', '#ff8c6b', '#b54462', '#ffe1a2'],
+    whale: ['#95efdf', '#269b99', '#075e73', '#ffd77e'],
+    shark: ['#f8c7ee', '#bd66ab', '#4e316f', '#ffcb83']
+  };
+  const TAU = Math.PI * 2;
+  const ellipse = (c, x, y, rx, ry, fill, stroke, width = 1) => {
+    c.beginPath(); c.ellipse(x, y, rx, ry, 0, 0, TAU);
+    if (fill) { c.fillStyle = fill; c.fill(); }
+    if (stroke) { c.strokeStyle = stroke; c.lineWidth = width; c.stroke(); }
+  };
+  const path = (c, d, fill, stroke, width = 1) => {
+    const p = new Path2D(d);
+    if (fill) { c.fillStyle = fill; c.fill(p); }
+    if (stroke) { c.strokeStyle = stroke; c.lineWidth = width; c.stroke(p); }
+  };
+  const gradient = (c, x1, y1, x2, y2, stops) => {
+    const g = c.createLinearGradient(x1, y1, x2, y2);
+    stops.forEach(([s, col]) => g.addColorStop(s, col)); return g;
+  };
+
+  function makeSprite(type, tailOnly = false) {
+    const key = `${type}:${tailOnly}`;
+    if (sprites.has(key)) return sprites.get(key);
+    const canvas = document.createElement('canvas');
+    canvas.width = 384; canvas.height = 288;
+    const c = canvas.getContext('2d');
+    c.translate(192, 144); c.scale(2, 2);
+    c.lineCap = c.lineJoin = 'round';
+    const p = palettes[type] || palettes.coin;
+    const body = gradient(c, -15, -37, 12, 42, [[0,p[0]],[0.34,p[1]],[0.8,p[2]],[1,p[1]]]);
+    const fin = gradient(c,-70,-35,-24,32,[[0,p[0]],[0.38,p[1]],[1,p[2]]]);
+    if (tailOnly) {
+      if (type === 'whale') {
+        path(c,'M -38 -2 C -52 -7 -62 -21 -83 -24 Q -78 -3 -60 1 Q -77 7 -83 25 C -61 23 -50 9 -38 7 Z',fin,p[2],1.5);
+        path(c,'M -48 3 Q -63 -2 -76 -17 M -48 4 Q -64 10 -76 20',null,'#d4fff055',1.5);
+      } else if (type === 'shark') {
+        path(c,'M -37 0 Q -61 -16 -68 -43 Q -80 -21 -58 3 Q -75 7 -78 29 Q -57 21 -37 7 Z',fin,p[2],1.4);
+      } else if (type === 'fund') {
+        path(c,'M -35 -2 Q -60 -8 -85 -2 Q -68 1 -58 6 Q -47 7 -35 3 Z',p[2]);
+        path(c,'M -42 1 Q -68 -2 -84 -2',null,p[0],1.5);
+      } else {
+        path(c,'M -36 -3 Q -52 -10 -75 -28 Q -82 -13 -71 0 Q -83 15 -75 29 Q -54 13 -36 5 Z',fin,p[2],1.4);
+        for (let i = -2; i <= 2; i++) path(c,`M -41 1 Q -55 ${i*4} -74 ${i*10}`,null,p[0]+'88',1.1);
+      }
+      sprites.set(key,canvas); return canvas;
+    }
+
+    c.shadowColor='#001d31aa'; c.shadowBlur=6; c.shadowOffsetY=4;
+    if (type === 'fund') {
+      path(c,'M -37 0 Q -21 -15 -47 -58 Q -6 -52 16 -31 Q 33 -14 56 0 Q 28 11 12 29 Q -8 50 -47 58 Q -20 13 -37 0 Z',body,p[2],1.8);
+      c.shadowColor='transparent';
+      path(c,'M -32 -42 Q 4 -30 39 -3 M -32 42 Q 4 30 39 3',null,p[0]+'88',2);
+      path(c,'M -20 -35 Q 2 -25 27 -6 M -20 35 Q 2 25 27 6',null,p[0]+'44',1.3);
+      ellipse(c,7,0,34,23,body,p[2],1);
+      path(c,'M -3 -13 L 10 -20 L 23 -13 L 23 4 Q 17 13 10 17 Q 3 13 -3 4 Z','#ffffff22','#f5ecffbb',1.8);
+      path(c,'M 3 0 L 8 5 L 17 -5',null,'#f5ecffdd',2);
+    } else if (type === 'whale') {
+      path(c,'M -42 -9 Q -25 -27 8 -32 Q 55 -38 72 -13 Q 83 5 67 24 Q 48 42 6 34 Q -26 30 -42 9 Z',body,p[2],1.6);
+      c.shadowColor='transparent';
+      path(c,'M -30 17 Q 5 38 54 25 Q 71 21 75 9 Q 64 35 26 36 Q -9 35 -30 17 Z','#c5efce99');
+      path(c,'M -13 5 Q 9 17 9 47 Q -13 40 -23 17 Z',fin,p[2],1);
+      path(c,'M -12 -28 L 4 -44 Q 13 -43 21 -30',p[2]);
+      for (let i = 0; i < 4; i++) path(c,`M ${17+i*9} 25 Q ${20+i*8} 30 ${26+i*8} 30`,null,'#256a7190',1);
+      // A little captain's golden crown makes the boss silhouette distinct.
+      path(c,'M 25 -27 L 22 -44 L 32 -38 L 39 -48 L 45 -38 L 55 -44 L 52 -27 Z','#f7c85d','#fff1b6',1.2);
+      ellipse(c,38,-32,2.2,2.2,'#26a99b');
+    } else if (type === 'shark') {
+      path(c,'M -47 -7 Q -16 -22 23 -19 L 74 -3 Q 52 22 13 22 Q -24 19 -47 7 Z',body,p[2],1.8);
+      c.shadowColor='transparent';
+      path(c,'M -8 -19 Q 3 -45 17 -48 L 23 -18 Z',fin,p[2],1.4);
+      path(c,'M -6 12 Q 7 36 26 42 L 20 17 Z',fin,p[2],1.2);
+      path(c,'M -30 9 Q 21 27 66 3 Q 49 23 9 22 Z','#f6c9df99');
+      for(let i=0;i<3;i++) path(c,`M ${15-i*6} -4 Q ${11-i*6} 4 ${15-i*6} 10`,null,'#6b3b79',1.5);
+      path(c,'M 46 8 Q 55 12 65 2',null,'#532847',2);
+      path(c,'M 49 9 L 51 13 L 54 10 L 57 11 L 60 7','#fff0da');
+    } else {
+      path(c,'M -24 -22 Q -21 -45 6 -41 Q 19 -34 24 -24 Z',fin,p[2],1.2);
+      path(c,'M -24 22 Q -14 41 8 38 L 20 23 Z',fin,p[2],1.2);
+      path(c,'M -42 -5 Q -17 -39 17 -30 Q 49 -29 64 -5 Q 69 2 61 10 Q 43 31 10 31 Q -20 33 -42 6 Z',body,p[2],1.8);
+      c.shadowColor='transparent';
+      // Iridescent, individually curved scales survive small sprite sizes.
+      for(let row=-2;row<=2;row++) for(let col=0;col<4;col++) {
+        const sx=-22+col*11+(row%2)*5,sy=row*9;
+        if (sx < 3) path(c,`M ${sx-3} ${sy-4} Q ${sx+4} ${sy} ${sx-3} ${sy+4}`,null,p[0]+'42',1);
+      }
+      path(c,'M -8 5 Q -2 17 -19 28 Q -31 11 -8 5 Z',fin,p[0]+'77',1);
+      path(c,'M -28 -12 Q -3 -30 29 -19',null,p[0]+'99',2.5);
+      if(type==='coin') {
+        ellipse(c,8,0,17,20,'#bd7b2c','#ffef9e',2);
+        ellipse(c,8,0,12.5,16,'#eeb344','#fff1a855',1);
+        c.font='bold 25px Georgia'; c.textAlign='center';c.textBaseline='middle';c.fillStyle='#fff1b4';c.fillText('$',8,1);
+      } else if(type==='save') {
+        path(c,'M -1 -7 L 11 -16 L 24 -7 L 24 11 L -1 11 Z','#073f5944','#defff2bb',1.8);
+        path(c,'M 7 10 L 7 1 L 16 1 L 16 10',null,'#e7ffeddd',1.8);
+      } else {
+        path(c,'M -3 11 L 6 1 L 13 6 L 27 -10 M 19 -10 L 27 -10 L 27 -2',null,'#ffe7af',3);
+      }
+      path(c,'M 50 14 Q 56 17 60 10',null,p[2],1.5);
+    }
+    const ex=type==='fund'?35:type==='whale'?53:type==='shark'?46:45;
+    const ey=type==='fund'?-8:type==='whale'?-1:type==='shark'?-4:-6;
+    ellipse(c,ex,ey,5.8,6.8,'#faffed',p[2],0.8);
+    ellipse(c,ex+1.5,ey+0.6,3.3,4.3,'#153749');
+    ellipse(c,ex+2.1,ey-1.4,1.5,1.7,'#ffffff');
+    if(type==='shark') path(c,`M ${ex-6} ${ey-9} L ${ex+5} ${ey-6}`,null,'#5f315c',3);
+    sprites.set(key,canvas); return canvas;
+  }
+
+  function drawFish(c,f,time) {
+    const type=palettes[f.type]?f.type:'coin', s=(f.size||25)/54;
+    const wave=Math.sin(time*6+(f.phase||0));
+    c.save();c.translate(f.x,f.y);c.rotate(f.angle||0);
+    // Flip the image vertically for leftward swimmers so their fins stay upright.
+    const a=((f.angle||0)%TAU+TAU)%TAU;
+    if(a>Math.PI/2&&a<Math.PI*1.5)c.scale(1,-1);
+    c.scale(s,s);
+    if(f.hit>0){c.shadowColor='#fff8c8';c.shadowBlur=18;}
+    c.save();c.translate(-36,0);c.rotate(wave*(type==='whale'?.09:.15));c.translate(36,0);
+    c.drawImage(makeSprite(type,true),-96,-72,192,144);c.restore();
+    c.drawImage(makeSprite(type,false),-96,-72,192,144);
+    if(f.hit>0){c.globalAlpha=Math.min(.35,f.hit*3);ellipse(c,0,0,46,27,'#fff8d6');}
+    c.restore();
+  }
+
+  function buildBackground(w,h) {
+    const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+    const c=canvas.getContext('2d');
+    c.fillStyle=gradient(c,0,0,0,h,[[0,'#0c565e'],[.25,'#073a48'],[.7,'#062935'],[1,'#051f29']]);c.fillRect(0,0,w,h);
+    const glow=c.createRadialGradient(w*.52,-h*.08,0,w*.52,h*.1,w*.75);glow.addColorStop(0,'#4bc5b535');glow.addColorStop(.5,'#2caba515');glow.addColorStop(1,'#05263300');c.fillStyle=glow;c.fillRect(0,0,w,h);
+    // Submerged skyline, rendered as soft reef-like silhouettes.
+    c.fillStyle='#093c43';
+    for(let i=0;i<19;i++){
+      const x=i*w/18,hh=(.05+((i*17)%9)/70)*h,bw=w/23;
+      c.beginPath();c.roundRect(x-bw/2,h-hh,bw,hh+10,[7,7,0,0]);c.fill();
+      if(i%3===0){c.fillStyle='#155354';c.fillRect(x-bw*.18,h-hh+12,3,hh*.5);c.fillStyle='#093c43';}
+    }
+    path(c,`M 0 ${h*.88} Q ${w*.19} ${h*.83} ${w*.34} ${h*.94} Q ${w*.65} ${h*.86} ${w} ${h*.9} L ${w} ${h} L 0 ${h} Z`,'#0a343a');
+    path(c,`M 0 ${h*.96} Q ${w*.28} ${h*.86} ${w*.49} ${h*.99} Q ${w*.79} ${h*.9} ${w} ${h*.98} L ${w} ${h} L 0 ${h} Z`,'#103d3e');
+    // Coral branches and translucent aquatic fronds.
+    const plant=(x,y,height,col,seed)=>{
+      c.save();c.translate(x,y);c.strokeStyle=col;c.lineCap='round';
+      for(let j=-2;j<=2;j++){
+        const xx=j*height*.19,top=-height*(.55+(j+seed+5)%3*.2);
+        c.lineWidth=height*.055;
+        c.beginPath();c.moveTo(0,5);c.bezierCurveTo(xx*.4,-height*.3,xx*1.3,top*.7,xx,top);c.stroke();
+        for(let k=1;k<4;k++){const yy=top*k/4;c.lineWidth=height*.025;c.beginPath();c.moveTo(xx*k/4,yy);c.quadraticCurveTo(xx*k/4+(j>0?9:-9),yy-6,xx*k/4+(j>0?13:-13),yy-15);c.stroke();}
+      } c.restore();
+    };
+    plant(w*.04,h*.99,h*.16,'#256663',1);plant(w*.94,h*.99,h*.2,'#266260',2);plant(w*.13,h*1.04,h*.12,'#397567',3);plant(w*.83,h*1.05,h*.11,'#476b58',1);
+    // Sunken golden treasury rings, subtle enough to keep gameplay readable.
+    c.save();c.globalAlpha=.38;c.translate(w*.06,h*.87);c.rotate(-.22);
+    ellipse(c,0,0,25,19,'#756044','#b4a16b',3);ellipse(c,0,0,17,12,'#143e43','#887a52',2);c.restore();
+    for(let i=0;i<34;i++){
+      const x=((i*137.17)%997)/997*w,y=h*.94+((i*47)%83)/83*h*.06;
+      ellipse(c,x,y,1.7+(i%3),.8,'#6a85634d');
+    }
+    return canvas;
+  }
+
+  function drawBackground(c,w,h,time,quality=1){
+    const key=w+'x'+h;
+    if(!backgrounds.has(key)){backgrounds.clear();backgrounds.set(key,buildBackground(w,h));}
+    c.drawImage(backgrounds.get(key),0,0,w,h);
+    c.save();
+    for(let i=0;i<4;i++){
+      const x=w*(.13+i*.22)+Math.sin(time*.15+i)*w*.025;
+      const g=gradient(c,x,0,x,h*.82,[[0,'#b0ffe014'],[1,'#83f8d000']]);
+      path(c,`M ${x} 0 L ${x+w*.035} 0 L ${x+w*.25} ${h} L ${x-w*.12} ${h} Z`,g);
+    }
+    const count=quality<.7?10:22;
+    for(let i=0;i<count;i++){
+      const speed=8+(i*13%17),x=((i*151.7)%991)/991*w+Math.sin(time*.34+i*2.7)*7;
+      const y=h-((time*speed+i*71.1)%(h+25)),r=1.1+(i%4)*.65;
+      ellipse(c,x,y,r,r*1.15,null,'#9be7d330',.7);
+      if(i%3===0)ellipse(c,x-r*.25,y-r*.35,r*.25,r*.25,'#cafff450');
+    }
+    c.restore();
+  }
+
+  function drawCannon(c,x,y,angle,level=1,recoil=0,time=0){
+    c.save();c.translate(x,y);
+    c.shadowColor='#00141d';c.shadowBlur=20;c.shadowOffsetY=7;
+    ellipse(c,0,13,49,23,'#092b36','#3c6663',2);
+    ellipse(c,0,7,40,29,gradient(c,0,-24,0,38,[[0,'#ffe7a3'],[.4,'#b7904d'],[.55,'#725a35'],[1,'#c7a45c']]),'#f9d687',1.2);
+    c.shadowColor='transparent';
+    ellipse(c,0,5,32,23,'#113d45','#7eaf9b',2);
+    for(let i=0;i<8;i++){
+      const a=i*TAU/8;
+      ellipse(c,Math.cos(a)*34,5+Math.sin(a)*25,2.3,2.3,'#fff1b7');
+    }
+    c.save();c.rotate(angle);c.translate(-Math.min(1,recoil)*6,0);
+    if(level>=3){
+      for(const sy of [-11,11]){
+        c.fillStyle='#a1b4a3';c.strokeStyle='#c9e0be';c.lineWidth=1;c.beginPath();c.roundRect(16,sy-4,36,8,3);c.fill();c.stroke();
+      }
+    }
+    c.shadowColor='#000c';c.shadowBlur=6;c.shadowOffsetY=3;
+    c.fillStyle=gradient(c,0,-10,0,13,[[0,'#ffeeb4'],[.26,'#e1b45c'],[.65,'#9a713b'],[1,'#e6bd71']]);
+    c.strokeStyle='#ffe7a2';c.lineWidth=1.3;c.beginPath();c.roundRect(4,-11,57,22,7);c.fill();c.stroke();
+    c.shadowColor='transparent';
+    c.fillStyle='#174c50';c.beginPath();c.roundRect(18,-7,29,14,2);c.fill();
+    for(let i=0;i<3;i++){c.fillStyle='#69e2c9';c.fillRect(23+i*7,-5,3,10);}
+    c.fillStyle='#cfa45c';c.strokeStyle='#ffe7a2';c.beginPath();c.roundRect(51,-15,13,30,4);c.fill();c.stroke();
+    c.fillStyle='#072e38';c.fillRect(60,-8,4,16);
+    if(recoil>.2){c.shadowColor='#a2fff1';c.shadowBlur=13;ellipse(c,66,0,4+recoil*4,5,'#c8fff2');c.shadowColor='transparent';}
+    c.restore();
+    ellipse(c,0,0,21,21,gradient(c,-12,-19,15,22,[[0,'#a1e1c3'],[.3,'#337d77'],[1,'#0b3c48']]),'#e9c87c',2);
+    ellipse(c,0,0,13,13,'#103944','#69bda4',1);
+    c.fillStyle='#f1d28b';c.font='bold 20px Georgia';c.textAlign='center';c.textBaseline='middle';c.fillText('$',0,1);
+    // Ring displays cannon upgrades without requiring tiny text.
+    for(let i=0;i<Math.min(5,level);i++){ellipse(c,-((Math.min(5,level)-1)*4)+i*8,33,2.3,2.3,'#ffdc85');}
+    c.restore();
+  }
+
+  function drawCoin(c,x,y,r,spin=0){
+    c.save();c.translate(x,y);c.scale(Math.max(.18,Math.abs(Math.cos(spin))),1);
+    c.fillStyle=gradient(c,0,-r,0,r,[[0,'#fff6bd'],[.25,'#ffdc69'],[.65,'#d79330'],[1,'#ffca59']]);
+    c.beginPath();c.arc(0,0,r,0,TAU);c.fill();c.strokeStyle='#fff0a6';c.lineWidth=Math.max(1,r*.08);c.stroke();
+    ellipse(c,0,0,r*.72,r*.72,null,'#b67a2e',r*.07);
+    c.fillStyle='#8e5a23';c.font=`bold ${r*1.4}px Georgia`;c.textAlign='center';c.textBaseline='middle';c.fillText('$',0,r*.08);
+    c.restore();
+  }
+  return { drawFish, drawBackground, drawCannon, drawCoin };
+})();
+
+</script>
+<script>
+/*
+ * FuLam school formation adapter.
+ * Derived from imtonyjaa/ggemu-fishing-joy:
+ * src/FishFormation.js (blob 521ea1f72e68f6132a382e020caefefe7c59d4c4)
+ * src/Main.js buildMembersFromFormationConfig / buildSchoolSpawnQueue.
+ * Copyright (c) 2026 大帅老猿 — MIT License (included in the enclosing HTML).
+ *
+ * Retains upstream formation grids, cell ordering, spacing and offscreen
+ * spawn-offset algorithm. Adaptations: dependency-free Canvas coordinates,
+ * responsive spacing, exact count, financial fish handled by the caller.
+ * The circle formation and shared sinusoidal phase are new additions.
+ * No GGEMU SDK, network, account, live capture or currency integration.
+ */
+(function () {
+'use strict';
+class FishFormation {
+    static SCHOOL_FORMATIONS = {
+        opening: [
+            {
+                key: 'opening-fish1',
+                spacingScale: 1.2,
+                verticalSpacingScale: 0.9,
+                cooldownMin: 220,
+                cooldownRange: 80,
+                directionOffsetFactor: 0.14,
+                angleJitterRange: 0.03,
+                speedMultiplier: 1.02,
+                animationSpeedMultiplier: 1.04,
+                grid: [
+                    [0, 0, 1, 0, 0],
+                    [0, 1, 1, 1, 0],
+                    [1, 1, 1, 1, 1],
+                    [0, 1, 1, 1, 0],
+                    [0, 0, 1, 0, 0]
+                ]
+            },
+            {
+                key: 'opening-fish2',
+                spacingScale: 1,
+                verticalSpacingScale: 0.52,
+                cooldownMin: 220,
+                cooldownRange: 80,
+                directionOffsetFactor: 0.14,
+                angleJitterRange: 0.03,
+                speedMultiplier: 1,
+                animationSpeedMultiplier: 1.02,
+                grid: [
+                    [0, 0, 2, 0, 0],
+                    [0, 0, 0, 2, 0],
+                    [0, 0, 0, 0, 2],
+                    [0, 0, 0, 2, 0],
+                    [0, 0, 2, 0, 0]
+                ]
+            }
+        ],
+        standard: [
+            {
+                key: 'standard-fish2',
+                spacingScale: 1,
+                verticalSpacingScale: 0.92,
+                cooldownMin: 260,
+                cooldownRange: 120,
+                directionOffsetFactor: 0.16,
+                angleJitterRange: 0.05,
+                speedMultiplier: 1,
+                animationSpeedMultiplier: 1,
+                grid: [
+                    [0, 0, 0, 0, 0],
+                    [0, 0, 2, 0, 0],
+                    [0, 2, 2, 2, 0],
+                    [0, 0, 2, 0, 0],
+                    [0, 0, 0, 0, 0]
+                ]
+            },
+            {
+                key: 'standard-fish3',
+                spacingScale: 1.2,
+                verticalSpacingScale: 0.64,
+                cooldownMin: 260,
+                cooldownRange: 120,
+                directionOffsetFactor: 0.16,
+                angleJitterRange: 0.05,
+                speedMultiplier: 1,
+                animationSpeedMultiplier: 1,
+                grid: [
+                    [0, 0, 0, 0, 0],
+                    [0, 3, 3, 3, 0],
+                    [0, 3, 3, 3, 0],
+                    [0, 3, 3, 3, 0],
+                    [0, 0, 0, 0, 0]
+                ]
+            }
+        ],
+        fast: [
+            {
+                key: 'fast-fish1',
+                spacingScale: 1.2,
+                verticalSpacingScale: 0.82,
+                cooldownMin: 300,
+                cooldownRange: 140,
+                directionOffsetFactor: 0.24,
+                angleJitterRange: 0.03,
+                speedMultiplier: 1.35,
+                animationSpeedMultiplier: 1.25,
+                grid: [
+                    [0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0],
+                    [1, 1, 1, 1, 3],
+                    [0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0]
+                ]
+            },
+            {
+                key: 'fast-fish2',
+                spacingScale: 1,
+                verticalSpacingScale: 0.84,
+                cooldownMin: 300,
+                cooldownRange: 140,
+                directionOffsetFactor: 0.22,
+                angleJitterRange: 0.03,
+                speedMultiplier: 1.28,
+                animationSpeedMultiplier: 1.2,
+                targetSpeed: 1.2,
+                grid: [
+                    [0, 0, 2, 0, 0],
+                    [0, 2, 2, 2, 0],
+                    [0, 2, 2, 2, 0],
+                    [0, 2, 2, 2, 0],
+                    [0, 0, 2, 0, 0]
+                ]
+            }
+        ],
+        escort: [
+            {
+                key: 'escort-fish5',
+                spacingScale: 0.78,
+                verticalSpacingScale: 0.46,
+                cooldownMin: 340,
+                cooldownRange: 150,
+                directionOffsetFactor: 0.12,
+                angleJitterRange: 0.025,
+                animationSpeedMultiplier: 1,
+                targetSpeed: 1.2,
+                grid: [
+                    [0, 0, 0, 0, 0],
+                    [0, 0, 1, 0, 0],
+                    [1, 1, 8, 1, 1],
+                    [0, 0, 1, 0, 0],
+                    [0, 0, 0, 0, 0]
+                ]
+            }
+        ]
+    };
+}
+
+
+
+
+function gridMembers(config, width, height) {
+    const grid = Array.isArray(config.grid) ? config.grid : [];
+    if (!grid.length) return [];
+    const rowCount = grid.length;
+    const colCount = Math.max(...grid.map(row => Array.isArray(row) ? row.length : 0), 0);
+    const centerRow = Math.floor(rowCount / 2);
+    const maxColIndex = Math.max(0, colCount - 1);
+    const cells = [];
+    for (let rowIndex = 0; rowIndex < rowCount; rowIndex++) {
+        const row = Array.isArray(grid[rowIndex]) ? grid[rowIndex] : [];
+        for (let colIndex = 0; colIndex < colCount; colIndex++) {
+            const typeIndex = Number(row[colIndex] || 0);
+            if (!typeIndex) continue;
+            cells.push({ rowIndex, colIndex, typeIndex });
+        }
+    }
+    // Same grid-to-offset pipeline as upstream, scaled to portrait canvases.
+    const maxFishSize = Math.max(34, Math.min(58, width * 0.08));
+    const spacingScale = typeof config.spacingScale === 'number' ? config.spacingScale : 0.8;
+    const verticalSpacingScale = typeof config.verticalSpacingScale === 'number' ? config.verticalSpacingScale : 0.9;
+    const spacingX = Math.max(32, maxFishSize * spacingScale);
+    const spacingY = Math.min(Math.max(26, maxFishSize * verticalSpacingScale), Math.max(18, (height - 170) / Math.max(1, rowCount)));
+    cells.sort((leftCell, rightCell) => {
+        if (leftCell.colIndex !== rightCell.colIndex) return rightCell.colIndex - leftCell.colIndex;
+        return Math.abs(leftCell.rowIndex - centerRow) - Math.abs(rightCell.rowIndex - centerRow);
+    });
+    return cells.map(cell => ({
+        offsetX: (maxColIndex - cell.colIndex) * spacingX,
+        offsetY: (cell.rowIndex - centerRow) * spacingY,
+        sourceType: cell.typeIndex,
+        speedMultiplier: config.speedMultiplier || 1
+    }));
+}
+function create(kind, count, width, height, direction = 1) {
+    width = Math.max(200, Number(width) || 800);
+    height = Math.max(220, Number(height) || 600);
+    count = Math.max(1, Math.min(36, Math.floor(Number(count) || 5)));
+    direction = direction < 0 ? -1 : 1;
+    const formations = FishFormation.SCHOOL_FORMATIONS;
+    let members;
+    if (kind === 'circle') {
+        const radius = Math.min(95, width * 0.16, Math.max(35, (height - 180) * 0.25));
+        members = Array.from({ length: count }, (_, index) => {
+            const a = index / count * Math.PI * 2;
+            return { offsetX: radius * (1 - Math.cos(a)), offsetY: Math.sin(a) * radius, speedMultiplier: 1 };
+        }).sort((a, b) => a.offsetX - b.offsetX);
+    } else {
+        const config = kind === 'v' ? formations.opening[1]
+            : kind === 'wave' ? formations.opening[0]
+            : kind === 'escort' ? formations.escort[0]
+            : kind === 'block' ? formations.standard[1]
+            : formations.fast[0];
+        const original = gridMembers(config, width, height);
+        const span = Math.max(...original.map(m => m.offsetX)) + Math.max(40, width * 0.055);
+        members = Array.from({ length: count }, (_, index) => {
+            const source = original[index % original.length];
+            return { ...source, offsetX: source.offsetX + Math.floor(index / original.length) * span };
+        });
+    }
+    const topLimit = 62;
+    const bottomLimit = height - 125;
+    const minYOffset = Math.min(...members.map(entry => entry.offsetY - 22));
+    const maxYOffset = Math.max(...members.map(entry => entry.offsetY + 22));
+    const baseY = height * (0.24 + Math.random() * 0.38);
+    const clampedBaseY = Math.max(topLimit - minYOffset, Math.min(bottomLimit - maxYOffset, baseY));
+    const sharedPhase = Math.random() * Math.PI * 2;
+    return members.map((entry, index) => {
+        const spawnOffset = 70 + Math.abs(entry.offsetX);
+        return {
+            x: direction > 0 ? -spawnOffset : width + spawnOffset,
+            y: clampedBaseY + entry.offsetY,
+            offsetY: entry.offsetY,
+            phase: sharedPhase + (kind === 'wave' ? index * 0.26 : 0),
+            speedMultiplier: entry.speedMultiplier || 1
+        };
+    });
+}
+window.FuLamFormations = Object.freeze({ create });
+})();
+
+
+</script>
+<script>
+const UPSTREAM_LICENSE="MIT License\n\nCopyright (c) 2026 大帅老猿\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n\n";
+/* FuLam Catch — offline Canvas edition. Original gameplay, UI, art and audio.
+   Fish formation layouts and placement adapted from imtonyjaa/ggemu-fishing-joy (MIT).
+   No GGEMU SDK, external services, probabilistic payout tuning, or remote assets. */
+(()=>{'use strict';
+const $=id=>document.getElementById(id), canvas=$('game'), ctx=canvas.getContext('2d'), scene=$('scene'), overlay=$('overlay'), Art=window.FuLamArt;
+const TAU=Math.PI*2, rnd=(a,b)=>a+Math.random()*(b-a), clamp=(v,a,b)=>Math.max(a,Math.min(b,v)), fmt=v=>Math.floor(v).toLocaleString('en-US');
+const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let w=1000,h=600,dpr=1,mode='welcome',difficulty='normal',last=0,time=0,round=0,remaining=90,score=0,wallet=0,caught=0,shots=0,hits=0,level=1,combo=0,maxCombo=0,lastCatch=-10,missionIndex=0,bossSpawned=0;
+let fish=[],bullets=[],particles=[],rings=[],floaters=[],coins=[],aim={x:500,y:240},pointerDown=false,keys=new Set(),shotClock=0,spawnClock=0,recoil=0,shake=0,freezeTime=0,netCooldown=0,freezeCooldown=0,hudClock=0,eventTime=0,sessionStarted=false;
+let angle=-Math.PI/2,demoSpawn=0,modalReturn='welcome',oldFocus=null,toastTimeout,resultRecord=false;
+const upgradeCosts=[80,180,320];
+const defs={coin:{name:'金幣魚',value:10,hp:1,size:20,speed:72,color:'#ffe294'},save:{name:'儲蓄魚',value:20,hp:2,size:27,speed:60,color:'#9be8cf'},fund:{name:'基金鰩',value:35,hp:3,size:32,speed:52,color:'#c1b4ff'},stock:{name:'股票魚',value:55,hp:4,size:34,speed:90,color:'#ffb78b'},whale:{name:'金庫巨鯨',value:260,hp:18,size:72,speed:34,color:'#ffdb85'},shark:{name:'騙局鯊魚',value:180,hp:13,size:56,speed:59,color:'#f8a7d8'}};
+const modes={easy:{speed:.78,hp:.85,spawn:1.5,label:'輕鬆'},normal:{speed:1,hp:1,spawn:1.6,label:'標準'},hard:{speed:1.27,hp:1.2,spawn:1.35,label:'挑戰'}};
+const missions=[{n:10,bonus:50},{n:25,bonus:100},{n:45,bonus:180},{n:70,bonus:250},{n:100,bonus:400}];
+let prefs={sound:true,best:{easy:0,normal:0,hard:0}};try{let p=JSON.parse(localStorage.getItem('fulam-catch-v1')||'null');if(p){prefs.sound=p.sound!==false;for(const k of ['easy','normal','hard'])prefs.best[k]=Math.max(0,Number(p.best?.[k])||0)}}catch(e){}
+function save(){try{localStorage.setItem('fulam-catch-v1',JSON.stringify(prefs))}catch(e){}}
+let ac=null,audioBus=null,lastSound=0;
+function initAudio(){if(!prefs.sound)return;try{if(!ac){ac=new(window.AudioContext||window.webkitAudioContext)();audioBus=ac.createGain();audioBus.gain.value=.2;audioBus.connect(ac.destination)}if(ac.state==='suspended')ac.resume().catch(()=>{})}catch(e){}}
+function tone(freq,duration=.1,type='sine',vol=.12,delay=0,end){if(!prefs.sound||!ac||ac.state!=='running')return;const t=ac.currentTime+delay,osc=ac.createOscillator(),gain=ac.createGain();osc.type=type;osc.frequency.setValueAtTime(freq,t);if(end)osc.frequency.exponentialRampToValueAtTime(end,t+duration);gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(vol,t+.008);gain.gain.exponentialRampToValueAtTime(.0001,t+duration);osc.connect(gain);gain.connect(audioBus);osc.start(t);osc.stop(t+duration+.02)}
+function sound(kind){if(!prefs.sound||!ac)return;if(kind==='fire'){if(ac.currentTime-lastSound<.08)return;lastSound=ac.currentTime;tone(260,.065,'triangle',.12,0,95)}else if(kind==='coin'){tone(1000,.13,'sine',.3);tone(1500,.16,'sine',.17,.055)}else if(kind==='hit')tone(160,.05,'triangle',.07);else if(kind==='upgrade'){[440,554,659,880].forEach((f,i)=>tone(f,.19,'sine',.3,i*.075))}else if(kind==='net'){tone(90,.4,'triangle',.4,0,430);tone(580,.4,'sine',.2,.08,160)}else if(kind==='freeze'){[1200,1600,2100].forEach((f,i)=>tone(f,.25,'sine',.17,i*.08))}else if(kind==='boss'){tone(110,.4,'triangle',.35);tone(165,.5,'triangle',.25,.2)}else if(kind==='end'){[523,659,784,1047].forEach((f,i)=>tone(f,.35,'sine',.25,i*.12))}}
+function syncSound(){$('sound').setAttribute('aria-label',prefs.sound?'關閉音效':'開啟音效');$('sound').setAttribute('aria-pressed',String(prefs.sound));$('soundWaves').setAttribute('d',prefs.sound?'M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14':'m16 9 6 6m0-6-6 6')}
+function resize(){const box=scene.getBoundingClientRect(),ow=w,oh=h;w=Math.round(box.width);h=Math.round(box.height);dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);if(ow&&oh){for(const f of fish){f.x*=w/ow;f.baseY=clamp(f.baseY*h/oh,...swimBounds());f.y=f.baseY}for(const b of bullets){b.x*=w/ow;b.y*=h/oh}aim.x*=w/ow;aim.y*=h/oh}if(!sessionStarted)aim={x:w/2,y:h*.4}}
+new ResizeObserver(resize).observe(scene);
+function origin(){return {x:w/2,y:h-(w<310?140:55)}}
+function swimBounds(){const top=Math.min(115,h*.3);return [top,Math.max(top+35,h-170)]}
+function spawn(type,opts={}){const d=defs[type],dir=opts.dir|| (Math.random()<.5?1:-1),sz=d.size*(w<600?.8:1),y=opts.y??rnd(...swimBounds()),hp=Math.max(1,Math.round(d.hp*(opts.demo?1:modes[difficulty].hp)));fish.push({type,x:opts.x??(dir===1?-sz*3:w+sz*3),y,baseY:y,size:sz,angle:dir===1?0:Math.PI,dir,speed:opts.speed??d.speed*(opts.demo?0.55:modes[difficulty].speed),phase:opts.phase??rnd(0,TAU),hp,maxHp:hp,hit:0,dead:false,age:0,seen:false,school:!!opts.school});}
+function school(demo=false){if(fish.length>32)return;const dir=Math.random()<.5?1:-1,types=['coin','coin','save','fund'],type=types[Math.floor(Math.random()*types.length)],kind=['line','wave','v','circle'][Math.floor(Math.random()*4)],count=w<600?4:6,points=FuLamFormations.create(kind,count,w,h,dir),speed=defs[type].speed*(demo?.55:modes[difficulty].speed);const [lo,hi]=swimBounds(),ys=points.map(p=>p.y),minY=Math.min(...ys),maxY=Math.max(...ys),spread=maxY-minY,scale=Math.min(1,(hi-lo)/Math.max(1,spread)),center=clamp((minY+maxY)/2,lo+spread*scale/2,hi-spread*scale/2);for(const p of points){spawn(type,{x:p.x,y:center+(p.y-(minY+maxY)/2)*scale,dir,speed,phase:p.phase,school:true,demo})}}
+function seedDemo(){fish=[];for(let i=0;i<9;i++)spawn(['coin','save','fund','stock'][i%4],{demo:true,x:rnd(0,w),y:rnd(110,Math.max(150,h-145))});spawn('whale',{demo:true,x:w*.8,y:h*.35,dir:-1})}
+function notify(msg,seconds=2){$('event').textContent=msg;$('event').classList.add('visible');eventTime=seconds;$('live').textContent=msg}
+function toast(msg){$('toast').textContent=msg;$('toast').classList.add('on');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>$('toast').classList.remove('on'),2200)}
+const welcomeIcon='<div class="welcome-icon" aria-hidden="true"><svg viewBox="0 0 90 75"><defs><linearGradient id="goldg" x2=".8" y2="1"><stop stop-color="#ffeca6"/><stop offset="1" stop-color="#d1a84e"/></linearGradient></defs><path d="M10 36C29 12 57 14 70 29L84 19 81 50 69 43C48 64 21 54 10 36Z" fill="url(#goldg)"/><path d="m30 23 9-13 13 9m-22 32 12 14 10-12" fill="#ba8a38"/><circle cx="26" cy="32" r="4" fill="#174444"/><circle cx="25" cy="31" r="1.3" fill="white"/><path d="M50 26v23M55 29h-8a5 5 0 0 0 0 9h6a5 5 0 0 1 0 9h-9" fill="none" stroke="#846124" stroke-width="2.8" stroke-linecap="round"/><path d="M8 63q7-6 16 0t16 0t16 0t16 0" fill="none" stroke="#9be8cf" stroke-width="2"/></svg></div>';
+function openModal(html){oldFocus=document.activeElement;pointerDown=false;keys.clear();overlay.innerHTML='<div class="card">'+html+'</div>';overlay.hidden=false;requestAnimationFrame(()=>{const first=overlay.querySelector('[data-autofocus]')||overlay.querySelector('button');first?.focus({preventScroll:true})})}
+function closeModal(){overlay.hidden=true;overlay.innerHTML='';canvas.focus({preventScroll:true})}
+function showWelcome(){mode='welcome';sessionStarted=false;$('pause').disabled=true;document.body.classList.remove('game-active');freezeTime=0;score=0;wallet=0;caught=0;level=1;remaining=90;combo=0;missionIndex=0;bullets=[];particles=[];rings=[];floaters=[];coins=[];netCooldown=0;freezeCooldown=0;eventTime=0;seedDemo();openModal(welcomeIcon+'<div class="label">FULAM · FORTUNE FISHING</div><h2 id="dialogTitle">把好運，<br><em>網進口袋。</em></h2><p>瞄準魚群，長按連射。<br>捕財、升級，享受金幣爆開嘅一刻。</p><div class="difficulty" role="group" aria-label="遊戲難度"><button data-diff="easy">輕鬆</button><button data-diff="normal">標準</button><button data-diff="hard">挑戰</button></div><button class="primary" id="start" data-autofocus>開炮捕財 <span aria-hidden="true">↗</span></button><div class="how"><span><b>01 · 長按連射</b>發射免費</span><span><b>02 · 連捕加成</b>金幣越捕越多</span><span><b>03 · 升級炮台</b>挑戰金庫巨鯨</span></div><div class="micro">一局 90 秒 · 遊戲積分不代表投資回報</div>');overlay.querySelectorAll('[data-diff]').forEach(b=>{b.classList.toggle('selected',b.dataset.diff===difficulty);b.setAttribute('aria-pressed',String(b.dataset.diff===difficulty));b.onclick=()=>{difficulty=b.dataset.diff;overlay.querySelectorAll('[data-diff]').forEach(e=>{e.classList.toggle('selected',e===b);e.setAttribute('aria-pressed',String(e===b))});updateHud()}});$('start').onclick=start;updateHud()}
+function start(){initAudio();mode='playing';sessionStarted=true;round=0;remaining=90;score=wallet=caught=shots=hits=0;level=1;combo=maxCombo=0;lastCatch=-10;missionIndex=0;bossSpawned=0;fish=[];bullets=[];particles=[];floaters=[];coins=[];rings=[];freezeTime=netCooldown=freezeCooldown=0;shotClock=0;spawnClock=.5;pointerDown=false;keys.clear();aim={x:w/2,y:h*.35};angle=-Math.PI/2;closeModal();document.body.classList.add('game-active');for(let i=0;i<9;i++)spawn(['coin','save','coin','fund','stock'][i%5],{x:rnd(w*.06,w*.94),y:rnd(130,Math.max(150,h-200))});notify('長按連射 · 捕財後可升級炮台',3);updateHud()}
+function pause(){if(mode!=='playing')return;mode='paused';openModal('<div class="label">GAME PAUSED</div><h2 id="dialogTitle">遊戲已暫停</h2><p>按下繼續即可返回。<br>剩餘 '+Math.ceil(remaining)+' 秒，繼續捕財！</p><button class="primary" id="resume" data-autofocus>繼續遊戲</button><button class="secondary" id="restart">重新開始</button>');$('resume').onclick=resume;$('restart').onclick=showWelcome;updateHud()}
+function resume(){mode='playing';closeModal();initAudio();updateHud()}
+function finish(commit=true){mode='ended';pointerDown=false;keys.clear();if(commit){const prev=prefs.best[difficulty];resultRecord=score>prev;prefs.best[difficulty]=Math.max(prev,score);save();sound('end')}const record=resultRecord;const rank=score>=3500?'深海財神':score>=2000?'金庫大戶':score>=900?'捕財高手':'新晉捕手';openModal('<div class="label">YOUR CATCH OF THE DAY</div><h2 id="dialogTitle">滿載而歸！</h2><div class="result-score">'+fmt(score)+'</div><div class="badge">'+(record?'刷新個人最佳 · ':modes[difficulty].label+'模式 · ')+rank+'</div><div class="result-grid"><div><b>'+caught+'</b><span>捕獲魚數</span></div><div><b>'+maxCombo+'</b><span>最高連擊</span></div><div><b>Lv.'+level+'</b><span>炮台等級</span></div></div><p>再開一局，挑戰更大嘅魚群。</p><button class="primary" id="again" data-autofocus>再捕一局</button><button class="secondary" id="home">返回首頁</button><div class="micro">最佳紀錄儲存在此瀏覽器 · 純遊戲積分</div>');$('again').onclick=start;$('home').onclick=showWelcome;$('live').textContent='遊戲結束。本局 '+score+' 分，捕獲 '+caught+' 條。';updateHud()}
+function help(){if(mode==='help'||mode==='credits')return;modalReturn=mode;if(mode==='playing')pointerDown=false;mode='help';openModal('<div class="label">HOW TO PLAY</div><h2 id="dialogTitle">開炮就啱。</h2><p style="text-align:left">長按畫面連續發射，移動手指或滑鼠瞄準。發射唔扣金幣！<br><br>捕獲魚群累積積分，短時間連捕有額外加成。金幣可以升級炮台，升級唔會扣總積分。<br><br><b style="color:var(--gold)">大漁網</b>：在瞄準位置範圍捕捉，冷卻 16 秒。<br><b style="color:var(--mint)">冰凍</b>：魚群慢速 5 秒，冷卻 20 秒。<br><br>每局有金庫巨鯨同騙局鯊魚登場，集中火力拎大獎。</p><p style="font-size:11px">鍵盤：← → 瞄準 · 空白鍵射擊<br>1 漁網 · 2 冰凍 · U 升級 · P 暫停</p><button class="primary" id="helpClose" data-autofocus>知道了</button>');$('helpClose').onclick=returnModal;updateHud()}
+function returnModal(){if(modalReturn==='playing'){resume()}else if(modalReturn==='paused'){mode='playing';pause()}else if(modalReturn==='ended'){mode='ended';finishWithoutSound()}else showWelcome()}
+function finishWithoutSound(){finish(false)}
+function addParticles(x,y,color,n=15){n=reduced?Math.min(n,5):n;for(let i=0;i<n&&particles.length<250;i++){const a=rnd(0,TAU),s=rnd(25,150);particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:rnd(.3,.8),max:.8,r:rnd(1.5,4),color})}}
+function floater(x,y,text,color='#ffe3a0',big=false){floaters.push({x,y,text,color,life:1.1,max:1.1,big});if(floaters.length>30)floaters.shift()}
+function capture(f){if(f.dead)return;f.dead=true;caught++;combo=round-lastCatch<2.6?combo+1:1;lastCatch=round;maxCombo=Math.max(maxCombo,combo);const mult=1+Math.min(1,Math.floor(combo/5)*.15),gain=Math.round(defs[f.type].value*mult);score+=gain;wallet+=gain;addParticles(f.x,f.y,defs[f.type].color,24);rings.push({x:f.x,y:f.y,r:10,end:f.size*2.3,life:.45,max:.45,color:defs[f.type].color,net:false});floater(f.x,f.y-15,'+'+gain,defs[f.type].color,f.type==='whale'||f.type==='shark');for(let i=0;i<(reduced?2:Math.min(8,Math.ceil(gain/15)));i++)coins.push({x:f.x+rnd(-12,12),y:f.y+rnd(-12,12),sx:f.x,sy:f.y,age:0,delay:i*.035,life:.8+Math.random()*.2,spin:rnd(0,TAU),vx:rnd(-60,60)});sound('coin');if(f.type==='whale'||f.type==='shark'){notify(f.type==='whale'?'金庫巨鯨入袋！':'騙局鯊魚擊破！',2.5);shake=reduced?0:5;sound('upgrade')}const m=missions[missionIndex];if(m&&caught>=m.n){score+=m.bonus;wallet+=m.bonus;missionIndex++;notify('捕財小目標完成 · +'+m.bonus+' 金幣',2.5);sound('upgrade')}if(caught%8===0)netCooldown=Math.max(0,netCooldown-3)}
+function damage(f,amount){if(f.dead)return;f.hp-=amount;f.hit=.16;addParticles(f.x,f.y,'#e2f7d6',3);if(f.hp<=0)capture(f);else sound('hit')}
+function fire(){if(mode!=='playing')return;const o=origin(),spreads=level===4?[-.12,0,.12]:level===3?[-.06,.06]:[0];for(const spread of spreads){const a=angle+spread;bullets.push({x:o.x+Math.cos(a)*40,y:o.y+Math.sin(a)*40,px:o.x,py:o.y,vx:Math.cos(a)*690,vy:Math.sin(a)*690,age:0,damage:level>=2?2:1,r:level>=2?4.8:3.8})}shots+=spreads.length;recoil=1;sound('fire')}
+function useNet(){if(mode!=='playing'||netCooldown>0)return;initAudio();netCooldown=16;const x=clamp(aim.x,25,w-25),y=clamp(aim.y,110,h-140),r=w<600?112:155;rings.push({x,y,r:0,end:r,life:.75,max:.75,color:'#ffdf8d',net:true});for(const f of fish){if(!f.dead&&Math.hypot(f.x-x,f.y-y)<r+f.size*.5)damage(f,5+level*2)}shake=reduced?0:2;sound('net');updateHud()}
+function useFreeze(){if(mode!=='playing'||freezeCooldown>0)return;initAudio();freezeCooldown=20;freezeTime=5;sound('freeze');notify('冰凍時間 · 5 秒慢速捕財',2);updateHud()}
+function upgrade(){if(mode!=='playing'||level>=4)return;const price=upgradeCosts[level-1];if(wallet<price){toast('再捕 '+(price-wallet)+' 金幣就可以升級');return}wallet-=price;level++;sound('upgrade');shake=reduced?0:3;const o=origin();addParticles(o.x,o.y-20,'#ffe29a',32);notify('炮台 Lv.'+level+' · '+['','','火力提升','雙重射擊','三重散射'][level],2.5);updateHud()}
+function updateHud(){$('score').textContent=fmt(score);$('wallet').textContent=fmt(wallet);$('caught').textContent=caught;$('timer').textContent=Math.max(0,Math.ceil(remaining));$('timerBox').classList.toggle('urgent',remaining<=15);$('best').textContent=fmt(prefs.best[difficulty]);$('level').textContent='CANNON · LV.'+level;$('pause').disabled=mode!=='playing';$('net').disabled=mode!=='playing'||netCooldown>0;$('freeze').disabled=mode!=='playing'||freezeCooldown>0;$('netCount').textContent=netCooldown>0?Math.ceil(netCooldown)+' 秒冷卻':'準備就緒';$('freezeCount').textContent=freezeTime>0?Math.ceil(freezeTime)+' 秒生效':freezeCooldown>0?Math.ceil(freezeCooldown)+' 秒冷卻':'慢速 5 秒';$('upgrade').disabled=mode!=='playing'||level===4||wallet<upgradeCosts[level-1];$('upgradeTitle').textContent=level===4?'滿級火力':'升級炮台';$('upgradePrice').textContent=level===4?'三重散射已就緒':upgradeCosts[level-1]+' 金幣 → Lv.'+(level+1);const m=missions[missionIndex];$('missionLabel').textContent=m?'捕獲 '+caught+' / '+m.n+' · 獎勵 '+m.bonus:'所有捕財小目標達成';$('missionFill').style.width=m?Math.min(100,caught/m.n*100)+'%':'100%';$('combo').classList.toggle('show',combo>=3&&round-lastCatch<2.6&&mode==='playing');$('comboNum').textContent=combo+' COMBO';$('comboSub').textContent='連捕加成 ×'+(1+Math.min(1,Math.floor(combo/5)*.15)).toFixed(2);$('freezeVeil').classList.toggle('on',freezeTime>0&&mode==='playing');$('event').classList.toggle('visible',eventTime>0&&mode==='playing')}
+function moveFish(dt,demo=false){for(const f of fish){f.age+=dt;f.x+=f.dir*f.speed*dt*(freezeTime>0&&!demo?.18:1);f.y=f.baseY+Math.sin(time*1.8+f.phase)*(f.type==='whale'?8:12);f.angle=(f.dir===1?0:Math.PI)+Math.cos(time*1.8+f.phase)*.06;f.hit=Math.max(0,f.hit-dt);if(f.x>-f.size*2&&f.x<w+f.size*2)f.seen=true}fish=fish.filter(f=>!f.dead&&((f.dir===1&&f.x<w+f.size*4)||(f.dir===-1&&f.x>-f.size*4))&&f.age<65)}
+function step(dt,elapsed=dt){const playing=mode==='playing';if(playing){round+=elapsed;remaining=Math.max(0,90-round);if(remaining<=0){finish();return}freezeTime=Math.max(0,freezeTime-elapsed);netCooldown=Math.max(0,netCooldown-elapsed);freezeCooldown=Math.max(0,freezeCooldown-elapsed);eventTime=Math.max(0,eventTime-elapsed);if(keys.has('ArrowLeft')||keys.has('ArrowRight')){angle=clamp(angle+(keys.has('ArrowLeft')?-1:1)*dt*1.7,-Math.PI+.16,-.16);const o=origin();aim={x:o.x+Math.cos(angle)*h*.65,y:o.y+Math.sin(angle)*h*.65}}else{const o=origin();angle=clamp(Math.atan2(Math.min(aim.y,o.y-24)-o.y,aim.x-o.x),-Math.PI+.16,-.16)}shotClock-=dt;if((pointerDown||keys.has(' '))&&shotClock<=0){fire();shotClock=[0,.2,.18,.18,.17][level]}spawnClock-=dt;if(spawnClock<=0){spawnClock=modes[difficulty].spawn;if(fish.length<35){if(Math.random()<.32)school();else{const q=Math.random();spawn(q<.35?'coin':q<.6?'save':q<.82?'fund':'stock')}}}if(round>20&&bossSpawned===0){spawn('whale',{dir:1,y:h*.45});bossSpawned=1;notify('金庫巨鯨出現 · 集中火力！',3);sound('boss')}if(round>43&&bossSpawned===1){spawn('shark',{dir:-1,y:h*.4});bossSpawned=2;notify('騙局鯊魚出沒 · 擊破拎大獎',3);sound('boss')}if(round>66&&bossSpawned===2){spawn('whale',{dir:-1,y:h*.4});school();bossSpawned=3;notify('最後魚潮 · 把握機會！',3);sound('boss')}moveFish(dt);for(const b of bullets){b.px=b.x;b.py=b.y;b.x+=b.vx*dt;b.y+=b.vy*dt;b.age+=dt;for(const f of fish){if(f.dead)continue;const dx=b.x-b.px,dy=b.y-b.py,t=clamp(((f.x-b.px)*dx+(f.y-b.py)*dy)/(dx*dx+dy*dy||1),0,1),nx=b.px+dx*t,ny=b.py+dy*t;if(Math.hypot(f.x-nx,f.y-ny)<f.size*.8+b.r){b.dead=true;hits++;damage(f,b.damage);rings.push({x:nx,y:ny,r:3,end:30,life:.25,max:.25,color:'#c2f2e0',net:false});break}}}bullets=bullets.filter(b=>!b.dead&&b.x>-30&&b.x<w+30&&b.y>-30&&b.y<h+20&&b.age<3);if(round-lastCatch>2.6)combo=0;}else if(mode==='welcome'){demoSpawn-=dt;if(demoSpawn<0){demoSpawn=2.7;school(true)}moveFish(dt,true)}if(playing||mode==='welcome'){for(const p of particles){p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=75*dt}particles=particles.filter(p=>p.life>0);for(const r of rings)r.life-=dt;rings=rings.filter(r=>r.life>0);for(const f of floaters){f.life-=dt;f.y-=dt*35}floaters=floaters.filter(f=>f.life>0);for(const c of coins)c.age+=dt;coins=coins.filter(c=>c.age<c.life+c.delay);recoil=Math.max(0,recoil-dt*7);shake=Math.max(0,shake-dt*15)}hudClock-=dt;if(hudClock<=0){updateHud();hudClock=.09}}
+function draw(){ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);ctx.save();if(shake&&!reduced)ctx.translate(rnd(-shake,shake),rnd(-shake,shake));Art.drawBackground(ctx,w,h,time,reduced?.2:1);for(const f of fish){if(f.dead||f.x<-f.size*3||f.x>w+f.size*3)continue;Art.drawFish(ctx,f,time);if(f.hp<f.maxHp&&f.maxHp>2){const bw=f.size*1.2,x=f.x-bw/2,y=f.y-f.size*.85;ctx.fillStyle='#001d28aa';ctx.beginPath();ctx.roundRect(x,y,bw,4,2);ctx.fill();ctx.fillStyle=defs[f.type].color;ctx.beginPath();ctx.roundRect(x,y,bw*Math.max(0,f.hp)/f.maxHp,4,2);ctx.fill()}if(f.type==='whale'||f.type==='shark'){ctx.font='600 '+(w<600?10:11)+'px system-ui';ctx.textAlign='center';ctx.fillStyle=defs[f.type].color;ctx.shadowColor='#001d28';ctx.shadowBlur=5;ctx.fillText(defs[f.type].name+' · '+defs[f.type].value,f.x,f.y+f.size*.9+15);ctx.shadowBlur=0}}
+for(const b of bullets){ctx.strokeStyle='#ffdc7f55';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(b.x-b.vx*.024,b.y-b.vy*.024);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.fillStyle='#fff1bd';ctx.shadowColor='#ffd269';ctx.shadowBlur=10;ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,TAU);ctx.fill();ctx.shadowBlur=0}
+for(const r of rings){const progress=1-r.life/r.max,rad=r.end*(1-Math.pow(1-progress,3)),alpha=r.life/r.max;ctx.save();ctx.globalAlpha=alpha;ctx.strokeStyle=r.color;ctx.lineWidth=r.net?2:1.4;ctx.beginPath();ctx.arc(r.x,r.y,rad,0,TAU);ctx.stroke();if(r.net){ctx.globalAlpha=alpha*.17;ctx.fillStyle=r.color;ctx.fill();ctx.globalAlpha=alpha*.65;ctx.beginPath();ctx.arc(r.x,r.y,rad,0,TAU);ctx.clip();ctx.lineWidth=1;for(let v=-rad*2;v<rad*2;v+=22){ctx.beginPath();ctx.moveTo(r.x-rad,r.y+v-rad);ctx.lineTo(r.x+rad,r.y+v+rad);ctx.stroke();ctx.beginPath();ctx.moveTo(r.x-rad,r.y+v+rad);ctx.lineTo(r.x+rad,r.y+v-rad);ctx.stroke()}}ctx.restore()}
+for(const p of particles){ctx.globalAlpha=clamp(p.life/p.max,0,1);ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,TAU);ctx.fill()}ctx.globalAlpha=1;
+const o=origin();if(mode==='playing'&&overlay.hidden){ctx.save();ctx.globalAlpha=.16;ctx.strokeStyle='#fff2c8';ctx.setLineDash([3,10]);ctx.beginPath();ctx.moveTo(o.x+Math.cos(angle)*55,o.y+Math.sin(angle)*55);ctx.lineTo(o.x+Math.cos(angle)*150,o.y+Math.sin(angle)*150);ctx.stroke();ctx.restore()}
+Art.drawCannon(ctx,o.x,o.y,angle,level,recoil,time);
+for(const c of coins){const t=clamp((c.age-c.delay)/c.life,0,1);if(c.age<c.delay)continue;const e=t*t,x=c.sx+(55-c.sx)*e+Math.sin(t*Math.PI)*c.vx,y=c.sy+(47-c.sy)*e-Math.sin(t*Math.PI)*60;ctx.globalAlpha=1-t*.7;Art.drawCoin(ctx,x,y,7,c.spin+time*9)}ctx.globalAlpha=1;
+for(const f of floaters){ctx.save();ctx.globalAlpha=clamp(f.life/.3,0,1);ctx.font='800 '+(f.big?25:19)+'px system-ui';ctx.textAlign='center';ctx.strokeStyle='#05232bdd';ctx.lineWidth=4;ctx.strokeText(f.text,f.x,f.y);ctx.fillStyle=f.color;ctx.fillText(f.text,f.x,f.y);ctx.restore()}ctx.restore()}
+function loop(now){const elapsed=last?Math.max(0,(now-last)/1000):0,dt=Math.min(.04,elapsed);last=now;if(mode==='playing'||mode==='welcome')time+=dt;step(dt,elapsed);draw();requestAnimationFrame(loop)}
+function locate(e){const r=canvas.getBoundingClientRect();aim={x:(e.clientX-r.left)*w/r.width,y:(e.clientY-r.top)*h/r.height}}
+canvas.addEventListener('pointerdown',e=>{if(mode!=='playing'||(e.pointerType==='mouse'&&e.button!==0))return;e.preventDefault();initAudio();locate(e);pointerDown=true;shotClock=0;canvas.setPointerCapture(e.pointerId);canvas.focus({preventScroll:true})});canvas.addEventListener('pointermove',e=>{if(mode==='playing')locate(e)});canvas.addEventListener('pointerup',()=>pointerDown=false);canvas.addEventListener('pointercancel',()=>pointerDown=false);canvas.addEventListener('lostpointercapture',()=>pointerDown=false);canvas.addEventListener('contextmenu',e=>e.preventDefault());
+window.addEventListener('keydown',e=>{if(!overlay.hidden){if(e.key==='Tab'){const els=[...overlay.querySelectorAll('button:not(:disabled),a[href],input')],first=els[0],end=els.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();end?.focus()}else if(!e.shiftKey&&document.activeElement===end){e.preventDefault();first?.focus()}}if(e.key==='Escape'){if(mode==='paused')resume();else if(mode==='help'||mode==='credits')returnModal()}return}if(mode!=='playing')return;if([' ','ArrowLeft','ArrowRight'].includes(e.key)){if(document.activeElement!==canvas&&document.activeElement?.tagName==='BUTTON')return;e.preventDefault();keys.add(e.key);initAudio()}if(e.repeat)return;const k=e.key.toLowerCase();if(k==='1')useNet();if(k==='2')useFreeze();if(k==='u')upgrade();if(k==='p'||k==='escape')pause()});window.addEventListener('keyup',e=>keys.delete(e.key));window.addEventListener('blur',()=>{pointerDown=false;keys.clear();if(mode==='playing')pause()});document.addEventListener('visibilitychange',()=>{if(document.hidden&&mode==='playing')pause()});
+$('sound').onclick=()=>{prefs.sound=!prefs.sound;if(prefs.sound)initAudio();syncSound();save()};$('pause').onclick=pause;$('help').onclick=help;$('net').onclick=useNet;$('freeze').onclick=useFreeze;$('upgrade').onclick=upgrade;
+$('credits').onclick=()=>{if(mode==='help'||mode==='credits')return;modalReturn=mode;mode='credits';openModal('<div class="label">MADE FOR FULAM</div><h2 id="dialogTitle">捕財達人</h2><p style="text-align:left">富臨錢進號 · 離線單機版 v1.0<br>沿用 Fishing Joy 的魚群編排程式，重製為 Canvas 遊戲。畫面、魚種、炮台、音效及計分玩法為此版本重新製作。<br><br>原始專案：imtonyjaa/ggemu-fishing-joy<br>授權：MIT · Copyright (c) 2026 大帅老猿</p><pre class="license" id="licenseText"></pre><button class="primary" id="creditsClose" data-autofocus>返回遊戲</button>');$('licenseText').textContent=UPSTREAM_LICENSE;$('creditsClose').onclick=returnModal;updateHud()};
+// Small read-only state snapshot makes local gameplay QA possible without changing outcomes.
+window.FuLamGame={getState:()=>({mode,difficulty,score,wallet,caught,shots,hits,level,remaining,round,maxCombo,netCooldown,freezeCooldown,freezeTime,fishCount:fish.length,fish:fish.filter(f=>!f.dead&&f.x>0&&f.x<w).map(f=>({x:f.x,y:f.y,hp:f.hp,type:f.type})),width:w,height:h}),version:'1.0'};
+resize();syncSound();showWelcome();requestAnimationFrame(loop);
+})();
+
+</script>
+</body></html>
