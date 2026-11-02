@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#071c28">
+<meta name="description" content="富臨財富艦隊 FuLam Wealth Fleet：中英雙語、無限波次的理財海戰遊戲。閃避魚雷，收集金幣，升級艦隊。">
+<title>富臨財富艦隊 · FuLam Wealth Fleet</title>
+<style>/* FLEET_STYLE */</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="https://rysung2406.github.io/fulam-money-journey/#play" aria-label="返回富臨錢進號" data-label="home">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><path d="m16 3 9 8-3 15H10L7 11Z"/><path d="M16 8v14M11 17h10M4 27q6-3 12 0t12 0"/></svg>
+    <span>FULAM <b data-t="arcade">遊戲港口</b></span>
+  </a>
+  <nav aria-label="遊戲設定" data-label="settings">
+    <button id="sound" class="quiet" aria-pressed="false" data-t="soundOff">音效：關</button>
+    <button id="fullscreen" class="quiet" data-t="fullscreen">全螢幕</button>
+    <button id="lang" class="lang" aria-label="Switch to English">EN</button>
+  </nav>
+</header>
+<main class="layout">
+  <aside class="brief">
+    <p class="eyebrow"><span class="live-dot"></span><span data-t="tag">無限海戰 · 公開試玩</span></p>
+    <h1 data-t="title">富臨<br>財富艦隊</h1>
+    <p class="subtitle" data-t="subtitle">守住本金。<br>打出你的財富航線。</p>
+    <div class="route-line"><span>01</span><div></div><span>∞</span></div>
+    <p class="intro" data-t="intro">敵艦不停來襲。把戰利品變成火力，還是留一筆錢，在危急時開盾？</p>
+    <div class="brief-rules">
+      <p><kbd>WASD</kbd><span data-t="move">移動 · 手機拖曳或點擊海面</span></p>
+      <p><span class="rule-symbol">◎</span><span data-t="autofire">自動瞄準與連射</span></p>
+      <p><kbd>Q</kbd><span data-t="shieldRule">使用儲備金開啟護盾</span></p>
+    </div>
+    <div class="record"><span data-t="best">本機最佳</span><strong id="best">0</strong><small data-t="local">只保存最佳戰績於此瀏覽器</small></div>
+    <a class="other-games" href="https://rysung2406.github.io/fulam-money-journey/#play"><span data-t="back">← 返回遊戲港口</span></a>
+  </aside>
+  <section class="battle" aria-label="海戰區" data-label="battle">
+    <div class="hud">
+      <div class="capital"><span data-t="capital">本金護甲</span><strong id="hp">100<span>/ 100</span></strong><div class="hp-track"><i id="hp-bar"></i></div></div>
+      <div><span data-t="cash">遊戲幣</span><strong id="cash">35</strong></div>
+      <div><span data-t="score">財富積分</span><strong id="score">0</strong></div>
+    </div>
+    <div class="sea" id="sea">
+      <canvas id="game" width="460" height="660" tabindex="0" role="img" aria-label="海戰遊戲。WASD 或方向鍵移動，Q 護盾，1 至 4 升級，P 暫停。" data-label="canvas"></canvas>
+      <div class="sector"><span id="sector">航區 01</span><span id="combo"></span><span class="auto-indicator" data-t="auto">自動連射</span></div>
+      <div class="boss-bar" id="boss-bar" hidden><span data-t="boss">債務風暴 · BOSS</span><div><i id="boss-hp"></i></div></div>
+      <div class="event-banner" id="banner" role="status"></div>
+      <div class="overlay" id="overlay">
+        <div class="overlay-card" id="menu">
+          <div class="badge-mark" aria-hidden="true"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="29"/><path d="M32 11 44 29l-5 21H25l-5-21Z"/><path d="M32 20v22M26 32h12M7 45q12-8 25 0t25 0"/></svg></div>
+          <p class="eyebrow" data-t="menuTag">艦長，準備出航。</p>
+          <h2 data-t="menuTitle">這一局，<br>能守住多少本金？</h2>
+          <p data-t="menuHint">拖曳戰艦閃避，火炮會自動還擊。<br>無限波次，沉船才結束。</p>
+          <div class="modes" role="group" aria-label="選擇航線" data-label="chooseMode">
+            <button id="standard" class="mode active" aria-pressed="true"><b data-t="standard">標準航線</b><span data-t="standardHint">100 本金 · 循序加壓</span></button>
+            <button id="storm" class="mode" aria-pressed="false"><b data-t="storm">風暴航線</b><span data-t="stormHint">75 本金 · 高速彈幕</span></button>
+          </div>
+          <button id="start" class="primary"><span data-t="start">立即出航</span><span aria-hidden="true">↗</span></button>
+        </div>
+        <div class="overlay-card" id="pause-menu" hidden>
+          <p class="eyebrow" data-t="pausedTag">暫時靠岸</p><h2 data-t="paused">戰局已暫停</h2>
+          <p data-t="pausedHint">準備好就回到海上。</p><button id="resume" class="primary" data-t="resume">繼續航行</button>
+        </div>
+        <div class="overlay-card" id="end-menu" hidden>
+          <p class="eyebrow" id="end-label" data-t="endTag">本次航行結束</p><h2 data-t="endTitle">艦隊沉沒。<br>下一局，再進一步。</h2>
+          <div class="end-score"><span data-t="score">財富積分</span><strong id="end-score">0</strong></div>
+          <p id="end-stats"></p><p class="end-tip" id="end-tip"></p>
+          <button id="restart" class="primary" data-t="restart">再出航一次</button>
+          <div class="end-actions"><button id="share" class="quiet" data-t="share">複製戰績</button><button id="change-mode" class="quiet" data-t="changeMode">更改航線</button></div>
+          <p id="share-status" class="share-status" role="status"></p>
+        </div>
+      </div>
+    </div>
+    <div class="battle-footer"><span id="wave-progress">0 / 8</span><div class="wave-track"><i id="wave-bar"></i></div><button id="pause" class="quiet" disabled><span data-t="pause">暫停</span><kbd>P</kbd></button></div>
+    <div class="mobile-hint" data-t="mobileHint">拖曳／點擊海面移動，自動射擊。</div>
+    <div class="combat-actions">
+      <button id="shield" class="shield-btn" disabled><kbd>Q</kbd><span><b data-t="shield">應急護盾</b><small id="shield-status">20</small></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 8 3v6c0 5-8 10-8 10S4 16 4 11V5Z"/><path d="m8 11 3 3 5-6"/></svg></button>
+      <div class="direction-pad" aria-label="移動按鈕" data-label="directionPad"><button data-dir="left" aria-label="向左" data-label="left">←</button><div><button data-dir="up" aria-label="向上" data-label="up">↑</button><button data-dir="down" aria-label="向下" data-label="down">↓</button></div><button data-dir="right" aria-label="向右" data-label="right">→</button></div>
+    </div>
+  </section>
+  <aside class="dock" aria-labelledby="dock-title">
+    <div class="dock-heading"><span class="eyebrow" data-t="dockTag">你的升級決定</span><h2 id="dock-title" data-t="dock">隨行船塢</h2><p data-t="dockHint">花錢變強，也記得留錢保命。</p></div>
+    <div class="upgrades">
+      <button class="upgrade" id="weapon" disabled><span class="upgrade-num"><kbd>1</kbd></span><span class="upgrade-copy"><b data-t="weapon">複利火炮</b><small id="weapon-desc"></small><span class="level-dots" id="weapon-dots" aria-hidden="true"></span></span><strong id="weapon-cost"></strong></button>
+      <button class="upgrade" id="escort" disabled><span class="upgrade-num"><kbd>2</kbd></span><span class="upgrade-copy"><b data-t="escort">分散僚艦</b><small id="escort-desc"></small><span class="level-dots" id="escort-dots" aria-hidden="true"></span></span><strong id="escort-cost"></strong></button>
+      <button class="upgrade" id="reserve" disabled><span class="upgrade-num"><kbd>3</kbd></span><span class="upgrade-copy"><b data-t="reserve">儲備系統</b><small id="reserve-desc"></small><span class="level-dots" id="reserve-dots" aria-hidden="true"></span></span><strong id="reserve-cost"></strong></button>
+      <button class="upgrade repair" id="repair" disabled><span class="upgrade-num"><kbd>4</kbd></span><span class="upgrade-copy"><b data-t="repair">修復本金</b><small data-t="repairHint">即時回復 35 護甲</small></span><strong id="repair-cost">35</strong></button>
+    </div>
+    <div class="income"><div><span data-t="income">儲備收益</span><strong id="income">+0</strong></div><p data-t="incomeHint">每 15 秒，現金儲備產生遊戲收益。儲備系統可提高收益及拾幣範圍。</p><div class="income-track"><i id="income-bar"></i></div></div>
+    <div class="enemy-guide"><span class="eyebrow" data-t="enemyTag">辨認威脅</span><div><i class="enemy-dot fee"></i><span data-t="fee">衝動消費</span><small data-t="feeHint">輕型突擊艦</small></div><div><i class="enemy-dot inflation"></i><span data-t="inflation">通脹</span><small data-t="inflationHint">扇形彈幕</small></div><div><i class="enemy-dot scam"></i><span data-t="scam">投資騙局</span><small data-t="scamHint">高速蛇行</small></div><div><i class="enemy-dot debt"></i><span data-t="debt">高息債務</span><small data-t="debtHint">追蹤魚雷</small></div></div>
+  </aside>
+</main>
+<footer class="site-footer"><p data-t="metaphor">理財概念化成戰艦能力；金幣、收益及護甲均為遊戲數值。</p><details><summary data-t="credits">開源來源與授權</summary><p><span data-t="creditNote">戰鬥核心改編自</span> <a href="https://github.com/herebefrogs/submersible-warship-2063" target="_blank" rel="noopener">SUBmersible WARship 2063</a> · Jerome Lecomte · MIT.</p><p data-t="changes">新增無限波次、理財升級、戰艦畫面、手機操作及中英介面；未使用原作音樂或字型素材。</p><pre>/* FLEET_LICENSE */</pre></details></footer>
+<div class="toast" id="toast" role="status"></div>
+<noscript>請開啟 JavaScript 以遊玩。Enable JavaScript to play.</noscript>
+<script>/* FLEET_CORE */</script>
+<script>/* FLEET_APP */</script>
+</body></html>

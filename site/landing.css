@@ -21,9 +21,17 @@
 .section-heading { display:flex; justify-content:space-between; align-items:flex-end; gap:40px; margin-bottom:34px; }
 .section-heading h2 { margin-top:16px; font-size:clamp(30px,3.4vw,44px); }
 .section-heading>p { max-width:350px; font-size:15px; color:var(--muted); }
-.play-layout { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; }
+.play-layout { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; }
 .play-layout > .daily-feature { grid-column:1/-1; }
 .game-feature.fishing-feature { background:#123f46; }
+.game-feature.fleet-feature { background:#173541; }
+.fleet-scene { position:absolute;width:140px;height:210px;right:-38px;top:45px;transform:rotate(16deg);opacity:.8;pointer-events:none; }
+.public-home .play-layout .game-feature { padding:30px;align-items:stretch; }
+.public-home .play-layout .game-feature-copy { width:100%;display:flex;flex-direction:column; }
+.public-home .play-layout .game-feature h3 { font-size:30px;position:relative; }
+.public-home .play-layout .game-feature p { flex:1;position:relative; }
+.public-home .play-layout .game-feature .button { align-self:flex-start; }
+.public-home .play-layout .coin-scene,.public-home .play-layout .fish-scene,.public-home .play-layout .fleet-scene { opacity:.15; }
 .fish-scene { position:absolute; width:220px; height:280px; right:-35px; top:35px; transform:rotate(-12deg); pointer-events:none; }
 .game-feature { position:relative; overflow:hidden; background:var(--ink); color:var(--paper); border-radius:14px; min-height:360px; padding:40px; display:flex; align-items:center; }
 .game-feature-copy { width:62%; position:relative; z-index:2; }
@@ -141,7 +149,7 @@
  .section-heading { flex-direction:column; align-items:flex-start; gap:18px; }
  .section-heading h2 { font-size:32px; }
  .section-heading>p { font-size:14px; }
- .play-layout { grid-template-columns:1fr; grid-template-rows:repeat(2,1fr) auto; gap:16px; }
+ .play-layout { grid-template-columns:1fr; grid-template-rows:repeat(3,1fr) auto; gap:16px; }
  .game-feature { min-height:330px; padding:28px; }
  .game-feature h3 { font-size:36px; }
  .game-feature-copy { width:73%; }
