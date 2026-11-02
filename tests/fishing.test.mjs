@@ -17,11 +17,12 @@ const injectionPoint = '\nresize();syncSound();showWelcome();requestAnimationFra
 assert(source.includes(injectionPoint), 'Game initialization marker is present');
 const instrumented = source.replace(injectionPoint, '\nwindow.__qa={run:code=>eval(code)};' + injectionPoint);
 function harness(width = 1000, height = 600, options = {}) {
-  let now = 1, raf = [], writes = 0, rng = 165706;
+  let now = 1, raf = [], writes = 0, rng = 165706, drawTexts = [];
   const nodes = new Map(), storage = new Map(Object.entries(options.storage || {}));
   const winHandlers = {}, docHandlers = {}, accessedIds = new Set();
   const no = () => {};
-  const ctx = new Proxy({}, {get: (o,k) => k in o ? o[k] : no, set: (o,k,v) => (o[k]=v, true)});
+  const gradient = {addColorStop:no};
+  const ctx = new Proxy({createLinearGradient:()=>gradient,createRadialGradient:()=>gradient,fillText:(text,...args)=>drawTexts.push({text:String(text),args})}, {get: (o,k) => k in o ? o[k] : no, set: (o,k,v) => (o[k]=v, true)});
   const math = Object.create(Math);
   math.random = () => { rng = (rng * 1664525 + 1013904223) >>> 0; return rng / 4294967296; };
   let doc;
@@ -59,13 +60,13 @@ function harness(width = 1000, height = 600, options = {}) {
   sandbox.window=sandbox;vm.createContext(sandbox);
   vm.runInContext(formations,sandbox);
   vm.runInContext(instrumented,sandbox);
-  const frame=ms=>{now+=ms;const calls=raf;raf=[];for(const cb of calls)cb(now);};
+  const frame=ms=>{now+=ms;drawTexts=[];const calls=raf;raf=[];for(const cb of calls)cb(now);};
   frame(1);
   const advance=(seconds,fps=60)=>{let left=seconds*1000;while(left>1e-7){const ms=Math.min(left,1000/fps);frame(ms);left-=ms;}};
   const click=id=>{const e=el(id);assert(!e.disabled,id+' is enabled');assert.equal(typeof e.onclick,'function',id+' has UI handler');e.onclick({preventDefault:no});};
   const pointer=(type,x,y)=>{for(const fn of el('game').events[type]||[])fn({clientX:x,clientY:y,pointerType:'mouse',pointerId:1,button:0,preventDefault:no});};
   const emit=(scope,type,event={})=>{for(const fn of (scope==='window'?winHandlers:docHandlers)[type]||[])fn({preventDefault:no,...event});};
-  return {state:()=>sandbox.FuLamGame.getState(),run:code=>sandbox.__qa.run(code),click,advance,pointer,storage,el,doc,accessedIds,writes:()=>writes,emit,resize:(nextWidth,nextHeight)=>{width=nextWidth;height=nextHeight;sandbox.__qa.run('resize()');}};
+  return {state:()=>sandbox.FuLamGame.getState(),run:code=>sandbox.__qa.run(code),click,advance,pointer,storage,el,doc,accessedIds,writes:()=>writes,drawTexts:()=>drawTexts,emit,resize:(nextWidth,nextHeight)=>{width=nextWidth;height=nextHeight;sandbox.__qa.run('resize()');}};
 }
 const near=(a,b,tol=.0001)=>assert(Math.abs(a-b)<tol,`${a} != ${b}`);
 const clone = value => JSON.parse(JSON.stringify(value));
@@ -94,10 +95,12 @@ test('All 12 cannon levels purchase once and increase usable firepower',()=>{
   const g=harness();g.click('start');const table=clone(g.run('cannons'));assert.equal(table.length,12);
   let previousDps=0;
   for(let current=1;current<=12;current++){
-    assert.equal(g.state().level,current);g.run('bullets=[];fire()');
-    const bullets=g.run('bullets');assert(bullets.length>=1&&bullets.length<=8);
+    assert.equal(g.state().level,current);g.run('bullets=[];beams=[];fire()');
+    const bullets=g.run('bullets'),beams=g.run('beams'),cannon=table[current-1];
+    assert.equal(beams.length,['beam','hybrid'].includes(cannon.kind)?1:0);
+    assert.equal(bullets.length,cannon.kind==='beam'?0:cannon.spread.length);
     assert(bullets.every(b=>Number.isFinite(b.vx)&&Number.isFinite(b.vy)&&b.damage>0));
-    const cannon=table[current-1],dps=cannon.damage*bullets.length/cannon.interval;
+    const dps=(cannon.damage*bullets.length+(cannon.beamDamage||cannon.damage)*beams.length)/cannon.interval;
     assert(dps>=previousDps,'each level has at least prior firepower');previousDps=dps;
     if(current<12){
       const price=table[current].cost;
@@ -189,6 +192,101 @@ test('Changing tabs pauses gameplay and does not spend buffs off-screen',()=>{
 
 test('Blocked local storage never prevents starting or settling',()=>{
   const g=harness(1000,600,{storageThrows:true});g.click('start');g.run("fish=[];spawn('coin',{x:300,y:250});capture(fish[0]);updateHud()");g.click('pause');g.click('finishSession');assert.equal(g.state().mode,'ended');
+});
+
+test('Spread upgrades create distinct multi-angle projectiles rather than cosmetic barrels',()=>{
+  const g=harness();g.click('start');
+  for(const [level,count] of [[1,1],[2,2],[3,3],[7,5],[10,7]]){
+    g.run(`level=${level};fish=[];bullets=[];beams=[];angle=-Math.PI/2;fire();`);
+    const bullets=g.run('bullets');assert.equal(bullets.length,count);
+    assert.equal(new Set(bullets.map(b=>b.vx.toFixed(6))).size,count,'each barrel has a distinct trajectory');
+    assert(bullets.every(b=>b.kind==='bullet'&&b.vy<0&&b.pierce===1));
+  }
+});
+
+test('Beam pierces aligned fish immediately, ignores off-axis fish and damages once per shot',()=>{
+  const g=harness();g.click('start');
+  g.run("level=6;fish=[];bullets=[];beams=[];spawnClock=999;nextBossAt=999;spawn('coin',{x:500,y:350,speed:0});spawn('coin',{x:500,y:240,speed:0});spawn('coin',{x:750,y:300,speed:0});for(const f of fish)f.hp=f.maxHp=1000;angle=-Math.PI/2;fire();");
+  const after=clone(g.run('fish.map(f=>f.hp)'));assert.deepEqual(after,[982,982,1000]);
+  assert.equal(g.run('bullets.length'),0);assert.equal(g.run('beams.length'),1);assert.equal(g.state().shots,1);
+  g.click('pause');const beam=JSON.stringify(g.run('beams'));g.advance(2,15);assert.equal(JSON.stringify(g.run('beams')),beam,'beam animation pauses');
+  g.click('resume');g.advance(.4);assert.equal(g.run('beams.length'),0);assert.deepEqual(clone(g.run('fish.map(f=>f.hp)')),after,'beam visual does not apply damage each frame');
+});
+
+for(const fps of [60,15])test(`Large orb pierces separate fish once and damages nearby fish with its blast at ${fps} fps`,()=>{
+  const g=harness();g.click('start');
+  g.run("level=5;fish=[];bullets=[];beams=[];spawnClock=999;nextBossAt=999;spawn('coin',{x:500,y:350,speed:0,phase:0});spawn('coin',{x:500,y:220,speed:0,phase:0});spawn('coin',{x:565,y:375,speed:0,phase:0});spawn('coin',{x:800,y:350,speed:0,phase:0});for(const f of fish)f.hp=f.maxHp=1000;angle=-Math.PI/2;fire();");
+  const bullet=g.run('bullets[0]');assert.equal(bullet.kind,'orb');assert(bullet.r>10);assert.equal(bullet.pierce,3);
+  g.advance(.8,fps);const health=clone(g.run('fish.map(f=>f.hp)'));
+  near(health[0],989);near(health[1],989);near(health[2],1000-11*.45);near(health[3],1000);
+  g.advance(.5,fps);assert.deepEqual(clone(g.run('fish.map(f=>f.hp)')),health,'same orb cannot repeatedly damage one body');
+});
+
+test('Top-level hybrid combines a penetrating beam with three large projectiles',()=>{
+  const g=harness();g.click('start');g.run('level=12;fish=[];bullets=[];beams=[];fire()');
+  assert.equal(g.run('beams.length'),1);assert.equal(g.run('bullets.length'),3);assert(g.run("bullets.every(b=>b.kind==='orb'&&b.pierce===4&&b.blast>0)"));
+  assert.equal(g.state().shots,4);assert.equal(g.state().cannon.kind,'hybrid');
+  g.run('level=9;bullets=[];beams=[];for(let i=0;i<50;i++)fire()');assert(g.run('beams.length')<=12,'beam effects are bounded');
+});
+
+test('Longer seas increase fish health and movement but growth has a finite cap',()=>{
+  const g=harness();g.click('start');
+  const sample=round=>{g.run(`round=${round};fish=[];spawn('stock',{x:300,y:250});`);return clone(g.run('({hp:fish[0].maxHp,speed:fish[0].speed})'));};
+  const start=sample(0),later=sample(180),cap=sample(3600),veryLate=sample(3600000);
+  assert(later.hp>start.hp&&later.speed>start.speed);assert.deepEqual(cap,veryLate);
+});
+
+test('All ten fish have visible health and lose health before being captured',()=>{
+  const g=harness();g.click('start');
+  const types=clone(g.run('Object.keys(defs)'));assert.equal(types.length,10);
+  for(const type of types){
+    g.run(`fish=[];spawnClock=999;nextBossAt=999;spawn(${JSON.stringify(type)},{x:w/2,y:h/2,speed:0,phase:0});`);
+    const fresh=clone(g.run('fish[0]'));
+    assert(Number.isFinite(fresh.hp)&&fresh.hp>1,`${type} takes multiple starter hits`);
+    assert.equal(fresh.hp,fresh.maxHp);
+    g.advance(1/60);assert(g.drawTexts().some(item=>item.text===`${fresh.hp}/${fresh.maxHp}`),'full health is displayed before the first hit');
+    g.run('damage(fish[0],1)');const damaged=clone(g.run('fish[0]'));
+    assert.equal(damaged.hp,fresh.hp-1);assert.equal(damaged.maxHp,fresh.maxHp);assert(!damaged.dead);
+    g.advance(1/60);assert(g.drawTexts().some(item=>item.text===`${damaged.hp}/${fresh.maxHp}`),'damaged health label updates');
+    const caughtBefore=g.state().caught;
+    g.run('damage(fish[0],fish[0].hp)');assert.equal(g.state().caught,caughtBefore+1);
+    g.run('damage(fish[0],99);capture(fish[0])');assert.equal(g.state().caught,caughtBefore+1,'capture is idempotent');
+  }
+});
+
+for(const fps of [60,15])test(`All ten fish stay bounded through movement, freeze and pause at ${fps} fps`,()=>{
+  const g=harness(390,530);g.click('start');
+  g.run('fish=[];spawnClock=999;nextBossAt=999;for(const type of Object.keys(defs)){spawn(type,{x:w/2,y:-999,dir:1,speed:10,phase:0});spawn(type,{x:w/2,y:9999,dir:-1,speed:10,phase:1});}');
+  assert.equal(g.run('fish.length'),20);assert(g.run('new Set(Object.values(defs).map(d=>d.swim)).size')>=6,'different movement profiles');
+  const verify=()=>{
+    for(const f of g.run('fish')){
+      for(const key of ['x','y','angle','hp','maxHp','swimTime'])assert(Number.isFinite(f[key]),`${f.type} ${key} finite`);
+      const [lo,hi]=g.run(`swimBounds(${f.size})`);
+      assert(f.y>=lo-.01&&f.y<=hi+.01,`${f.type} rendered center stays bounded`);
+    }
+  };
+  for(let second=0;second<8;second++){g.advance(1,fps);verify();}
+  const beforeFreeze=clone(g.run('fish.map(f=>f.swimTime)'));g.click('freeze');g.advance(1,fps);verify();
+  const afterFreeze=clone(g.run('fish.map(f=>f.swimTime)'));
+  assert(afterFreeze.every((value,i)=>value>beforeFreeze[i]&&value-beforeFreeze[i]<.25),'freeze slows swim-phase clocks too');
+  g.click('pause');const paused=JSON.stringify(g.run('fish'));g.advance(5,fps);assert.equal(JSON.stringify(g.run('fish')),paused,'pause freezes full trajectory state');
+  g.click('resume');g.advance(.5,fps);verify();
+});
+
+test('Low frame rates preserve swim speed and trajectory for all ten fish',()=>{
+  const sample=fps=>{
+    const g=harness();g.click('start');
+    g.run('fish=[];spawnClock=999;nextBossAt=999;for(const type of Object.keys(defs))spawn(type,{x:400,y:300,dir:1,speed:10,phase:0});');
+    g.advance(3,fps);return clone(g.run('fish.map(f=>({type:f.type,x:f.x,y:f.y,swimTime:f.swimTime}))'));
+  };
+  const fast=sample(60),slow=sample(15);assert.equal(fast.length,10);assert.equal(slow.length,10);
+  for(let i=0;i<fast.length;i++){assert.equal(slow[i].type,fast[i].type);near(slow[i].swimTime,fast[i].swimTime);near(slow[i].x,fast[i].x,.25);near(slow[i].y,fast[i].y,.25);}
+});
+
+test('QWERTY shortcuts trigger the same six skills as 1–6',()=>{
+  const g=harness();g.click('start');g.run('level=12;updateHud()');
+  for(const key of ['q','w','e','r','t','y'])g.emit('window','keydown',{key,repeat:false});
+  for(const id of ['net','freeze','rapid','double','bomb','lure'])assert(g.run(`${id}Cooldown`)>0,id+' responds to its letter shortcut');
 });
 
 // Rendering, sound output, and touch interaction are additionally checked in-browser.

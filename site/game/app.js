@@ -1,27 +1,50 @@
 'use strict';
 window.startMoneyGame = () => {
-const $=s=>document.querySelector(s), app=$('#app'), modal=$('#modal'), E=window.GameEngine;
-const icon=(name,cls='')=>`<svg class="${cls}" aria-hidden="true"><use href="#i-${name}"/></svg>`;
-const bag=(cls='')=>`<svg class="${cls}" aria-hidden="true" viewBox="0 0 200 210"><use href="#bag-art"/></svg>`;
-const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const prefs={get(k,f){try{return localStorage.getItem('fulam-'+k)??f;}catch{return f;}},set(k,v){try{localStorage.setItem('fulam-'+k,String(v));}catch{}}};
-let mode=prefs.get('mode','easy'), sound=prefs.get('sound','true')==='true', phase='home', session=E.createSession(), questionIndex=0;
-let arena=null, targets=[], wave=0, order=[], hitIds=new Set(), elapsed=0, lastTime=0, raf=0, paused=false, waveComplete=false, waveScore=0, allCutAt=null;
-let trail=[], pointer=null, canvas=null, ctx=null, arenaWidth=0, arenaHeight=0, arenaCeiling=0, tutorial=false, audioCtx=null, cleanupTimers=[], savedPhase=null;
-const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const effects=new MoneyEffects(reducedMotion),coinAudio=new CoinAudio();
-let waves=[];
-if(!E.DIFFICULTIES[mode])mode=mode==='standard'?'medium':'easy';
-const difficulty=()=>E.DIFFICULTIES[mode];
-const choicesPerQuestion=q=>q.options.length;
-let knife=null;
-const waveDuration=()=>Math.max(0,...targets.map(t=>t.launch.delay+t.launch.duration));
-const statusLabels={correct:'✓ Correct slice',avoided:'✓ Correctly avoided',wrong:'× Wrong slice',missed:'○ Missed'};
-const totalChoices=()=>QUESTIONS.reduce((sum,q)=>sum+choicesPerQuestion(q),0);
-const waveCount=()=>waves.length;
-function later(fn,ms){const t=setTimeout(fn,ms);cleanupTimers.push(t);return t;}
-function announce(text){$('#announcer').textContent=text;}
-function toast(text){document.querySelector('.toast')?.remove();const el=document.createElement('div');el.className='toast';el.textContent=text;document.body.append(el);setTimeout(()=>el.remove(),3000);}
+if (window.FuLamSlice) return;
+const $ = selector => document.querySelector(selector);
+const app = $('#app'), modal = $('#modal'), E = window.GameEngine;
+const icon = (name, cls = '') => `<svg class="${cls}" aria-hidden="true"><use href="#i-${name}"/></svg>`;
+const bag = (cls = '') => `<svg class="${cls}" aria-hidden="true" viewBox="0 0 200 210"><use href="#bag-art"/></svg>`;
+const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const prefs = {
+ get(key, fallback) { try { return localStorage.getItem('fulam-' + key) ?? fallback; } catch { return fallback; } },
+ set(key, value) { try { localStorage.setItem('fulam-' + key, String(value)); return true; } catch { return false; } }
+};
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const effects = new MoneyEffects(reducedMotion), coinAudio = new CoinAudio();
+let mode = prefs.get('mode', 'easy'), playKind = prefs.get('play-kind', 'practice');
+if (!E.DIFFICULTIES[mode]) mode = 'easy';
+if (!['practice', 'sprint'].includes(playKind)) playKind = 'practice';
+let sound = prefs.get('sound', 'true') === 'true', phase = 'home', paused = false;
+let session = E.createSession(), question = null, optionDeck = null, optionStats = new Map();
+let arena = null, targets = [], elapsed = 0, lastTime = 0, raf = 0, nextSpawnAt = 0, spawned = 0;
+let trail = [], pointer = null, canvas = null, ctx = null, knife = null, arenaWidth = 0, arenaHeight = 0, arenaCeiling = 0, flightFloor = 0;
+let audioCtx = null, arenaEvents = null, runSerial = 0, avoided = 0, lastGroup = [], finalTimeMs = null, bestResult = null;
+const cleanupTimers = new Set();
+const difficulty = () => E.DIFFICULTIES[mode];
+const totalChoices = () => QUESTIONS.reduce((sum, q) => sum + q.options.length, 0);
+const liveCap = () => window.innerWidth <= 420 ? 3 : window.innerWidth < 650 ? 4 : 6;
+const timeLabel = milliseconds => {
+ const seconds = Math.max(0, milliseconds) / 1000;
+ return `${Math.floor(seconds / 60)}:${(seconds % 60).toFixed(2).padStart(5, '0')}`;
+};
+const bestKey = q => `best-${E.GAME_RULES.version}-${q.id}-${mode}`;
+function readBest(q) {
+ try {
+  const value = JSON.parse(prefs.get(bestKey(q), 'null'));
+  return value && Number.isSafeInteger(value.timeMs) && value.timeMs > 0 ? value : null;
+ } catch { return null; }
+}
+function later(fn, ms) {
+ const id = setTimeout(() => { cleanupTimers.delete(id); fn(); }, ms);
+ cleanupTimers.add(id); return id;
+}
+function announce(text) { $('#announcer').textContent = text; }
+function toast(text) {
+ document.querySelector('.toast')?.remove();
+ const el = document.createElement('div'); el.className = 'toast'; el.textContent = text; document.body.append(el);
+ later(() => el.remove(), 3000);
+}
 function playSound(kind){
  if(!sound)return;
  try{
@@ -47,119 +70,426 @@ function playSound(kind){
   });
  }catch{}
 }
-function updateSound(){const b=$('#sound-toggle');b.innerHTML=icon(sound?'volume':'muted');b.setAttribute('aria-label',sound?'Mute sound':'Enable sound');b.setAttribute('aria-pressed',String(sound));const gameButton=$('#game-sound');if(gameButton){gameButton.innerHTML=icon(sound?'volume':'muted');gameButton.setAttribute('aria-label',sound?'Mute sound':'Enable sound');gameButton.setAttribute('aria-pressed',String(sound));}}
-$('#sound-toggle').addEventListener('click',()=>{sound=!sound;prefs.set('sound',sound);updateSound();if(sound)playSound('good');});updateSound();
-$('#fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else toast('Fullscreen is unavailable in this browser. You can keep playing here.');}catch{toast('Could not open fullscreen. You can keep playing here.');}});
-function stopAnimation(){cancelAnimationFrame(raf);raf=0;cleanupTimers.forEach(clearTimeout);cleanupTimers=[];pointer=null;trail=[];targets=[];effects.clear();knife=null;arena=null;ctx=null;canvas=null;}
-function render(markup){stopAnimation();document.body.classList.toggle('immersive-game',['ready','playing','tutorial'].includes(phase));app.innerHTML=markup;window.scrollTo({top:0,behavior:'instant'});}
-function showModal(title,body,buttons){if(paused){arena?.classList.add('is-paused');hideKnife();}$('#modal-content').innerHTML=`<h2 id="modal-title">${title}</h2>${body}${buttons}`;if(!modal.open)modal.showModal();}
-function closeModal(){modal.close();}
-function about(){const wasPlaying=phase==='playing'||phase==='tutorial';if(wasPlaying){paused=true;pointer=null;}showModal('Every slice is a choice.',`<p>FuLam One Slice is The Money Journey’s finance arcade game. Explore financial tools, investing, insurance, borrowing and scam awareness through five rounds.</p><p>Your score reflects slicing and combos, not overall financial ability. Read the explanations after each round to learn from your choices.</p><p>No account is needed to play. Game answers and scores stay in memory for this session; sound and difficulty preferences stay in this browser. Explanations link to official learning resources. This is general financial education; real decisions depend on your circumstances and product terms.</p>`,`<button class="primary" id="close-modal">Got it</button>`);$('#close-modal').onclick=closeModal;}
-$('#about-button').onclick=about;
-modal.addEventListener('close',()=>{arena?.classList.remove('is-paused');if(phase==='playing'||phase==='tutorial'){paused=false;lastTime=performance.now();}savedPhase=null;});
-function home(){closeModal();phase='home';paused=false;render(`<section class="hero page-in"><div class="hero-copy"><div class="eyebrow"><span class="live-dot"></span> THE MONEY CHOICE CHALLENGE</div><h1>Every slice.<br>A smarter <span class="gold">choice.</span></h1><p class="hero-desc">Saving, investing, insurance and borrowing.<br>How would you choose?<br><strong>Slice the right bags. Build your money skills.</strong></p><div class="mode-picker" aria-label="Game difficulty">${Object.entries(E.DIFFICULTIES).map(([key,d])=>`<button data-mode="${key}" aria-pressed="${mode===key}">${d.label}<span>${d.description}</span></button>`).join('')}</div><div class="hero-actions"><button class="primary" id="start-game">Start challenge ${icon('arrow')}</button><button class="text-button" id="how-to">How to play ↗</button></div><div class="hero-meta"><span>Five short rounds</span><span>Phone or desktop</span><span>Open to everyone</span></div></div><div class="hero-art" aria-hidden="true"><div class="art-glow"></div><div class="orbit"></div><div class="orbit two"></div><div class="small-bag one">${bag()}</div><div class="small-bag two">${bag()}</div><div class="hero-bag">${bag()}</div><div class="art-label">Stocks</div><div class="art-slice"></div><div class="floating-label top">Financial tools ↗</div><div class="floating-label bottom">✦ GOOD CHOICE +100</div><span class="art-number">YOUR NEXT MOVE</span><span class="spark s1">✦</span><span class="spark s2">✧</span><span class="spark s3">✦</span></div></section><section class="bottom-strip" aria-label="Game features"><div class="strip-item"><span class="strip-number">05</span><div><strong>Finance topics</strong><small>Tools · Investing · Insurance · Loans · Scams</small></div></div><div class="strip-item"><span class="strip-number">${totalChoices()}</span><div><strong>Money bag choices</strong><small>Read carefully. Slice wisely.</small></div></div><div class="strip-item"><span class="strip-number">01</span><div><strong>One habit to take away</strong><small>Put your learning into practice.</small></div></div></section>`);
-app.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{mode=b.dataset.mode;prefs.set('mode',mode);app.querySelectorAll('[data-mode]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));});$('#start-game').onclick=startGame;$('#how-to').onclick=rules;
-}
-function rules(){showModal('Read. Choose. Slice.',`<ol><li><strong>Read first: </strong>Understand the question, then start when ready.</li><li><strong>Slice your answers: </strong>Drag with the mouse button held down, or swipe with a finger. Slice every correct bag and let the others pass.</li><li><strong>Expect variety: </strong>One, two or three bags fly along different arcs. Each round has 12 choices and several correct answers.</li><li><strong>Learn from the review: </strong>Wrong or missed choices show you what to practise next.</li></ol><div class="rule-points"><span>Correct +100</span><span>Wrong −150</span><span>Combo bonus</span></div><p>Difficulty changes the flight speed. Start on Easy to warm up. Keyboard players can Tab to an active bag and press Enter or Space to slice.</p>`,`<button class="primary" id="close-modal">Got it—ready to slice ${icon('slice')}</button>`);$('#close-modal').onclick=closeModal;}
-$('#brand-home').onclick=()=>{if(['playing','ready','tutorial','review'].includes(phase)){paused=true;showModal('Return to the game menu?','<p>Your current game will be reset.</p>','<button class="primary" id="continue-game">Keep playing</button><button class="text-button" id="leave-game">Game menu</button>');$('#continue-game').onclick=closeModal;$('#leave-game').onclick=home;}else home();};
-function startGame(){session=E.createSession();questionIndex=0;tutorial=true;playSound('start');renderGame(true);startTutorial();}
-function renderGame(isTutorial=false){const q=QUESTIONS[questionIndex];phase=isTutorial?'tutorial':'ready';tutorial=isTutorial;paused=false;
-render(`<section class="game-wrap"><div class="game-topline"><div class="progress-steps">${QUESTIONS.map((_,i)=>`<span class="step-dot ${!isTutorial&&i<questionIndex?'done':''} ${!isTutorial&&i===questionIndex?'current':''}"></span>`).join('')}<span class="round-number">${isTutorial?'Practice':`${String(questionIndex+1).padStart(2,'0')} / 05`}</span></div><div class="game-tools"><span class="mode-label">${difficulty().label} · 1–3 bags at a time</span><button class="icon-button" id="game-sound" aria-label="Sound">${icon(sound?'volume':'muted')}</button><button class="icon-button" id="game-fullscreen" aria-label="Toggle fullscreen">${icon('expand')}</button><button class="icon-button" id="pause-game" aria-label="Pause game">${icon('pause')}</button></div></div><div class="game-panel"><div class="question-bar"><div class="eyebrow">${isTutorial?'HOW TO SLICE / UNSCORED PRACTICE':q.eyebrow}</div><h1>${isTutorial?'Try your first slice.':q.question}</h1><p class="question-context">${isTutorial?'The knife follows your finger or mouse. Hold and swipe through a bag. Take your time—the practice bag keeps coming back.':q.context}</p></div><div class="game-hud"><div class="score-block"><span>SCORE</span><strong class="score-value" id="score">${session.score}</strong><span class="combo-block" id="combo"></span></div><div class="wave-progress"><span id="wave-label">${isTutorial?'PRACTICE':'GET READY'}</span><span class="wave-line"><i id="wave-meter" ></i></span></div></div><div class="arena" id="arena" role="group" aria-label="Money bag slicing arena"><span class="arena-caption">SLICE THE RIGHT CHOICES</span><span class="arena-watermark">FuLam One Slice</span><canvas class="trail" id="trail" aria-hidden="true"></canvas><span class="knife-cursor" id="knife-cursor" aria-hidden="true"><img src="knife.svg" alt="" draggable="false"></span>${isTutorial?'<div class="tutorial-hint">Swipe through a bag to try your first slice ↗</div>':`<div class="arena-overlay" id="ready-overlay"><div class="ready-card"><div class="ready-icon">${icon('slice')}</div><h2>${q.chapter}</h2><p>Read the question above.<br>Slice every correct choice.<br>One to three bags fly at a time.<br>${difficulty().label} · ${choicesPerQuestion(q)} choices.</p><button class="primary" id="ready-button">Ready to slice ${icon('arrow')}</button></div></div>`}</div><div class="arena-footer"><span>${isTutorial?'Swipe with your finger or drag with your mouse':'Correct +100 · Wrong −150 · Missed +0'}</span><button class="skip-wave" id="skip-wave">${isTutorial?'Skip practice →':'Pass this wave →'}</button></div></div><p class="small-note">${isTutorial?'Keyboard: Tab to a bag, then press Enter or Space.':'Several choices are correct · Reading time does not affect your score'}</p></section>`);
-arena=$('#arena');canvas=$('#trail');ctx=canvas.getContext('2d');knife=$('#knife-cursor');resizeArena();bindPointer();$('#pause-game').onclick=pauseGame;$('#game-sound').onclick=()=>$('#sound-toggle').click();$('#game-fullscreen').onclick=()=>$('#fullscreen').click();updateSound();
-$('#skip-wave').onclick=()=>{if(tutorial){renderGame();return;}if(phase==='playing'&&!paused&&!waveComplete)finishWave();};
-if(!isTutorial){$('#skip-wave').disabled=true;$('#ready-button').onclick=()=>{$('#ready-overlay').remove();startQuestion();};}
-}
-function resizeArena(){if(!arena)return;const r=arena.getBoundingClientRect();arenaWidth=r.width;arenaHeight=r.height;arenaCeiling=Math.max(70,($('.question-bar')?.getBoundingClientRect().bottom??r.top+160)-r.top+20);arena.style.setProperty('--flight-ceiling',arenaCeiling+'px');if(canvas&&ctx){const dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(arenaWidth*dpr);canvas.height=Math.round(arenaHeight*dpr);canvas.style.width=arenaWidth+'px';canvas.style.height=arenaHeight+'px';ctx.setTransform(dpr,0,0,dpr,0,0);}}
-window.addEventListener('resize',resizeArena);
-function startTutorial(){phase='tutorial';arena.classList.add('knife-enabled');elapsed=0;lastTime=performance.now();makeTargets([{id:'practice',text:'Slice me!',good:true}],true);loop(lastTime);}
-function startQuestion(){phase='playing';arena.classList.add('knife-enabled');waveScore=session.score;order=E.shuffle(QUESTIONS[questionIndex].options).slice(0,choicesPerQuestion(QUESTIONS[questionIndex]));hitIds=new Set();waves=E.createWaves(order);wave=0;playSound('start');startWave();}
-function makeTargets(opts,isTutorial=false){targets.forEach(t=>t.el.remove());targets=[];const launches=E.createLaunches(opts.length,mode);opts.forEach((option,i)=>{const el=document.createElement('button');el.className='target '+(isTutorial?'practice-target':'choice-target');el.setAttribute('aria-label','Slice: '+option.text);el.style.visibility='hidden';el.disabled=true;el.innerHTML=bag('bag-svg')+`<span class="option-label">${option.text}</span>`;arena.append(el);const t={option,el,index:i,hit:false,active:false,x:0,y:0,isTutorial,launch:isTutorial?{startX:.2,endX:.8,depth:.2,duration:5.5,delay:0,rotation:12}:launches[i]};targets.push(t);el.addEventListener('click',ev=>{if(ev.detail===0)cutTarget(t);});});}
-function startWave(){waveComplete=false;allCutAt=null;elapsed=0;lastTime=performance.now();trail=[];makeTargets(waves[wave]);$('#wave-label').textContent=`WAVE ${wave+1} / ${waveCount()} · ${targets.length} ${targets.length===1?'bag':'bags'}`;$('#skip-wave').disabled=false;cancelAnimationFrame(raf);loop(lastTime);}
-function positionTargets(){
- if(!arena)return;
- for(const t of targets){
-  const duration=t.launch.duration;
-  const localTime=tutorial?elapsed%duration:elapsed-t.launch.delay;
-  t.active=!t.hit&&localTime>=0&&localTime<duration;
-  t.el.style.visibility=t.active?'visible':'hidden';t.el.disabled=!t.active;
-  if(!t.active)continue;
-  const progress=localTime/duration,width=t.el.offsetWidth,height=t.el.offsetHeight;
-  const pos=E.arcadePosition(t.launch,progress,arenaWidth,arenaHeight,width,height,arenaCeiling);
-  t.x=pos.x;t.y=pos.y;t.el.style.transform=`translate(${pos.x}px,${pos.y}px)`;
-  t.el.style.setProperty('--bag-rotation',reducedMotion?'0deg':((progress-.5)*t.launch.rotation*2)+'deg');
+function updateSound() {
+ for (const button of [$('#sound-toggle'), $('#game-sound')].filter(Boolean)) {
+  button.innerHTML = icon(sound ? 'volume' : 'muted');
+  button.setAttribute('aria-label', sound ? 'Mute sound' : 'Enable sound');
+  button.setAttribute('aria-pressed', String(sound));
  }
 }
-function loop(now){if(!['playing','tutorial'].includes(phase))return;const dt=Math.min((now-lastTime)/1000,.05);lastTime=now;if(!paused){elapsed+=dt;positionTargets();drawTrail(now,dt);const duration=waveDuration();if(!tutorial&&!waveComplete){$('#wave-meter').style.transform=`scaleX(${Math.max(0,1-elapsed/duration)})`;if(targets.every(t=>t.hit)){allCutAt??=elapsed;}if(elapsed>=duration||(allCutAt!==null&&elapsed-allCutAt>1.1)){finishWave();return;}}}raf=requestAnimationFrame(loop);}
-function finishWave(){if(waveComplete||tutorial||phase!=='playing')return;waveComplete=true;cancelAnimationFrame(raf);targets.filter(t=>!t.hit&&t.option.good).forEach(()=>{session.combo=0;});updateHUD();targets.forEach(t=>t.el.remove());targets=[];trail=[];ctx?.clearRect(0,0,arenaWidth,arenaHeight);$('#skip-wave').disabled=true;pointer=null;hideKnife();
-if(wave<waveCount()-1){wave++;startWave();}else finishQuestion();}
-function updateHUD(){if($('#score'))$('#score').textContent=session.score;const c=$('#combo');if(c)c.textContent=session.combo>1?`${session.combo} COMBO`:'';}
-function cutTarget(t){if(t.hit||!t.active||paused||!['playing','tutorial'].includes(phase))return;t.hit=true;t.el.disabled=true;t.el.classList.add(t.option.good?'cut-good':'cut-bad');playSound(t.option.good?'good':'bad');const centerX=t.x+t.el.offsetWidth/2,centerY=t.y+t.el.offsetHeight*.48;splitBag(t);
-if(tutorial){burst(centerX,centerY,true);feedback(centerX,centerY,'Nice slice!','Get ready for five finance rounds',true);announce('Practice complete');later(()=>{if(phase==='tutorial'){renderGame();}},1400);return;}
-hitIds.add(t.option.id);const result=E.recordHit(session,QUESTIONS[questionIndex].id,t.option);if(!result)return;updateHUD();burst(centerX,centerY,t.option.good);feedback(centerX,centerY,result.delta>0?'+'+result.delta:String(result.delta),t.option.good?(result.combo>1?result.combo+' COMBO':'Good choice!'):'Think this one through',t.option.good);announce(t.option.text+': '+(t.option.good?'Correct slice':'Wrong slice'));}
-function feedback(x,y,text,sub,good){const el=document.createElement('div');el.className='feedback-tag'+(good?'':' bad');el.style.left=x+'px';el.style.top=y+'px';el.innerHTML=escape(text)+`<small>${escape(sub)}</small>`;arena.append(el);later(()=>el.remove(),1000);}
-function burst(x,y,good){effects.burst(x,y,good,arenaWidth<650?.8:1);}
-function splitBag(t){
- const art=t.el.querySelector('.bag-svg').getBoundingClientRect(),bounds=arena.getBoundingClientRect();
- for(const side of ['left','right']){
-  const part=document.createElement('div');part.className='bag-fragment '+side;
-  part.style.left=(art.left-bounds.left)+'px';part.style.top=(art.top-bounds.top)+'px';
-  part.style.width=art.width+'px';part.style.height=art.height+'px';
-  part.innerHTML=bag();arena.append(part);later(()=>part.remove(),700);
+$('#sound-toggle').addEventListener('click', () => { sound = !sound; prefs.set('sound', sound); updateSound(); if (sound) playSound('good'); });
+updateSound();
+$('#fullscreen').addEventListener('click', async () => {
+ try {
+  if (document.fullscreenElement) await document.exitFullscreen();
+  else if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen();
+  else toast('Fullscreen is unavailable in this browser. You can keep playing here.');
+ } catch { toast('Could not open fullscreen. You can keep playing here.'); }
+});
+function releasePointer() {
+ if (pointer && arena?.hasPointerCapture?.(pointer.id)) {
+  try { arena.releasePointerCapture(pointer.id); } catch {}
  }
+ pointer = null; trail = []; hideKnife();
 }
-function hideKnife(){knife?.classList.remove('visible','slicing');}
-function moveKnife(p,active,dx=0){
- if(!knife)return;knife.style.left=p.x+'px';knife.style.top=p.y+'px';
- knife.style.setProperty('--tilt',Math.max(-28,Math.min(28,dx*.7))+'deg');
- knife.classList.add('visible');knife.classList.toggle('slicing',active);
+function stopAnimation() {
+ cancelAnimationFrame(raf); raf = 0;
+ arenaEvents?.abort(); arenaEvents = null;
+ cleanupTimers.forEach(clearTimeout); cleanupTimers.clear();
+ document.querySelector('.toast')?.remove();
+ releasePointer(); targets = []; effects.clear();
+ knife = null; arena = null; ctx = null; canvas = null;
 }
-function bindPointer(){
- const getPoint=ev=>{const r=arena.getBoundingClientRect();return{x:ev.clientX-r.left,y:ev.clientY-r.top,t:performance.now()};};
- const canSlice=()=>!paused&&['playing','tutorial'].includes(phase);
- arena.addEventListener('pointerdown',ev=>{
-  if(!canSlice()||ev.button>0||pointer)return;ev.preventDefault();
-  const p=getPoint(ev);pointer={id:ev.pointerId,point:p};trail.push(p);moveKnife(p,true);playSound('slice');
-  arena.setPointerCapture(ev.pointerId);
+function render(markup) {
+ stopAnimation();
+ document.body.classList.toggle('immersive-game', ['ready', 'playing'].includes(phase));
+ app.innerHTML = markup;
+ window.scrollTo({top: 0, behavior: 'instant'});
+}
+function advanceClock(now = performance.now()) {
+ if (phase === 'playing' && !paused) elapsed += Math.max(0, now - lastTime) / 1000;
+ lastTime = now;
+}
+function freezeGame() {
+ if (phase !== 'playing' || paused) return;
+ advanceClock(); paused = true; releasePointer(); arena?.classList.add('is-paused'); updateHUD();
+}
+function showModal(title, body, buttons) {
+ freezeGame();
+ $('#modal-content').innerHTML = `<h2 id="modal-title">${title}</h2>${body}${buttons}`;
+ if (!modal.open) modal.showModal();
+}
+function closeModal() { if (modal.open) modal.close(); }
+modal.addEventListener('close', () => {
+ if (phase === 'playing') {
+  if (document.hidden) { paused = true; return; }
+  paused = false; lastTime = performance.now(); arena?.classList.remove('is-paused');
+ }
+});
+function about() {
+ showModal('Every slice is a choice.', `<p>FuLam One Slice is The Money Journey’s finance arcade. Choose a topic and slice its correct money bags in a continuous stream.</p><p>Practice has no time limit. The sprint finishes after ${E.GAME_RULES.sprintTarget} correct slices, with ${E.GAME_RULES.wrongPenaltySeconds} seconds added for each wrong slice. Repeated bags count as new chances to answer.</p><p>No account is needed. Completed sprint bests stay on this device, separately for each topic and difficulty. There is no online leaderboard in this game.</p><p>Optional explanations and official resources are available after you finish. Your score reflects gameplay, not overall financial ability.</p><p><a href="./OPEN_SOURCE.md" target="_blank" rel="noopener noreferrer">Open-source credits and licences ↗</a></p>`, '<button class="primary" id="close-modal">Got it</button>');
+ $('#close-modal').onclick = closeModal;
+}
+$('#about-button').onclick = about;
+function rules() {
+ showModal('Read. Choose. Slice.', `<ol><li><strong>Pick a topic.</strong> Its question stays visible throughout your run.</li><li><strong>Swipe through correct bags.</strong> Hold your mouse button or use your finger. Let wrong choices fall.</li><li><strong>Keep going.</strong> Bags arrive continuously in a shuffled order, with varied timing and flight paths.</li><li><strong>Choose your finish.</strong> Practice lasts until you finish. Sprint ends at ${E.GAME_RULES.sprintTarget} correct cuts; every wrong cut adds ${E.GAME_RULES.wrongPenaltySeconds} seconds.</li></ol><div class="rule-points"><span>Correct +100</span><span>Wrong −150</span><span>Combo bonus</span></div><p>Keyboard: Tab to an active bag, then press Enter or Space. A missed correct bag breaks your combo. Review explanations after your run, whenever you want.</p>`, `<button class="primary" id="close-modal">Got it ${icon('slice')}</button>`);
+ $('#close-modal').onclick = closeModal;
+}
+function topicCards() {
+ return QUESTIONS.map((q, index) => {
+  const best = playKind === 'sprint' ? readBest(q) : null;
+  return `<button class="topic-card" data-topic="${escape(q.id)}"><span class="topic-number">${String(index + 1).padStart(2, '0')} / ${escape(q.chapter.toUpperCase())}</span><strong>${escape(q.chapter)}</strong><p>${escape(q.question)}</p><span class="topic-meta">${q.options.length} answers · ${q.options.filter(o => o.good).length} correct choices</span>${playKind === 'sprint' ? `<span class="local-best">On this device: ${best ? timeLabel(best.timeMs) : 'no completed sprint yet'}</span>` : ''}<span class="topic-start">Play this topic ${icon('arrow')}</span></button>`;
+ }).join('');
+}
+function refreshTopicCards() {
+ $('.topic-grid').innerHTML = topicCards();
+ app.querySelectorAll('[data-topic]').forEach(button => { button.onclick = () => startGame(button.dataset.topic); });
+}
+function home() {
+ phase = 'home'; paused = false; closeModal();
+ render(`<section class="hero page-in"><div class="hero-copy"><div class="eyebrow"><span class="live-dot"></span> THE MONEY CHOICE CHALLENGE</div><h1>One topic.<br>Keep <span class="gold">slicing.</span></h1><p class="hero-desc">A continuous stream of money choices.<br>Read the question. Find your rhythm.<br><strong>How long can you keep a combo?</strong></p><div class="mode-picker" aria-label="Game difficulty">${Object.entries(E.DIFFICULTIES).map(([key, d]) => `<button data-mode="${key}" aria-pressed="${mode === key}">${d.label}<span>${d.description}</span></button>`).join('')}</div><div class="play-kind-picker" aria-label="Play mode"><button data-play-kind="practice" aria-pressed="${playKind === 'practice'}"><strong>Endless practice</strong><span>No time limit · finish when you want</span></button><button data-play-kind="sprint" aria-pressed="${playKind === 'sprint'}"><strong>20-correct sprint</strong><span>Beat your time · +3s per wrong slice</span></button></div><div class="hero-actions"><a class="primary" href="#topics">Choose a topic ${icon('arrow')}</a><button class="text-button" id="how-to">How to play ↗</button></div><div class="hero-meta"><span>No rounds or waiting</span><span>Phone or desktop</span><span>Open to everyone</span></div></div><div class="hero-art" aria-hidden="true"><div class="art-glow"></div><div class="orbit"></div><div class="orbit two"></div><div class="small-bag one">${bag()}</div><div class="small-bag two">${bag()}</div><div class="hero-bag">${bag()}</div><div class="art-label">Stocks</div><div class="art-slice"></div><div class="floating-label top">Pick your topic ↗</div><div class="floating-label bottom">✦ GOOD CHOICE +100</div><span class="art-number">YOUR NEXT MOVE</span><span class="spark s1">✦</span><span class="spark s2">✧</span><span class="spark s3">✦</span></div></section><section class="topic-menu" id="topics"><div class="topic-menu-heading"><div class="eyebrow">PICK YOUR TOPIC</div><h2>One topic. Non-stop choices.</h2><p>Each entrance has its own question and answer pool. Read once, then keep slicing.</p></div><div class="topic-grid">${topicCards()}</div></section><section class="bottom-strip" aria-label="Game features"><div class="strip-item"><span class="strip-number">05</span><div><strong>Separate topic entrances</strong><small>Tools · Investing · Insurance · Loans · Scams</small></div></div><div class="strip-item"><span class="strip-number">${totalChoices()}</span><div><strong>Different money choices</strong><small>Shuffled answers, timing and flight paths.</small></div></div><div class="strip-item"><span class="strip-number">∞</span><div><strong>Keep your rhythm</strong><small>Practice freely or chase a sprint best.</small></div></div></section>`);
+ app.querySelectorAll('[data-mode]').forEach(button => {
+  button.onclick = () => {
+   mode = button.dataset.mode; prefs.set('mode', mode);
+   app.querySelectorAll('[data-mode]').forEach(other => other.setAttribute('aria-pressed', String(other === button)));
+   refreshTopicCards();
+  };
  });
- arena.addEventListener('pointermove',ev=>{
-  if(!canSlice()){hideKnife();return;}
-  const p=getPoint(ev);
-  if(!pointer){if(ev.pointerType!=='touch')moveKnife(p,false);return;}
-  if(pointer.id!==ev.pointerId)return;ev.preventDefault();
-  const prev=pointer.point;moveKnife(p,true,p.x-prev.x);
-  if(Math.hypot(p.x-prev.x,p.y-prev.y)<2)return;
-  for(const t of targets){
-   if(t.hit||!t.active)continue;const w=t.el.offsetWidth,h=t.el.offsetHeight;
-   const r={left:t.x+12,right:t.x+w-12,top:t.y+18,bottom:t.y+h-10};
-   if(E.segmentIntersectsRect(prev,p,r))cutTarget(t);
+ app.querySelectorAll('[data-play-kind]').forEach(button => {
+  button.onclick = () => {
+   playKind = button.dataset.playKind; prefs.set('play-kind', playKind);
+   app.querySelectorAll('[data-play-kind]').forEach(other => other.setAttribute('aria-pressed', String(other === button)));
+   refreshTopicCards();
+  };
+ });
+ app.querySelectorAll('[data-topic]').forEach(button => { button.onclick = () => startGame(button.dataset.topic); });
+ $('#how-to').onclick = rules;
+}
+$('#brand-home').onclick = () => {
+ if (['playing', 'ready'].includes(phase)) {
+  showModal('Return to the game menu?', '<p>This run will end. Unfinished sprints do not replace your best time.</p>', '<button class="primary" id="continue-game">Keep playing</button><button class="text-button" id="leave-game">Game menu</button>');
+  $('#continue-game').onclick = closeModal; $('#leave-game').onclick = home;
+ } else home();
+};
+function startGame(topicId) {
+ const selected = QUESTIONS.find(q => q.id === topicId);
+ if (!selected) return;
+ question = selected; session = E.createSession(); optionDeck = E.createOptionDeck(question.options);
+ optionStats = new Map(question.options.map(option => [option.id, {option, shown: 0, correct: 0, wrong: 0, missed: 0, avoided: 0}]));
+ elapsed = 0; nextSpawnAt = 0; spawned = 0; avoided = 0; lastGroup = []; finalTimeMs = null; bestResult = null; runSerial++;
+ phase = 'ready'; paused = false; closeModal(); renderGame();
+}
+function renderGame() {
+ const q = question;
+ render(`<section class="game-wrap"><div class="game-topline"><div class="progress-steps"><span class="step-dot current"></span><span class="round-number">${escape(q.chapter)} · ${playKind === 'sprint' ? '20-correct sprint' : 'Endless practice'}</span></div><div class="game-tools"><span class="mode-label">${difficulty().label} · continuous play</span><button class="icon-button" id="game-sound" aria-label="Sound">${icon(sound ? 'volume' : 'muted')}</button><button class="icon-button" id="game-fullscreen" aria-label="Toggle fullscreen">${icon('expand')}</button><button class="icon-button" id="pause-game" aria-label="Pause game">${icon('pause')}</button></div></div><div class="game-panel"><div class="question-bar"><div class="eyebrow">${escape(q.eyebrow)}</div><h1>${escape(q.question)}</h1><p class="question-context">${escape(q.context)}</p></div><div class="game-hud"><div class="score-block"><span>SCORE</span><strong class="score-value" id="score">0</strong><span class="combo-block" id="combo"></span></div><div class="run-progress"><span id="run-goal">${playKind === 'sprint' ? '0 / 20 CORRECT' : 'NO TIME LIMIT'}</span><strong class="sprint-clock" id="run-clock" ${playKind === 'practice' ? 'hidden' : ''}>0:00.00</strong><div class="session-stats"><span id="correct-count">0 correct</span><span id="wrong-count">0 wrong</span><span id="missed-count">0 missed</span></div></div></div><div class="arena" id="arena" role="group" aria-label="Money bag slicing arena"><span class="arena-caption">SLICE THE RIGHT CHOICES</span><span class="arena-watermark">FuLam One Slice</span><canvas class="trail" id="trail" aria-hidden="true"></canvas><span class="knife-cursor" id="knife-cursor" aria-hidden="true"><img src="knife.svg" alt="" draggable="false"></span><div class="arena-overlay" id="ready-overlay"><div class="ready-card"><div class="ready-icon">${icon('slice')}</div><h2>${escape(q.chapter)}</h2><p>Read the question above.<br>Slice correct choices and let wrong ones fall.<br>${q.options.length} different answers · ${difficulty().label}<br>${playKind === 'sprint' ? '20 correct slices to finish. Wrong cuts add 3 seconds.' : 'No time limit. Finish whenever you want.'}</p><button class="primary" id="ready-button">Ready to slice ${icon('arrow')}</button></div></div></div><div class="arena-footer"><span>${playKind === 'sprint' ? 'Wrong slice +3s · Missed correct bag breaks combo' : 'Correct +100 · Wrong −150 · Combo bonus'}</span><button class="finish-session" id="finish-session">Finish & review →</button></div></div><p class="small-note">Bags keep coming · Same topic throughout · Keyboard: Tab to a bag, Enter or Space to slice</p></section>`);
+ arena = $('#arena'); canvas = $('#trail'); ctx = canvas.getContext('2d'); knife = $('#knife-cursor');
+ resizeArena(); bindPointer();
+ $('#pause-game').onclick = pauseGame;
+ $('#game-sound').onclick = () => $('#sound-toggle').click();
+ $('#game-fullscreen').onclick = () => $('#fullscreen').click();
+ $('#finish-session').disabled = true; $('#finish-session').onclick = () => finishSession(false);
+ $('#ready-button').onclick = beginStream;
+ updateSound();
+}
+function resizeArena() {
+ if (!arena) return;
+ const rect = arena.getBoundingClientRect(); arenaWidth = rect.width; arenaHeight = rect.height;
+ arenaCeiling = Math.max(70, ($('.question-bar')?.getBoundingClientRect().bottom ?? rect.top + 160) - rect.top + 20);
+ flightFloor = Math.min(arenaHeight, ($('.game-hud')?.getBoundingClientRect().top ?? rect.bottom) - rect.top - 8);
+ arena.style.setProperty('--flight-ceiling', arenaCeiling + 'px');
+ if (canvas && ctx) {
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  canvas.width = Math.round(arenaWidth * dpr); canvas.height = Math.round(arenaHeight * dpr);
+  canvas.style.width = arenaWidth + 'px'; canvas.style.height = arenaHeight + 'px'; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+ }
+ targets.forEach(target => { target.metrics = measureTarget(target.el); });
+ // A narrower viewport must not retain more scheduled or airborne bags than its cap.
+ if (targets.length > liveCap()) {
+  const excess = targets.splice(liveCap());
+  excess.forEach(target => { target.el.remove(); });
+ }
+}
+window.addEventListener('resize', resizeArena);
+function beginStream() {
+ if (phase !== 'ready') return;
+ phase = 'playing'; paused = false; $('#ready-overlay')?.remove(); $('#finish-session').disabled = false;
+ arena.classList.add('knife-enabled'); lastTime = performance.now(); nextSpawnAt = 0;
+ playSound('start'); spawnIfReady(); positionTargets(); updateHUD(); raf = requestAnimationFrame(loop);
+}
+// Sample free trajectories, then favour paths whose labels stay apart near the apex.
+// This is a spatial check, not a lane or answer-position assignment.
+function measureTarget(el) {
+ const label = el.querySelector('.option-label'), width = el.offsetWidth, height = el.offsetHeight;
+ const labelTop = label?.offsetTop ?? Math.round(height * .6);
+ const labelHeight = label?.offsetHeight || 54;
+ return {width, height, labelTop, labelHeight, labelBottom: labelTop + labelHeight};
+}
+function targetPosition(plan, progress, metrics) {
+ // Leave the question in place. Decorative art may use its 20px bottom gap;
+ // the readable label, rather than empty button padding, sets the lower edge.
+ const visualHeight = Math.max(metrics.labelBottom, metrics.height * .65);
+ const availableHeight = flightFloor - arenaCeiling;
+ let apexCeiling = arenaCeiling - 20;
+ if (availableHeight < metrics.labelBottom + 40) {
+  // In very short landscape views, let the decorative top pass behind the
+  // question while keeping the label and some bag art in the open space.
+  const visibleArt = Math.min(32, Math.max(0, (availableHeight - metrics.labelHeight) * .4));
+  apexCeiling = Math.min(apexCeiling, arenaCeiling - metrics.labelTop + visibleArt);
+ }
+ return E.arcadePosition(plan, progress, arenaWidth, flightFloor + 85,
+  metrics.width, visualHeight, Math.max(24, apexCeiling));
+}
+function chooseLaunch(initial, metrics) {
+ const others = targets.filter(target => !target.hit);
+ if (!others.length) return initial;
+ let best = initial, bestSeparation = -1;
+ for (let attempt = 0; attempt < 12; attempt++) {
+  const plan = attempt ? {...E.createLaunches(1, mode)[0], delay: initial.delay} : initial;
+  let separation = Infinity;
+  for (const progress of [.35, .5, .65]) {
+   const future = elapsed + plan.delay + plan.duration * progress;
+   const pos = targetPosition(plan, progress, metrics);
+   for (const other of others) {
+    const otherProgress = (future - other.bornAt - other.launch.delay) / other.launch.duration;
+    if (otherProgress <= 0 || otherProgress >= 1) continue;
+    const otherMetrics = other.metrics;
+    const otherPos = targetPosition(other.launch, otherProgress, otherMetrics);
+    if (otherPos.y > flightFloor || otherPos.y + otherMetrics.height < arenaCeiling) continue;
+    const dx = (pos.x + metrics.width / 2 - otherPos.x - otherMetrics.width / 2) / ((metrics.width + otherMetrics.width) / 2 + 14);
+    const dy = (pos.y + metrics.labelTop - otherPos.y - otherMetrics.labelTop) / ((metrics.labelHeight + otherMetrics.labelHeight) / 2 + 12);
+    separation = Math.min(separation, Math.hypot(dx, dy));
+   }
   }
-  trail.push(p);pointer.point=p;
- });
- const end=ev=>{
-  if(pointer?.id!==ev.pointerId)return;pointer=null;
-  if(ev.type==='pointerup'&&ev.pointerType==='mouse'&&canSlice())knife?.classList.remove('slicing');else hideKnife();
- };
- arena.addEventListener('pointerup',end);arena.addEventListener('pointercancel',end);arena.addEventListener('lostpointercapture',end);
- arena.addEventListener('pointerleave',()=>{if(!pointer)hideKnife();});
+  if (separation > bestSeparation) { best = plan; bestSeparation = separation; }
+ }
+ return best;
 }
-function drawTrail(now,dt){
- if(!ctx)return;ctx.clearRect(0,0,arenaWidth,arenaHeight);effects.draw(ctx,dt);
- trail=trail.filter(p=>now-p.t<180);if(trail.length<2)return;
- ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
- for(let i=1;i<trail.length;i++){
-  const alpha=Math.max(0,1-(now-trail[i].t)/180);
-  ctx.beginPath();ctx.moveTo(trail[i-1].x,trail[i-1].y);ctx.lineTo(trail[i].x,trail[i].y);
-  ctx.strokeStyle=`rgba(120,214,255,${alpha*.12})`;ctx.lineWidth=20;ctx.stroke();
-  ctx.strokeStyle=`rgba(184,236,255,${alpha*.4})`;ctx.lineWidth=8;ctx.stroke();
-  ctx.strokeStyle=`rgba(255,251,224,${alpha})`;ctx.lineWidth=2.5;ctx.stroke();
+// Continuous spawn clock adapted from an1kens/fruit-blade WaveManager.update (MIT); see OPEN_SOURCE.md.
+function spawnIfReady() {
+ if (!arena || phase !== 'playing' || paused || elapsed < nextSpawnAt) return;
+ const available = Math.max(0, liveCap() - targets.filter(target => !target.hit).length);
+ if (!available) return;
+ const count = Math.min(available, Math.max(1, E.spawnGroupSize(available)));
+ const launches = E.createLaunches(count, mode);
+ lastGroup = [];
+ for (let index = 0; index < count; index++) {
+  const option = optionDeck.next();
+  const instanceId = `${runSerial}:${++spawned}`;
+  const el = document.createElement('button');
+  el.className = 'target choice-target'; el.dataset.instanceId = instanceId; el.dataset.optionId = option.id;
+  el.setAttribute('aria-label', 'Slice: ' + option.text); el.style.visibility = 'hidden'; el.disabled = true;
+  el.innerHTML = bag('bag-svg') + `<span class="option-label">${escape(option.text)}</span>`;
+  arena.append(el);
+  const metrics = measureTarget(el), launch = chooseLaunch(launches[index], metrics);
+  const target = {instanceId, option, el, metrics, hit: false, active: false, shown: false, x: 0, y: 0, bornAt: elapsed, launch};
+  targets.push(target);
+  lastGroup.push({instanceId, optionId: option.id, bornAt: elapsed, launch: {...launch}});
+  // Keep the handler on this short-lived node, not the run's shared AbortSignal.
+  el.onclick = event => { if (event.detail === 0) cutTarget(target); };
+ }
+ nextSpawnAt = elapsed + E.nextSpawnDelay(mode);
+}
+function positionTargets() {
+ if (!arena) return;
+ const remaining = [];
+ for (const target of targets) {
+  if (target.hit) { target.el.remove(); continue; }
+  const localTime = elapsed - target.bornAt - target.launch.delay;
+  if (localTime >= target.launch.duration) {
+   const stats = optionStats.get(target.option.id);
+   if (target.shown) {
+    E.recordMiss(session, target.instanceId, target.option);
+    if (target.option.good) stats.missed++;
+    else { avoided++; stats.avoided++; }
+   }
+   target.el.remove(); continue;
+  }
+  target.active = false;
+  if (localTime >= 0) {
+   const progress = localTime / target.launch.duration, metrics = target.metrics;
+   const pos = targetPosition(target.launch, progress, metrics);
+   target.x = pos.x; target.y = pos.y;
+   target.el.style.transform = `translate(${pos.x}px,${pos.y}px)`;
+   target.el.style.setProperty('--bag-rotation', reducedMotion ? '0deg' : ((progress - .5) * target.launch.rotation * 2) + 'deg');
+   // A bag is cuttable only once its label is fully inside the playing space.
+   target.active = pos.y + metrics.labelTop >= arenaCeiling && pos.y + metrics.labelBottom <= flightFloor;
+   if (target.active && !target.shown) { target.shown = true; optionStats.get(target.option.id).shown++; }
+   target.el.style.visibility = pos.y < flightFloor && pos.y + metrics.height > arenaCeiling ? 'visible' : 'hidden';
+  } else target.el.style.visibility = 'hidden';
+  target.el.disabled = !target.active; target.el.setAttribute('aria-hidden', String(!target.active));
+  target.el.style.pointerEvents = target.active ? '' : 'none';
+  remaining.push(target);
+ }
+ targets = remaining;
+}
+function loop(now) {
+ if (phase !== 'playing') return;
+ const frameDelta = Math.max(0, now - lastTime) / 1000;
+ advanceClock(now);
+ if (!paused) { positionTargets(); spawnIfReady(); drawTrail(now, Math.min(frameDelta, .05)); updateHUD(); }
+ raf = requestAnimationFrame(loop);
+}
+function updateHUD() {
+ if (!$('#score')) return;
+ $('#score').textContent = session.score;
+ $('#combo').textContent = session.combo > 1 ? `${session.combo} COMBO` : '';
+ $('#correct-count').textContent = `${session.correct} correct`;
+ $('#wrong-count').textContent = `${session.wrong} wrong`;
+ $('#missed-count').textContent = `${session.missed} missed`;
+ $('#run-goal').textContent = playKind === 'sprint' ? `${session.correct} / ${E.GAME_RULES.sprintTarget} CORRECT` : 'NO TIME LIMIT';
+ $('#run-clock').textContent = timeLabel(playKind === 'sprint' ? E.sprintTimeMs(elapsed, session.wrong) : Math.ceil(elapsed * 1000));
+ $('#run-clock').title = playKind === 'sprint' ? `Includes ${session.wrong * E.GAME_RULES.wrongPenaltySeconds} seconds of wrong-slice penalties` : 'Time played';
+}
+function cutTarget(target) {
+ if (target.hit || !target.active || paused || phase !== 'playing') return;
+ advanceClock();
+ const result = E.recordHit(session, question.id, target.option, target.instanceId);
+ if (!result) return;
+ target.hit = true; target.active = false; target.el.disabled = true;
+ target.el.classList.add(target.option.good ? 'cut-good' : 'cut-bad');
+ const stats = optionStats.get(target.option.id); stats[target.option.good ? 'correct' : 'wrong']++;
+ playSound(target.option.good ? 'good' : 'bad');
+ const centerX = target.x + target.el.offsetWidth / 2, centerY = target.y + target.el.offsetHeight * .48;
+ splitBag(target); effects.burst(centerX, centerY, target.option.good, arenaWidth < 650 ? .8 : 1);
+ feedback(centerX, centerY, result.delta > 0 ? '+' + result.delta : String(result.delta), target.option.good ? (result.combo > 1 ? result.combo + ' COMBO' : 'Good choice!') : (playKind === 'sprint' ? '+3 seconds' : 'Wrong choice'), target.option.good);
+ updateHUD(); announce(target.option.text + ': ' + (target.option.good ? 'Correct slice' : 'Wrong slice'));
+ if (playKind === 'sprint' && session.correct >= E.GAME_RULES.sprintTarget) finishSession(true);
+}
+function feedback(x, y, text, sub, good) {
+ const el = document.createElement('div'); el.className = 'feedback-tag' + (good ? '' : ' bad');
+ el.style.left = x + 'px'; el.style.top = y + 'px'; el.innerHTML = escape(text) + `<small>${escape(sub)}</small>`;
+ arena.append(el); later(() => el.remove(), 1000);
+}
+function splitBag(target) {
+ const art = target.el.querySelector('.bag-svg').getBoundingClientRect(), bounds = arena.getBoundingClientRect();
+ for (const side of ['left', 'right']) {
+  const part = document.createElement('div'); part.className = 'bag-fragment ' + side;
+  part.style.left = (art.left - bounds.left) + 'px'; part.style.top = (art.top - bounds.top) + 'px';
+  part.style.width = art.width + 'px'; part.style.height = art.height + 'px'; part.innerHTML = bag();
+  arena.append(part); later(() => part.remove(), 700);
+ }
+}
+function hideKnife() { knife?.classList.remove('visible', 'slicing'); }
+function moveKnife(point, active, dx = 0) {
+ if (!knife) return;
+ knife.style.left = point.x + 'px'; knife.style.top = point.y + 'px';
+ knife.style.setProperty('--tilt', Math.max(-28, Math.min(28, dx * .7)) + 'deg');
+ knife.classList.add('visible'); knife.classList.toggle('slicing', active);
+}
+function bindPointer() {
+ arenaEvents = new AbortController(); const opts = {signal: arenaEvents.signal};
+ const getPoint = event => { const rect = arena.getBoundingClientRect(); return {x: event.clientX - rect.left, y: event.clientY - rect.top, t: performance.now()}; };
+ const canSlice = () => !paused && phase === 'playing';
+ arena.addEventListener('pointerdown', event => {
+  if (!canSlice() || event.button > 0 || pointer) return;
+  event.preventDefault(); const point = getPoint(event); pointer = {id: event.pointerId, point};
+  trail.push(point); moveKnife(point, true); playSound('slice'); arena.setPointerCapture(event.pointerId);
+ }, opts);
+ arena.addEventListener('pointermove', event => {
+  if (!canSlice()) { hideKnife(); return; }
+  const point = getPoint(event);
+  if (!pointer) { if (event.pointerType !== 'touch') moveKnife(point, false); return; }
+  if (pointer.id !== event.pointerId) return;
+  event.preventDefault(); const previous = pointer.point; moveKnife(point, true, point.x - previous.x);
+  if (Math.hypot(point.x - previous.x, point.y - previous.y) < 2) return;
+  for (const target of targets) {
+   if (target.hit || !target.active) continue;
+   const width = target.el.offsetWidth, height = target.el.offsetHeight;
+   const rect = {left: target.x + 12, right: target.x + width - 12, top: Math.max(arenaCeiling, target.y + 18), bottom: Math.min(flightFloor, target.y + height - 10)};
+   if (E.segmentIntersectsRect(previous, point, rect)) cutTarget(target);
+   if (!canSlice()) return;
+  }
+  trail.push(point); if (trail.length > 80) trail.shift();
+  if (pointer) pointer.point = point;
+ }, opts);
+ const end = event => {
+  if (pointer?.id !== event.pointerId) return;
+  pointer = null;
+  if (event.type === 'pointerup' && event.pointerType === 'mouse' && canSlice()) knife?.classList.remove('slicing'); else hideKnife();
+ };
+ arena.addEventListener('pointerup', end, opts); arena.addEventListener('pointercancel', end, opts); arena.addEventListener('lostpointercapture', end, opts);
+ arena.addEventListener('pointerleave', () => { if (!pointer) hideKnife(); }, opts);
+}
+function drawTrail(now, dt) {
+ if (!ctx) return;
+ ctx.clearRect(0, 0, arenaWidth, arenaHeight); effects.draw(ctx, dt);
+ trail = trail.filter(point => now - point.t < 180); if (trail.length < 2) return;
+ ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+ for (let index = 1; index < trail.length; index++) {
+  const alpha = Math.max(0, 1 - (now - trail[index].t) / 180);
+  ctx.beginPath(); ctx.moveTo(trail[index - 1].x, trail[index - 1].y); ctx.lineTo(trail[index].x, trail[index].y);
+  ctx.strokeStyle = `rgba(120,214,255,${alpha * .12})`; ctx.lineWidth = 20; ctx.stroke();
+  ctx.strokeStyle = `rgba(184,236,255,${alpha * .4})`; ctx.lineWidth = 8; ctx.stroke();
+  ctx.strokeStyle = `rgba(255,251,224,${alpha})`; ctx.lineWidth = 2.5; ctx.stroke();
  }
  ctx.restore();
 }
-function pauseGame(){if(!['playing','tutorial'].includes(phase)){toast('There is no countdown on the ready screen. Take your time to read.');return;}paused=true;pointer=null;hideKnife();showModal('Take a moment.','<p>The clock is paused. Continue when you are ready.</p>','<button class="primary" id="resume">Resume challenge '+icon('arrow')+'</button><button class="text-button" id="pause-home">Game menu</button><a class="account-return" href="../">Exit to FuLam home</a>');$('#resume').onclick=closeModal;$('#pause-home').onclick=()=>{showModal('Return to the game menu?','<p>Your current game will be reset.</p>','<button class="primary" id="resume">Keep playing</button><button class="text-button" id="confirm-home">Game menu</button>');$('#resume').onclick=closeModal;$('#confirm-home').onclick=home;};}
-document.addEventListener('visibilitychange',()=>{if(document.hidden&&['playing','tutorial'].includes(phase)&&!paused)pauseGame();});
-function sourceLinks(q){return q.sources?.length?`<details class="source-links"><summary>Official learning resources ↗</summary>${q.sources.map(s=>`<a href="${escape(s.url)}" target="_blank" rel="noopener noreferrer">${escape(s.title)} ↗</a>`).join('')}</details>`:'';}
-function decisionCards(list){return list.map(d=>`<article class="decision-card ${d.status}"><div class="decision-top"><span class="decision-title">${d.text}</span><span class="status-pill">${statusLabels[d.status]}</span></div><p>${d.why}</p></article>`).join('');}
-function finishQuestion(){const q=QUESTIONS[questionIndex];const rec={id:q.id,index:questionIndex,score:session.score-waveScore,decisions:E.decisions(order,hitIds)};session.records.push(rec);phase='review';const s=E.summarise([rec]);render(`<section class="review-page page-in"><div class="review-header"><div><div class="eyebrow">ROUND ${String(questionIndex+1).padStart(2,'0')} COMPLETE</div><h1>Learn from every slice.</h1><p>${q.chapter} · ${s.correct+s.avoided} / ${rec.decisions.length} choices judged correctly</p></div><div class="round-score">${rec.score>0?'+':''}${rec.score}<small>ROUND SCORE</small></div></div><div class="takeaway"><span class="take-icon">✦</span><div><small>TAKEAWAY</small><p>${q.takeaway}</p></div></div><div class="decisions-grid">${decisionCards(rec.decisions)}</div>${sourceLinks(q)}<div class="review-bottom"><span>Every mistake is a chance to make a better choice.</span><button class="primary" id="next-question">${questionIndex===4?'See my results':'Next round'} ${icon('arrow')}</button></div></section>`);$('#next-question').onclick=()=>{if(questionIndex===4)showResults();else{questionIndex++;renderGame();}};announce(q.chapter+' complete, '+(s.correct+s.avoided)+' choices judged correctly.');}
-function showResults(){phase='results';const s=E.summarise(session.records);const weakest=[...session.records].sort((a,b)=>a.decisions.filter(d=>d.status==='correct'||d.status==='avoided').length-b.decisions.filter(d=>d.status==='correct'||d.status==='avoided').length)[0];const q=QUESTIONS[weakest?.index??0];const mistakes=session.records.flatMap(r=>r.decisions.filter(d=>['wrong','missed'].includes(d.status)));render(`<section class="results-page page-in"><div class="result-top"><div class="result-emblem">${icon('slice')}</div><div class="eyebrow">CHALLENGE COMPLETE / FIVE ROUNDS COMPLETE</div><h1>Take your next good choice into real life.</h1><p>${totalChoices()} choices completed · Best ${session.bestCombo} COMBO</p><div class="big-score">${session.score.toLocaleString()}<small>points</small></div></div><div class="results-stats"><div class="result-stat"><strong>${s.correct}</strong><small>Correct bags sliced</small></div><div class="result-stat"><strong>${s.avoided}</strong><small>Wrong bags avoided</small></div><div class="result-stat needs-work"><strong>${s.wrong}</strong><small>Wrong bags sliced</small></div><div class="result-stat needs-work"><strong>${s.missed}</strong><small>Correct bags missed</small></div></div><div class="action-card"><div class="action-number">01</div><div><div class="eyebrow">FROM THE GAME TO REAL LIFE</div><p>${q.action}</p></div></div><div class="result-actions"><button class="primary" id="replay">Play again ${icon('arrow')}</button><button class="secondary" id="review-mistakes">Review mistakes${mistakes.length?' · '+mistakes.length:''}</button><button class="text-button" id="copy-result">Copy results ↗</button></div><p class="result-caption">Scores reflect slicing and combos, not overall financial ability. Every replay reshuffles the choices.</p><div class="result-review" id="result-review" hidden><h2>Review now. Choose better next time.</h2>${mistakes.length?session.records.map(r=>{const ds=r.decisions.filter(d=>['wrong','missed'].includes(d.status));return ds.length?`<details open><summary>${QUESTIONS[r.index].chapter} · ${ds.length} choices to revisit</summary><div class="decisions-grid">${decisionCards(ds)}</div>${sourceLinks(QUESTIONS[r.index])}</details>`:'';}).join(''):'<p class="empty-review">Every choice was correct this time. Keep practising these habits in everyday life.</p>'}</div></section>`);$('#replay').onclick=()=>{session=E.createSession();questionIndex=0;renderGame();};$('#review-mistakes').onclick=()=>{const box=$('#result-review');box.hidden=!box.hidden;if(!box.hidden)box.scrollIntoView({behavior:reducedMotion?'instant':'smooth',block:'start'});};$('#copy-result').onclick=async()=>{const text=`I completed FuLam One Slice!\n${session.score} points · Best ${session.bestCombo} Combo\nSliced ${s.correct} correct bags and avoided ${s.avoided} wrong choices.\nToday’s small step: ${q.action}\nThe Money Journey · FuLam`;try{await navigator.clipboard.writeText(text);toast('Results copied!');}catch{showModal('Your results',`<p class="copyable-result">${escape(text)}</p>`,'<button class="primary" id="close-modal">Done</button>');$('#close-modal').onclick=closeModal;}};announce('Five rounds complete. Total score '+session.score+'.');}
+function pauseGame() {
+ if (phase !== 'playing') { toast('There is no countdown on the ready screen. Take your time to read.'); return; }
+ showModal('Game paused', '<p>Your bags and clock are paused. Continue when you are ready.</p>', `<button class="primary" id="resume">Resume ${icon('arrow')}</button><button class="text-button" id="pause-finish">Finish & review</button><button class="text-button" id="pause-home">Game menu</button>`);
+ $('#resume').onclick = closeModal;
+ $('#pause-finish').onclick = () => finishSession(false);
+ $('#pause-home').onclick = home;
+}
+document.addEventListener('visibilitychange', () => {
+ if (phase === 'playing' && document.hidden && !paused) pauseGame();
+ if (phase === 'playing' && !document.hidden && paused && !modal.open) pauseGame();
+});
+window.addEventListener('blur', () => { if (phase === 'playing' && !paused) pauseGame(); });
+function sourceLinks(q) {
+ return q.sources?.length ? `<details class="source-links"><summary>Official learning resources ↗</summary>${q.sources.map(source => `<a href="${escape(source.url)}" target="_blank" rel="noopener noreferrer">${escape(source.title)} ↗</a>`).join('')}</details>` : '';
+}
+function reviewCards() {
+ const mistakes = [...optionStats.values()].filter(stats => stats.wrong || stats.missed);
+ if (!mistakes.length) return '<p class="empty-review">No wrong slices or missed correct bags in this run. Try another topic or difficulty.</p>';
+ return `<div class="decisions-grid">${mistakes.map(stats => `<article class="decision-card ${stats.wrong ? 'wrong' : 'missed'}"><div class="decision-top"><span class="decision-title">${escape(stats.option.text)}</span><span class="status-pill">${stats.wrong ? `${stats.wrong} wrong slice${stats.wrong === 1 ? '' : 's'}` : `${stats.missed} missed`}</span></div><p>${escape(stats.option.why)}</p></article>`).join('')}</div>`;
+}
+function finishSession(completed) {
+ if (phase !== 'playing') return;
+ advanceClock(); finalTimeMs = E.sprintTimeMs(elapsed, session.wrong);
+ phase = 'results'; paused = false; closeModal();
+ if (playKind === 'sprint' && completed && session.correct >= E.GAME_RULES.sprintTarget) {
+  const previous = readBest(question), improved = !previous || finalTimeMs < previous.timeMs;
+  const saved = improved ? prefs.set(bestKey(question), JSON.stringify({timeMs: finalTimeMs, wrong: session.wrong, score: session.score})) : true;
+  bestResult = {timeMs: improved && saved ? finalTimeMs : previous?.timeMs, improved: improved && saved, saved};
+ }
+ showResults(completed);
+}
+function showResults(completed) {
+ const q = question, mistakes = [...optionStats.values()].filter(stats => stats.wrong || stats.missed).length;
+ const sprintComplete = playKind === 'sprint' && completed;
+ const primaryResult = sprintComplete ? timeLabel(finalTimeMs) : session.score.toLocaleString();
+ const resultCaption = sprintComplete ? `Raw time ${timeLabel(Math.ceil(elapsed * 1000))} + ${session.wrong * E.GAME_RULES.wrongPenaltySeconds}s penalties` : `Time played ${timeLabel(Math.ceil(elapsed * 1000))} · Best ${session.bestCombo} combo`;
+ render(`<section class="results-page page-in"><div class="result-top"><div class="result-emblem">${icon('slice')}</div><div class="eyebrow">${sprintComplete ? '20-CORRECT SPRINT COMPLETE' : playKind === 'sprint' ? 'SPRINT ENDED EARLY' : 'PRACTICE COMPLETE'}</div><h1>${sprintComplete ? 'Your next target: a faster run.' : 'That was your rhythm.'}</h1><p>${escape(q.chapter)} · ${difficulty().label}</p><div class="big-score">${primaryResult}<small>${sprintComplete ? 'final time' : 'points'}</small></div><p>${resultCaption}</p>${sprintComplete ? `<p class="local-best">${bestResult.saved ? `${bestResult.improved ? 'New best! ' : ''}On this device: ${timeLabel(bestResult.timeMs)}` : 'This browser could not save your best time.'}</p>` : playKind === 'sprint' ? '<p class="local-best">Complete 20 correct slices to record a sprint best on this device.</p>' : ''}</div><div class="results-stats"><div class="result-stat"><strong>${session.correct}</strong><small>Correct bags sliced</small></div><div class="result-stat"><strong>${avoided}</strong><small>Wrong bags avoided</small></div><div class="result-stat needs-work"><strong>${session.wrong}</strong><small>Wrong bags sliced</small></div><div class="result-stat needs-work"><strong>${session.missed}</strong><small>Correct bags missed</small></div></div><div class="action-card"><div class="action-number">✦</div><div><div class="eyebrow">${sprintComplete ? `${session.score} POINTS · BEST ${session.bestCombo} COMBO` : 'ONE THING TO KEEP'}</div><p>${escape(q.takeaway)}</p></div></div><div class="result-actions"><button class="primary" id="replay">Play this topic again ${icon('arrow')}</button><button class="secondary" id="choose-topic">Choose another topic</button><button class="secondary" id="review-mistakes">Review choices${mistakes ? ' · ' + mistakes : ''}</button><button class="text-button" id="copy-result">Copy results ↗</button></div><p class="result-caption">Every run reshuffles the answer pool and flight paths. Best times stay on this device, separately for each topic and difficulty.</p><div class="result-review" id="result-review" hidden><h2>A closer look at your choices.</h2>${reviewCards()}${sourceLinks(q)}</div></section>`);
+ $('#replay').onclick = () => startGame(q.id); $('#choose-topic').onclick = home;
+ $('#review-mistakes').onclick = () => {
+  const box = $('#result-review'); box.hidden = !box.hidden;
+  if (!box.hidden) box.scrollIntoView({behavior: reducedMotion ? 'instant' : 'smooth', block: 'start'});
+ };
+ $('#copy-result').onclick = async () => {
+  const text = `FuLam One Slice · ${q.chapter} · ${difficulty().label}\n${sprintComplete ? `20-correct sprint: ${timeLabel(finalTimeMs)} (includes ${session.wrong * E.GAME_RULES.wrongPenaltySeconds}s penalties)` : `${playKind === 'sprint' ? 'Unfinished sprint' : 'Endless practice'}: ${session.score} points`}\n${session.correct} correct · ${session.wrong} wrong · ${session.missed} missed · Best ${session.bestCombo} combo\nThe Money Journey · FuLam`;
+  try { await navigator.clipboard.writeText(text); toast('Results copied!'); }
+  catch {
+   showModal('Your results', `<p class="copyable-result">${escape(text)}</p>`, '<button class="primary" id="close-modal">Done</button>'); $('#close-modal').onclick = closeModal;
+  }
+ };
+ announce(sprintComplete ? 'Sprint complete. Final time ' + timeLabel(finalTimeMs) : 'Run complete. Total score ' + session.score);
+}
+function freezeSnapshot(value) {
+ if (value && typeof value === 'object') { Object.values(value).forEach(freezeSnapshot); Object.freeze(value); }
+ return value;
+}
+Object.defineProperty(window, 'FuLamSlice', {value: Object.freeze({getState() {
+ return freezeSnapshot({
+  phase, paused, topic: question?.id ?? null, mode: playKind, playKind, difficulty: mode, elapsed,
+  score: session.score, correct: session.correct, wrong: session.wrong, missed: session.missed, flightFloor, arenaCeiling,
+  combo: session.combo, bestCombo: session.bestCombo, avoided, spawned, cap: liveCap(),
+  pending: targets.filter(target => !target.hit && elapsed < target.bornAt + target.launch.delay).length,
+  active: targets.filter(target => !target.hit && target.active).map(target => ({id: target.instanceId, option: {...target.option}, x: target.x, y: target.y, width: target.el.offsetWidth, height: target.el.offsetHeight, labelTop: target.y + target.metrics.labelTop, labelBottom: target.y + target.metrics.labelBottom})),
+  scheduled: targets.filter(target => !target.hit).map(target => ({id: target.instanceId, optionId: target.option.id, bornAt: target.bornAt, launch: {...target.launch}})),
+  nextSpawnAt, nextSpawnIn: Math.max(0, nextSpawnAt - elapsed), lastGroup: lastGroup.map(item => ({...item, launch: {...item.launch}})),
+  reviewOptionCount: optionStats.size, timerCount: cleanupTimers.size, finalTimeMs, rules: {...E.GAME_RULES}
+ });
+}}), writable: false, configurable: false});
 home();
 };

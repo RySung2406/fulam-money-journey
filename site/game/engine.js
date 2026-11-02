@@ -1,12 +1,45 @@
 'use strict';
 (function(root){
-  const shuffle = list => { const a=[...list]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; };
-  function createSession(){return {score:0,combo:0,bestCombo:0,records:[],seen:new Set()};}
-  function recordHit(session,questionId,option){
-    const key=questionId+':'+option.id;if(session.seen.has(key))return null;session.seen.add(key);
+  const GAME_RULES=Object.freeze({version:'continuous-v1',sprintTarget:20,wrongPenaltySeconds:3});
+  const shuffle = (list,random=Math.random) => { const a=[...list]; for(let i=a.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; };
+  // A shuffled bag guarantees variety while independently randomising launch timing.
+  function createOptionDeck(options,random=Math.random){
+    if(!options.length)throw new Error('A topic needs answer options.');
+    let deck=[],recent=[];
+    return {
+      next(){
+        if(!deck.length)deck=shuffle(options,random);
+        const eligible=deck.findIndex(option=>!recent.includes(option.id));
+        const option=deck.splice(eligible<0?0:eligible,1)[0];
+        recent.push(option.id);if(recent.length>2)recent.shift();
+        return option;
+      },
+      get remaining(){return deck.length;}
+    };
+  }
+  function createSession(){return {score:0,combo:0,bestCombo:0,correct:0,wrong:0,missed:0,avoided:0,records:[],seen:new Set()};}
+  function remember(session,key){
+    if(session.seen.has(key))return false;
+    session.seen.add(key);
+    // Only recent instance IDs are needed: expired targets cannot be hit again.
+    if(session.seen.size>512)session.seen.delete(session.seen.values().next().value);
+    return true;
+  }
+  function recordHit(session,questionId,option,instanceId){
+    const key=instanceId===undefined?questionId+':'+option.id:'instance:'+instanceId;
+    if(!remember(session,key))return null;
     let delta;
-    if(option.good){session.combo++;session.bestCombo=Math.max(session.bestCombo,session.combo);delta=100+Math.min(30,(session.combo-1)*10);}else{session.combo=0;delta=-150;}
+    if(option.good){session.correct++;session.combo++;session.bestCombo=Math.max(session.bestCombo,session.combo);delta=100+Math.min(30,(session.combo-1)*10);}else{session.wrong++;session.combo=0;delta=-150;}
     session.score+=delta;return {delta,combo:session.combo};
+  }
+  function recordMiss(session,instanceId,option){
+    if(!remember(session,'instance:'+instanceId))return null;
+    const status=option.good?'missed':'avoided';session[status]++;
+    if(option.good)session.combo=0;
+    return {status};
+  }
+  function sprintTimeMs(elapsedSeconds,wrong){
+    return Math.ceil((Math.max(0,elapsedSeconds)+Math.max(0,wrong)*GAME_RULES.wrongPenaltySeconds)*1000);
   }
   function decisions(options,hitIds){return options.map(o=>({...o,hit:hitIds.has(o.id),status:o.good?(hitIds.has(o.id)?'correct':'missed'):(hitIds.has(o.id)?'wrong':'avoided')}));}
   function summarise(records){const all=records.flatMap(r=>r.decisions);return {correct:all.filter(x=>x.status==='correct').length,avoided:all.filter(x=>x.status==='avoided').length,wrong:all.filter(x=>x.status==='wrong').length,missed:all.filter(x=>x.status==='missed').length,total:all.length};}
@@ -32,22 +65,34 @@
     }
     return groups;
   }
-  // Pick from the entire stage even for a single bag. Direction, arc height,
-  // interval and group rhythm are sampled once, never re-randomized per frame.
+  // Adapted from Physics.pickLaunchAngle in an1kens/fruit-blade (MIT).
+  // See OPEN_SOURCE.md and fruit-blade-LICENSE.txt for the pinned source.
+  function pickLaunchAngle(x,random){
+    const upRight=40+random()*28,upLeft=112+random()*36;
+    if(x<.22)return upRight;
+    if(x>.78)return upLeft;
+    return random()<.5?upRight:upLeft;
+  }
+  function nextSpawnDelay(mode,random=Math.random){
+    const c=DIFFICULTIES[mode]||DIFFICULTIES.easy;
+    return c.pauseMin+random()*(c.pauseMax-c.pauseMin);
+  }
+  function spawnGroupSize(available,random=Math.random){
+    if(available<1)return 0;
+    const roll=random();return Math.min(Math.floor(available),roll<.62?1:roll<.94?2:3);
+  }
+  // Continuous positions, angle bands and velocities replace the old six slots.
+  // Each trajectory is sampled once and evaluated analytically at any frame rate.
   function createLaunches(count,mode,random=Math.random){
     const config=DIFFICULTIES[mode]||DIFFICULTIES.easy;
-    const slots=Array.from({length:Math.max(6,count)},(_,i)=>i);
-    for(let i=slots.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[slots[i],slots[j]]=[slots[j],slots[i]];}
-    const together=random()<.5,base=config.pauseMin+random()*(config.pauseMax-config.pauseMin);
-    return slots.slice(0,count).map((slot,i)=>{
-      const peakX=(slot%3+.5)/3+(random()-.5)*.055;
-      const span=Math.min(peakX,1-peakX)*2*(.8+random()*.16);
-      const direction=random()<.5?1:-1;
-      return {startX:peakX-direction*span/2,endX:peakX+direction*span/2,
-        depth:Math.floor(slot/3)*.58+.04+random()*.13,
+    return Array.from({length:count},(_,i)=>{
+      const startX=.04+random()*.92;
+      const radians=pickLaunchAngle(startX,random)*Math.PI/180;
+      const velocity=(.65+random()*.5)*Math.cos(radians);
+      const endX=Math.max(.02,Math.min(.98,startX+velocity));
+      return {startX,endX,depth:random()*.72,
         duration:config.min+random()*(config.max-config.min),
-        delay:base+(together?random()*.12:i*config.spread*(.5+random()*.5)),
-        rotation:(random()-.5)*config.spin*2};
+        delay:i*(.12+random()*.22),rotation:(random()-.5)*config.spin*2};
     });
   }
   function arcadePosition(plan,progress,width,height,bagWidth,bagHeight,ceiling){
@@ -56,5 +101,6 @@
     const room=Math.max(0,height-bagHeight-85-top);
     return flightPosition(progress,startX,endX,height+24,top+room*Math.min(.9,plan.depth));
   }
-  root.GameEngine={shuffle,createSession,recordHit,decisions,summarise,segmentIntersectsRect,flightPosition,DIFFICULTIES,createWaves,createLaunches,arcadePosition};
+  root.GameEngine={GAME_RULES,createOptionDeck,nextSpawnDelay,spawnGroupSize,sprintTimeMs,recordMiss,shuffle,createSession,recordHit,decisions,summarise,segmentIntersectsRect,flightPosition,DIFFICULTIES,createWaves,createLaunches,arcadePosition};
 })(typeof window==='undefined'?globalThis:window);
+

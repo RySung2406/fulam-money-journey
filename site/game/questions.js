@@ -4,381 +4,857 @@ window.QUESTIONS = [
     "id": "tools",
     "chapter": "Financial tools",
     "eyebrow": "01 / FINANCIAL TOOLS",
-    "question": "Which are financial products or tools?",
-    "context": "Slice every bag that fits the question. There is more than one correct answer.",
-    "takeaway": "Saving, investing and protection serve different purposes. All are part of managing money.",
-    "action": "Choose one unfamiliar financial tool and learn what it is used for.",
+    "question": "Which are financial products or money tools?",
+    "context": "Slice financial products and planning tools. Leave everyday purchases and bills.",
+    "takeaway": "Products and planning tools serve different jobs: saving, investing, protection and borrowing.",
+    "action": "Pick one unfamiliar tool and find out what it does.",
     "sources": [
       {
-        "title": "IFEC · Getting started with a financial plan",
-        "url": "https://www.ifec.org.hk/web/en/moneyessentials/financial-planning/getting-started.page"
+        "title": "IFEC · Investment products",
+        "url": "https://www.ifec.org.hk/web/en/investment/investment-products/index.page"
+      },
+      {
+        "title": "IFEC · Bank accounts",
+        "url": "https://www.ifec.org.hk/web/en/financial-products/personal-banking/bank-accounts.page"
+      },
+      {
+        "title": "IFEC · Loan basics",
+        "url": "https://www.ifec.org.hk/web/en/moneyessentials/debts-and-borrowing/loan-basics.page"
+      },
+      {
+        "title": "IFEC · Borrowing checklist and calculators",
+        "url": "https://www.ifec.org.hk/web/en/moneyessentials/debts-and-borrowing/take-new-loan/Tips-for-borrowing.page"
+      },
+      {
+        "title": "Insurance Authority · Insurance basics",
+        "url": "https://education.ia.org.hk/en/faq.html"
       }
     ],
     "options": [
       {
-        "id": "stock",
+        "id": "tools-01",
         "text": "Stocks",
         "good": true,
-        "why": "Stocks are investment instruments. Prices can rise or fall, and you can lose money."
+        "why": "Shares represent ownership in a company; their value can fall."
       },
       {
-        "id": "fund",
-        "text": "Funds",
-        "good": true,
-        "why": "Funds are investment products with different strategies, risks and fees."
-      },
-      {
-        "id": "insurance",
-        "text": "Insurance",
-        "good": true,
-        "why": "Insurance helps manage risk. Match protection to your needs and affordability."
-      },
-      {
-        "id": "bond",
+        "id": "tools-02",
         "text": "Bonds",
         "good": true,
-        "why": "Bonds are investment instruments with risks, including credit and interest-rate risk."
+        "why": "Bonds are debt investments with credit and interest-rate risks."
       },
       {
-        "id": "deposit",
+        "id": "tools-03",
+        "text": "Funds",
+        "good": true,
+        "why": "Funds pool investors' money into a portfolio of assets."
+      },
+      {
+        "id": "tools-04",
+        "text": "ETFs",
+        "good": true,
+        "why": "Exchange-traded funds are investment products traded on an exchange."
+      },
+      {
+        "id": "tools-05",
+        "text": "REITs",
+        "good": true,
+        "why": "Real estate investment trusts invest in property-related assets."
+      },
+      {
+        "id": "tools-06",
         "text": "Time deposits",
         "good": true,
-        "why": "Time deposits can help with saving. Check the term, rate and early-withdrawal conditions."
+        "why": "A time deposit holds money for an agreed period."
       },
       {
-        "id": "saving",
+        "id": "tools-07",
         "text": "Savings account",
         "good": true,
-        "why": "A savings account helps you hold and manage everyday funds."
+        "why": "A savings account holds money and generally pays interest."
       },
       {
-        "id": "icecream",
-        "text": "Ice cream",
+        "id": "tools-08",
+        "text": "Current account",
+        "good": true,
+        "why": "A current account is a banking product for managing payments."
+      },
+      {
+        "id": "tools-09",
+        "text": "Insurance",
+        "good": true,
+        "why": "Insurance transfers specified financial risks under a contract."
+      },
+      {
+        "id": "tools-10",
+        "text": "Credit card",
+        "good": true,
+        "why": "A credit card provides borrowing for payments, subject to terms."
+      },
+      {
+        "id": "tools-11",
+        "text": "Personal loan",
+        "good": true,
+        "why": "A personal loan is borrowed money that must be repaid."
+      },
+      {
+        "id": "tools-12",
+        "text": "Mortgage",
+        "good": true,
+        "why": "A mortgage is a loan secured against property."
+      },
+      {
+        "id": "tools-13",
+        "text": "Budget planner",
+        "good": true,
+        "why": "A budget planner helps organise income and spending."
+      },
+      {
+        "id": "tools-14",
+        "text": "Debt calculator",
+        "good": true,
+        "why": "A debt calculator helps estimate repayments and borrowing costs."
+      },
+      {
+        "id": "tools-15",
+        "text": "Savings calculator",
+        "good": true,
+        "why": "A savings calculator helps explore a savings target."
+      },
+      {
+        "id": "tools-16",
+        "text": "Tuition bill",
         "good": false,
-        "why": "Ice cream is a consumer purchase. This question asks about financial tools."
+        "why": "Tuition is education spending, not a financial product."
       },
       {
-        "id": "shoes",
-        "text": "Trainers",
+        "id": "tools-17",
+        "text": "Coffee",
         "good": false,
-        "why": "Trainers bought for personal use are consumer goods. Collecting and resale are outside this question."
+        "why": "Coffee is an everyday purchase, not a money-management tool."
       },
       {
-        "id": "movie",
-        "text": "Movie tickets",
+        "id": "tools-18",
+        "text": "Textbooks",
         "good": false,
-        "why": "A movie ticket buys entertainment; it is not a financial tool."
+        "why": "Textbooks for study are goods purchased for learning."
       },
       {
-        "id": "console",
+        "id": "tools-19",
+        "text": "Laptop",
+        "good": false,
+        "why": "A laptop for personal use is a consumer purchase."
+      },
+      {
+        "id": "tools-20",
+        "text": "Meal plan",
+        "good": false,
+        "why": "A meal plan pays for food, not financial services."
+      },
+      {
+        "id": "tools-21",
+        "text": "Gym membership",
+        "good": false,
+        "why": "Gym membership buys access to exercise facilities."
+      },
+      {
+        "id": "tools-22",
+        "text": "Concert ticket",
+        "good": false,
+        "why": "A concert ticket buys entertainment, not a financial product."
+      },
+      {
+        "id": "tools-23",
+        "text": "Phone case",
+        "good": false,
+        "why": "A phone case is a consumer accessory."
+      },
+      {
+        "id": "tools-24",
+        "text": "Food delivery",
+        "good": false,
+        "why": "Food delivery is spending on food and a service."
+      },
+      {
+        "id": "tools-25",
+        "text": "Hostel rent",
+        "good": false,
+        "why": "Rent pays for accommodation; it is an expense."
+      },
+      {
+        "id": "tools-26",
+        "text": "Train ticket",
+        "good": false,
+        "why": "A train ticket pays for transport."
+      },
+      {
+        "id": "tools-27",
+        "text": "Streaming plan",
+        "good": false,
+        "why": "A streaming subscription pays for entertainment access."
+      },
+      {
+        "id": "tools-28",
+        "text": "Tutor lesson",
+        "good": false,
+        "why": "A tutoring lesson is an education service."
+      },
+      {
+        "id": "tools-29",
+        "text": "Haircut",
+        "good": false,
+        "why": "A haircut is a personal service."
+      },
+      {
+        "id": "tools-30",
         "text": "Game console",
         "good": false,
-        "why": "A console bought for personal use is a consumer good. Collecting and resale are outside this question."
-      },
-      {
-        "id": "headphones",
-        "text": "Headphones",
-        "good": false,
-        "why": "Headphones bought for personal use are consumer goods. Collecting and resale are outside this question."
-      },
-      {
-        "id": "concert",
-        "text": "Concert tickets",
-        "good": false,
-        "why": "Attending a concert is entertainment spending, not a financial tool."
+        "why": "A console for personal use is a consumer good."
       }
-    ]
+    ],
+    "menuDescription": "Spot money tools among everyday spending."
   },
   {
     "id": "investment",
     "chapter": "Before you invest",
     "eyebrow": "02 / INVESTMENT & RISK",
-    "question": "What matters when choosing an investment?",
-    "context": "Focus on the product and your own financial needs.",
-    "takeaway": "Risk, fees, time horizon, liquidity and your goals matter more than advertising.",
-    "action": "Find a product factsheet. Identify its risks, fees and withdrawal conditions.",
+    "question": "Which are sensible checks before investing?",
+    "context": "Slice checks that help you understand the product and your needs. Leave risky shortcuts.",
+    "takeaway": "Understand the risks, costs and fit with your goals before committing money.",
+    "action": "Read one product factsheet and identify its risks, fees and exit terms.",
     "sources": [
       {
         "title": "IFEC · Building an investment portfolio",
         "url": "https://www.ifec.org.hk/web/en/moneyessentials/financial-planning/building-an-investment-portfolio.page"
       },
       {
-        "title": "IFEC · Getting started with a financial plan",
-        "url": "https://www.ifec.org.hk/web/en/moneyessentials/financial-planning/getting-started.page"
+        "title": "IFEC · Financial planning guide",
+        "url": "https://www.ifec.org.hk/web/common/pdf/publication/en/ifec-financial-planning-booklet-en.pdf"
+      },
+      {
+        "title": "IFEC · Understanding funds",
+        "url": "https://www.ifec.org.hk/web/en/investment/investment-products/funds/index.page"
+      },
+      {
+        "title": "SFC · Public register",
+        "url": "https://www.sfc.hk/en/Regulatory-functions/Intermediaries/Licensing/Register-of-licensed-persons-and-registered-institutions"
       }
     ],
     "options": [
       {
-        "id": "risk",
-        "text": "Risk",
+        "id": "investment-01",
+        "text": "Read risk warnings",
         "good": true,
-        "why": "Understand possible losses. Do not look only at potential returns."
+        "why": "Risk warnings explain ways an investment can lose value."
       },
       {
-        "id": "fees",
-        "text": "Fees",
+        "id": "investment-02",
+        "text": "Compare fees",
         "good": true,
-        "why": "Charges reduce your actual return. Understand all relevant fees."
+        "why": "Charges reduce the return you keep."
       },
       {
-        "id": "time",
-        "text": "Time horizon",
+        "id": "investment-03",
+        "text": "Check your goal",
         "good": true,
-        "why": "Your investment horizon should match when you will need the money."
+        "why": "The product should fit what the money is for."
       },
       {
-        "id": "liquidity",
-        "text": "Liquidity",
+        "id": "investment-04",
+        "text": "Check liquidity",
         "good": true,
-        "why": "Liquidity affects how easily you can sell an investment or access your money."
+        "why": "Check how easily you can sell or withdraw."
       },
       {
-        "id": "goal",
-        "text": "Your goals",
+        "id": "investment-05",
+        "text": "Check time horizon",
         "good": true,
-        "why": "Know what the money is for before choosing a product."
+        "why": "Consider when you will need the money."
       },
       {
-        "id": "ability",
-        "text": "Risk tolerance",
+        "id": "investment-06",
+        "text": "Assess loss capacity",
         "good": true,
-        "why": "Consider both your financial capacity and your comfort with falling prices."
+        "why": "Consider how much loss your finances can withstand."
       },
       {
-        "id": "colour",
-        "text": "Ad colours",
-        "good": false,
-        "why": "Advertising colours do not show whether a product suits you."
+        "id": "investment-07",
+        "text": "Check diversification",
+        "good": true,
+        "why": "Check whether your investments concentrate the same risks."
       },
       {
-        "id": "celebrity",
-        "text": "Celebrity ads",
-        "good": false,
-        "why": "A celebrity endorsement does not establish suitability."
+        "id": "investment-08",
+        "text": "Read product facts",
+        "good": true,
+        "why": "Product documents explain features, risks and charges."
       },
       {
-        "id": "followers",
-        "text": "Follower count",
-        "good": false,
-        "why": "Popularity does not prove investment quality or personal suitability."
+        "id": "investment-09",
+        "text": "Check currency risk",
+        "good": true,
+        "why": "Exchange-rate changes can affect returns in your own currency."
       },
       {
-        "id": "logo",
-        "text": "Logo design",
-        "good": false,
-        "why": "An attractive logo does not mean low risk or guaranteed returns."
+        "id": "investment-10",
+        "text": "Understand returns",
+        "good": true,
+        "why": "Understand where returns come from and what is uncertain."
       },
       {
-        "id": "music",
-        "text": "Ad music",
-        "good": false,
-        "why": "Music tells you nothing about the risks, fees or suitability of an investment."
+        "id": "investment-11",
+        "text": "Verify seller licence",
+        "good": true,
+        "why": "Check the relevant register and independently verify the seller."
       },
       {
-        "id": "font",
-        "text": "Poster font",
+        "id": "investment-12",
+        "text": "Check exit terms",
+        "good": true,
+        "why": "Selling or withdrawing may involve restrictions and costs."
+      },
+      {
+        "id": "investment-13",
+        "text": "Review your portfolio",
+        "good": true,
+        "why": "New investments change your overall mix of risks."
+      },
+      {
+        "id": "investment-14",
+        "text": "Check emergency cash",
+        "good": true,
+        "why": "Consider the money needed for unexpected expenses."
+      },
+      {
+        "id": "investment-15",
+        "text": "Check complexity",
+        "good": true,
+        "why": "Understand how the product works before buying."
+      },
+      {
+        "id": "investment-16",
+        "text": "Copy a viral tip",
         "good": false,
-        "why": "A typeface is not a basis for judging investment suitability."
+        "why": "A popular tip does not establish suitability or accuracy."
+      },
+      {
+        "id": "investment-17",
+        "text": "Chase last year's top",
+        "good": false,
+        "why": "Past performance does not guarantee future returns."
+      },
+      {
+        "id": "investment-18",
+        "text": "Trust profit promises",
+        "good": false,
+        "why": "Promises alone do not remove investment risks."
+      },
+      {
+        "id": "investment-19",
+        "text": "Bet all on one stock",
+        "good": false,
+        "why": "One stock concentrates company-specific risk."
+      },
+      {
+        "id": "investment-20",
+        "text": "Ignore small fees",
+        "good": false,
+        "why": "Recurring charges can accumulate and reduce returns."
+      },
+      {
+        "id": "investment-21",
+        "text": "Assume loans add safety",
+        "good": false,
+        "why": "Borrowing adds repayment obligations; it does not remove risk."
+      },
+      {
+        "id": "investment-22",
+        "text": "Follow a chat group",
+        "good": false,
+        "why": "A chat group is not independent product verification."
+      },
+      {
+        "id": "investment-23",
+        "text": "Buy before reading",
+        "good": false,
+        "why": "Skipping documents leaves important terms unknown."
+      },
+      {
+        "id": "investment-24",
+        "text": "Pick by price alone",
+        "good": false,
+        "why": "A low unit price does not establish good value."
+      },
+      {
+        "id": "investment-25",
+        "text": "Trust a screenshot",
+        "good": false,
+        "why": "Screenshots can be misleading or fabricated."
+      },
+      {
+        "id": "investment-26",
+        "text": "Assume fixed dividends",
+        "good": false,
+        "why": "Company dividends can change or stop."
+      },
+      {
+        "id": "investment-27",
+        "text": "Assume blue chips safe",
+        "good": false,
+        "why": "Large established companies can still lose value."
+      },
+      {
+        "id": "investment-28",
+        "text": "Ignore currency moves",
+        "good": false,
+        "why": "Currency changes can affect the return you receive."
+      },
+      {
+        "id": "investment-29",
+        "text": "Invest next week's rent",
+        "good": false,
+        "why": "Money needed soon may be unavailable or worth less."
+      },
+      {
+        "id": "investment-30",
+        "text": "Trust fame alone",
+        "good": false,
+        "why": "Fame does not establish expertise or suitability."
       }
-    ]
+    ],
+    "menuDescription": "Cut useful checks. Dodge investing shortcuts."
   },
   {
     "id": "insurance",
     "chapter": "Understanding insurance",
     "eyebrow": "03 / INSURANCE & PROTECTION",
-    "question": "Which provide insurance protection?",
-    "context": "Choose insurance that covers specified illness, accident, death or travel risks.",
-    "takeaway": "Different policies cover different risks. Check coverage, exclusions and affordability.",
-    "action": "Compare two types of insurance and write down what each mainly covers.",
+    "question": "Which are sensible insurance habits?",
+    "context": "Slice habits that help you understand cover. Leave assumptions and sales shortcuts.",
+    "takeaway": "Read what is covered, what is excluded and what you must pay or disclose.",
+    "action": "Compare the coverage, exclusions and premium terms of two policies.",
     "sources": [
       {
         "title": "Insurance Authority · Tips on buying insurance",
         "url": "https://education.ia.org.hk/en/faq.html"
       },
       {
+        "title": "Insurance Authority · Medical insurance",
+        "url": "https://education.ia.org.hk/en/product/medical-insurance.html"
+      },
+      {
         "title": "Insurance Authority · Life insurance",
         "url": "https://education.ia.org.hk/en/product/life-insurance.html"
       },
       {
-        "title": "Insurance Authority · Medical insurance",
-        "url": "https://education.ia.org.hk/en/product/medical-insurance.html"
+        "title": "Insurance Authority · Insurance glossary",
+        "url": "https://education.ia.org.hk/en/tool/glossary.html"
       }
     ],
     "options": [
       {
-        "id": "medical",
-        "text": "Medical cover",
+        "id": "insurance-01",
+        "text": "Check your needs",
         "good": true,
-        "why": "Medical insurance covers eligible medical expenses under the policy terms."
+        "why": "Protection needs depend on your circumstances and responsibilities."
       },
       {
-        "id": "critical",
-        "text": "Critical illness",
+        "id": "insurance-02",
+        "text": "Review existing cover",
         "good": true,
-        "why": "Critical illness insurance pays the agreed benefit when the covered condition and policy requirements are met."
+        "why": "Check existing protection before deciding what else is needed."
       },
       {
-        "id": "accident",
-        "text": "Accident cover",
+        "id": "insurance-03",
+        "text": "Read exclusions",
         "good": true,
-        "why": "Accident insurance covers specified accidents and losses under the policy."
+        "why": "Exclusions identify events or expenses the policy does not cover."
       },
       {
-        "id": "travel",
-        "text": "Travel cover",
+        "id": "insurance-04",
+        "text": "Check benefit limits",
         "good": true,
-        "why": "Travel insurance can cover specified travel risks, such as eligible medical or trip-related incidents."
+        "why": "Policies can limit how much they pay."
       },
       {
-        "id": "term",
-        "text": "Term life cover",
+        "id": "insurance-05",
+        "text": "Compare deductibles",
         "good": true,
-        "why": "Term life insurance mainly provides death benefits during a set coverage period, subject to its terms."
+        "why": "A deductible is the part of a covered loss you bear."
       },
       {
-        "id": "stock",
-        "text": "Stocks",
-        "good": false,
-        "why": "Stocks are investment instruments, not insurance protection."
+        "id": "insurance-06",
+        "text": "Check waiting periods",
+        "good": true,
+        "why": "Some benefits apply only after a specified waiting period."
       },
       {
-        "id": "fund",
-        "text": "Funds",
-        "good": false,
-        "why": "An ordinary investment fund is not the same as insurance coverage."
+        "id": "insurance-07",
+        "text": "Budget for premiums",
+        "good": true,
+        "why": "Check whether premiums remain affordable over time."
       },
       {
-        "id": "deposit",
-        "text": "Time deposits",
-        "good": false,
-        "why": "A time deposit is a deposit arrangement, not protection insurance."
+        "id": "insurance-08",
+        "text": "Review renewal terms",
+        "good": true,
+        "why": "Renewal terms and premiums may change as specified."
       },
       {
-        "id": "bond",
-        "text": "Bonds",
-        "good": false,
-        "why": "A bond is a debt security, not protection insurance."
+        "id": "insurance-09",
+        "text": "Disclose health facts",
+        "good": true,
+        "why": "Relevant health history must be disclosed honestly."
       },
       {
-        "id": "credit",
-        "text": "Credit cards",
-        "good": false,
-        "why": "A credit card is a payment and credit tool. Even if it includes cover, the card itself is not an insurance product."
+        "id": "insurance-10",
+        "text": "Read claim rules",
+        "good": true,
+        "why": "Check what evidence and conditions a claim requires."
       },
       {
-        "id": "gold",
-        "text": "Gold",
-        "good": false,
-        "why": "Gold may be held as an investment or for other purposes. It is not insurance protection."
+        "id": "insurance-11",
+        "text": "Check payment period",
+        "good": true,
+        "why": "Understand how long premium payments are required."
       },
       {
-        "id": "currency",
-        "text": "Foreign currency",
+        "id": "insurance-12",
+        "text": "Check surrender costs",
+        "good": true,
+        "why": "Ending a life policy early may cause financial loss."
+      },
+      {
+        "id": "insurance-13",
+        "text": "Separate bonus types",
+        "good": true,
+        "why": "Distinguish guaranteed benefits from non-guaranteed projections."
+      },
+      {
+        "id": "insurance-14",
+        "text": "Ask for written terms",
+        "good": true,
+        "why": "The policy terms define the cover, not a sales promise."
+      },
+      {
+        "id": "insurance-15",
+        "text": "Verify agent licence",
+        "good": true,
+        "why": "Use the Insurance Authority register to check an intermediary."
+      },
+      {
+        "id": "insurance-16",
+        "text": "Hide past illnesses",
         "good": false,
-        "why": "Holding foreign currency is not the same as buying insurance."
+        "why": "Non-disclosure of material facts can lead to rejected claims."
+      },
+      {
+        "id": "insurance-17",
+        "text": "Assume all is covered",
+        "good": false,
+        "why": "Coverage depends on the policy's terms and exclusions."
+      },
+      {
+        "id": "insurance-18",
+        "text": "Buy for free gifts",
+        "good": false,
+        "why": "A gift does not show whether cover meets your needs."
+      },
+      {
+        "id": "insurance-19",
+        "text": "Copy a friend's plan",
+        "good": false,
+        "why": "Your protection needs may differ from your friend's."
+      },
+      {
+        "id": "insurance-20",
+        "text": "Count bonuses as fixed",
+        "good": false,
+        "why": "Non-guaranteed bonuses may differ from projections."
+      },
+      {
+        "id": "insurance-21",
+        "text": "Expect instant cover",
+        "good": false,
+        "why": "Waiting periods or other commencement conditions may apply."
+      },
+      {
+        "id": "insurance-22",
+        "text": "Skip the policy terms",
+        "good": false,
+        "why": "Important limits and duties appear in the policy."
+      },
+      {
+        "id": "insurance-23",
+        "text": "Inflate medical bills",
+        "good": false,
+        "why": "Claims must use accurate information and genuine supporting evidence."
+      },
+      {
+        "id": "insurance-24",
+        "text": "Cancel before comparing",
+        "good": false,
+        "why": "Replacing cover can cause losses or new coverage gaps."
+      },
+      {
+        "id": "insurance-25",
+        "text": "Assume premiums fixed",
+        "good": false,
+        "why": "Guaranteed renewal does not necessarily mean unchanged premiums."
+      },
+      {
+        "id": "insurance-26",
+        "text": "Choose on price alone",
+        "good": false,
+        "why": "A lower premium may come with different coverage."
+      },
+      {
+        "id": "insurance-27",
+        "text": "Buy every policy",
+        "good": false,
+        "why": "More policies can duplicate cover and strain affordability."
+      },
+      {
+        "id": "insurance-28",
+        "text": "Expect every claim paid",
+        "good": false,
+        "why": "A claim must meet the policy conditions and exclusions."
+      },
+      {
+        "id": "insurance-29",
+        "text": "Ignore claim conditions",
+        "good": false,
+        "why": "Claims must satisfy the applicable policy requirements."
+      },
+      {
+        "id": "insurance-30",
+        "text": "Trust verbal promises",
+        "good": false,
+        "why": "Check promises against the written policy terms."
       }
-    ]
+    ],
+    "menuDescription": "Find useful cover checks and avoid common myths."
   },
   {
     "id": "borrowing",
     "chapter": "The cost of borrowing",
     "eyebrow": "04 / BORROWING & INTEREST",
-    "question": "What affects loan costs or repayments?",
-    "context": "Compare how much you must repay and when each payment is due.",
-    "takeaway": "Consider APR, fees, the repayment period and total repayment together—not only the monthly amount.",
-    "action": "When you next see a loan advert, find the APR and total repayment.",
+    "question": "Which are sensible borrowing checks or habits?",
+    "context": "Slice ways to understand and manage a loan. Leave cost myths and repayment shortcuts.",
+    "takeaway": "Compare APR, total repayment and all terms, then check that repayments fit your budget.",
+    "action": "Find the actual APR, fees and total repayment in a loan example.",
     "sources": [
       {
         "title": "IFEC · Borrowing checklist",
         "url": "https://www.ifec.org.hk/web/en/moneyessentials/debts-and-borrowing/take-new-loan/Tips-for-borrowing.page"
+      },
+      {
+        "title": "IFEC · Loan basics",
+        "url": "https://www.ifec.org.hk/web/en/moneyessentials/debts-and-borrowing/loan-basics.page"
+      },
+      {
+        "title": "HKMA · Personal credit",
+        "url": "https://www.hkma.gov.hk/eng/smart-consumers/personal-credit/"
+      },
+      {
+        "title": "IFEC · Buy now, pay later costs",
+        "url": "https://www.ifec.org.hk/web/en/blog/2024/10/buy-now-pay-later-fees.page"
       }
     ],
     "options": [
       {
-        "id": "apr",
-        "text": "APR",
+        "id": "borrowing-01",
+        "text": "Compare APR",
         "good": true,
-        "why": "The annualised percentage rate (APR) is an important measure for comparing borrowing costs."
+        "why": "APR helps compare borrowing costs including applicable fees."
       },
       {
-        "id": "total",
-        "text": "Total repayment",
+        "id": "borrowing-02",
+        "text": "Check total repayment",
         "good": true,
-        "why": "Total repayment shows how much you will pay over the full repayment period."
+        "why": "Check the total amount payable over the loan."
       },
       {
-        "id": "period",
-        "text": "Loan term",
+        "id": "borrowing-03",
+        "text": "Check actual loan rate",
         "good": true,
-        "why": "The repayment period affects monthly payments and total interest."
+        "why": "Your offered rate may differ from the advertised minimum."
       },
       {
-        "id": "monthly",
-        "text": "Monthly payment",
+        "id": "borrowing-04",
+        "text": "Check handling fees",
         "good": true,
-        "why": "Monthly payments affect affordability, but do not show the total cost on their own."
+        "why": "Handling fees can increase borrowing costs."
       },
       {
-        "id": "fee",
-        "text": "Handling fees",
+        "id": "borrowing-05",
+        "text": "Check late charges",
         "good": true,
-        "why": "Check all applicable fees and whether they are included in the quoted cost."
+        "why": "Missed payments may trigger fees and overdue interest."
       },
       {
-        "id": "late",
-        "text": "Late fees",
+        "id": "borrowing-06",
+        "text": "Check early payoff fees",
         "good": true,
-        "why": "Late repayment can incur extra charges. Check the terms and payment dates."
+        "why": "Early settlement may involve a charge."
       },
       {
-        "id": "music",
-        "text": "Ad music",
-        "good": false,
-        "why": "Music does not describe loan costs or repayment arrangements."
+        "id": "borrowing-07",
+        "text": "Review loan term",
+        "good": true,
+        "why": "The term affects payment size and total interest."
       },
       {
-        "id": "celebrity",
-        "text": "Celebrity ads",
-        "good": false,
-        "why": "The endorser does not change the loan costs you must pay."
+        "id": "borrowing-08",
+        "text": "Check monthly payment",
+        "good": true,
+        "why": "Check each payment against your available monthly budget."
       },
       {
-        "id": "font",
-        "text": "Poster font",
-        "good": false,
-        "why": "The typeface is part of the advertising design, not the loan terms."
+        "id": "borrowing-09",
+        "text": "Check payment dates",
+        "good": true,
+        "why": "Knowing due dates helps prevent overdue payments."
       },
       {
-        "id": "slogan",
-        "text": "Brand slogan",
-        "good": false,
-        "why": "A slogan cannot replace the actual interest, fee and repayment terms."
+        "id": "borrowing-10",
+        "text": "Budget for repayments",
+        "good": true,
+        "why": "Allow for repayments alongside essential spending."
       },
       {
-        "id": "colour",
-        "text": "Logo colour",
-        "good": false,
-        "why": "The logo colour does not change the interest rate, charges or repayment schedule."
+        "id": "borrowing-11",
+        "text": "Count existing debts",
+        "good": true,
+        "why": "Existing repayments also use your income."
       },
       {
-        "id": "scene",
-        "text": "Ad setting",
+        "id": "borrowing-12",
+        "text": "Check lender identity",
+        "good": true,
+        "why": "Verify who is lending before sharing information or agreeing."
+      },
+      {
+        "id": "borrowing-13",
+        "text": "Borrow only what needed",
+        "good": true,
+        "why": "A larger loan creates a larger repayment obligation."
+      },
+      {
+        "id": "borrowing-14",
+        "text": "Read loan conditions",
+        "good": true,
+        "why": "Conditions explain charges, repayment and other obligations."
+      },
+      {
+        "id": "borrowing-15",
+        "text": "Check interest method",
+        "good": true,
+        "why": "Different calculation methods can make quoted rates misleading."
+      },
+      {
+        "id": "borrowing-16",
+        "text": "Compare flat rates only",
         "good": false,
-        "why": "The filming location does not tell you the actual cost of borrowing."
+        "why": "A flat rate alone does not show the full borrowing cost."
+      },
+      {
+        "id": "borrowing-17",
+        "text": "Pick lowest instalment",
+        "good": false,
+        "why": "Smaller instalments can mean a longer, costlier loan."
+      },
+      {
+        "id": "borrowing-18",
+        "text": "Ignore handling fees",
+        "good": false,
+        "why": "Fees are part of the cost of borrowing."
+      },
+      {
+        "id": "borrowing-19",
+        "text": "Borrow the full limit",
+        "good": false,
+        "why": "An available limit does not show what you can afford."
+      },
+      {
+        "id": "borrowing-20",
+        "text": "Trust instant approval",
+        "good": false,
+        "why": "Fast approval says little about cost or affordability."
+      },
+      {
+        "id": "borrowing-21",
+        "text": "Roll debt forever",
+        "good": false,
+        "why": "Repeated borrowing can prolong debt and increase costs."
+      },
+      {
+        "id": "borrowing-22",
+        "text": "Pay late for cashback",
+        "good": false,
+        "why": "Rewards do not cancel overdue charges or repayment duties."
+      },
+      {
+        "id": "borrowing-23",
+        "text": "Assume 0% means free",
+        "good": false,
+        "why": "An interest-free offer may still involve fees or conditions."
+      },
+      {
+        "id": "borrowing-24",
+        "text": "Use ad rate as final",
+        "good": false,
+        "why": "The actual rate depends on the lender's offer."
+      },
+      {
+        "id": "borrowing-25",
+        "text": "Skip repayment plan",
+        "good": false,
+        "why": "Without a plan, payments can overwhelm your budget."
+      },
+      {
+        "id": "borrowing-26",
+        "text": "Borrow to impress",
+        "good": false,
+        "why": "Social pressure does not establish a need or affordability."
+      },
+      {
+        "id": "borrowing-27",
+        "text": "Ignore existing debt",
+        "good": false,
+        "why": "Other debts reduce the income available for repayment."
+      },
+      {
+        "id": "borrowing-28",
+        "text": "Treat credit as income",
+        "good": false,
+        "why": "Credit is borrowed money that must be repaid."
+      },
+      {
+        "id": "borrowing-29",
+        "text": "Pick longest term only",
+        "good": false,
+        "why": "A longer term can increase total interest paid."
+      },
+      {
+        "id": "borrowing-30",
+        "text": "Sign without reading",
+        "good": false,
+        "why": "You may miss charges and contractual obligations."
       }
-    ]
+    ],
+    "menuDescription": "Spot the real cost behind an attractive loan."
   },
   {
     "id": "scams",
     "chapter": "Check before you trust",
     "eyebrow": "05 / AVOIDING FINANCIAL SCAMS",
-    "question": "Where can you verify a suspicious offer?",
-    "context": "Choose independent, verifiable channels. Evidence supplied by the promoter may be fake.",
-    "takeaway": "Use official channels. Register and alert checks are only part of verification; watch for impersonation.",
-    "action": "Explore the SFC or Insurance Authority register and practise checking an intermediary.",
+    "question": "Which are safer actions for a suspicious offer?",
+    "context": "Slice actions that reduce risk. No single check proves an offer is genuine.",
+    "takeaway": "Pause, verify independently and protect your credentials. Promoter-supplied proof can be fake.",
+    "action": "Practise finding an official register and a bank's contact details independently.",
     "sources": [
       {
-        "title": "IFEC · Avoiding scams",
+        "title": "IFEC · Fraud prevention",
         "url": "https://www.ifec.org.hk/web/en/moneyessentials/scams/index.page"
       },
       {
@@ -386,83 +862,200 @@ window.QUESTIONS = [
         "url": "https://www.sfc.hk/en/Regulatory-functions/Intermediaries/Licensing/Register-of-licensed-persons-and-registered-institutions"
       },
       {
-        "title": "Insurance Authority · Tips on buying insurance",
+        "title": "SFC · Suspicious investment products",
+        "url": "https://www.sfc.hk/en/Suspicious-Investment-Products"
+      },
+      {
+        "title": "HKMA · Beware of fraudsters",
+        "url": "https://www.hkma.gov.hk/eng/smart-consumers/beware-of-fraudsters/"
+      },
+      {
+        "title": "Insurance Authority · Intermediary checks",
         "url": "https://education.ia.org.hk/en/faq.html"
       }
     ],
     "options": [
       {
-        "id": "sfc",
-        "text": "SFC register",
+        "id": "scams-01",
+        "text": "Pause before paying",
         "good": true,
-        "why": "Check securities intermediaries on the official SFC register. Also verify identity to guard against impersonation."
+        "why": "Pressure to act quickly is a reason to stop and verify."
       },
       {
-        "id": "ia",
-        "text": "IA register",
+        "id": "scams-02",
+        "text": "Check SFC register",
         "good": true,
-        "why": "Use the Insurance Authority website to check an insurance intermediary’s licensing details."
+        "why": "Check the relevant licence and verify the actual person."
       },
       {
-        "id": "official",
-        "text": "Official support",
+        "id": "scams-03",
+        "text": "Check official alerts",
         "good": true,
-        "why": "Find contact details independently on the institution’s official website and verify the offer and representative."
+        "why": "Official alerts can flag known scams; absence proves nothing."
       },
       {
-        "id": "alerts",
-        "text": "Official alerts",
+        "id": "scams-04",
+        "text": "Check IA register",
         "good": true,
-        "why": "Check official warning lists. Absence from a list does not prove that an offer is safe."
+        "why": "Check insurance intermediaries through the official register."
       },
       {
-        "id": "screen",
-        "text": "Profit images",
-        "good": false,
-        "why": "Profit screenshots can be forged. They are not independent verification."
+        "id": "scams-05",
+        "text": "Verify contact details",
+        "good": true,
+        "why": "Find contact details independently of the suspicious message."
       },
       {
-        "id": "crowd",
-        "text": "Group praise",
-        "good": false,
-        "why": "Group members may be accomplices. Popularity does not verify an offer."
+        "id": "scams-06",
+        "text": "Call the bank directly",
+        "good": true,
+        "why": "Use a number obtained from the bank's official channels."
       },
       {
-        "id": "promise",
-        "text": "Influencer claims",
-        "good": false,
-        "why": "A personal guarantee is not official or independent verification."
+        "id": "scams-07",
+        "text": "Use saved official app",
+        "good": true,
+        "why": "Open the genuine bank app rather than a message link."
       },
       {
-        "id": "dm",
-        "text": "Unknown DMs",
-        "good": false,
-        "why": "An unknown sender needs verification and cannot establish their own credibility."
+        "id": "scams-08",
+        "text": "Check website spelling",
+        "good": true,
+        "why": "Look for altered domains; familiar appearance alone proves nothing."
       },
       {
-        "id": "secret",
-        "text": "Insider tips",
-        "good": false,
-        "why": "Supposed inside information may be bait. It is not a verification channel."
+        "id": "scams-09",
+        "text": "Keep OTPs private",
+        "good": true,
+        "why": "Do not give a one-time password to a caller or sender."
       },
       {
-        "id": "link",
-        "text": "Unknown links",
-        "good": false,
-        "why": "A supplied link may lead to a fake site. Find the official channel independently."
+        "id": "scams-10",
+        "text": "Keep passwords private",
+        "good": true,
+        "why": "Never give banking passwords to someone contacting you."
       },
       {
-        "id": "certificate",
-        "text": "Certificate image",
-        "good": false,
-        "why": "A promoter’s certificate screenshot may also be forged. It is not independent verification."
+        "id": "scams-11",
+        "text": "Question rushed offers",
+        "good": true,
+        "why": "Urgency can be used to prevent careful checking."
       },
       {
-        "id": "invite",
-        "text": "Limited-time offer",
+        "id": "scams-12",
+        "text": "Save scam messages",
+        "good": true,
+        "why": "Keep evidence when reporting suspected fraud."
+      },
+      {
+        "id": "scams-13",
+        "text": "Report suspicious links",
+        "good": true,
+        "why": "Report through independently verified official channels."
+      },
+      {
+        "id": "scams-14",
+        "text": "Check licence scope",
+        "good": true,
+        "why": "A licence does not authorise every activity or product."
+      },
+      {
+        "id": "scams-15",
+        "text": "Ask someone you trust",
+        "good": true,
+        "why": "A second opinion can help you pause; verify independently too."
+      },
+      {
+        "id": "scams-16",
+        "text": "Trust a blue tick",
         "good": false,
-        "why": "Urgency pressures you to decide. It does not establish authenticity."
+        "why": "A social-media badge does not verify an investment offer."
+      },
+      {
+        "id": "scams-17",
+        "text": "Share your OTP",
+        "good": false,
+        "why": "An OTP can allow someone to authorise a transaction."
+      },
+      {
+        "id": "scams-18",
+        "text": "Pay to unlock profits",
+        "good": false,
+        "why": "Demands for more money to release supposed profits are suspicious."
+      },
+      {
+        "id": "scams-19",
+        "text": "Click the SMS login",
+        "good": false,
+        "why": "A message link may lead to a fake banking page."
+      },
+      {
+        "id": "scams-20",
+        "text": "Install a chat APK",
+        "good": false,
+        "why": "An unknown app supplied in a chat may be malicious."
+      },
+      {
+        "id": "scams-21",
+        "text": "Trust group profits",
+        "good": false,
+        "why": "Group members and displayed profits may be fabricated."
+      },
+      {
+        "id": "scams-22",
+        "text": "Keep it secret",
+        "good": false,
+        "why": "Secrecy can isolate you from help and independent checks."
+      },
+      {
+        "id": "scams-23",
+        "text": "Send a test payment",
+        "good": false,
+        "why": "A small payment does not prove a suspicious offer is genuine."
+      },
+      {
+        "id": "scams-24",
+        "text": "Trust guaranteed gains",
+        "good": false,
+        "why": "Promises of guaranteed high returns are a warning sign."
+      },
+      {
+        "id": "scams-25",
+        "text": "Hand over your password",
+        "good": false,
+        "why": "A password can give another person access to your account."
+      },
+      {
+        "id": "scams-26",
+        "text": "Trust copied logos",
+        "good": false,
+        "why": "Fraudsters can copy an institution's logo and branding."
+      },
+      {
+        "id": "scams-27",
+        "text": "Call their supplied no.",
+        "good": false,
+        "why": "A supplied number may connect you to the same fraudster."
+      },
+      {
+        "id": "scams-28",
+        "text": "Trust a licence photo",
+        "good": false,
+        "why": "A licence image can be stolen or altered."
+      },
+      {
+        "id": "scams-29",
+        "text": "Move cash to safe acct",
+        "good": false,
+        "why": "A caller's supposed safe account may belong to a fraudster."
+      },
+      {
+        "id": "scams-30",
+        "text": "Allow remote access",
+        "good": false,
+        "why": "Remote access can expose account information and transactions."
       }
-    ]
+    ],
+    "menuDescription": "React fast to suspicious messages and offers."
   }
 ];

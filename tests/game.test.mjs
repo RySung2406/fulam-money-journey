@@ -20,17 +20,16 @@ test('scoring rewards combos once per choice and penalises wrong slices', () => 
   assert.equal(session.bestCombo, 2);
   assert.equal(E.recordHit(session, 'next-round', good).delta, 100);
 });
-test('each round contains 12 unique choices, and random waves preserve all 60', () => {
-  assert.equal(questions.length, 5);
+test('five topic entrances each have 30 unique, balanced and legible choices', () => {
+  assert.deepEqual(questions.map(q => q.id), ['tools', 'investment', 'insurance', 'borrowing', 'scams']);
   for (const q of questions) {
-    assert.equal(q.options.length, 12);
-    assert.equal(new Set(q.options.map(o => o.id)).size, 12);
-    assert.ok(q.options.some(o => o.good) && q.options.some(o => !o.good));
-    for (let i = 0; i < 100; i++) {
-      const waves = E.createWaves(q.options);
-      assert.ok(waves.every(w => w.length >= 1 && w.length <= 3));
-      assert.deepEqual(Array.from(waves.flat(), o => o.id), q.options.map(o => o.id));
-      assert.deepEqual(Array.from(new Set(waves.slice(0, 3).map(w => w.length))).sort(), [1, 2, 3]);
+    assert.equal(q.options.length, 30, q.id + ' answer bank');
+    assert.equal(new Set(q.options.map(o => o.id)).size, 30, q.id + ' unique IDs');
+    assert.equal(new Set(q.options.map(o => o.text.toLowerCase())).size, 30, q.id + ' unique labels');
+    assert.equal(q.options.filter(o => o.good === true).length, 15, q.id + ' correct choices');
+    assert.equal(q.options.filter(o => o.good === false).length, 15, q.id + ' plausible decoys');
+    for (const o of q.options) {
+      assert.ok(o.text.trim().length > 0 && o.text.length <= 23, q.id + ': ' + o.text);
     }
   }
 });
