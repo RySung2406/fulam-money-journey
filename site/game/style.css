@@ -291,3 +291,6 @@ body.immersive-game{overflow:hidden;overscroll-behavior:none;height:100dvh}
  .topic-card:hover{transform:none}
 }
 
+
+/* Language switch remains available in the menu and during a live run. */
+.language-switch{background:#163744;color:#e4f4ef;border:1px solid #9dbbbd66;border-radius:8px;padding:7px 10px;font-size:12px;line-height:1.2;white-space:nowrap;min-height:36px;font-weight:700}.language-switch:hover{background:#244c57}.game-tools .language-switch{min-height:34px}.language-switch:focus-visible{outline:3px solid #9ed4bc;outline-offset:2px}@media(max-width:650px){.language-switch{padding:6px 7px;font-size:11px;min-height:32px}.game-tools .language-switch{min-height:32px}.game-tools{gap:4px}}
