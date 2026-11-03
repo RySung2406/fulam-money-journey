@@ -66,12 +66,37 @@ function harness(width = 1000, height = 600, options = {}) {
   frame(1);
   const advance=(seconds,fps=60)=>{let left=seconds*1000;while(left>1e-7){const ms=Math.min(left,1000/fps);frame(ms);left-=ms;}};
   const click=id=>{const e=el(id);assert(!e.disabled,id+' is enabled');assert.equal(typeof e.onclick,'function',id+' has UI handler');e.onclick({preventDefault:no});};
-  const pointer=(type,x,y)=>{for(const fn of el('game').events[type]||[])fn({clientX:x,clientY:y,pointerType:'mouse',pointerId:1,button:0,preventDefault:no});};
+  const pointer=(type,x,y,options={},id='game')=>{for(const fn of el(id).events[type]||[])fn({type,clientX:x,clientY:y,pointerType:'mouse',pointerId:1,button:0,preventDefault:no,...options});};
   const emit=(scope,type,event={})=>{for(const fn of (scope==='window'?winHandlers:docHandlers)[type]||[])fn({preventDefault:no,...event});};
   return {state:()=>sandbox.FuLamGame.getState(),run:code=>sandbox.__qa.run(code),click,advance,pointer,storage,el,doc,accessedIds,writes:()=>writes,drawTexts:()=>drawTexts,emit,resize:(nextWidth,nextHeight)=>{width=nextWidth;height=nextHeight;sandbox.__qa.run('resize()');}};
 }
 const near=(a,b,tol=.0001)=>assert(Math.abs(a-b)<tol,`${a} != ${b}`);
 const clone = value => JSON.parse(JSON.stringify(value));
+
+test('A secondary touch casts a skill while the first finger keeps firing',()=>{
+  const g=harness();g.click('start');
+  g.pointer('pointerdown',300,200,{pointerType:'touch',pointerId:11});g.advance(.3);
+  const before=g.state().shots;
+  g.pointer('pointerdown',700,650,{pointerType:'touch',pointerId:22},'net');
+  assert(g.state().netCooldown>0);near(g.run('aim.x'),300);
+  g.pointer('pointerup',700,650,{pointerType:'touch',pointerId:22},'net');g.advance(.5);
+  assert(g.state().shots>before,'lifting the skill finger does not stop firing');
+  g.pointer('pointerup',300,200,{pointerType:'touch',pointerId:11});
+  const stopped=g.state().shots;g.advance(.5);assert.equal(g.state().shots,stopped);
+});
+
+test('Multiple aiming fingers release independently and pause clears all touches',()=>{
+  const g=harness();g.click('start');
+  const touch=id=>({pointerType:'touch',pointerId:id});
+  g.pointer('pointerdown',250,180,touch(1));g.pointer('pointerdown',700,220,touch(2));
+  g.pointer('pointermove',720,230,touch(2));near(g.run('aim.x'),250);
+  g.pointer('pointerup',250,180,touch(1));g.pointer('lostpointercapture',250,180,touch(1));
+  near(g.run('aim.x'),720);assert(g.run('pointerDown'));
+  g.advance(.3);const before=g.state().shots;g.pointer('pointercancel',0,0,touch(99));g.advance(.3);
+  assert(g.state().shots>before,'an unrelated cancellation does not release the active finger');
+  g.click('pause');g.click('resume');assert(!g.run('pointerDown'));assert.equal(g.run('canvasPointers.size'),0);
+  g.pointer('pointermove',800,200,touch(2));const stopped=g.state().shots;g.advance(.5);assert.equal(g.state().shots,stopped);
+});
 
 for(const fps of [60,15])test(`No automatic timeout after 120 seconds at ${fps} fps`,()=>{
   const g=harness();g.click('start');g.advance(120,fps);

@@ -179,5 +179,54 @@
       }
     }
   }
-  root.FuLamArcade = { Audio, Effects };
+  // Secondary touches do not reliably produce a click. Activate combat controls
+  // on touch/pen press, while keeping mouse, keyboard and assistive clicks intact.
+  function bindAction(button, action, { onRelease = false } = {}) {
+    let touchPress = false;
+    const pending = new Set();
+    button.style.touchAction = 'none';
+    button.style.userSelect = 'none';
+    button.style.webkitTouchCallout = 'none';
+    button.addEventListener('pointerdown', event => {
+      touchPress = event.pointerType === 'touch' || event.pointerType === 'pen';
+      if (!touchPress || button.disabled) return;
+      event.preventDefault();
+      if (onRelease) pending.add(event.pointerId); else action(event);
+    });
+    button.addEventListener('pointerup', event => {
+      if (pending.delete(event.pointerId) && !button.disabled) action(event);
+    });
+    for (const type of ['pointercancel', 'lostpointercapture']) {
+      button.addEventListener(type, event => pending.delete(event.pointerId));
+    }
+    button.onclick = event => {
+      if (button.disabled) return;
+      // Some browsers also send a compatibility click after the touch releases.
+      if (event?.pointerType === 'touch' || event?.pointerType === 'pen' || (touchPress && event?.detail > 0)) {
+        event?.preventDefault(); return;
+      }
+      action(event);
+    };
+  }
+  class Pointers {
+    constructor() { this.points = new Map(); this.primary = null; }
+    get size() { return this.points.size; }
+    get current() { return this.points.get(this.primary); }
+    press(event) {
+      this.points.set(event.pointerId, { clientX: event.clientX, clientY: event.clientY });
+      if (this.primary === null) this.primary = event.pointerId;
+    }
+    move(event) {
+      if (!this.points.has(event.pointerId)) return false;
+      this.points.set(event.pointerId, { clientX: event.clientX, clientY: event.clientY });
+      return this.primary === event.pointerId;
+    }
+    release(event) {
+      if (!this.points.delete(event.pointerId)) return false;
+      if (this.primary === event.pointerId) this.primary = this.points.keys().next().value ?? null;
+      return true;
+    }
+    clear() { this.points.clear(); this.primary = null; }
+  }
+  root.FuLamArcade = { Audio, Effects, bindAction, Pointers };
 })(globalThis);

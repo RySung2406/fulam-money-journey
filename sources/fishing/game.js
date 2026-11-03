@@ -5,6 +5,8 @@
 const $=id=>document.getElementById(id), canvas=$('game'), ctx=canvas.getContext('2d'), scene=$('scene'), overlay=$('overlay'), Art=window.FuLamArt;
 const TAU=Math.PI*2, rnd=(a,b)=>a+Math.random()*(b-a), clamp=(v,a,b)=>Math.max(a,Math.min(b,v)), fmt=v=>Math.floor(v).toLocaleString('en-US');
 const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const canvasPointers=new window.FuLamArcade.Pointers();
+function clearPointerInput(){canvasPointers.clear();pointerDown=false}
 // Share the site's language choice while preserving the current game session.
 let language='zh-Hant';try{language=localStorage.getItem('fulam-language')==='en'?'en':'zh-Hant'}catch{}
 const translations={
@@ -137,7 +139,7 @@ function seedDemo(){fish=[];for(let i=0;i<9;i++)spawn(['coin','save','fund','sto
 function notify(msg,seconds=2){$('event').textContent=msg;$('event').classList.add('visible');eventTime=seconds;$('live').textContent=msg;localize(document.body)}
 function toast(msg){$('toast').textContent=msg;$('toast').classList.add('on');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>$('toast').classList.remove('on'),2200);localize(document.body)}
 const welcomeIcon='<div class="welcome-icon" aria-hidden="true"><svg viewBox="0 0 90 75"><defs><linearGradient id="goldg" x2=".8" y2="1"><stop stop-color="#ffeca6"/><stop offset="1" stop-color="#d1a84e"/></linearGradient></defs><path d="M10 36C29 12 57 14 70 29L84 19 81 50 69 43C48 64 21 54 10 36Z" fill="url(#goldg)"/><path d="m30 23 9-13 13 9m-22 32 12 14 10-12" fill="#ba8a38"/><circle cx="26" cy="32" r="4" fill="#174444"/><circle cx="25" cy="31" r="1.3" fill="white"/><path d="M50 26v23M55 29h-8a5 5 0 0 0 0 9h6a5 5 0 0 1 0 9h-9" fill="none" stroke="#846124" stroke-width="2.8" stroke-linecap="round"/><path d="M8 63q7-6 16 0t16 0t16 0t16 0" fill="none" stroke="#9be8cf" stroke-width="2"/></svg></div>';
-function openModal(html){oldFocus=document.activeElement;pointerDown=false;keys.clear();overlay.innerHTML='<div class="card"><button type="button" class="modal-language" id="languageModal">English</button>'+html+'</div>';overlay.hidden=false;const langButton=$('languageModal');if(langButton)langButton.onclick=toggleLanguage;localize(document.body);requestAnimationFrame(()=>{const first=overlay.querySelector('[data-autofocus]')||overlay.querySelector('button');first?.focus({preventScroll:true})})}
+function openModal(html){oldFocus=document.activeElement;clearPointerInput();keys.clear();overlay.innerHTML='<div class="card"><button type="button" class="modal-language" id="languageModal">English</button>'+html+'</div>';overlay.hidden=false;const langButton=$('languageModal');if(langButton)langButton.onclick=toggleLanguage;localize(document.body);requestAnimationFrame(()=>{const first=overlay.querySelector('[data-autofocus]')||overlay.querySelector('button');first?.focus({preventScroll:true})})}
 function closeModal(){overlay.hidden=true;overlay.innerHTML='';canvas.focus({preventScroll:true})}
 function showWelcome(){
  fx.clear();soundscape.stop();mode='welcome';sessionStarted=false;$('pause').disabled=true;document.body.classList.remove('game-active');resetItems();score=wallet=caught=round=0;level=1;combo=0;missionIndex=0;bullets=[];beams=[];particles=[];rings=[];floaters=[];coins=[];eventTime=0;seedDemo();
@@ -146,7 +148,7 @@ function showWelcome(){
 }
 function start(){
  fx.clear();initAudio();mode='playing';sessionStarted=true;round=0;score=wallet=caught=shots=hits=0;level=1;combo=maxCombo=0;lastCatch=-10;missionIndex=0;bossSpawned=0;nextBossAt=20;saveClock=5;startingBest=prefs.best[difficulty];resultRecord=false;lastPressureTier=0;
- fish=[];bullets=[];beams=[];particles=[];floaters=[];coins=[];rings=[];resetItems();shotClock=0;spawnClock=.5;pointerDown=false;keys.clear();aim={x:w/2,y:h*.35};angle=-Math.PI/2;closeModal();document.body.classList.add('game-active');
+ fish=[];bullets=[];beams=[];particles=[];floaters=[];coins=[];rings=[];resetItems();shotClock=0;spawnClock=.5;clearPointerInput();keys.clear();aim={x:w/2,y:h*.35};angle=-Math.PI/2;closeModal();document.body.classList.add('game-active');
  for(let i=0;i<10;i++)spawn(['coin','save','coin','fund','stock','ray','bond','crypto','gold','coin'][i%10],{x:rnd(w*.06,w*.94)});
  notify('無限時捕財 · U 升級可改變攻擊方式',3);updateHud();
 }
@@ -157,13 +159,13 @@ function pause(){
 }
 function resume(){mode='playing';closeModal();initAudio();updateHud()}
 function finish(commit=true){
- mode='ended';pointerDown=false;keys.clear();if(commit){resultRecord=score>startingBest;persistBest();sound('end')}
+ mode='ended';clearPointerInput();keys.clear();if(commit){resultRecord=score>startingBest;persistBest();sound('end')}
  const rank=score>=20000?'深海財神':score>=8000?'金庫大戶':score>=2000?'捕財高手':'新晉捕手';
  openModal('<div class="label">YOUR CATCH OF THE DAY</div><h2 id="dialogTitle">滿載而歸！</h2><div class="result-score">'+fmt(score)+'</div><div class="badge">'+(resultRecord?'刷新個人最佳 · ':modes[difficulty].label+'模式 · ')+rank+'</div><div class="result-grid"><div><b>'+caught+'</b><span>捕獲魚數</span></div><div><b>'+maxCombo+'</b><span>最高連擊</span></div><div><b>Lv.'+level+'</b><span>炮台等級</span></div></div><p>今次捕財 '+Math.floor(round/60)+' 分 '+Math.floor(round%60)+' 秒。<br>想玩隨時再出海。</p><button class="primary" id="again" data-autofocus>重新開局</button><button class="secondary" id="home">返回遊戲首頁</button><div class="micro">最佳紀錄儲存在此瀏覽器 · 純遊戲積分</div>');
  $('again').onclick=start;$('home').onclick=showWelcome;$('live').textContent='本局已結算，共 '+score+' 分，捕獲 '+caught+' 條。';updateHud();
 }
 function help(){
- if(mode==='help'||mode==='credits')return;modalReturn=mode;if(mode==='playing')pointerDown=false;soundscape.stop();mode='help';
+ if(mode==='help'||mode==='credits')return;modalReturn=mode;if(mode==='playing')clearPointerInput();soundscape.stop();mode='help';
  openModal('<div class="label">HOW TO PLAY</div><h2 id="dialogTitle">無限捕財。</h2><p style="text-align:left">長按畫面連射，移動手指或滑鼠瞄準。發射免費，無限時；想離場可按暫停，再選「結算離場」。<br><br>金幣可升級 12 級炮台，唔會扣總積分。分散投資炮會散射、複利炮會發射穿透大球、長線炮會射出光束。海域每 45 秒升一級，魚會更耐打、更快；最高 16 級，沒有時間上限。<br><br>ETF 魔鬼魚滑翔、股票魚走折線、槓桿快鯊突然衝刺，債券海龜則較慢但更耐打。造型只借用理財概念，不代表真實投資風險或回報。<br><br><b>Q / 1 大漁網</b>：範圍捕捉，冷卻 16 秒。<br><b>W / 2 冰凍</b>：慢速 5 秒，冷卻 20 秒。<br><b>E / 3 狂熱連射 · Lv.3</b>：射速加倍 8 秒，冷卻 24 秒。<br><b>R / 4 雙倍金幣 · Lv.5</b>：捕魚收益加倍 8 秒，冷卻 30 秒。<br><b>T / 5 深海炸彈 · Lv.7</b>：大範圍爆破，冷卻 28 秒。<br><b>Y / 6 黃金誘餌 · Lv.9</b>：召喚高值魚群，冷卻 32 秒。</p><p style="font-size:11px">鍵盤：← → 瞄準 · 空白鍵射擊<br>Q/W/E/R/T/Y 道具（亦可 1–6）· U 升級 · P 暫停</p><button class="primary" id="helpClose" data-autofocus>知道了</button>');
  $('helpClose').onclick=returnModal;updateHud();
 }
@@ -335,8 +337,16 @@ function loop(now){
  draw();requestAnimationFrame(loop);
 }
 function locate(e){const r=canvas.getBoundingClientRect();aim={x:(e.clientX-r.left)*w/r.width,y:(e.clientY-r.top)*h/r.height}}
-canvas.addEventListener('pointerdown',e=>{if(mode!=='playing'||(e.pointerType==='mouse'&&e.button!==0))return;e.preventDefault();initAudio();locate(e);pointerDown=true;shotClock=0;canvas.setPointerCapture(e.pointerId);canvas.focus({preventScroll:true})});canvas.addEventListener('pointermove',e=>{if(mode==='playing')locate(e)});canvas.addEventListener('pointerup',()=>pointerDown=false);canvas.addEventListener('pointercancel',()=>pointerDown=false);canvas.addEventListener('lostpointercapture',()=>pointerDown=false);canvas.addEventListener('contextmenu',e=>e.preventDefault());
-window.addEventListener('keydown',e=>{if(!overlay.hidden){if(e.key==='Tab'){const els=[...overlay.querySelectorAll('button:not(:disabled),a[href],input')],first=els[0],end=els.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();end?.focus()}else if(!e.shiftKey&&document.activeElement===end){e.preventDefault();first?.focus()}}if(e.key==='Escape'){if(mode==='paused')resume();else if(mode==='help'||mode==='credits')returnModal()}return}if(mode!=='playing')return;if([' ','ArrowLeft','ArrowRight'].includes(e.key)){if(document.activeElement!==canvas&&document.activeElement?.tagName==='BUTTON')return;e.preventDefault();keys.add(e.key);initAudio()}if(e.repeat)return;const k=e.key.toLowerCase();if(k==='1'||k==='q')useNet();if(k==='2'||k==='w')useFreeze();if(k==='3'||k==='e')useRapid();if(k==='4'||k==='r')useDouble();if(k==='5'||k==='t')useBomb();if(k==='6'||k==='y')useLure();if(k==='u')upgrade();if(k==='p'||k==='escape')pause()});window.addEventListener('keyup',e=>keys.delete(e.key));window.addEventListener('blur',()=>{pointerDown=false;keys.clear();if(mode==='playing')pause()});document.addEventListener('visibilitychange',()=>{if(document.hidden){if(sessionStarted)persistBest();if(mode==='playing')pause()}});window.addEventListener('pagehide',()=>{if(sessionStarted)persistBest()});
+canvas.addEventListener('pointerdown',e=>{
+ if(mode!=='playing'||(e.pointerType==='mouse'&&e.button!==0))return;
+ e.preventDefault();initAudio();canvasPointers.press(e);locate(canvasPointers.current);
+ if(!pointerDown)shotClock=0;pointerDown=true;canvas.setPointerCapture(e.pointerId);canvas.focus({preventScroll:true});
+});
+canvas.addEventListener('pointermove',e=>{if(mode==='playing'&&(canvasPointers.move(e)||(!pointerDown&&e.pointerType==='mouse')))locate(e)});
+function releasePointer(e){if(!canvasPointers.release(e))return;pointerDown=canvasPointers.size>0;if(pointerDown)locate(canvasPointers.current)}
+for(const type of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(type,releasePointer);
+canvas.addEventListener('contextmenu',e=>e.preventDefault());
+window.addEventListener('keydown',e=>{if(!overlay.hidden){if(e.key==='Tab'){const els=[...overlay.querySelectorAll('button:not(:disabled),a[href],input')],first=els[0],end=els.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();end?.focus()}else if(!e.shiftKey&&document.activeElement===end){e.preventDefault();first?.focus()}}if(e.key==='Escape'){if(mode==='paused')resume();else if(mode==='help'||mode==='credits')returnModal()}return}if(mode!=='playing')return;if([' ','ArrowLeft','ArrowRight'].includes(e.key)){if(document.activeElement!==canvas&&document.activeElement?.tagName==='BUTTON')return;e.preventDefault();keys.add(e.key);initAudio()}if(e.repeat)return;const k=e.key.toLowerCase();if(k==='1'||k==='q')useNet();if(k==='2'||k==='w')useFreeze();if(k==='3'||k==='e')useRapid();if(k==='4'||k==='r')useDouble();if(k==='5'||k==='t')useBomb();if(k==='6'||k==='y')useLure();if(k==='u')upgrade();if(k==='p'||k==='escape')pause()});window.addEventListener('keyup',e=>keys.delete(e.key));window.addEventListener('blur',()=>{clearPointerInput();keys.clear();if(mode==='playing')pause()});document.addEventListener('visibilitychange',()=>{if(document.hidden){if(sessionStarted)persistBest();if(mode==='playing')pause()}});window.addEventListener('pagehide',()=>{if(sessionStarted)persistBest()});
 $('sound').onclick=()=>{prefs.sound=!prefs.sound;soundscape.setEnabled(prefs.sound);if(prefs.sound)initAudio();syncSound();save()};$('soundGame').onclick=$('sound').onclick;$('pause').onclick=pause;$('help').onclick=help;$('net').onclick=useNet;$('freeze').onclick=useFreeze;$('rapid').onclick=useRapid;$('double').onclick=useDouble;$('bomb').onclick=useBomb;$('lure').onclick=useLure;$('upgrade').onclick=upgrade;
 $('credits').onclick=()=>{if(mode==='help'||mode==='credits')return;modalReturn=mode;soundscape.stop();mode='credits';openModal('<div class="label">MADE FOR FULAM</div><h2 id="dialogTitle">捕財達人</h2><p style="text-align:left">富臨錢進號 · 投資海洋單機版 v3.0<br>沿用 Fishing Joy 的魚群編排程式，重製為 Canvas 遊戲。畫面、魚種、炮台及計分玩法為此版本重新製作。<br><br>Kenney · CC0 音效 / Lucide · ISC 圖示<br>原始專案：imtonyjaa/ggemu-fishing-joy<br>授權：MIT · Copyright (c) 2026 大帅老猿</p><pre class="license" id="licenseText"></pre><button class="primary" id="creditsClose" data-autofocus>返回遊戲</button>');$('licenseText').textContent=UPSTREAM_LICENSE+'\n\n'+ARCADE_LICENSE;$('creditsClose').onclick=returnModal;updateHud()};
 // Small read-only state snapshot makes local gameplay QA possible without changing outcomes.
@@ -344,5 +354,8 @@ window.FuLamGame={getState:()=>({mode,difficulty,pressure:pressure(),endless:tru
 $('screen').onclick=async()=>{const wrap=document.querySelector('.wrap');try{if(document.fullscreenElement)await document.exitFullscreen();else if(wrap.classList.contains('expanded'))wrap.classList.remove('expanded');else if(wrap.requestFullscreen)await wrap.requestFullscreen();else wrap.classList.add('expanded')}catch{wrap.classList.toggle('expanded')}document.body.classList.toggle('screen-expanded',wrap.classList.contains('expanded'));resize()};
 $('screenGame').onclick=$('screen').onclick;
 if($('languageSwitch'))$('languageSwitch').onclick=toggleLanguage;if($('languageGame'))$('languageGame').onclick=toggleLanguage;window.addEventListener('storage',e=>{if(e.key==='fulam-language'){language=e.newValue==='en'?'en':'zh-Hant';localize(document.body);updateHud()}});
+for(const id of ['sound','soundGame','pause','help','net','freeze','rapid','double','bomb','lure','upgrade','screen','screenGame','languageSwitch','languageGame']){
+ const button=$(id);if(button)window.FuLamArcade.bindAction(button,button.onclick,{onRelease:id==='screen'||id==='screenGame'});
+}
 resize();syncSound();showWelcome();requestAnimationFrame(loop);
 })();

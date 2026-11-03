@@ -15,4 +15,6 @@ Kenney Particle Pack and UI Pack were considered; their textures were not incorp
 
 Audio decoding is optional and non-blocking, with synthesised fallback cues. Distinct synthesised musical accents are used for boss arrival, low armour, rapid fire, lure, upgrades and completion. No music or recordings from the original fishing/naval projects are used.
 
+Touch handling is original FuLam code. Combat controls accept independent touches, so aiming or movement can continue while another finger activates a skill. Compatibility clicks are deduplicated, and mouse and keyboard controls remain supported.
+
 The existing gameplay attributions remain: Fishing Joy formations (MIT) and SUBmersible WARship 2063 combat core (MIT). Third-party assets retain their own licences.

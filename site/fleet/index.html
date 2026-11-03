@@ -843,7 +843,56 @@ SOFTWARE.</pre></details></footer>
       }
     }
   }
-  root.FuLamArcade = { Audio, Effects };
+  // Secondary touches do not reliably produce a click. Activate combat controls
+  // on touch/pen press, while keeping mouse, keyboard and assistive clicks intact.
+  function bindAction(button, action, { onRelease = false } = {}) {
+    let touchPress = false;
+    const pending = new Set();
+    button.style.touchAction = 'none';
+    button.style.userSelect = 'none';
+    button.style.webkitTouchCallout = 'none';
+    button.addEventListener('pointerdown', event => {
+      touchPress = event.pointerType === 'touch' || event.pointerType === 'pen';
+      if (!touchPress || button.disabled) return;
+      event.preventDefault();
+      if (onRelease) pending.add(event.pointerId); else action(event);
+    });
+    button.addEventListener('pointerup', event => {
+      if (pending.delete(event.pointerId) && !button.disabled) action(event);
+    });
+    for (const type of ['pointercancel', 'lostpointercapture']) {
+      button.addEventListener(type, event => pending.delete(event.pointerId));
+    }
+    button.onclick = event => {
+      if (button.disabled) return;
+      // Some browsers also send a compatibility click after the touch releases.
+      if (event?.pointerType === 'touch' || event?.pointerType === 'pen' || (touchPress && event?.detail > 0)) {
+        event?.preventDefault(); return;
+      }
+      action(event);
+    };
+  }
+  class Pointers {
+    constructor() { this.points = new Map(); this.primary = null; }
+    get size() { return this.points.size; }
+    get current() { return this.points.get(this.primary); }
+    press(event) {
+      this.points.set(event.pointerId, { clientX: event.clientX, clientY: event.clientY });
+      if (this.primary === null) this.primary = event.pointerId;
+    }
+    move(event) {
+      if (!this.points.has(event.pointerId)) return false;
+      this.points.set(event.pointerId, { clientX: event.clientX, clientY: event.clientY });
+      return this.primary === event.pointerId;
+    }
+    release(event) {
+      if (!this.points.delete(event.pointerId)) return false;
+      if (this.primary === event.pointerId) this.primary = this.points.keys().next().value ?? null;
+      return true;
+    }
+    clear() { this.points.clear(); this.primary = null; }
+  }
+  root.FuLamArcade = { Audio, Effects, bindAction, Pointers };
 })(globalThis);
 </script>
 <script>(function () {
@@ -910,11 +959,13 @@ SOFTWARE.</pre></details></footer>
   let sound = safeGet('fulam-fleet-sound-v1') !== 'off', lastSound = 0, resultIsBest = false, saveFailed = false;
   const soundscape = new window.FuLamArcade.Audio(sound);
   let shopOpen = false, deathTime = 0, lowHealthSound = 0;
-  let pointerId = null, pointerTarget = null, animation = 0, lastTime = null, accumulator = 0, hudTime = 0;
+  let pointerTarget = null, animation = 0, lastTime = null, accumulator = 0, hudTime = 0;
   let bannerTime = 0, bannerKey = '', bannerValue = '', toastTimer, shake = 0;
   const pressed = new Set(), particles = [], ripples = [], floats = [];
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const fx = new window.FuLamArcade.Effects(reduced.matches);
+  const canvasPointers = new window.FuLamArcade.Pointers(), directionPointers = new Map();
+  const bindAction = window.FuLamArcade.bindAction;
   Object.assign(EN, { workshop: 'Upgrades', closeDock: 'Back to sea', shopPaused: 'Battle paused · choose an upgrade', lowHealth: 'LOW ARMOUR · REPAIR OR SHIELD', exitScreen: 'Exit full screen' });
   Object.assign(ZH, { workshop: '升級', closeDock: '返回戰場', shopPaused: '戰局已暫停 · 安心選購升級', lowHealth: '護甲危急 · 修復或開盾', exitScreen: '退出全螢幕' });
   try { const stored = safeGet(KEY); if (stored && stored.length < 600) { const r = JSON.parse(stored); if (Number.isFinite(r.score) && r.score >= 0 && Number.isInteger(r.wave) && r.wave > 0 && Number.isInteger(r.kills) && r.kills >= 0 && ['standard', 'storm'].includes(r.mode)) best = r; } } catch { /* invalid records are ignored */ }
@@ -964,7 +1015,7 @@ SOFTWARE.</pre></details></footer>
     updateHUD(); $('dock-close').focus({ preventScroll: true });
   }
   function banner(key, value = '', seconds = 2.2) { bannerKey = key; bannerValue = value; bannerTime = seconds; $('banner').textContent = `${t(key)} ${value}`; $('banner').classList.add('show'); }
-  function clearInput() { pressed.clear(); pointerTarget = null; pointerId = null; }
+  function clearInput() { pressed.clear(); directionPointers.clear(); canvasPointers.clear(); pointerTarget = null; }
   function showOverlay(which) {
     $('overlay').hidden = !which;
     for (const id of ['menu', 'pause-menu', 'end-menu']) $(id).hidden = id !== which;
@@ -1172,7 +1223,8 @@ SOFTWARE.</pre></details></footer>
     if(phase==='sinking'){deathTime-=dt;if(deathTime<=0)finishSinking();}
     if(phase==='play'&&!paused){
       accumulator+=dt;
-      const input={x:Number(pressed.has('right'))-Number(pressed.has('left')),y:Number(pressed.has('down'))-Number(pressed.has('up'))};
+      const directions=new Set([...pressed,...directionPointers.values()]);
+      const input={x:Number(directions.has('right'))-Number(directions.has('left')),y:Number(directions.has('down'))-Number(directions.has('up'))};
       if(pointerTarget)input.target=pointerTarget;
       while(accumulator>=1/60&&phase==='play'){C.tick(game,1/60,input);accumulator-=1/60;events();}
       bannerTime=Math.max(0,bannerTime-dt);if(bannerTime===0&&$('banner').textContent){$('banner').classList.remove('show');$('banner').textContent='';}
@@ -1197,21 +1249,25 @@ SOFTWARE.</pre></details></footer>
   });
   window.addEventListener('keyup',e=>{if(keyMap[e.code])pressed.delete(keyMap[e.code]);});
   const point=e=>{const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*C.W/r.width,y:(e.clientY-r.top)*C.H/r.height};};
-  canvas.addEventListener('pointerdown',e=>{if(phase!=='play'||paused||pointerId!==null)return;e.preventDefault();pointerId=e.pointerId;pointerTarget=point(e);canvas.setPointerCapture(e.pointerId);unlockAudio();});
-  canvas.addEventListener('pointermove',e=>{if(e.pointerId===pointerId)pointerTarget=point(e);});
-  function release(e){if(e.pointerId===pointerId){pointerId=null;/* A tap remains a destination; movement stops once reached. */}}
-  canvas.addEventListener('pointerup',release);canvas.addEventListener('pointercancel',()=>{pointerId=null;pointerTarget=null;});canvas.addEventListener('lostpointercapture',release);
-  for(const b of document.querySelectorAll('[data-dir]')){
-    b.addEventListener('pointerdown',e=>{if(phase!=='play'||paused)return;e.preventDefault();b.setPointerCapture(e.pointerId);pointerTarget=null;pressed.add(b.dataset.dir);});
-    for(const event of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(event,()=>pressed.delete(b.dataset.dir));
+  canvas.addEventListener('pointerdown',e=>{if(phase!=='play'||paused||(e.pointerType==='mouse'&&e.button!==0))return;e.preventDefault();canvasPointers.press(e);pointerTarget=point(canvasPointers.current);canvas.setPointerCapture(e.pointerId);unlockAudio();});
+  canvas.addEventListener('pointermove',e=>{if(phase==='play'&&!paused&&canvasPointers.move(e))pointerTarget=point(e);});
+  function release(e){
+    if(!canvasPointers.release(e))return;
+    if(canvasPointers.current)pointerTarget=point(canvasPointers.current);
+    else if(e.type!=='pointerup')pointerTarget=null; // An ordinary tap remains a destination.
   }
-  $('start').addEventListener('click',start);$('restart').addEventListener('click',start);$('pause').addEventListener('click',()=>setPaused(!paused));$('resume').addEventListener('click',()=>setPaused(false));
-  $('shield').addEventListener('click',shield);for(const kind of ['weapon','escort','reserve','repair'])$(kind).addEventListener('click',()=>purchase(kind));
+  for(const type of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(type,release);
+  for(const b of document.querySelectorAll('[data-dir]')){
+    b.addEventListener('pointerdown',e=>{if(phase!=='play'||paused)return;e.preventDefault();b.setPointerCapture(e.pointerId);pointerTarget=null;directionPointers.set(e.pointerId,b.dataset.dir);});
+    for(const event of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(event,e=>directionPointers.delete(e.pointerId));
+  }
+  $('start').addEventListener('click',start);$('restart').addEventListener('click',start);bindAction($('pause'),()=>setPaused(!paused));$('resume').addEventListener('click',()=>setPaused(false));
+  bindAction($('shield'),shield);for(const kind of ['weapon','escort','reserve','repair'])bindAction($(kind),()=>purchase(kind));
   for(const id of ['standard','storm'])$(id).addEventListener('click',()=>chooseMode(id));
-  $('lang').addEventListener('click',()=>setLanguage(lang==='en'?'zh-Hant':'en'));
+  bindAction($('lang'),()=>setLanguage(lang==='en'?'zh-Hant':'en'));
   window.addEventListener('storage',e=>{if(e.key==='fulam-language')setLanguage(e.newValue==='en'?'en':'zh-Hant');});
-  $('sound').addEventListener('click',toggleSound);$('battle-sound').addEventListener('click',toggleSound);
-  $('dock-toggle').addEventListener('click',()=>shopOpen?closeWorkshop():openWorkshop());$('dock-close').addEventListener('click',closeWorkshop);
+  bindAction($('sound'),toggleSound);bindAction($('battle-sound'),toggleSound);
+  bindAction($('dock-toggle'),()=>shopOpen?closeWorkshop():openWorkshop());bindAction($('dock-close'),closeWorkshop);
   $('change-mode').addEventListener('click',()=>{phase='menu';paused=false;clearInput();game=C.createState({mode});showOverlay('menu');updateHUD();$('start').focus({preventScroll:true});});
   $('share').addEventListener('click',async()=>{const text=t('shareText')(game);try{await navigator.clipboard.writeText(text);put('share-status',t('copied'));}catch{put('share-status',`${t('copyFallback')} ${text}`);}});
   async function fullscreen(){
@@ -1220,7 +1276,7 @@ SOFTWARE.</pre></details></footer>
     catch{layout.classList.toggle('expanded');}
     document.body.classList.toggle('screen-expanded',layout.classList.contains('expanded'));sizeCanvas();
   }
-  $('fullscreen').addEventListener('click',fullscreen);$('battle-fullscreen').addEventListener('click',fullscreen);
+  bindAction($('fullscreen'),fullscreen,{onRelease:true});bindAction($('battle-fullscreen'),fullscreen,{onRelease:true});
   document.addEventListener('visibilitychange',()=>{if(document.hidden&&phase==='play'&&!paused)setPaused(true);lastTime=null;});
   window.addEventListener('blur',()=>{clearInput();if(phase==='play'&&!paused)setPaused(true);});
   window.addEventListener('resize',()=>{
