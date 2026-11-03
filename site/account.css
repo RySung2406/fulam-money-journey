@@ -659,3 +659,36 @@ to{opacity:1;transform:translateY(0)}
   .rewards-list{gap:8px}
   .rewards-list li{padding:14px}
 }
+
+/* Compact mobile sign-in, with room for translated labels and long addresses. */
+@media (max-width:760px) {
+  .account-page .container { width:calc(100% - 32px); }
+  .account-header { min-height:80px; padding-block:12px; gap:8px; }
+  .account-brand { flex:1; font-size:18px; line-height:1.3; letter-spacing:0; gap:8px; }
+  .account-brand > span:last-child { overflow-wrap:anywhere; }
+  .account-brand small { font-size:10px; line-height:1.4; margin-top:4px; max-width:none; }
+  .account-brand-mark { flex:0 0 32px; width:32px; height:32px; }
+  .account-brand-mark svg { width:24px; }
+  html[lang=en] .account-brand { font-size:16px; }
+  html[lang=en] .account-brand small { display:none; }
+  .account-page .account-back { max-width:56px; min-height:44px; font-size:12px; line-height:1.4; white-space:normal; text-align:center; }
+  .account-back > span { display:none; }
+  .account-main { padding-top:8px; }
+  .account-intro { padding:24px; }
+  .account-intro h1 { font-size:30px; line-height:1.3; margin:14px 0; }
+  html[lang=en] .account-intro h1 { font-size:27px; letter-spacing:0; }
+  .account-intro > p { font-size:15px; line-height:1.65; }
+  .auth-panel { padding:26px 24px; }
+  .auth-panel-top { margin-bottom:22px; gap:8px; }
+  .auth-panel-top > .account-eyebrow { font-size:12px; }
+  .secure-note { margin-top:0; font-size:13px; }
+  .auth-panel h2 { font-size:29px; }
+  .auth-intro { margin:14px 0 22px; }
+  .field-hint { overflow-wrap:anywhere; }
+  .account-primary svg { flex-shrink:0; }
+  .resend-row { flex-wrap:wrap; gap:4px 16px; }
+  .onboarding-step-button { overflow-wrap:anywhere; line-height:1.4; }
+  .dashboard-nav { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+  .dashboard-nav a { justify-content:center; text-align:center; padding:10px 6px; font-size:14px; line-height:1.4; }
+  .posttest-entry { flex-wrap:wrap; }
+}
