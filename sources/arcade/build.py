@@ -5,3 +5,6 @@ target.mkdir(exist_ok=True)
 for name in ['journey.js', 'journey.css']:
     (target / name).write_text((root / name).read_text(encoding='utf-8'), encoding='utf-8')
 print('Built shared arcade progression')
+
+import shutil
+shutil.copytree(root / "scenes", target / "scenes", dirs_exist_ok=True)

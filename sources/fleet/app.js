@@ -180,7 +180,7 @@
     else toast(game.shieldCooldown > 0 ? 'shieldWait' : 'noCash'); updateHUD();
   }
   function updateHUD() {
-    const active = phase === 'play' && (!paused || shopOpen), s = game;
+    const active = phase === 'play' && (!paused || shopOpen), s = game;if(journey&&$('swap-weapon')){put('swap-weapon','Lv.'+(game.evolution.weapon+1)+' '+journey.name(game.evolution.weapon)+'\n'+journey.text('射速','Rate')+game.evolution.rate+' · '+journey.text('彈道','Spread')+game.evolution.trajectory);$('swap-weapon').title=journey.name(game.evolution.weapon);}
     const hpHTML = `${s.hero.hp}<span>/ ${s.hero.maxHp}</span>`; if ($('hp').innerHTML !== hpHTML) $('hp').innerHTML = hpHTML;
     $('hp-bar').style.width = `${s.hero.hp / s.hero.maxHp * 100}%`; $('hp-bar').style.background = s.hero.hp < 30 ? 'var(--danger)' : 'var(--aqua)';
     put('cash', s.cash.toLocaleString('en')); put('score', s.score.toLocaleString('en')); put('best', (journey?journey.best():(best?.score || 0)).toLocaleString('en'));
@@ -255,14 +255,14 @@
     const p = e.position;
     if (e.type === 'ship') {
       const scale = e.kind === 'boss' ? 2.3 : e.kind === 'debt' ? 1.3 : e.kind === 'inflation' ? 1.1 : e.kind === 'scam' ? .8 : .87;
-      ship(p.x,p.y,Math.PI/2,scale,e.kind,time,e.flash);if(e.kind==='boss'&&e.strategy.remainingBeforeAttack<.65){ctx.strokeStyle='#ffdb9c';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,55+Math.sin(time*14)*3,0,Math.PI*2);ctx.stroke();}
+      ship(p.x,p.y,Math.PI/2,scale,e.kind,time,e.flash);if(e.elite){ctx.strokeStyle='#ffb37e';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,scale*29,0,Math.PI*2);ctx.stroke();}if(e.kind==='boss'&&e.strategy.remainingBeforeAttack<.65){ctx.strokeStyle='#ffdb9c';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,55+Math.sin(time*14)*3,0,Math.PI*2);ctx.stroke();}
       if (e.hp < e.maxHp) { const w=e.kind==='boss'?80:35; ctx.fillStyle='#09242f';ctx.fillRect(p.x-w/2,p.y-scale*35,w,3);ctx.fillStyle=COLORS[e.kind];ctx.fillRect(p.x-w/2,p.y-scale*35,w*Math.max(0,e.hp/e.maxHp),3); }
       if (e.kind !== 'boss') drawLabel(t(`label_${e.kind}`),p.x,p.y+scale*34,COLORS[e.kind],13);
     } else if (e.type === 'torpedo') {
       ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r); const friendly=e.collision.group===C.FRIEND;
-      const color=friendly?(e.style==='escort'?'#9df1de':'#ffe1a1'):e.style==='debt'?'#d5acf1':'#ff9b84';
+      const color=friendly?(e.color||(e.style==='escort'?'#9df1de':'#ffe1a1')):e.style==='debt'?'#d5acf1':'#ff9b84';
       ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=e.style==='beam'?3:2;
-      if (e.style==='orb') { ctx.fillStyle='#e9c87b25';ctx.beginPath();ctx.arc(0,0,16,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ffe1a1';ctx.beginPath();ctx.arc(0,0,8,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff7e4';ctx.beginPath();ctx.arc(2,-2,3,0,Math.PI*2);ctx.fill(); }
+      if(e.style==='missile'){ctx.beginPath();ctx.moveTo(12,0);ctx.lineTo(-7,-4);ctx.lineTo(-4,0);ctx.lineTo(-7,4);ctx.closePath();ctx.fill();ctx.fillStyle='#fff5c9';ctx.fillRect(-12,-1,6,2);}else if(e.style==='arc'){ctx.beginPath();ctx.moveTo(-16,-4);ctx.lineTo(-5,4);ctx.lineTo(2,-4);ctx.lineTo(12,0);ctx.stroke();}else if (e.style==='orb') { ctx.fillStyle='#e9c87b25';ctx.beginPath();ctx.arc(0,0,16,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ffe1a1';ctx.beginPath();ctx.arc(0,0,8,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff7e4';ctx.beginPath();ctx.arc(2,-2,3,0,Math.PI*2);ctx.fill(); }
       else { ctx.globalAlpha=.3;ctx.beginPath();ctx.moveTo(-17,0);ctx.lineTo(0,0);ctx.stroke();ctx.globalAlpha=1;ctx.beginPath();ctx.moveTo(-4,0);ctx.lineTo(friendly?7:3,0);ctx.stroke();if(!friendly){ctx.beginPath();ctx.arc(0,0,e.collision.radius,0,Math.PI*2);ctx.stroke();} }
       ctx.restore();
     } else if (e.type === 'coin') {
@@ -295,7 +295,7 @@
   }
   function draw(time, dt) {
     ctx.setTransform(canvas.width/C.W,0,0,canvas.height/C.H,0,0);ctx.clearRect(0,0,C.W,C.H);
-    drawOcean(reduced.matches?0:time);ctx.save();if(shake>0){ctx.translate((Math.random()-.5)*6,(Math.random()-.5)*6);shake=Math.max(0,shake-dt);}
+    if(journey)window.FuLamJourney.drawScene(ctx,C.W,C.H,'fleet',game.wave,time,reduced.matches);else drawOcean(reduced.matches?0:time);ctx.save();if(shake>0){ctx.translate((Math.random()-.5)*6,(Math.random()-.5)*6);shake=Math.max(0,shake-dt);}
     if(phase==='menu'){
       ship(70,180,.8,1.1,'inflation',time);ship(370,230,2.4,.85,'scam',time);ship(310,80,Math.PI/2,.9,'fee',time);ship(C.W/2,C.H-100,-Math.PI/2,1.2,'player',time);
     }else{
@@ -304,7 +304,7 @@
       if(game.shield>0){ctx.strokeStyle='#9becd9aa';ctx.lineWidth=2;ctx.fillStyle='#78dfc31b';ctx.beginPath();ctx.arc(h.x,h.y,34+Math.sin(time*5)*2,0,Math.PI*2);ctx.fill();ctx.stroke();}
       if(phase!=='over'&&phase!=='sinking'){
         ctx.globalAlpha=game.invulnerable>0&&Math.floor(game.time*12)%2===0?.5:1;
-        ship(h.x,h.y,h.r,1.08,'player',time);ctx.globalAlpha=1;
+        ship(h.x,h.y,h.r,1.08,'player',time);if(journey){const p=window.FuLamJourney.weaponProfile('fleet',game.evolution);ctx.fillStyle=p.color;for(let i=0;i<Math.min(6,p.tier);i++)ctx.fillRect(h.x+(i%2?1:-1)*(12+Math.floor(i/2)*6),h.y-15-Math.floor(i/2)*3,3,16);ctx.strokeStyle=p.color;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(h.x-24,h.y+7);ctx.lineTo(h.x,h.y-24);ctx.lineTo(h.x+24,h.y+7);ctx.stroke();}ctx.globalAlpha=1;
         if(game.escort)for(const side of game.escort===1?[-1]:[-1,1])ship(Math.max(12,Math.min(C.W-12,h.x+side*32)),h.y+18,h.r,.43,'escort',time);
       }
       for(const e of game.entities) if(e.type==='torpedo')drawEntity(e,time);
@@ -343,7 +343,7 @@
     if(keyMap[e.code]&&phase==='play'&&!paused){e.preventDefault();pressed.add(keyMap[e.code]);pointerTarget=null;}
     if(e.repeat)return;
     if(e.code==='KeyP'||e.code==='Escape'){if(phase==='play'){e.preventDefault();setPaused(!paused);}}
-    if(e.code==='KeyQ')shield();if(e.code==='KeyE'&&phase==='play'&&!paused)journey?.swap();
+    if(e.code==='KeyQ')shield();if(e.code==='KeyE'&&phase==='play'&&!paused)openWorkshop();
     const kind={Digit1:'weapon',Digit2:'escort',Digit3:'reserve',Digit4:'repair'}[e.code];if(kind)purchase(kind);
   });
   window.addEventListener('keyup',e=>{if(keyMap[e.code])pressed.delete(keyMap[e.code]);});
@@ -387,19 +387,18 @@
   if(journey){
     const exit=document.createElement('button');exit.id='exit-game';exit.className='journey-exit';$('pause').parentNode.append(exit);bindAction(exit,()=>{if(phase==='play'){journey.run.finish('exit');game.running=false;paused=false;shopOpen=false;$('combat-layout').classList.remove('workshop-open');phase='over';clearInput();showOverlay('end-menu');renderEnd();}else returnMenu();});
     const settings=document.createElement('div');settings.id='journey-settings';$('menu').insertBefore(settings,$('start'));$('menu').querySelector('.modes').hidden=true;
-    const swap=document.createElement('button');swap.id='swap-weapon';swap.className='journey-swap';$('shield').parentNode.insertBefore(swap,$('shield'));bindAction(swap,()=>{if(phase==='play'&&!paused)journey.swap();});
-    const setup=()=>{journey.settings(settings,d=>chooseMode(d==='intermediate'?'booth':d==='challenge'?'storm':'standard'));swap.innerHTML=journey.text('⇄ 換武器 <kbd>E</kbd>','⇄ Switch <kbd>E</kbd>');exit.textContent=journey.text('退出','Exit');$('change-mode').textContent=journey.text('返回選單','Back to menu');$('change-mode').classList.add('journey-exit');};setup();
+    const swap=document.createElement('button');swap.id='swap-weapon';swap.className='journey-swap';$('shield').parentNode.insertBefore(swap,$('shield'));bindAction(swap,()=>{if(phase==='play'&&!paused)openWorkshop();});
+    const setup=()=>{journey.settings(settings,d=>chooseMode(d==='intermediate'?'booth':d==='challenge'?'storm':'standard'));swap.innerHTML=journey.text('武器 Lv.1 · E','Weapon Lv.1 · E');exit.textContent=journey.text('退出','Exit');$('change-mode').textContent=journey.text('返回選單','Back to menu');$('change-mode').classList.add('journey-exit');};setup();
     const originalLanguage=setLanguage;setLanguage=function(next){originalLanguage(next);setup();};
     journey.onIntermission=()=>{paused=true;clearInput();soundscape.play('upgrade');};
     journey.onChoice=(kind,r)=>{
-      if(kind==='power'){game.weapon=Math.min(5,game.weapon+1);}
-      if(kind==='support'){game.hero.hp=Math.min(game.hero.maxHp,game.hero.hp+25);game.escort=Math.min(3,game.escort+1);}
-      game.power=1+(r.wave-1)*.10+r.power*.18+game.paidPower;game.weaponKind=r.weapon;game.wave=r.wave;game.waveKills=0;game.bossSpawned=false;game.spawnTime=.5;
+      game.evolution={weapon:r.weapon,rate:r.rate,trajectory:r.trajectory};game.weaponKind=Math.min(11,r.weapon);
+      game.power=window.FuLamJourney.weaponProfile('fleet',r).damage/16*(1+game.paidPower);game.hero.hp=Math.min(game.hero.maxHp,game.hero.hp+12);
+      game.wave=r.wave;game.waveKills=0;game.bossSpawned=false;game.spawnTime=.5;
       game.entities=game.entities.filter(e=>e.type==='coin');game.raised=[];game.invulnerable=1.5;paused=false;accumulator=0;banner('waveBanner',r.wave);updateHUD();
     };
-    journey.onSwap=kind=>{game.weaponKind=kind;soundscape.play('upgrade');};
     journey.onEnd=()=>{game.running=false;paused=false;phase='over';clearInput();showOverlay('end-menu');renderEnd();};
-    window.FuLamFleet={getState:()=>({phase,paused,score:game.score,hp:game.hero.hp,maxHp:game.hero.maxHp,mode:game.mode,wave:game.wave,kills:game.kills,weaponKind:game.weaponKind,weapon:game.weapon,power:game.power,shield:game.shield,shots:game.shots,run:journey.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,phase:journey.run.phase,active:journey.run.active,total:journey.run.total,wave:journey.run.wave,choiceTime:journey.run.choiceTime,reason:journey.run.reason}:null})};
+    window.FuLamFleet={getState:()=>({phase,paused,hero:{x:game.hero.position.x,y:game.hero.position.y},threats:game.entities.filter(e=>!e.dead&&((e.type==='torpedo'&&e.collision.group===C.ENEMY)||e.type==='ship')).map(e=>({x:e.position.x,y:e.position.y,vx:e.type==='ship'?0:e.velocity.dx*e.velocity.speed,vy:e.type==='ship'?e.velocity.speed:e.velocity.dy*e.velocity.speed,r:e.collision.radius,type:e.type,elite:!!e.elite,hp:e.hp,kind:e.kind})),score:game.score,hp:game.hero.hp,maxHp:game.hero.maxHp,mode:game.mode,wave:game.wave,kills:game.kills,evolution:{...game.evolution},weaponKind:game.weaponKind,weapon:game.weapon,power:game.power,shield:game.shield,shots:game.shots,run:journey.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,phase:journey.run.phase,active:journey.run.active,total:journey.run.total,wave:journey.run.wave,weapon:journey.run.weapon,rate:journey.run.rate,trajectory:journey.run.trajectory,choiceTime:journey.run.choiceTime,reason:journey.run.reason}:null})};
   }
   if(journey)document.body.classList.add('fleet-menu');setLanguage(lang);sizeCanvas();requestAnimationFrame(frame);
 })();

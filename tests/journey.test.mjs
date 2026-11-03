@@ -8,6 +8,30 @@ vm.runInContext(shared,context);
 vm.runInContext(fs.readFileSync(new URL('../sources/fleet/core.js',import.meta.url),'utf8'),context);
 const {Run,readBoard,saveBoard}=context.FuLamJourney,C=context.FleetCore;
 const tick=(r,seconds,playing=true)=>{for(let i=0;i<Math.round(seconds*60);i++)r.tick(1/60,playing);};
+test('Every permanent upgrade improves output; late upgrades remain useful and finite',()=>{
+ const profile=context.FuLamJourney.weaponProfile;
+ const output=p=>p.damage*(p.count===2?1.3:p.count%2?1+(p.count-1)*.55:p.count*.55)/p.interval;
+ for(const game of ['fishing','fleet'])for(const level of [0,1,5,11,20,60]){
+  const r={weapon:level,rate:level,trajectory:level},before=profile(game,r);
+  for(const kind of ['weapon','rate','trajectory']){const after=profile(game,{...r,[kind]:level+1});assert(output(after)>output(before),`${game} ${kind} ${level}`);assert(Number.isFinite(output(after)));assert(after.count<=7);assert(after.pierce<=12);}
+ }
+});
+test('Enemy pressure rises after upgrades; bosses remain multi-second fights even with all weapon upgrades',()=>{
+ let previous=0;
+ for(const wave of [3,6,9,12]){
+  const s=C.createState({arcade:true,mode:'booth',seed:1});s.wave=wave;
+  const boss=C.spawnEnemy(s,'boss'),p=context.FuLamJourney.weaponProfile('fleet',{weapon:wave-1});
+  const idealSeconds=boss.maxHp/(p.damage*1.3/p.interval);
+  assert(idealSeconds>=9,`wave ${wave}: ${idealSeconds}s`);assert(boss.maxHp>previous);previous=boss.maxHp;
+  const enemies=Array.from({length:8},()=>C.spawnEnemy(s,'fee'));assert(enemies.some(e=>e.elite));assert(enemies.find(e=>e.elite).maxHp>enemies.find(e=>!e.elite).maxHp);
+ }
+});
+test('Each round scene has a local original image and the five topic scenes cycle in order',()=>{
+ for(const game of ['knife','fishing','fleet']){
+  const names=new Set();for(let wave=1;wave<=5;wave++){const s=context.FuLamJourney.sceneInfo(game,wave);names.add(s.name[0]);assert(s.lesson[0].length>10);assert(fs.existsSync(new URL(`../site/arcade/scenes/${game}-${s.index}.svg`,import.meta.url)));}
+  assert.equal(names.size,5);assert.equal(context.FuLamJourney.sceneInfo(game,6).index,0);
+ }
+});
 test('Every Booth game forces intermediate difficulty and a reproducible seed; public runs keep two difficulties',()=>{
  for(const game of ['knife','fishing','fleet']){
   const a=new Run(game,'booth','challenge',99),b=new Run(game,'booth','standard',222);
@@ -15,28 +39,29 @@ test('Every Booth game forces intermediate difficulty and a reproducible seed; p
   assert.deepEqual(Array.from({length:30},()=>a.random()),Array.from({length:30},()=>b.random()));
   assert.equal(new Run(game,'web','challenge').difficulty,'challenge');
   assert.equal(new Run(game,'web','intermediate').difficulty,'standard');
-  assert.notEqual(a.key(),a.key().replace('booth-v4','booth-v3').replace('intermediate','standard'));
+  assert.notEqual(a.key(),a.key().replace('booth-v5','booth-v4'));
  }
 });
 test('Thirty active seconds opens one choice and freezes the active play clock',()=>{
  const r=new Run('fishing');tick(r,30.1);assert.equal(r.phase,'choice');assert.equal(r.wave,1);const t=r.active;
  tick(r,5);assert.equal(r.active,t);assert.equal(r.roundTime,30);assert(r.choiceTime<4);
 });
-test('An upgrade applies once and switching retains common power with a cooldown',()=>{
- const r=new Run('fleet');tick(r,30.1);assert(r.choose('power'));assert(!r.choose('power'));assert.equal(r.power,1);assert.equal(r.wave,2);
- assert(r.swap());assert.equal(r.weapon,1);assert.equal(r.power,1);assert(!r.swap());tick(r,3.1);assert(r.swap());assert.equal(r.weapon,0);
+test('An upgrade applies once; rate, evolution and trajectory accumulate without switching',()=>{
+ const r=new Run('fleet');tick(r,30.1);assert(r.choose('weapon'));assert(!r.choose('weapon'));assert.equal(r.weapon,1);assert.equal(r.wave,2);
+ tick(r,30.1);assert(r.choose('rate'));tick(r,30.1);assert(r.choose('trajectory'));
+ assert.deepEqual([r.weapon,r.rate,r.trajectory],[1,1,1]);assert.equal(typeof r.swap,'undefined');
 });
-test('Every offered aircraft and fishing weapon can be reached; knives have three',()=>{
- for(const game of ['fishing','fleet','knife']){const r=new Run(game);const seen=new Set([0]);for(let i=0;i<4;i++){if(game==='knife')r.completeRound();else tick(r,30.1);assert(r.choose('weapon'));seen.add(r.weapon);}assert.equal(seen.size,game==='knife'?3:4);}
+test('All games evolve through twelve stages and continue growing beyond the final form',()=>{
+ for(const game of ['fishing','fleet','knife']){const r=new Run(game);for(let i=0;i<14;i++){r.completeRound();assert(r.choose('weapon'));assert.equal(r.weapon,i+1);}assert.equal(r.wave,15);}
 });
 test('A paused public run cannot advance rounds or time out, even after an hour',()=>{
  const r=new Run('knife');r.tick(3600,false);assert.equal(r.phase,'play');assert.equal(r.active,0);assert.equal(r.wave,1);
 });
 test('Booth wall time expires through pause and upgrade, exactly once',()=>{
- for(const inChoice of [false,true]){const r=new Run('fleet','booth');if(inChoice)tick(r,30.1);r.tick(180-r.total,false);assert.equal(r.phase,'over');assert.equal(r.reason,'time');assert.equal(r.total,180);assert.equal(r.finish('defeat'),false);assert.equal(r.reason,'time');assert.equal(r.tick(10),null);assert(!r.choose('power'));assert(!r.swap());}
+ for(const inChoice of [false,true]){const r=new Run('fleet','booth');if(inChoice)tick(r,30.1);r.tick(180-r.total,false);assert.equal(r.phase,'over');assert.equal(r.reason,'time');assert.equal(r.total,180);assert.equal(r.finish('defeat'),false);assert.equal(r.reason,'time');assert.equal(r.tick(10),null);assert(!r.choose('weapon'));}
 });
 test('Public challenges continue beyond six rounds with bounded choice history',()=>{
- const r=new Run('fleet','web','challenge');for(let i=0;i<110;i++){tick(r,30.1);assert(r.choose('power'));}assert.equal(r.wave,111);assert.equal(r.phase,'play');assert.equal(r.choices.length,100);
+ const r=new Run('fleet','web','challenge');for(let i=0;i<110;i++){tick(r,30.1);assert(r.choose('weapon'));}assert.equal(r.wave,111);assert.equal(r.phase,'play');assert.equal(r.choices.length,100);
 });
 test('Invalid clock deltas never corrupt a score run',()=>{const r=new Run('fishing');for(const dt of [NaN,Infinity,-1,0])r.tick(dt);assert.equal(r.total,0);assert.equal(r.active,0);});
 test('Record keys separate games, scenes, difficulty, topics and language',()=>{
@@ -53,8 +78,9 @@ test('Blocked storage and malformed records do not crash results',()=>{
  assert.equal(readBoard({getItem:()=>'{broken'},'x').length,0);
  assert.equal(readBoard({getItem:()=>JSON.stringify([{score:'<script>',wave:1,seconds:1},{score:1,wave:-1,seconds:2},{score:7,wave:2,seconds:2}])},'x').length,1);
 });
-test('New aircraft fire straight, lasers pierce and missiles home; weapon switching retains strength',()=>{
- for(let kind=0;kind<4;kind++){const s=C.createState({arcade:true,seed:1});s.spawnTime=100;s.weaponKind=kind;s.power=2;C.tick(s,.05);C.tick(s,.05);C.tick(s,.05);const bullets=s.entities.filter(e=>e.type==='torpedo');assert(bullets.length>0);assert(bullets.every(e=>e.damage>=18));if(kind===2)assert(bullets.some(e=>e.pierce===4));if(kind===3)assert(bullets.every(e=>e.homing===3));assert.equal(s.hero.position.r,-Math.PI/2);}
+test('Aircraft evolution changes actual projectiles, with increasing damage and retained fire-rate/trajectory upgrades',()=>{
+ let previousDamage=0;
+ for(let weapon=0;weapon<12;weapon++){const s=C.createState({arcade:true,seed:1});s.spawnTime=100;s.evolution={weapon,rate:2,trajectory:2};C.tick(s,.05);C.tick(s,.05);C.tick(s,.05);const bullets=s.entities.filter(e=>e.type==='torpedo');assert(bullets.length>=3);const damage=bullets.reduce((sum,e)=>sum+e.damage,0);assert(damage>previousDamage);previousDamage=damage;if(weapon>=2)assert(bullets.every(e=>e.pierce>0));if(weapon>=4)assert(bullets.every(e=>e.blast>0));if(weapon>=8)assert(bullets.every(e=>e.homing>0));if(weapon>=10)assert(bullets.every(e=>e.chain>0));assert.equal(s.hero.position.r,-Math.PI/2);}
 });
 test('Arcade round control replaces kill farming and bosses occur every third wave',()=>{
  const s=C.createState({arcade:true,seed:3});s.waveKills=999;C.tick(s,.016);assert.equal(s.wave,1);s.wave=3;C.tick(s,.016);assert.equal(s.entities.filter(e=>e.kind==='boss').length,1);C.tick(s,.016);assert.equal(s.entities.filter(e=>e.kind==='boss').length,1);

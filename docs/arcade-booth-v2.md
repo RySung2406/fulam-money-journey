@@ -1,15 +1,15 @@
-# FuLam arcade and Booth — v4 intermediate balance
+# FuLam arcade and Booth — v5 cumulative evolution
 
-Requested by Ryan on 2026-11-04. Updated after Ryan’s 2026-11-04 feedback on play area, onboarding, controls, modes and answer size. Three high-score games share two public difficulties (Standard and Challenge) and a separate Booth preset. `/booth/` links to each activity. `/fleet/` remains compatible with existing links and now hosts Wealth Wings, an aircraft shooter.
+Requested by Ryan on 2026-11-04. Updated after Ryan’s feedback on cumulative weapon upgrades, enemy pressure, clearer Slice abilities and meaningful round scenes. Three high-score games share two public difficulties (Standard and Challenge) and a separate Booth preset. `/booth/` links to each activity. `/fleet/` remains compatible with existing links and now hosts Wealth Wings, an aircraft shooter.
 
 ## Rules and storage
 
-- Web runs have no total time limit. Catch and Wings offer an eight-second upgrade choice every 30 active seconds. One Slice offers it after all 20 choices in a stage have been resolved, rather than on a timer. The choices are power, the next weapon, or support; power is applied after eight seconds without a selection. Combat pauses during choices.
+- Web runs have no total time limit. Catch and Wings offer an eight-second upgrade choice every 30 active seconds. One Slice offers it after all 20 choices in a stage have been resolved, rather than on a timer. Catch and Wings offer fire rate, weapon evolution, or projectile coverage. Slice offers blade score, Focus duration, or a consumable mistake guard. Weapon/blade evolution is applied after eight seconds without a selection. Combat pauses during choices.
 - Booth fixes an intermediate difficulty between Standard and Challenge, with a reproducible seed. It ends at 180 elapsed seconds after starting, including pauses, intermissions and time spent away from the page. The visual result appears on the next animation frame after a hidden page returns. Defeat can finish earlier.
-- Common upgrade strength survives weapon switches. Switching has a three-second cooldown. One Slice has three blades; Catch and Wings each have four weapon families.
+- There is no weapon switching. Rate, weapon and trajectory levels accumulate independently for the current run. Catch and Wings have twelve named evolution stages, with further stat upgrades beyond stage twelve. One Slice has one evolving blade, a charged Focus skill and explicit single-use guard charges. A new run resets all upgrades.
 - Catch drains energy, replenishes it on catches, and ends at zero. All six skills are visible and independently touchable while firing. Net and freeze start unlocked; rapid fire, double coins, bomb and lure unlock in rounds 2, 3, 4 and 5. Buttons show shortcuts and cooldowns.
 - Wings uses time-based rounds, a boss every third round and a wider second-phase boss pattern. Cash workshop upgrades, shield reserves and paid repairs coexist with free round choices. Paid weapon strength is retained across later free upgrades.
-- One Slice starts at the first topic, in both modes. Every stage draws its 20 existing choices once (10 correct, 10 decoys); five topics rotate in order. English and Chinese have matching option IDs. Answer text is 17px on phones and 18px on desktop. One Slice starts with five hearts on Standard, four in Booth and three on Challenge. Wrong cuts cost one heart. Five missed correct targets on Standard, four in Booth, or three on Challenge also cost one heart. Recovery is capped at the initial heart count. Topics change only between rounds; old targets are removed first. Precision changes the hit area; Combo increases correct-score rewards; Focus charges a manual slow-time skill.
+- One Slice starts at the first topic, in both modes. Every stage draws its 20 existing choices once (10 correct, 10 decoys); five topics rotate in order. English and Chinese have matching option IDs. Answer text is 17px on phones and 18px on desktop. One Slice starts with five hearts on Standard, four in Booth and three on Challenge. Wrong cuts cost one heart. Five missed correct targets on Standard, four in Booth, or three on Challenge also cost one heart. Recovery is capped at the initial heart count. Topics change only between rounds; old targets are removed first. Each blade upgrade adds 25% of the original correct-score reward. Focus is available from the start: correct cuts charge it, and each Focus upgrade extends its duration by 0.6 seconds and increases charging. Each guard choice restores one heart (up to the mode cap) and grants one consumable charge that blocks one wrong-cut heart loss; wrong answers still lose points and do not count as correct.
 - Ranking uses integer score. Separate browser-local top-ten boards are keyed by version, game, setting, difficulty, and (for One Slice) fixed starting topic and starting language. Existing legacy record keys are retained, not migrated into incomparable new boards. These are unverified local scores, not a server leaderboard.
 - No login, participant database, questionnaire or financial account is involved. Learning notes describe actual choices when available. Gameplay scores are not assessment results or investment returns.
 - Booth results include locally hosted QR SVGs linking to the corresponding public web game. Scanning starts a fresh run, not a transferred session. QR production provenance and hashes are in `sources/arcade/qr-assets.json`.
@@ -26,7 +26,7 @@ npm run bundle
 git diff --check
 ```
 
-The shared source is `sources/arcade/journey.js` and `journey.css`. Builds embed both into the two Canvas games and copy them into `site/arcade` for One Slice. The original gameplay cores retain their fallback rules when the progression runtime is absent; old regression suites cover these paths. `tests/journey.test.mjs` covers the new clocks, upgrade lifecycle, weapon families, storage partitions and aircraft changes. Browser checks exercise the assembled pages.
+The shared source is `sources/arcade/journey.js` and `journey.css`. Builds embed both into the two Canvas games and copy them into `site/arcade` for One Slice. The original gameplay cores retain their fallback rules when the progression runtime is absent; old regression suites cover these paths. `tests/journey.test.mjs` covers the new clocks, upgrade lifecycle, projectile evolution, late-stage enemy pressure, scene assets, storage partitions and aircraft changes. Browser checks exercise the assembled pages.
 
 ## Browser verification
 
@@ -36,7 +36,7 @@ Checked Chinese and English at 320×568, 390×844, 740×320 and 1280×900. Both 
 
 Balance is an initial playable version. Real booth play is needed to tune late-run difficulty, average session length and reading time. Sound assets are the existing licensed Kenney selection, with original vector aircraft, clouds and interface additions.
 
-## v3 interface
+## Previous v3 interface (historical; switching superseded in v5)
 
 - Every new run opens a controls guide; the run and Booth clock start only on its Start button. In short views, instructions scroll inside the card while Start and Back remain visible.
 - Standard and Challenge are two distinct cards. Booth is a separate violet button; selecting a public difficulty exits Booth selection.
@@ -47,7 +47,7 @@ Balance is an initial playable version. Real booth play is needed to tune late-r
 
 The v3 revision passed 120 repository tests and syntax/bundle checks. Mounted Browser checks covered 30 Chinese/English/game/viewport combinations (320, 390, 430, 740 landscape and 1280 desktop); short-view menus/guides were then rechecked after compact fixes. Two full Slice stages each resolved exactly 20 distinct options before transitioning, and E/Q blade skills worked. Catch skills were exercised through round 5, including locked shortcuts before unlock. Wings fullscreen hangar paused/resumed correctly, and its Booth clock expired while paused. Simulated two-finger aim/move plus net/shield continued firing after lifting only the skill finger. This remains browser QA, not iPhone hardware testing.
 
-## v4 balance and readability
+## v4 balance and readability (preserved base settings)
 
 Ryan requested slightly larger bags/numbers and a Booth difficulty between the two public choices. There is still no third public difficulty button. Booth menus, guides and status bars identify the intermediate preset.
 
@@ -68,3 +68,33 @@ The existing round-based growth is applied on top of these base values. Integer 
 Phone bag art grew from 100px to 112px wide; answer cards from 138px to 148px (140px on screens below 351px). Short landscape art grew from 65px to 72px. Phone score grew from 25px to 28px and the countdown from 20px to 23px. Launch selection samples more of the flight and measures rectangular label separation to reduce covering text. Records and QR entry links use `booth-v4`; prior records remain under their old keys.
 
 Validation: 122 repository tests and syntax/bundle checks passed. Mounted Browser checks covered 24 game/language/viewport combinations at 320×568, 390×844, 740×320 and 1280×900: no horizontal overflow, clipped active labels or inaccessible exit/start controls. Actual mode starts confirmed 5/4/3 hearts, 100/88/75 armour, and ten-second idle Catch energy of about 91.5/89.5/87.5. Slice completed two 20-choice stages, lost one heart after four deliberate misses, and recovered to a cap of four. Both Canvas games advanced to round two, applied power and a weapon swap, and activated net/shield. All three Booth games expired at 180 seconds through pause and restarted with reset score/loadout. Balance still needs real participant play; these are browser checks, not iPhone hardware testing.
+
+
+## v5 evolution, pressure and scenes
+
+Requested by Ryan on 2026-11-04: upgrade weapons instead of switching them; retain fire-rate and trajectory choices; more visible stages; enemies must grow alongside the player; explain Slice upgrades; give round backgrounds a purpose.
+
+- Catch and Wings evolve through single/twin guns, piercing, heavy piercing, plasma, burst plasma, beam/laser, focused beam, homing, cluster, arc and aurora stages. Colour, projectile form, piercing, blast, tracking and chaining change with milestones. Each upgrade is retained for the current run. Rate and spread still increase damage after their visual/performance limits are reached.
+- Three upgrade cards show before/after bursts per second, total direct damage per burst, or projectile count. Total burst damage assumes every projectile hits; it excludes extra blast, chain and piercing hits. It is not an enemy-specific damage-per-second guarantee. Number keys 1-3 select only the round upgrade and do not also spend hangar cash or trigger a skill.
+- Paused upgrade cards cover the viewport, including fullscreen. Their battlefield is raised above neighbouring controls to keep every choice reachable. The narrow Slice footer gives Focus its own full-width grid cell without clipping.
+- Each round restores 12 energy/armour to the two combat games. Enemy health, movement, density and projectile speed rise; elites begin at round three, and bosses arrive every third round with an additional health factor and wider second-phase patterns. Round transitions clear remaining enemies. Surviving a boss round does not imply the boss was defeated.
+- Slice keeps its sequential five-topic cycle and twenty distinct choices per stage. Blade score and Focus duration are lasting upgrades for the current run; guard charges are consumed. The guide, HUD and choice card explain these differences. No questionnaire or assessment items were changed.
+- Fifteen original SVG backgrounds provide five scenes per game: harbour/islands/storm/ruins/dawn, bay/islands/storm/city/dawn, and workshop/garden/lighthouse/bridge/observatory. Palettes, silhouettes and scenery change each round and repeat every five rounds. Short transitions connect tools, diversification, reserves, opportunity cost and checking information to the game choices. The asset source and published copies are built together; existing Kenney audio and licensed icons are reused.
+- Score and QR entry versions are `booth-v5`. Earlier scores remain stored under their original keys.
+
+### Balancing model and limits
+
+Let `w`, `r`, `t` be the number of weapon, rate and trajectory upgrades, and `n = round - 1`. These are dimensionless counts.
+
+- Base direct damage in points: `d0 * (1 + 0.35w + 0.04w^2)`, where `d0` is 1.8 for Catch and 16 for Wings. Extra damage is applied after rate 18 and trajectory 5 so capped visual upgrades remain useful.
+- Firing interval in seconds: `interval0 / (1 + 0.18 * min(18, r))`, with `interval0` 0.22 for Catch and 0.20 for Wings. Projectile count caps at seven. Two lanes deal 65% each; later extra lanes deal 55% of the central shot. Piercing, splash and homing are additional effects.
+- Shared enemy health multiplier: `1 + 0.22n + 0.035n^2`, multiplied by each game's base and difficulty rules. Bosses additionally use `2 + 0.15 * round`; elites receive 1.6 times ordinary health.
+- Shared movement multiplier: `1 + min(0.6, 0.045n)`; density: `1 + min(1.4, 0.09n)`; hostile projectile speed: `1 + min(0.6, 0.035n)`. Limits keep movement readable; health continues growing.
+
+These are initial balancing parameters, not evidence of human completion difficulty. Automated tests check increasing strength and boss durability with explicit ideal-hit assumptions. Skilled aiming, splash, paid upgrades, missed shots and player choices alter actual outcomes. Real booth participants are still needed to tune the difficulty curve.
+
+### v5 verification
+
+126 repository tests passed, including real emitted projectiles across all twelve stages, accumulation beyond visual caps, intermediate Booth ordering, clocks and boss pressure. Actual mounted-Browser inputs completed eleven Catch upgrade choices to round twelve and all three Wings choices to round four. Three Slice stages each resolved exactly twenty choices; the next stage verified an unchanged heart count but a 150-point deduction on a guarded wrong cut, and upgraded Focus lasted approximately 3.1 seconds. These checks used accelerated ordinary animation frames and read-only telemetry, with no production gameplay mutation interface.
+
+Thirty Chinese/English game/viewport combinations were checked at 320x568, 390x844, 430x932, 740x320 and 1280x900. The narrow Focus clipping was fixed and rechecked in both languages. Upgrade cards were separately tested in short portrait and landscape views: all three buttons fit and receive input without another control covering them. Wings upgrades and hangar operate inside fullscreen; keyboard choices do not purchase paid upgrades accidentally. All three Booth games expired through pause and restarted with zero score and reset upgrades. No JavaScript errors were reported in the final browser checks. This remains browser QA, not an iPhone hardware or participant balancing test.

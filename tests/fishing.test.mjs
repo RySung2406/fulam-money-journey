@@ -16,7 +16,7 @@ assert(formations, 'Shipped fish formation script is present');
 assert(!html.includes('window.__qa'), 'Test setup access is never shipped');
 const injectionPoint = '\nresize();syncSound();showWelcome();requestAnimationFrame(loop);';
 assert(source.includes(injectionPoint), 'Game initialization marker is present');
-const instrumented = source.replace(injectionPoint, '\nwindow.__qa={run:code=>eval(code)};' + injectionPoint);
+const instrumented = source.replace('const journey=', 'let journey=').replace(injectionPoint, '\nwindow.__qa={run:code=>eval(code)};' + injectionPoint);
 function harness(width = 1000, height = 600, options = {}) {
   let now = 1, raf = [], writes = 0, rng = 165706, drawTexts = [];
   const nodes = new Map(), storage = new Map(Object.entries(options.storage || {}));
@@ -68,8 +68,19 @@ function harness(width = 1000, height = 600, options = {}) {
   const click=id=>{const e=el(id);assert(!e.disabled,id+' is enabled');assert.equal(typeof e.onclick,'function',id+' has UI handler');e.onclick({preventDefault:no});};
   const pointer=(type,x,y,options={},id='game')=>{for(const fn of el(id).events[type]||[])fn({type,clientX:x,clientY:y,pointerType:'mouse',pointerId:1,button:0,preventDefault:no,...options});};
   const emit=(scope,type,event={})=>{for(const fn of (scope==='window'?winHandlers:docHandlers)[type]||[])fn({preventDefault:no,...event});};
-  return {state:()=>sandbox.FuLamGame.getState(),run:code=>sandbox.__qa.run(code),click,advance,pointer,storage,el,doc,accessedIds,writes:()=>writes,drawTexts:()=>drawTexts,emit,resize:(nextWidth,nextHeight)=>{width=nextWidth;height=nextHeight;sandbox.__qa.run('resize()');}};
+  return {installEvolution:()=>vm.runInContext(fs.readFileSync(new URL('../sources/arcade/journey.js',import.meta.url),'utf8'),sandbox),state:()=>sandbox.FuLamGame.getState(),run:code=>sandbox.__qa.run(code),click,advance,pointer,storage,el,doc,accessedIds,writes:()=>writes,drawTexts:()=>drawTexts,emit,resize:(nextWidth,nextHeight)=>{width=nextWidth;height=nextHeight;sandbox.__qa.run('resize()');}};
 }
+test('Shipped fishing fire supports all twelve evolution stages and preserves trajectory upgrades',()=>{
+ const g=harness();g.click('start');g.installEvolution();
+ g.run("journey={run:{weapon:0,rate:2,trajectory:2,wave:1,phase:'play'},name:()=> 'QA'}");
+ for(let weapon=0;weapon<12;weapon++){
+  g.run(`journey.run.weapon=${weapon};bullets=[];beams=[];fish=[];fire()`);
+  const p=g.run('currentCannon()'),bullets=g.run('bullets'),beams=g.run('beams');
+  assert.equal(p.tier,weapon+1);assert.equal(p.count,weapon?4:3);
+  if(weapon===6||weapon===7){assert.equal(beams.length,p.count);assert.equal(bullets.length,0);}
+  else {assert.equal(bullets.length,p.count);assert(bullets.every(b=>b.damage>0&&Number.isFinite(b.vx)));if(weapon>=8)assert(bullets.every(b=>b.homing>0));if(weapon>=10)assert(bullets.every(b=>b.chain>0));}
+ }
+});
 const near=(a,b,tol=.0001)=>assert(Math.abs(a-b)<tol,`${a} != ${b}`);
 const clone = value => JSON.parse(JSON.stringify(value));
 

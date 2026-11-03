@@ -57,7 +57,7 @@
   function createState({ seed = Date.now(), mode = 'standard', arcade = false } = {}) {
     mode = Object.hasOwn(MODE_RULES, mode) ? mode : 'standard';
     const state = {
-      arcade, weaponKind: 0, power: 1, paidPower: 0,
+      arcade, evolution:{weapon:0,rate:0,trajectory:0}, weaponKind: 0, power: 1, paidPower: 0, spawnCount:0,
       mode, random: rng(seed), time: 0, wave: 1, waveKills: 0,
       goal: 8, kills: 0, score: 0, cash: 35, income: 0, dividend: 0, combo: 0, comboTime: 0,
       weapon: 1, escort: 0, reserve: 0, shield: 0, shieldCooldown: 0, invulnerable: 1.5,
@@ -78,23 +78,25 @@
   }
   function spawnEnemy(s, kind) {
     const r = s.random, spec = SPECS[kind];
-    const growth = 1 + (s.wave - 1) * 0.14;
-    const hp = Math.round(spec.hp * growth * MODE_RULES[s.mode].enemy);
+    const threat=s.arcade&&root.FuLamJourney?root.FuLamJourney.threatProfile(s.wave):null;
+    const growth = threat?threat.health:1+(s.wave-1)*.14;
+    const elite=!!(threat?.elite&&kind!=='boss'&&++s.spawnCount%4===0);
+    const hp = Math.round(spec.hp * growth * MODE_RULES[s.mode].enemy * (elite?1.6:1) * (threat&&kind==='boss'?2+s.wave*.15:1));
     const x = kind === 'boss' ? W / 2 : 38 + r() * (W - 76);
     const entity = createEntity('ship', {
-      kind, position: new Position(x, -65, Math.PI / 2), velocity: new Velocity(spec.speed * MODE_RULES[s.mode].enemy),
+      kind, elite, position: new Position(x, -65, Math.PI / 2), velocity: new Velocity(spec.speed * MODE_RULES[s.mode].enemy*(threat?.speed||1)),
       collision: new Collision(true, true, spec.radius, ENEMY), strategy: new Strategy(kind, spec.attack / Math.min(2, 1 + s.wave * 0.035)),
       hp, maxHp: hp, value: spec.value, age: 0, phase: r() * TAU, originX: x, flash: 0
     });
     s.raised.push(entity); return entity;
   }
-  function fireTorpedo(s, position, angle, group, { damage = 12, speed = 340, radius = 4, homing = 0, pierce = 0, style = 'shell' } = {}) {
+  function fireTorpedo(s, position, angle, group, { damage = 12, speed = 340, radius = 4, homing = 0, pierce = 0, style = 'shell', color = '', blast = 0, chain = 0 } = {}) {
     if (s.entities.length + s.raised.length > 310) return null;
     const entity = createEntity('torpedo', {
       position: new Position(position.x, position.y, angle), previous: { x: position.x, y: position.y },
       velocity: new Velocity(speed, Math.cos(angle), Math.sin(angle)),
       collision: new Collision(true, true, radius, group), strategy: new Strategy(homing ? 'cruise' : 'straight'),
-      ttl: new Ttl(group === FRIEND ? 2.8 : 6), damage, homing, pierce, style, hit: new Set(), grazed: false
+      ttl: new Ttl(group === FRIEND ? 2.8 : 6), damage, homing, pierce, style, color, blast, chain, hit: new Set(), grazed: false
     });
     s.raised.push(entity); return entity;
   }
@@ -126,6 +128,11 @@
     const angle = target ? Math.atan2(target.position.y - s.hero.position.y, target.position.x - s.hero.position.x) : -Math.PI / 2;
     s.hero.position.r = angle;
     const level = s.weapon;
+    if(s.arcade&&root.FuLamJourney){
+      const p=root.FuLamJourney.weaponProfile('fleet',s.evolution);s.hero.position.r=-Math.PI/2;
+      for(const off of p.spread)fireTorpedo(s,{x:s.hero.position.x,y:s.hero.position.y-26},-Math.PI/2+off,FRIEND,{damage:p.damage*(1+s.paidPower)*(p.count===2?.65:off!==0?.55:1),speed:p.speed,radius:p.kind==='orb'?7:p.kind==='missile'?5:3.5,homing:p.homing,pierce:p.pierce,style:p.kind==='orb'?'orb':p.kind==='beam'?'beam':p.kind==='missile'?'missile':p.kind==='arc'?'arc':'shell',color:p.color,blast:p.blast,chain:p.chain});
+      s.shots++;emit(s,'fire');return;
+    }
     if(s.arcade){
       const kind=s.weaponKind, a=-Math.PI/2;
       s.hero.position.r=a;
@@ -156,8 +163,8 @@
   function enemyFire(s, entity) {
     const p = entity.position, h = s.hero.position;
     const a = Math.atan2(h.y - p.y, h.x - p.x);
-    const threat = MODE_RULES[s.mode].bullet * Math.min(1.7, 1 + s.wave * 0.025);
-    let angles = [a];
+    const threat = MODE_RULES[s.mode].bullet * Math.min(1.7, 1 + s.wave * 0.025)*(s.arcade&&root.FuLamJourney?root.FuLamJourney.threatProfile(s.wave).bullet:1);
+    let angles = entity.elite?[a-.16,a,a+.16]:[a];
     if (entity.kind === 'inflation') angles = [a - 0.28, a, a + 0.28];
     if (entity.kind === 'boss') angles = Array.from({ length: 9 }, (_, i) => a + (i - 4) * 0.21);
     if(s.arcade&&entity.kind==='boss'){
@@ -218,7 +225,7 @@
     h.x = clamp(h.x + dx / length * s.hero.velocity.speed * dt, 22, W - 22);
     h.y = clamp(h.y + dy / length * s.hero.velocity.speed * dt, 48, H - 27);
     s.hero.echo = { ...h };
-    s.fireTime -= dt; if (s.fireTime <= 0) { s.fireTime += (s.arcade ? (s.weaponKind===3?.65:s.weaponKind===2?.42:s.weaponKind===1?.32:.20) : Math.max(0.17, 0.34 - s.weapon * 0.025)); weaponFire(s); }
+    s.fireTime -= dt; if (s.fireTime <= 0) { s.fireTime += (s.arcade ? (root.FuLamJourney?root.FuLamJourney.weaponProfile('fleet',s.evolution).interval:(s.weaponKind===3?.65:s.weaponKind===2?.42:s.weaponKind===1?.32:.20)) : Math.max(0.17, 0.34 - s.weapon * 0.025)); weaponFire(s); }
     s.escortTime -= dt; if (s.escortTime <= 0) { s.escortTime += s.escort === 3 ? 0.32 : 0.7; escortFire(s); }
     s.dividend += dt;
     if (s.dividend >= 15) {
@@ -235,7 +242,7 @@
     if (s.wave % (s.arcade ? 3 : 4) === 0 && !s.bossSpawned) { spawnEnemy(s, 'boss'); s.bossSpawned = true; emit(s, 'boss'); }
     s.spawnTime -= dt;
     if (s.spawnTime <= 0) {
-      s.spawnTime += Math.max(0.42, 1.5 - s.wave * 0.1) / MODE_RULES[s.mode].enemy;
+      s.spawnTime += Math.max(0.42, 1.5 - s.wave * 0.1) / MODE_RULES[s.mode].enemy / (s.arcade&&root.FuLamJourney?root.FuLamJourney.threatProfile(s.wave).density:1);
       if (ships.length < Math.min(14, 4 + s.wave * 2)) {
         const types = s.wave === 1 ? ['fee', 'fee', 'scam'] : s.wave === 2 ? ['fee', 'scam', 'inflation'] : ['fee', 'scam', 'inflation', 'debt'];
         spawnEnemy(s, types[Math.floor(s.random() * types.length)]);
@@ -278,6 +285,7 @@
           if (ship.dead || bullet.hit.has(ship)) continue;
           if (segmentCircleHit(bullet.previous, bullet.position, ship.position, bullet.collision.radius + ship.collision.radius)) {
             ship.hp -= bullet.damage; ship.flash = 0.1; bullet.hit.add(ship);
+            if(bullet.blast||bullet.chain){let arcs=bullet.chain;for(const other of ships){if(other===ship||other.dead)continue;const distance=Math.sqrt(distanceSquare(ship.position,other.position));if(distance<bullet.blast||(arcs>0&&distance<150)){if(distance>=bullet.blast)arcs--;other.hp-=bullet.damage*.25;other.flash=.1;if(other.hp<=0)destroy(s,other);else emit(s,'impact',{x:other.position.x,y:other.position.y});}}emit(s,'impact',{x:ship.position.x,y:ship.position.y});bullet.blast=bullet.chain=0;}
             if (ship.hp <= 0) destroy(s, ship);
             else emit(s, 'impact', { x: ship.position.x, y: ship.position.y });
             if (bullet.pierce <= 0) { bullet.dead = true; break; }

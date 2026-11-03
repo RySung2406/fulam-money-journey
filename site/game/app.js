@@ -11,7 +11,7 @@ const prefs = {
  set(key, value) { try { localStorage.setItem('fulam-' + key, String(value)); return true; } catch { return false; } }
 };
 const journey=window.FuLamJourney?new window.FuLamJourney.UI('knife',()=>window.FuLamSliceLanguage?.getLanguage()||prefs.get('language','zh-Hant')):null;
-let hearts=5,missDebt=0,focusCharge=0,focusTime=0,startTopic='',roundSpawned=0,roundResolved=0;
+let hearts=5,missDebt=0,focusCharge=0,focusTime=0,guardCharges=0,startTopic='',roundSpawned=0,roundResolved=0;
 const roundRandom=()=>journey?.run?.random()??Math.random();
 if(journey){window.GameEngine.DIFFICULTIES.easy.label='Standard';window.GameEngine.DIFFICULTIES.hard.label='Challenge';window.GameEngine.DIFFICULTIES.medium.label='Booth intermediate';}
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -138,7 +138,7 @@ function about() {
 }
 $('#about-button').onclick = about;
 function rules() {
- if(journey){showModal(journey.text('切對、連擊、升級','Slice, combo, upgrade'),'<p>'+journey.text('切正確選項得分，切錯扣心；累積漏切亦扣心。每關 20 個選項，完成後選擇強化、換刀或回復。標準 5 心，挑戰 3 心。Booth 中等難度 4 心，速度介於標準與挑戰之間；180 秒含暫停及升級。','Correct choices score; wrong cuts and repeated misses cost hearts. Finish 20 choices per stage, then choose power, a blade or recovery. Standard: 5 hearts. Challenge: 3. Booth uses 4 hearts and an intermediate pace, for 180s including pauses and upgrades.')+'</p>','<button class="primary" id="close-modal">'+journey.text('知道了','Got it')+'</button>');$('#close-modal').onclick=closeModal;return;}
+ if(journey){showModal(journey.text('切對、連擊、升級','Slice, combo, upgrade'),'<p>'+journey.text('切正確選項得分，切錯扣心；累積漏切亦扣心。每關 20 個選項，完成後選擇刀刃加分、慢時延長或護心防錯。標準 5 心，挑戰 3 心。Booth 中等難度 4 心，速度介於標準與挑戰之間；180 秒含暫停及升級。','Correct choices score; wrong cuts and repeated misses cost hearts. Finish 20 choices per stage, then choose blade score, longer Focus or mistake guard. Standard: 5 hearts. Challenge: 3. Booth uses 4 hearts and an intermediate pace, for 180s including pauses and upgrades.')+'</p>','<button class="primary" id="close-modal">'+journey.text('知道了','Got it')+'</button>');$('#close-modal').onclick=closeModal;return;}
 
  showModal('Read. Choose. Slice.', `<ol><li><strong>Pick a topic.</strong> Its question stays visible throughout your run.</li><li><strong>Swipe through correct bags.</strong> Hold your mouse button or use your finger. Let wrong choices fall.</li><li><strong>Keep going.</strong> Bags arrive continuously in a shuffled order, with varied timing and flight paths.</li><li><strong>Choose your finish.</strong> Practice lasts until you finish. Sprint ends at ${E.GAME_RULES.sprintTarget} correct cuts; every wrong cut adds ${E.GAME_RULES.wrongPenaltySeconds} seconds.</li></ol><div class="rule-points"><span>Correct +100</span><span>Wrong −150</span><span>Combo bonus</span></div><p>Keyboard: Tab to an active bag, then press Enter or Space. A missed correct bag breaks your combo. Review explanations after your run, whenever you want.</p>`, `<button class="primary" id="close-modal">Got it ${icon('slice')}</button>`);
  $('#close-modal').onclick = closeModal;
@@ -194,7 +194,7 @@ function startGame(topicId) {
  if(journey)topicId=QUESTIONS[0].id;startTopic=topicId;roundSpawned=0;roundResolved=0;
  const selected = QUESTIONS.find(q => q.id === topicId);
  if (!selected) return;
- if(journey){hearts=journey.sliceHearts();missDebt=0;focusCharge=0;focusTime=0;}
+ if(journey){hearts=journey.sliceHearts();missDebt=0;focusCharge=0;focusTime=0;guardCharges=0;}
  question = selected; session = E.createSession(); optionDeck = E.createOptionDeck(question.options);
  optionStats = new Map(question.options.map(option => [option.id, {option, shown: 0, correct: 0, wrong: 0, missed: 0, avoided: 0}]));
  elapsed = 0; nextSpawnAt = 0; spawned = 0; avoided = 0; lastGroup = []; finalTimeMs = null; bestResult = null; runSerial++;
@@ -218,8 +218,8 @@ function renderGame() {
   $('.ready-card p').textContent=journey.text('先閱讀上方題目。切正確選項，讓錯誤選項落下。'+hearts+' 顆心；每關 20 個選項後選擇刀具強化。','Read the question above. Slice correct choices and leave wrong ones. '+hearts+' hearts; choose a blade upgrade after each 20-choice stage.');
   $('#finish-session').classList.add('journey-exit');$('#finish-session').textContent=journey.text('退出','Exit');$('#finish-session').disabled=false;$('#finish-session').onclick=()=>phase==='ready'?home():finishSession(false);
   $('#ready-overlay').remove();journey.guide($('.game-wrap'),beginStream,home,window.FuLamSliceLanguage?.translate(q.question)||q.question);
-  const swap=document.createElement('button');swap.id='knife-swap';swap.className='journey-swap';swap.textContent=journey.text('⇄ 換刀 · E','⇄ Blade · E');$('.arena-footer').append(swap);swap.onclick=()=>{if(phase==='playing'&&!paused)journey.swap();};
-  const focus=document.createElement('button');focus.id='knife-focus';focus.className='journey-swap';focus.textContent=journey.text('慢時 0%','Focus 0%');$('.arena-footer').append(focus);focus.onclick=()=>{if(phase==='playing'&&!paused&&journey.run?.weapon===2&&focusCharge>=100){focusCharge=0;focusTime=2.5;playSound('start');}};
+  const blade=document.createElement('span');blade.id='knife-level';blade.className='journey-loadout';$('.arena-footer').append(blade);
+  const focus=document.createElement('button');focus.id='knife-focus';focus.className='journey-swap';focus.textContent=journey.text('慢時 0%','Focus 0%');$('.arena-footer').append(focus);focus.onclick=()=>{if(phase==='playing'&&!paused&&focusCharge>=100){focusCharge=0;focusTime=2.5+.6*journey.run.focus;playSound('start');}};
  }
 
  updateSound();
@@ -375,7 +375,7 @@ function updateHUD() {
  $('#missed-count').textContent = `${session.missed} missed`;
  $('#run-goal').textContent = playKind === 'sprint' ? `${session.correct} / ${E.GAME_RULES.sprintTarget} CORRECT` : 'NO TIME LIMIT';
  $('#run-clock').textContent = timeLabel(playKind === 'sprint' ? E.sprintTimeMs(elapsed, session.wrong) : Math.ceil(elapsed * 1000));
- if(journey?.run){$('#run-goal').textContent='♥ '+hearts+' · '+journey.name(journey.run.weapon);$('#run-clock').hidden=false;$('#run-clock').textContent=journey.scene==='booth'?Math.ceil(Math.max(0,180-journey.run.total))+'s':Math.floor(journey.run.active)+'s';$('.round-number').textContent=journey.text('第 '+journey.run.wave+' 關 · '+roundResolved+'/20','Stage '+journey.run.wave+' · '+roundResolved+'/20');if($('#knife-swap'))$('#knife-swap').disabled=paused||journey.run.swapCooldown>0;if($('#knife-focus')){$('#knife-focus').disabled=paused||journey.run.weapon!==2||focusCharge<100;$('#knife-focus').textContent=journey.text('慢時 ','Focus ')+Math.floor(focusCharge)+'% · Q';}}
+ if(journey?.run){$('#run-goal').textContent='♥ '+hearts+' · '+journey.text('護心 ','Guard ')+guardCharges;$('#run-clock').hidden=false;$('#run-clock').textContent=journey.scene==='booth'?Math.ceil(Math.max(0,180-journey.run.total))+'s':Math.floor(journey.run.active)+'s';$('.round-number').textContent=journey.text('第 '+journey.run.wave+' 關 · '+roundResolved+'/20','Stage '+journey.run.wave+' · '+roundResolved+'/20');if($('#knife-level'))$('#knife-level').textContent=journey.name(journey.run.weapon)+' Lv.'+(journey.run.weapon+1)+' · +'+(journey.run.weapon*25)+'%';if($('#knife-focus')){$('#knife-focus').disabled=paused||focusCharge<100;$('#knife-focus').textContent=journey.text('慢時 ','Focus ')+Math.floor(focusCharge)+'% · Q';}}
  $('#run-clock').title = playKind === 'sprint' ? `Includes ${session.wrong * E.GAME_RULES.wrongPenaltySeconds} seconds of wrong-slice penalties` : 'Time played';
 }
 function cutTarget(target) {
@@ -383,7 +383,7 @@ function cutTarget(target) {
  advanceClock();
  const result = E.recordHit(session, question.id, target.option, target.instanceId);
  if (!result) return;
- if(journey){roundResolved++;if(target.option.good){const bonus=Math.round(result.delta*(journey.run.power*.15+(journey.run.weapon===1?.25:0)));session.score+=bonus;result.delta+=bonus;focusCharge=Math.min(100,focusCharge+12);}else hearts=Math.max(0,hearts-1);session.score=Math.max(0,session.score);}
+ if(journey){roundResolved++;if(target.option.good){const bonus=Math.round(result.delta*(journey.run.weapon*.25));session.score+=bonus;result.delta+=bonus;focusCharge=Math.min(100,focusCharge+12+Math.min(24,journey.run.focus*2));}else if(guardCharges>0)guardCharges--;else hearts=Math.max(0,hearts-1);session.score=Math.max(0,session.score);}
  target.hit = true; target.active = false; target.el.disabled = true;
  target.el.classList.add(target.option.good ? 'cut-good' : 'cut-bad');
  const stats = optionStats.get(target.option.id); stats[target.option.good ? 'correct' : 'wrong']++;
@@ -435,7 +435,7 @@ function bindPointer() {
   for (const target of targets) {
    if (target.hit || !target.active) continue;
    const width = target.el.offsetWidth, height = target.el.offsetHeight;
-   const pad=journey?.run?(journey.run.weapon===0?22:journey.run.weapon===1?4:12):12;
+   const pad=journey?.run?Math.min(26,14+journey.run.weapon):12;
    const rect = {left: target.x + pad, right: target.x + width - pad, top: Math.max(arenaCeiling, target.y + 18), bottom: Math.min(flightFloor, target.y + height - 10)};
    if (E.segmentIntersectsRect(previous, point, rect)) cutTarget(target);
    if (!canSlice()) return;
@@ -459,8 +459,8 @@ function drawTrail(now, dt) {
  for (let index = 1; index < trail.length; index++) {
   const alpha = Math.max(0, 1 - (now - trail[index].t) / 180);
   ctx.beginPath(); ctx.moveTo(trail[index - 1].x, trail[index - 1].y); ctx.lineTo(trail[index].x, trail[index].y);
-  ctx.strokeStyle = `rgba(120,214,255,${alpha * .12})`; ctx.lineWidth = 20; ctx.stroke();
-  ctx.strokeStyle = `rgba(184,236,255,${alpha * .4})`; ctx.lineWidth = 8; ctx.stroke();
+  ctx.strokeStyle = `rgba(120,214,255,${alpha * .12})`; ctx.lineWidth = 20+Math.min(18,(journey?.run?.weapon||0)*2); ctx.stroke();
+  ctx.strokeStyle = journey?.run?window.FuLamJourney.weaponProfile('knife',journey.run).color:`rgba(184,236,255,${alpha * .4})`; ctx.lineWidth = 8; ctx.stroke();
   ctx.strokeStyle = `rgba(255,251,224,${alpha})`; ctx.lineWidth = 2.5; ctx.stroke();
  }
  ctx.restore();
@@ -524,22 +524,21 @@ function freezeSnapshot(value) {
  return value;
 }
 if(journey){
- document.addEventListener('keydown',event=>{if(event.repeat||event.ctrlKey||event.metaKey||event.altKey||/INPUT|TEXTAREA|SELECT/.test(event.target.tagName))return;if(event.code==='KeyP'&&phase==='playing'&&!paused){event.preventDefault();pauseGame();}if(phase!=='playing'||paused)return;if(event.code==='KeyE')$('#knife-swap')?.click();if(event.code==='KeyQ')$('#knife-focus')?.click();});
+ document.addEventListener('keydown',event=>{if(event.repeat||event.ctrlKey||event.metaKey||event.altKey||/INPUT|TEXTAREA|SELECT/.test(event.target.tagName))return;if(event.code==='KeyP'&&phase==='playing'&&!paused){event.preventDefault();pauseGame();}if(phase!=='playing'||paused)return;if(event.code==='KeyQ')$('#knife-focus')?.click();});
  journey.nextHint=()=>{const initial=QUESTIONS.findIndex(q=>q.id===startTopic),q=QUESTIONS[(initial+journey.run.wave)%QUESTIONS.length];return window.FuLamSliceLanguage?.translate(q.question)||q.question;};
  journey.onIntermission=()=>{paused=true;releasePointer();targets.forEach(t=>t.el.remove());targets=[];playSound('start');};
  journey.onChoice=(kind,r)=>{
-  if(kind==='support')hearts=Math.min(journey.sliceHearts(),hearts+1);
+  if(kind==='guard'){guardCharges++;hearts=Math.min(journey.sliceHearts(),hearts+1);}
   roundSpawned=0;roundResolved=0;const initial=QUESTIONS.findIndex(q=>q.id===startTopic);question=QUESTIONS[(initial+r.wave-1)%QUESTIONS.length];
   optionDeck=E.createOptionDeck(question.options,roundRandom);for(const option of question.options)if(!optionStats.has(option.id))optionStats.set(option.id,{option,shown:0,correct:0,wrong:0,missed:0,avoided:0});
   $('.question-bar h1').textContent=question.question;$('.question-context').textContent=question.context;$('.question-bar .eyebrow').textContent=question.eyebrow;$('.round-number').textContent='ROUND '+r.wave+' · '+question.chapter;
   nextSpawnAt=elapsed+2;lastTime=performance.now();paused=false;arena?.classList.remove('is-paused');resizeArena();updateHUD();
  };
- journey.onSwap=()=>{playSound('start');updateHUD();};
  journey.onEnd=()=>finishSession(false);
 }
 Object.defineProperty(window, 'FuLamSlice', {value: Object.freeze({getState() {
  return freezeSnapshot({
-  phase, paused, roundSpawned,roundResolved,hearts,focusCharge,focusTime,run:journey?.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,wave:journey.run.wave,phase:journey.run.phase,active:journey.run.active,total:journey.run.total,weapon:journey.run.weapon,power:journey.run.power,reason:journey.run.reason}:null, topic: question?.id ?? null, mode: playKind, playKind, difficulty: mode, elapsed,
+  phase, paused, roundSpawned,roundResolved,hearts,focusCharge,focusTime,guardCharges,run:journey?.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,wave:journey.run.wave,phase:journey.run.phase,active:journey.run.active,total:journey.run.total,weapon:journey.run.weapon,focus:journey.run.focus,guard:journey.run.guard,reason:journey.run.reason}:null, topic: question?.id ?? null, mode: playKind, playKind, difficulty: mode, elapsed,
   score: session.score, correct: session.correct, wrong: session.wrong, missed: session.missed, flightFloor, arenaCeiling,
   combo: session.combo, bestCombo: session.bestCombo, avoided, spawned, cap: liveCap(),
   pending: targets.filter(target => !target.hit && elapsed < target.bornAt + target.launch.delay).length,

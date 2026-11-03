@@ -22,3 +22,8 @@ The existing gameplay attributions remain: Fishing Joy formations (MIT) and SUBm
 ## Booth QR codes (2026-11-04)
 
 Static SVG QR codes are generated locally using python-qrcode 8.2 (BSD-3-Clause with MIT ancestry notice): https://github.com/lincolnloop/python-qrcode . Full notice: `licenses/python-qrcode.txt`. The generated codes contain only public game URLs; no external QR service or tracking request is used. URLs and SHA-256 hashes are in `qr-assets.json`.
+
+
+## Round scenes (2026-11-04)
+
+The fifteen SVG chapter backgrounds in `scenes/` are original FuLam artwork authored for this project: harbour, reef/garden, storm/lighthouse, ruins/city/bridge and dawn/observatory. No external images, textures or fonts were copied into them. Existing Kenney and other asset licences above remain unchanged.

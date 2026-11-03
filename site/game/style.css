@@ -326,3 +326,11 @@ body.immersive-game{overflow:hidden;overscroll-behavior:none;height:100dvh}
 .immersive-game .game-hud .sprint-clock{font-size:23px}
 @media(min-width:651px) and (min-height:501px){.immersive-game .game-hud .score-value{font-size:32px}.immersive-game .game-hud .sprint-clock{font-size:26px}}
 @media(max-height:500px) and (orientation:landscape){.immersive-game .game-hud .score-value{font-size:25px}.immersive-game .game-hud .sprint-clock{font-size:20px}}
+
+/* v5: original chapter scenes and one evolving blade. */
+.immersive-game .journey-live .arena{background:#102c3e var(--stage-bg) center/cover no-repeat}
+.immersive-game .arena-footer .journey-loadout{display:block!important;max-width:none;color:var(--stage-color,#e7ce97);font-size:11px;font-weight:700;line-height:1.4;text-align:center}
+.immersive-game .arena-footer>span:not(.journey-loadout){display:none}
+.immersive-game .arena-footer{grid-template-columns:auto 1fr 1fr}
+
+body.immersive-game .game-wrap .arena-footer>#knife-level{grid-column:auto;min-width:0}
