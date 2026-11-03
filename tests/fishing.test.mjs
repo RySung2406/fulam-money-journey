@@ -10,6 +10,7 @@ const html = fs.readFileSync(new URL('../site/fishing/index.html', import.meta.u
 const scripts = [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(match => match[1]);
 const source = scripts.find(script => script.includes('/* FuLam Catch'));
 const formations = scripts.find(script => script.includes('window.FuLamFormations'));
+const arcade = scripts.find(script => script.includes('class Effects'));
 assert(source, 'Shipped fishing game script is present');
 assert(formations, 'Shipped fish formation script is present');
 assert(!html.includes('window.__qa'), 'Test setup access is never shipped');
@@ -28,7 +29,7 @@ function harness(width = 1000, height = 600, options = {}) {
   let doc;
   class Element {
     constructor(id, tag = 'BUTTON') {
-      this.id=id; this.tagName=tag; this.dataset={}; this.style={}; this.hidden=false; this.disabled=false;
+      this.id=id; this.tagName=tag; this.dataset={}; this.style={setProperty(k,v){this[k]=v;}}; this.hidden=false; this.disabled=false;
       this.attrs={}; this.events={}; this.children=[]; this._html=''; this.textContent='';
       const classes=new Set();
       this.classList={add:(...xs)=>xs.forEach(x=>classes.add(x)),remove:(...xs)=>xs.forEach(x=>classes.delete(x)),contains:x=>classes.has(x),toggle:(x,on)=>{const next=on===undefined?!classes.has(x):on;next?classes.add(x):classes.delete(x);return next;}};
@@ -58,6 +59,7 @@ function harness(width = 1000, height = 600, options = {}) {
   doc={getElementById:id=>{accessedIds.add(id);return el(id);},body:new Element('body','BODY'),activeElement:null,hidden:false,addEventListener(k,v){(docHandlers[k]??=[]).push(v);}};
   const sandbox={document:doc,devicePixelRatio:1,Math:math,console,UPSTREAM_LICENSE:'MIT QA fixture',ResizeObserver:class{constructor(cb){this.cb=cb;}observe(){}},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>{if(options.storageThrows)throw new Error('Storage blocked');storage.set(k,v);writes++;}},setTimeout:()=>1,clearTimeout:no,requestAnimationFrame:cb=>raf.push(cb),matchMedia:()=>({matches:false}),FuLamArt:{drawBackground:no,drawFish:no,drawCannon:no,drawCoin:no},addEventListener(k,v){(winHandlers[k]??=[]).push(v);}};
   sandbox.window=sandbox;vm.createContext(sandbox);
+  vm.runInContext(arcade,sandbox);
   vm.runInContext(formations,sandbox);
   vm.runInContext(instrumented,sandbox);
   const frame=ms=>{now+=ms;drawTexts=[];const calls=raf;raf=[];for(const cb of calls)cb(now);};

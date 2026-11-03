@@ -12,7 +12,7 @@ Upstream revision: `d039f0f1538def12d5d1bb9162e28cb6c1c17984`.
 Upstream code: `src/js/game.js`, MIT, copyright 2017 Jerome Lecomte.
 The complete licence is retained in `LICENSE.txt` and embedded in the HTML.
 
-This adaptation supplies new canvas artwork and synthesised sound, direct
+This adaptation supplies new canvas artwork, Kenney CC0 sound effects and synthesised accents, direct
 keyboard/touch movement, automatic fire, continuous sectors, bosses, a cash
 reserve, passive game income, purchasable weapons/escorts/repair/shields, and
 Traditional Chinese/English text. Original music, font sprites and visual assets
@@ -27,6 +27,13 @@ are not included. Turning and swept collisions were corrected for stable play.
 Edit `shell.html`, `style.css`, `core.js` and `app.js`, then rebuild. The generated
 HTML runs without dependencies or network requests, including directly as a file.
 
+Shared sound, Canvas effects and Lucide icons live in `sources/arcade/`.
+`sources/arcade/CREDITS.md` records asset sources and licences. The build embeds
+audio and complete licence texts; audio decoding cannot block starting a game.
+On portrait phones the workshop pauses battle, and fullscreen includes all
+controls and upgrades. Landscape uses a side panel. Sinking finishes with a
+short explosion and hull fragments before the result screen.
+
 Physics advances in fixed 1/60 second steps; rendering follows display refresh.
 Long stalls have a capped catch-up. Tab hiding and focus loss pause gameplay.
 Particle counts and active entities are bounded. No automatic run timeout.
@@ -34,7 +41,8 @@ Particle counts and active entities are bounded. No automatic run timeout.
 ## Data
 
 No accounts, network calls or database writes. Browser storage contains only
-`fulam-fleet-best-v1` (one best score, sector, kills, mode and schema version) and
+`fulam-fleet-best-v1` (one best score, sector, kills, mode and schema version),
+`fulam-fleet-sound-v1` (on/off preference), and
 the site's shared `fulam-language` choice. No run history, clickstream or video.
 Local best scores are editable by the player and are not a verified leaderboard.
 

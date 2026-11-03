@@ -34,6 +34,7 @@
     <div class="record"><span data-t="best">本機最佳</span><strong id="best">0</strong><small data-t="local">只保存最佳戰績於此瀏覽器</small></div>
     <a class="other-games" href="https://rysung2406.github.io/fulam-money-journey/#play"><span data-t="back">← 返回遊戲港口</span></a>
   </aside>
+  <div class="combat-layout" id="combat-layout">
   <section class="battle" aria-label="海戰區" data-label="battle">
     <div class="hud">
       <div class="capital"><span data-t="capital">本金護甲</span><strong id="hp">100<span>/ 100</span></strong><div class="hp-track"><i id="hp-bar"></i></div></div>
@@ -45,6 +46,7 @@
       <div class="sector"><span id="sector">航區 01</span><span id="combo"></span><span class="auto-indicator" data-t="auto">自動連射</span></div>
       <div class="boss-bar" id="boss-bar" hidden><span data-t="boss">債務風暴 · BOSS</span><div><i id="boss-hp"></i></div></div>
       <div class="event-banner" id="banner" role="status"></div>
+      <div class="low-health-note" id="low-health" data-t="lowHealth" hidden>護甲危急 · 修復或開盾</div>
       <div class="overlay" id="overlay">
         <div class="overlay-card" id="menu">
           <div class="badge-mark" aria-hidden="true"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="29"/><path d="M32 11 44 29l-5 21H25l-5-21Z"/><path d="M32 20v22M26 32h12M7 45q12-8 25 0t25 0"/></svg></div>
@@ -71,28 +73,30 @@
         </div>
       </div>
     </div>
-    <div class="battle-footer"><span id="wave-progress">0 / 8</span><div class="wave-track"><i id="wave-bar"></i></div><button id="pause" class="quiet" disabled><span data-t="pause">暫停</span><kbd>P</kbd></button></div>
+    <div class="battle-footer"><span id="wave-progress">0 / 8</span><div class="wave-track"><i id="wave-bar"></i></div><button id="dock-toggle" class="quiet dock-toggle" aria-expanded="false" aria-controls="dock" disabled><!-- ICON:grid-2x2 --><span data-t="workshop">升級</span></button><button id="battle-sound" class="quiet tool-icon" aria-label="音效：開" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m11 5-6 4H2v6h3l6 4Z M16 8a6 6 0 0 1 0 8"/></svg></button><button id="battle-fullscreen" class="quiet tool-icon" aria-label="全螢幕" data-label="fullscreen"><!-- ICON:maximize --></button><button id="pause" class="quiet" disabled><span data-t="pause">暫停</span><kbd>P</kbd></button></div>
     <div class="mobile-hint" data-t="mobileHint">拖曳／點擊海面移動，自動射擊。</div>
     <div class="combat-actions">
       <button id="shield" class="shield-btn" disabled><kbd>Q</kbd><span><b data-t="shield">應急護盾</b><small id="shield-status">20</small></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 8 3v6c0 5-8 10-8 10S4 16 4 11V5Z"/><path d="m8 11 3 3 5-6"/></svg></button>
       <div class="direction-pad" aria-label="移動按鈕" data-label="directionPad"><button data-dir="left" aria-label="向左" data-label="left">←</button><div><button data-dir="up" aria-label="向上" data-label="up">↑</button><button data-dir="down" aria-label="向下" data-label="down">↓</button></div><button data-dir="right" aria-label="向右" data-label="right">→</button></div>
     </div>
   </section>
-  <aside class="dock" aria-labelledby="dock-title">
+  <aside class="dock" id="dock" aria-labelledby="dock-title"><div class="workshop-bar"><span data-t="shopPaused">戰局已暫停 · 安心選購升級</span><button id="dock-close" class="quiet" data-t="closeDock">返回戰場</button></div>
     <div class="dock-heading"><span class="eyebrow" data-t="dockTag">你的升級決定</span><h2 id="dock-title" data-t="dock">隨行船塢</h2><p data-t="dockHint">花錢變強，也記得留錢保命。</p></div>
     <div class="upgrades">
-      <button class="upgrade" id="weapon" disabled><span class="upgrade-num"><kbd>1</kbd></span><span class="upgrade-copy"><b data-t="weapon">複利火炮</b><small id="weapon-desc"></small><span class="level-dots" id="weapon-dots" aria-hidden="true"></span></span><strong id="weapon-cost"></strong></button>
-      <button class="upgrade" id="escort" disabled><span class="upgrade-num"><kbd>2</kbd></span><span class="upgrade-copy"><b data-t="escort">分散僚艦</b><small id="escort-desc"></small><span class="level-dots" id="escort-dots" aria-hidden="true"></span></span><strong id="escort-cost"></strong></button>
-      <button class="upgrade" id="reserve" disabled><span class="upgrade-num"><kbd>3</kbd></span><span class="upgrade-copy"><b data-t="reserve">儲備系統</b><small id="reserve-desc"></small><span class="level-dots" id="reserve-dots" aria-hidden="true"></span></span><strong id="reserve-cost"></strong></button>
-      <button class="upgrade repair" id="repair" disabled><span class="upgrade-num"><kbd>4</kbd></span><span class="upgrade-copy"><b data-t="repair">修復本金</b><small data-t="repairHint">即時回復 35 護甲</small></span><strong id="repair-cost">35</strong></button>
+      <button class="upgrade" id="weapon" disabled><span class="upgrade-num"><!-- ICON:crosshair --><kbd>1</kbd></span><span class="upgrade-copy"><b data-t="weapon">複利火炮</b><small id="weapon-desc"></small><span class="level-dots" id="weapon-dots" aria-hidden="true"></span></span><strong id="weapon-cost"></strong></button>
+      <button class="upgrade" id="escort" disabled><span class="upgrade-num"><!-- ICON:ship --><kbd>2</kbd></span><span class="upgrade-copy"><b data-t="escort">分散僚艦</b><small id="escort-desc"></small><span class="level-dots" id="escort-dots" aria-hidden="true"></span></span><strong id="escort-cost"></strong></button>
+      <button class="upgrade" id="reserve" disabled><span class="upgrade-num"><!-- ICON:wallet --><kbd>3</kbd></span><span class="upgrade-copy"><b data-t="reserve">儲備系統</b><small id="reserve-desc"></small><span class="level-dots" id="reserve-dots" aria-hidden="true"></span></span><strong id="reserve-cost"></strong></button>
+      <button class="upgrade repair" id="repair" disabled><span class="upgrade-num"><!-- ICON:wrench --><kbd>4</kbd></span><span class="upgrade-copy"><b data-t="repair">修復本金</b><small data-t="repairHint">即時回復 35 護甲</small></span><strong id="repair-cost">35</strong></button>
     </div>
     <div class="income"><div><span data-t="income">儲備收益</span><strong id="income">+0</strong></div><p data-t="incomeHint">每 15 秒，現金儲備產生遊戲收益。儲備系統可提高收益及拾幣範圍。</p><div class="income-track"><i id="income-bar"></i></div></div>
     <div class="enemy-guide"><span class="eyebrow" data-t="enemyTag">辨認威脅</span><div><i class="enemy-dot fee"></i><span data-t="fee">衝動消費</span><small data-t="feeHint">輕型突擊艦</small></div><div><i class="enemy-dot inflation"></i><span data-t="inflation">通脹</span><small data-t="inflationHint">扇形彈幕</small></div><div><i class="enemy-dot scam"></i><span data-t="scam">投資騙局</span><small data-t="scamHint">高速蛇行</small></div><div><i class="enemy-dot debt"></i><span data-t="debt">高息債務</span><small data-t="debtHint">追蹤魚雷</small></div></div>
   </aside>
+  </div>
 </main>
-<footer class="site-footer"><p data-t="metaphor">理財概念化成戰艦能力；金幣、收益及護甲均為遊戲數值。</p><details><summary data-t="credits">開源來源與授權</summary><p><span data-t="creditNote">戰鬥核心改編自</span> <a href="https://github.com/herebefrogs/submersible-warship-2063" target="_blank" rel="noopener">SUBmersible WARship 2063</a> · Jerome Lecomte · MIT.</p><p data-t="changes">新增無限波次、理財升級、戰艦畫面、手機操作及中英介面；未使用原作音樂或字型素材。</p><pre>/* FLEET_LICENSE */</pre></details></footer>
+<footer class="site-footer"><p data-t="metaphor">理財概念化成戰艦能力；金幣、收益及護甲均為遊戲數值。</p><details><summary data-t="credits">開源來源與授權</summary><p><span data-t="creditNote">戰鬥核心改編自</span> <a href="https://github.com/herebefrogs/submersible-warship-2063" target="_blank" rel="noopener">SUBmersible WARship 2063</a> · Jerome Lecomte · MIT.</p><p data-t="changes">新增無限波次、理財升級、戰艦畫面、手機操作及中英介面；未使用原作音樂或字型素材。</p><p>Audio: <a href="https://kenney.nl/assets/sci-fi-sounds">Kenney</a> · CC0. Icons: <a href="https://lucide.dev">Lucide</a> · ISC / MIT. <a href="./CREDITS.md">Asset credits</a></p><pre>/* FLEET_LICENSE */</pre></details></footer>
 <div class="toast" id="toast" role="status"></div>
 <noscript>請開啟 JavaScript 以遊玩。Enable JavaScript to play.</noscript>
 <script>/* FLEET_CORE */</script>
+<script>/* ARCADE_FEEDBACK */</script>
 <script>/* FLEET_APP */</script>
 </body></html>

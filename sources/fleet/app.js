@@ -59,11 +59,16 @@
   for (const e of translated) if (!(e.dataset.t in ZH)) ZH[e.dataset.t] = e.textContent;
   const t = key => (lang === 'en' ? EN : ZH)[key] ?? key;
   let mode = 'standard', phase = 'menu', game = C.createState({ seed: 742 }), best = null, paused = false;
-  let sound = false, audio = null, lastSound = 0, resultIsBest = false, saveFailed = false;
+  let sound = safeGet('fulam-fleet-sound-v1') !== 'off', lastSound = 0, resultIsBest = false, saveFailed = false;
+  const soundscape = new window.FuLamArcade.Audio(sound);
+  let shopOpen = false, deathTime = 0, lowHealthSound = 0;
   let pointerId = null, pointerTarget = null, animation = 0, lastTime = null, accumulator = 0, hudTime = 0;
   let bannerTime = 0, bannerKey = '', bannerValue = '', toastTimer, shake = 0;
   const pressed = new Set(), particles = [], ripples = [], floats = [];
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const fx = new window.FuLamArcade.Effects(reduced.matches);
+  Object.assign(EN, { workshop: 'Upgrades', closeDock: 'Back to sea', shopPaused: 'Battle paused · choose an upgrade', lowHealth: 'LOW ARMOUR · REPAIR OR SHIELD', exitScreen: 'Exit full screen' });
+  Object.assign(ZH, { workshop: '升級', closeDock: '返回戰場', shopPaused: '戰局已暫停 · 安心選購升級', lowHealth: '護甲危急 · 修復或開盾', exitScreen: '退出全螢幕' });
   try { const stored = safeGet(KEY); if (stored && stored.length < 600) { const r = JSON.parse(stored); if (Number.isFinite(r.score) && r.score >= 0 && Number.isInteger(r.wave) && r.wave > 0 && Number.isInteger(r.kills) && r.kills >= 0 && ['standard', 'storm'].includes(r.mode)) best = r; } } catch { /* invalid records are ignored */ }
   function put(id, text) { const e = $(id); const s = String(text); if (e.textContent !== s) e.textContent = s; }
   function toast(key) { $('toast').textContent = t(key); $('toast').classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => $('toast').classList.remove('show'), 2400); }
@@ -74,23 +79,41 @@
     for (const e of labels) e.setAttribute('aria-label', lang === 'en' ? (EN[e.dataset.label] ?? originalLabels.get(e)) : originalLabels.get(e));
     $('lang').textContent = lang === 'en' ? '繁中' : 'EN'; $('lang').setAttribute('aria-label', lang === 'en' ? '切換至繁體中文' : 'Switch to English');
     put('sound', t(sound ? 'soundOn' : 'soundOff'));
+    syncSound();
     if (phase === 'over') renderEnd();
     $('banner').textContent = bannerTime > 0 ? `${t(bannerKey)} ${bannerValue}` : '';
     $('share-status').textContent = ''; $('toast').classList.remove('show'); updateHUD();
   }
   function unlockAudio() {
-    if (!sound) return;
-    try { if (!audio) audio = new (window.AudioContext || window.webkitAudioContext)(); if (audio.state === 'suspended') void audio.resume().catch(() => {}); } catch { sound = false; }
+    void soundscape.unlock();
   }
-  function tone(frequency, duration = .06, volume = .025, type = 'sine') {
-    if (!sound || !audio || audio.state !== 'running') return;
-    try {
-      const now = audio.currentTime, oscillator = audio.createOscillator(), gain = audio.createGain();
-      oscillator.type = type; oscillator.frequency.setValueAtTime(frequency, now); oscillator.frequency.exponentialRampToValueAtTime(Math.max(30, frequency * .5), now + duration);
-      gain.gain.setValueAtTime(volume, now); gain.gain.exponentialRampToValueAtTime(.001, now + duration);
-      oscillator.connect(gain); gain.connect(audio.destination); oscillator.start(now); oscillator.stop(now + duration);
-      oscillator.onended = () => { oscillator.disconnect(); gain.disconnect(); };
-    } catch { /* audio must not interrupt play */ }
+  function syncSound() {
+    for (const id of ['sound', 'battle-sound']) {
+      $(id).setAttribute('aria-pressed', String(sound));
+      $(id).setAttribute('aria-label', t(sound ? 'soundOn' : 'soundOff'));
+    }
+    put('sound', t(sound ? 'soundOn' : 'soundOff'));
+    $('battle-sound').classList.toggle('muted', !sound);
+  }
+  function toggleSound() {
+    sound = !sound; safeSet('fulam-fleet-sound-v1', sound ? 'on' : 'off');
+    soundscape.setEnabled(sound); syncSound();
+    if (sound) void soundscape.unlock().then(() => soundscape.play('coin'));
+  }
+  function closeWorkshop() {
+    if (!shopOpen) return;
+    shopOpen = false; $('combat-layout').classList.remove('workshop-open');
+    $('dock-toggle').setAttribute('aria-expanded', 'false');
+    $('dock').removeAttribute('role'); $('dock').removeAttribute('aria-modal');
+    setPaused(false); $('dock-toggle').focus({ preventScroll: true });
+  }
+  function openWorkshop() {
+    if (phase !== 'play' || paused) return;
+    shopOpen = true; paused = true; clearInput(); accumulator = 0; soundscape.stop(); showOverlay(null);
+    $('combat-layout').classList.add('workshop-open');
+    $('dock-toggle').setAttribute('aria-expanded', 'true');
+    $('dock').setAttribute('role', 'dialog'); $('dock').setAttribute('aria-modal', 'true');
+    updateHUD(); $('dock-close').focus({ preventScroll: true });
   }
   function banner(key, value = '', seconds = 2.2) { bannerKey = key; bannerValue = value; bannerTime = seconds; $('banner').textContent = `${t(key)} ${value}`; $('banner').classList.add('show'); }
   function clearInput() { pressed.clear(); pointerTarget = null; pointerId = null; }
@@ -99,6 +122,8 @@
     for (const id of ['menu', 'pause-menu', 'end-menu']) $(id).hidden = id !== which;
   }
   function start() {
+    shopOpen = false; deathTime = lowHealthSound = 0; fx.clear();
+    $('combat-layout').classList.remove('workshop-open');
     game = C.createState({ mode }); phase = 'play'; paused = false; accumulator = 0; lastTime = null; lastSound = 0; saveFailed = false;
     clearInput(); particles.length = ripples.length = floats.length = 0; bannerTime = 0; $('banner').classList.remove('show'); shake = 0;
     showOverlay(null); unlockAudio(); $('pause').disabled = false; canvas.focus({ preventScroll: true }); updateHUD();
@@ -106,15 +131,24 @@
   }
   function setPaused(value) {
     if (phase !== 'play') return;
+    if (shopOpen) { if (!value) closeWorkshop(); return; }
     paused = value; clearInput(); accumulator = 0; showOverlay(paused ? 'pause-menu' : null); updateHUD();
+    if (paused) soundscape.stop();
     if (paused) $('resume').focus({ preventScroll: true }); else { canvas.focus({ preventScroll: true }); unlockAudio(); }
   }
   function end() {
     if (phase !== 'play') return;
-    phase = 'over'; paused = false; clearInput();
+    phase = 'sinking'; paused = false; deathTime = reduced.matches ? .45 : 1.15; clearInput();
+    fx.burst(game.hero.position.x, game.hero.position.y, { size: 48, heavy: true });
+    fx.shatter(game.hero.position.x, game.hero.position.y, '#a6d5ce', 35);
+    soundscape.play('death');
+    updateHUD();
+  }
+  function finishSinking() {
+    phase = 'over';
     resultIsBest = !best || game.score > best.score; best = C.bestRecord(best, game);
     if (resultIsBest) saveFailed = !safeSet(KEY, JSON.stringify(best));
-    showOverlay('end-menu'); renderEnd(); updateHUD(); $('restart').focus({ preventScroll: true }); tone(90, .45, .05, 'triangle');
+    showOverlay('end-menu'); renderEnd(); updateHUD(); $('restart').focus({ preventScroll: true });
   }
   function renderEnd() {
     put('end-label', t(resultIsBest ? 'newBest' : 'endTag')); put('end-score', game.score.toLocaleString('en'));
@@ -126,25 +160,28 @@
     if (phase === 'menu') { game = C.createState({ mode, seed: 742 }); updateHUD(); }
   }
   function purchase(kind) {
-    if (phase !== 'play' || paused) return;
-    if (C.buy(game, kind)) { tone(540, .12, .04); toast(kind === 'repair' ? 'repaired' : 'upgraded'); }
+    if (phase !== 'play' || (paused && !shopOpen)) return;
+    if (C.buy(game, kind)) { unlockAudio(); soundscape.play(kind === 'repair' ? 'repair' : 'upgrade'); toast(kind === 'repair' ? 'repaired' : 'upgraded'); }
     else if (C.upgradeCost(game, kind) !== null && game.cash < C.upgradeCost(game, kind)) toast('noCash');
     updateHUD();
   }
   function shield() {
     if (phase !== 'play' || paused) return;
-    if (C.activateShield(game)) { tone(240, .3, .04); banner('shieldRaised', '', 1); }
+    if (C.activateShield(game)) { soundscape.play('shield'); banner('shieldRaised', '', 1); }
     else toast(game.shieldCooldown > 0 ? 'shieldWait' : 'noCash'); updateHUD();
   }
   function updateHUD() {
-    const active = phase === 'play' && !paused, s = game;
+    const active = phase === 'play' && (!paused || shopOpen), s = game;
     const hpHTML = `${s.hero.hp}<span>/ ${s.hero.maxHp}</span>`; if ($('hp').innerHTML !== hpHTML) $('hp').innerHTML = hpHTML;
     $('hp-bar').style.width = `${s.hero.hp / s.hero.maxHp * 100}%`; $('hp-bar').style.background = s.hero.hp < 30 ? 'var(--danger)' : 'var(--aqua)';
     put('cash', s.cash.toLocaleString('en')); put('score', s.score.toLocaleString('en')); put('best', (best?.score || 0).toLocaleString('en'));
     put('sector', `${t('wave')} ${String(s.wave).padStart(2, '0')}`); put('combo', s.combo >= 2 ? `${s.combo} ${t('combo')}` : '');
     put('wave-progress', `${Math.min(s.waveKills, s.goal)} / ${s.goal}`); $('wave-bar').style.width = `${Math.min(100, s.waveKills / s.goal * 100)}%`;
     put('income', `+${s.income}`); $('income-bar').style.width = `${s.dividend / 15 * 100}%`;
-    $('pause').disabled = phase !== 'play'; $('shield').disabled = !active || s.shieldCooldown > 0 || s.cash < C.shieldCost(s);
+    $('pause').disabled = phase !== 'play' || shopOpen; $('shield').disabled = !active || shopOpen || s.shieldCooldown > 0 || s.cash < C.shieldCost(s);
+    $('dock-toggle').disabled = phase !== 'play' || (paused && !shopOpen);
+    $('sea').classList.toggle('low-health', phase === 'play' && s.hero.hp <= s.hero.maxHp * .3);
+    $('low-health').hidden = phase !== 'play' || s.hero.hp > s.hero.maxHp * .3;
     put('shield-status', s.shield > 0 ? `${t('active')} ${Math.ceil(s.shield)}${t('seconds')}` : s.shieldCooldown > 0 ? `${t('cooldown')} ${Math.ceil(s.shieldCooldown)}${t('seconds')}` : `${C.shieldCost(s)} ${t('ready')}`);
     for (const kind of ['weapon', 'escort', 'reserve', 'repair']) {
       const cost = C.upgradeCost(s, kind), full = kind === 'repair' && s.hero.hp >= s.hero.maxHp;
@@ -245,13 +282,15 @@
   }
   function events() {
     for(const e of game.events){
-      if(e.type==='sink'){burst(e.x,e.y,COLORS[e.kind],e.kind==='boss'?42:18);tone(e.kind==='boss'?65:120,.16,.03,'triangle');}
-      if(e.type==='damage'){burst(e.x,e.y,'#f9a38b',10);if(!reduced.matches)shake=.14;tone(75,.18,.04,'sawtooth');}
-      if(e.type==='fire'&&game.time-lastSound>.18){tone(320,.04,.008);lastSound=game.time;}
-      if(e.type==='block')burst(e.x,e.y,'#a9eee2',3);
+      if(e.type==='sink'){const boss=e.kind==='boss';fx.burst(e.x,e.y,{size:boss?60:28,heavy:boss});fx.shatter(e.x,e.y,COLORS[e.kind],boss?55:24);soundscape.play(boss?'heavy':'sink');if(boss&&!reduced.matches)shake=.2;}
+      if(e.type==='damage'){fx.hit(e.x,e.y,'#ffad8f');if(!reduced.matches)shake=.14;soundscape.play('hit');}
+      if(e.type==='impact'){fx.hit(e.x,e.y);soundscape.play('hit');}
+      if(e.type==='coin')soundscape.play('coin');
+      if(e.type==='fire'&&game.time-lastSound>.12){soundscape.play('fire');lastSound=game.time;}
+      if(e.type==='block'){fx.hit(e.x,e.y,'#a9eee2');soundscape.play('crack');}
       if(e.type==='wave')banner('waveBanner',String(e.wave).padStart(2,'0'));
-      if(e.type==='boss')banner('bossBanner','',3);
-      if(e.type==='dividend'){floats.push({x:C.W/2,y:C.H-150,key:'dividend',extra:` +${e.amount}`,life:1.7});tone(650,.1,.025);}
+      if(e.type==='boss'){banner('bossBanner','',3);soundscape.play('boss');}
+      if(e.type==='dividend'){floats.push({x:C.W/2,y:C.H-150,key:'dividend',extra:` +${e.amount}`,life:1.7});soundscape.play('coin');}
       if(e.type==='graze')floats.push({x:e.x,y:e.y-38,key:'graze',extra:'',life:.8});
       if(e.type==='over')end();
     }
@@ -266,7 +305,7 @@
       for(const e of game.entities) if(e.type!=='torpedo')drawEntity(e,time);
       const h=game.hero.position;
       if(game.shield>0){ctx.strokeStyle='#9becd9aa';ctx.lineWidth=2;ctx.fillStyle='#78dfc31b';ctx.beginPath();ctx.arc(h.x,h.y,34+Math.sin(time*5)*2,0,Math.PI*2);ctx.fill();ctx.stroke();}
-      if(phase!=='over'){
+      if(phase!=='over'&&phase!=='sinking'){
         ctx.globalAlpha=game.invulnerable>0&&Math.floor(game.time*12)%2===0?.5:1;
         ship(h.x,h.y,h.r,1.08,'player',time);ctx.globalAlpha=1;
         if(game.escort)for(const side of game.escort===1?[-1]:[-1,1])ship(Math.max(12,Math.min(C.W-12,h.x+side*32)),h.y+18,h.r,.43,'escort',time);
@@ -276,18 +315,21 @@
     for(let i=particles.length-1;i>=0;i--){const p=particles[i];if(!paused){p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;}if(p.life<=0){particles.splice(i,1);continue;}ctx.globalAlpha=Math.min(1,p.life/.3);ctx.fillStyle=p.color;ctx.fillRect(p.x,p.y,p.size,p.size);}ctx.globalAlpha=1;
     for(let i=ripples.length-1;i>=0;i--){const p=ripples[i];if(!paused){p.life-=dt;p.r+=70*dt;}if(p.life<=0){ripples.splice(i,1);continue;}ctx.strokeStyle=`rgba(224,220,180,${p.life*.7})`;ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.stroke();}
     for(let i=floats.length-1;i>=0;i--){const p=floats[i];if(!paused){p.life-=dt;p.y-=22*dt;}if(p.life<=0){floats.splice(i,1);continue;}drawLabel(`${t(p.key)}${p.extra}`,p.x,p.y,'#ffe1a1',13);}
-    ctx.restore();
+    fx.draw(ctx); ctx.restore();
   }
   function sizeCanvas(){const rect=canvas.getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.round(rect.width*dpr);canvas.height=Math.round(rect.height*dpr);labelScale=C.W/Math.max(1,rect.width);}
   function frame(now){
     const dt=lastTime===null?0:Math.min(.2,(now-lastTime)/1000);lastTime=now;
-    if(!paused)animation+=dt;
+    if(!paused){animation+=dt;fx.update(dt);}
+    if(phase==='sinking'){deathTime-=dt;if(deathTime<=0)finishSinking();}
     if(phase==='play'&&!paused){
       accumulator+=dt;
       const input={x:Number(pressed.has('right'))-Number(pressed.has('left')),y:Number(pressed.has('down'))-Number(pressed.has('up'))};
       if(pointerTarget)input.target=pointerTarget;
       while(accumulator>=1/60&&phase==='play'){C.tick(game,1/60,input);accumulator-=1/60;events();}
       bannerTime=Math.max(0,bannerTime-dt);if(bannerTime===0&&$('banner').textContent){$('banner').classList.remove('show');$('banner').textContent='';}
+      lowHealthSound-=dt;
+      if(game.hero.hp>0&&game.hero.hp<=game.hero.maxHp*.3&&lowHealthSound<=0){soundscape.play('warning');lowHealthSound=5;}
     }
     hudTime+=dt;if(hudTime>.1){updateHUD();hudTime=0;}
     draw(animation,dt);requestAnimationFrame(frame);
@@ -295,6 +337,10 @@
   const keyMap={KeyW:'up',ArrowUp:'up',KeyA:'left',ArrowLeft:'left',KeyS:'down',ArrowDown:'down',KeyD:'right',ArrowRight:'right'};
   window.addEventListener('keydown',e=>{
     if(e.ctrlKey||e.metaKey||e.altKey||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
+    if(shopOpen){
+      if(e.code==='Escape'){e.preventDefault();closeWorkshop();return;}
+      if(e.key==='Tab'){const buttons=[...$('dock').querySelectorAll('button:not(:disabled)')],first=buttons[0],last=buttons.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
+    }
     if(keyMap[e.code]&&phase==='play'&&!paused){e.preventDefault();pressed.add(keyMap[e.code]);pointerTarget=null;}
     if(e.repeat)return;
     if(e.code==='KeyP'||e.code==='Escape'){if(phase==='play'){e.preventDefault();setPaused(!paused);}}
@@ -316,12 +362,24 @@
   for(const id of ['standard','storm'])$(id).addEventListener('click',()=>chooseMode(id));
   $('lang').addEventListener('click',()=>setLanguage(lang==='en'?'zh-Hant':'en'));
   window.addEventListener('storage',e=>{if(e.key==='fulam-language')setLanguage(e.newValue==='en'?'en':'zh-Hant');});
-  $('sound').addEventListener('click',()=>{sound=!sound;unlockAudio();$('sound').setAttribute('aria-pressed',String(sound));put('sound',t(sound?'soundOn':'soundOff'));if(sound)tone(520,.1);});
+  $('sound').addEventListener('click',toggleSound);$('battle-sound').addEventListener('click',toggleSound);
+  $('dock-toggle').addEventListener('click',()=>shopOpen?closeWorkshop():openWorkshop());$('dock-close').addEventListener('click',closeWorkshop);
   $('change-mode').addEventListener('click',()=>{phase='menu';paused=false;clearInput();game=C.createState({mode});showOverlay('menu');updateHUD();$('start').focus({preventScroll:true});});
   $('share').addEventListener('click',async()=>{const text=t('shareText')(game);try{await navigator.clipboard.writeText(text);put('share-status',t('copied'));}catch{put('share-status',`${t('copyFallback')} ${text}`);}});
-  $('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.querySelector('.battle').requestFullscreen();}catch{toast('fullscreenError');}});
+  async function fullscreen(){
+    const layout=$('combat-layout');
+    try{if(document.fullscreenElement)await document.exitFullscreen();else if(layout.classList.contains('expanded'))layout.classList.remove('expanded');else if(layout.requestFullscreen)await layout.requestFullscreen();else layout.classList.add('expanded');}
+    catch{layout.classList.toggle('expanded');}
+    document.body.classList.toggle('screen-expanded',layout.classList.contains('expanded'));sizeCanvas();
+  }
+  $('fullscreen').addEventListener('click',fullscreen);$('battle-fullscreen').addEventListener('click',fullscreen);
   document.addEventListener('visibilitychange',()=>{if(document.hidden&&phase==='play'&&!paused)setPaused(true);lastTime=null;});
   window.addEventListener('blur',()=>{clearInput();if(phase==='play'&&!paused)setPaused(true);});
-  window.addEventListener('resize',sizeCanvas);document.addEventListener('fullscreenchange',sizeCanvas);
+  window.addEventListener('resize',()=>{
+    // Keep rotation safe when the mobile workshop becomes a permanent side panel.
+    if(shopOpen&&getComputedStyle($('dock-toggle')).display==='none'){closeWorkshop();setPaused(true);}
+    sizeCanvas();
+  });document.addEventListener('fullscreenchange',sizeCanvas);
+  new ResizeObserver(sizeCanvas).observe($('sea'));
   setLanguage(lang);sizeCanvas();requestAnimationFrame(frame);
 })();

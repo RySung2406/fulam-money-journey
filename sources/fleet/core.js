@@ -260,6 +260,7 @@
           if (segmentCircleHit(bullet.previous, bullet.position, ship.position, bullet.collision.radius + ship.collision.radius)) {
             ship.hp -= bullet.damage; ship.flash = 0.1; bullet.hit.add(ship);
             if (ship.hp <= 0) destroy(s, ship);
+            else emit(s, 'impact', { x: ship.position.x, y: ship.position.y });
             if (bullet.pierce <= 0) { bullet.dead = true; break; }
             bullet.pierce--;
           }

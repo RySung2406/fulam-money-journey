@@ -91,5 +91,5 @@ test('Ten minutes of endless combat has no automatic timeout and keeps entity co
 test('Delivered HTML is standalone and includes the upstream licence', () => {
   assert(html.includes('Copyright (c) 2017 Jerome Lecomte'));
   assert(!html.match(/<(?:script|link)\b[^>]*(?:src|href)=/));
-  assert(!html.includes('/* FLEET_'));assert.equal(scripts.length,2);
+  assert(!html.includes('/* FLEET_'));assert.equal(scripts.length,3);
 });

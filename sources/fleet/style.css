@@ -4,3 +4,55 @@
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
 
 .event-banner:not(.show),.toast:not(.show){visibility:hidden}
+
+/* Combat console: a complete fullscreen surface, with a paused mobile workshop. */
+.layout{grid-template-columns:minmax(175px,1fr) minmax(0,760px)}
+.combat-layout{position:relative;display:grid;grid-template-columns:minmax(0,460px) minmax(210px,1fr);gap:24px;min-width:0}
+.battle{border-radius:18px;border-color:#4c777c;background:linear-gradient(160deg,#153b47,#09212d);box-shadow:0 24px 70px #0006,inset 0 1px #d6fff518}
+.hud{background:linear-gradient(110deg,#183f49,#102b3a);height:76px}.hud>div>span{font-size:11px}
+.battle-footer{height:52px;gap:9px}.battle-footer .quiet{font-size:12px;min-width:44px;justify-content:center}
+.battle-footer svg{width:20px;height:20px;flex-shrink:0}.battle-footer .tool-icon{padding:8px}.muted{opacity:.55;text-decoration:line-through}
+.dock-toggle{display:none!important;background:#294c4e!important;color:var(--gold);border-radius:7px;padding:5px 11px!important}
+.upgrade{position:relative;border-radius:12px;min-height:88px;transition:background .2s,border-color .2s;box-shadow:inset 0 1px #ffffff09}
+.upgrade:not(:disabled){background:linear-gradient(125deg,#304b48,#173541);border-color:#d2b275;box-shadow:inset 3px 0 var(--gold)}
+.upgrade-num{display:flex;flex-direction:column;gap:6px;align-items:center}.upgrade-num svg{width:23px;height:23px;color:var(--aqua)}.upgrade-num kbd{font-size:9px}
+.upgrade-copy b{font-size:14px}.upgrade-copy small{font-size:12px}.upgrade>strong{background:#071c2844;padding:2px 5px;border-radius:5px}
+.workshop-bar{display:none}.low-health-note{position:absolute;bottom:12px;left:10px;right:10px;text-align:center;color:#ffd0bb;font-size:12px;background:#512821e8;padding:5px;border:1px solid #c77760;border-radius:6px;pointer-events:none}
+.sea.low-health{box-shadow:inset 0 0 35px #ed644a44}.low-health:after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 30px #ed644a55;pointer-events:none}
+.overlay{overflow:auto}.overlay-card{max-height:100%;overflow:auto;padding:8px 0}
+.primary{padding:8px 14px}
+.combat-layout:fullscreen,.combat-layout.expanded{padding:14px;gap:16px;background:#071c28;height:100dvh;width:100%;max-width:none;grid-template-columns:minmax(0,460px) minmax(230px,290px);justify-content:center;align-content:center;overflow:auto}
+.combat-layout.expanded{position:fixed;inset:0;z-index:100}.screen-expanded{overflow:hidden}
+.combat-layout:fullscreen .sea,.combat-layout.expanded .sea{height:calc(100dvh - 255px);min-height:230px;aspect-ratio:auto}
+@media(max-width:1020px){.layout{display:block;max-width:800px}.combat-layout{grid-template-columns:minmax(0,460px) minmax(210px,1fr)}}
+@media(max-width:760px){
+ .topbar{min-height:62px;padding:8px 12px}.layout{padding:10px 10px 20px;max-width:510px}.combat-layout{display:block}.battle{border-radius:14px}
+ .hud{height:65px;padding:9px 12px}.hud strong{font-size:23px}.hud>div>span{font-size:11px}
+ .sea{height:clamp(260px,calc(100svh - 256px),670px);aspect-ratio:auto}
+ .battle-footer{gap:7px;padding:2px 10px;height:50px}.battle-footer>span{font-size:11px}.battle-footer kbd{display:none}
+ .dock-toggle{display:flex!important;gap:6px}.battle-footer .wave-track{max-width:60px;min-width:12px}
+ .direction-pad,.mobile-hint{display:none}.combat-actions{padding:0 10px 9px}.shield-btn{min-height:48px;padding:6px 12px;gap:9px}
+ .shield-btn>span{display:flex;justify-content:space-between;align-items:center;gap:7px}.shield-btn b{font-size:13px}.shield-btn small{font-size:12px}.shield-btn svg{display:block;width:23px;height:23px}.shield-btn kbd{display:none}
+ .dock{display:none}.workshop-open .dock{display:block;position:absolute;inset:8px;z-index:12;border:1px solid #6c9293;border-radius:15px;padding:16px;background:#102f3bf8;box-shadow:0 20px 60px #0008;overflow:auto;backdrop-filter:blur(8px)}
+ .workshop-open .workshop-bar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px;color:var(--aqua);font-size:12px}.workshop-bar button{flex-shrink:0}
+ .dock-heading h2{font-size:24px;display:block}.dock-heading .eyebrow{display:none}.dock-heading p{font-size:13px}
+ .upgrades{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}.upgrade{min-height:108px;padding:12px 9px;gap:7px}.upgrade-num{display:flex}.upgrade-num kbd{display:none}.upgrade-num svg{width:20px;height:20px}.upgrade-copy b{font-size:13px}.upgrade-copy small{font-size:12px}.upgrade>strong{font-size:13px;padding:0 3px}
+ .income p{font-size:12px}.enemy-guide{display:none}.dock .income{margin-top:14px}.sector{font-size:11px;top:10px}.boss-bar{top:36px}
+ .combat-layout:fullscreen,.combat-layout.expanded{display:block;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);overflow:auto}
+ .combat-layout:fullscreen .battle,.combat-layout.expanded .battle{max-width:510px;margin:auto;border-radius:0}
+ .combat-layout:fullscreen .sea,.combat-layout.expanded .sea{height:calc(100dvh - 180px - env(safe-area-inset-top) - env(safe-area-inset-bottom));min-height:240px}
+ .combat-layout:fullscreen .dock,.combat-layout.expanded .dock{max-width:490px;margin:auto}
+ .overlay h2{font-size:27px;margin:8px 0}.overlay-card>p:not(.eyebrow){font-size:13px;line-height:1.65}.badge-mark{height:40px;width:40px;margin-bottom:8px}.modes{margin:14px 0 10px}.mode b{font-size:12px}.mode span{font-size:11px}.primary{min-height:48px}
+}
+@media(max-width:360px){.layout{padding:8px 6px 16px}.battle-footer{gap:4px;padding-inline:7px}.battle-footer .wave-track{display:none}.battle-footer .dock-toggle{margin-right:auto}.upgrades{grid-template-columns:1fr}.upgrade{min-height:78px}.workshop-open .dock{padding:12px}.mode span{font-size:10px}.overlay h2,html[lang=en] .overlay h2{font-size:23px}.overlay{padding:12px}.badge-mark{display:none}}
+@media(max-height:600px) and (min-width:761px){.topbar,.brief{display:none}.layout{padding:8px;max-width:1000px}.combat-layout{grid-template-columns:minmax(0,1fr) 260px;gap:16px}.sea{height:calc(100svh - 194px);min-height:220px;aspect-ratio:auto}.direction-pad{display:none}.combat-actions{padding:4px 10px}.shield-btn{min-height:46px}.dock{padding-top:0}.dock-heading p,.dock-heading .eyebrow,.income,.enemy-guide{display:none}.upgrades{margin-top:10px;gap:5px}.upgrade{min-height:62px;padding:7px}.upgrade-copy small{font-size:11px}.level-dots{margin-top:5px}.overlay h2{font-size:23px}.badge-mark{display:none}.overlay-card>p:not(.eyebrow){font-size:12px}.modes{margin:10px 0}.dock-heading h2{margin:0}}
+@media(min-width:761px) and (min-height:601px){.sea{max-height:calc(100svh - 370px);min-height:320px;aspect-ratio:auto;height:660px}}
+@media(max-height:600px) and (min-width:761px){.hud{height:58px;padding:6px 12px}.hud strong{font-size:21px}.sea{height:calc(100svh - 186px);min-height:150px}.combat-actions{height:48px}.shield-btn{min-height:40px;padding:4px 10px}.shield-btn>span{display:flex;align-items:center;justify-content:space-between}.shield-btn small{font-size:12px}.overlay{padding:8px 18px}.overlay-card{padding:0}.overlay h2,html[lang=en] .overlay h2{font-size:20px;margin:3px 0}.overlay h2 br{display:none}#menu>.eyebrow,#menu>p:not(.eyebrow){display:none}.modes{margin:7px 0}.mode{min-height:50px;padding:5px}.primary{min-height:44px}.overlay-card .primary>span:last-child:not(:first-child){font-size:18px}.overlay-card #end-score{font-size:28px}.overlay #end-menu .primary{margin-top:8px}}
+@media(max-width:760px) and (max-height:650px){#menu>.eyebrow,.badge-mark{display:none}.overlay h2,html[lang=en] .overlay h2{font-size:22px;line-height:1.2;margin:4px 0 8px}.overlay-card>p:not(.eyebrow){font-size:12px;line-height:1.5}.mode{min-height:54px;padding:6px}.modes{margin:10px 0}.primary{min-height:46px}.overlay-card .primary>span:last-child:not(:first-child){font-size:18px}}
+@media(max-height:600px) and (orientation:landscape){
+ .topbar,.brief{display:none}.layout{padding:8px;max-width:1000px}.combat-layout,.combat-layout:fullscreen,.combat-layout.expanded{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:12px;align-content:start}.combat-layout:fullscreen,.combat-layout.expanded{padding:8px}
+ .hud{height:58px;padding:6px 10px}.hud strong{font-size:21px}.sea,.combat-layout:fullscreen .sea,.combat-layout.expanded .sea{height:calc(100svh - 178px);min-height:128px;max-height:none;aspect-ratio:auto}.combat-layout .battle{width:100%;max-width:none}
+ .direction-pad,.mobile-hint{display:none}.battle-footer{height:50px}.combat-actions{height:48px;padding:3px 10px}.shield-btn{min-height:40px;padding:3px 10px}.shield-btn>span{display:flex;align-items:center;justify-content:space-between}.shield-btn small{font-size:11px}.shield-btn kbd{display:none}
+ .dock,.combat-layout:fullscreen .dock,.combat-layout.expanded .dock{display:block;padding:0;min-width:0;margin:0;max-width:none}.dock-heading h2{display:block;font-size:20px;margin:0 0 6px}.dock-heading p,.dock-heading .eyebrow,.income,.enemy-guide{display:none}.upgrades{display:flex;flex-direction:column;gap:5px;margin:0}.upgrade{min-height:58px;padding:6px;gap:7px}.upgrade-num{display:flex}.upgrade-num kbd{display:none}.upgrade-num svg{width:20px;height:20px}.upgrade-copy b{font-size:12px}.upgrade-copy small{font-size:11px;margin-top:2px}.level-dots{margin-top:4px}.upgrade>strong{font-size:12px}
+ .dock-toggle{display:none!important}.overlay{padding:7px 14px}.overlay-card{padding:0}.overlay h2,html[lang=en] .overlay h2{font-size:20px;line-height:1.2;margin:2px 0 6px}.overlay h2 br{display:none}#menu>.eyebrow,#menu>p:not(.eyebrow),.badge-mark{display:none}.modes{margin:6px 0}.mode{min-height:48px;padding:5px}.primary{min-height:44px;padding:6px 10px}.primary>span:last-child:not(:first-child){font-size:18px}
+}

@@ -1,0 +1,44 @@
+/* Compact ocean console. Skills stay outside the water and inside fullscreen. */
+.scene{border-radius:19px;border-color:#70c8b54d;box-shadow:0 24px 65px #0005,inset 0 1px #d2fff522}
+.overlay{grid-template-rows:minmax(0,1fr)}.card{min-height:0}
+.game-tool{display:none}.game-tool.muted{opacity:.5}
+@media(min-width:751px) and (min-height:601px){.scene{height:clamp(300px,calc(100svh - 420px),560px);min-height:300px}}
+.control-panel{background:linear-gradient(120deg,#17464b,#0b2d36);box-shadow:inset 0 1px #d2fff514}
+.ability{--charge:0%;overflow:hidden;border-color:#719a9944;background:linear-gradient(160deg,#123d45,#082a34);transition:border-color .2s,background .2s}
+.ability:after{content:"";position:absolute;bottom:0;left:0;width:var(--charge);height:3px;background:var(--mint);transition:width .1s linear;pointer-events:none}
+.ability-bomb:after{background:#ffb397}.ability-lure:after{background:#c9b5ff}.ability-double:after,.ability-rapid:after{background:#ffdb85}
+.ability.locked{opacity:.5;background:#09252d}.ability.active{box-shadow:inset 0 0 0 1px #b8ffe266;background:#235551}
+.ability:not(:disabled){border-color:#9be8cf88}.ability span{font-size:13px}.ability small{font-size:12px}
+.score-label,.score-sub{font-size:12px}.score-value{font-variant-numeric:tabular-nums}.mission{font-size:12px}
+.wrap:fullscreen,.wrap.expanded{width:100%;max-width:none;height:100dvh;padding:10px 16px;display:flex;flex-direction:column;background:#061c23;overflow:auto}
+.wrap.expanded{position:fixed;inset:0;z-index:100}.screen-expanded{overflow:hidden}
+.wrap:fullscreen .heading,.wrap.expanded .heading,.wrap:fullscreen .footer,.wrap.expanded .footer{display:none}
+.wrap:fullscreen .top,.wrap.expanded .top{display:flex;flex-shrink:0;margin:0 0 8px}
+.wrap:fullscreen .play-console,.wrap.expanded .play-console{flex:1;min-height:0;display:flex;flex-direction:column}
+.wrap:fullscreen .scene,.wrap.expanded .scene{flex:1;height:auto;min-height:230px;max-height:none}
+.wrap:fullscreen .control-panel,.wrap.expanded .control-panel{flex-shrink:0;padding:10px 14px;margin-top:8px}
+.wrap:fullscreen .control-top,.wrap.expanded .control-top{margin-bottom:8px}.wrap:fullscreen .ability,.wrap.expanded .ability{min-height:65px}
+@media(max-width:750px){
+ .wrap{padding:10px 10px calc(10px + env(safe-area-inset-bottom))}.top{margin-bottom:9px;gap:6px}.brand-mark{display:none}.brand-name{font-size:13px;letter-spacing:.04em}.eyebrow{font-size:8px;letter-spacing:.09em}.top-actions{gap:4px}.language-switch{min-height:44px;padding:6px;font-size:11px}.icon-btn{width:44px;height:44px}.heading{margin-bottom:10px}.heading small{display:none}.heading h1{font-size:22px}.tag{font-size:11px}
+ .play-console{height:calc(100svh - 108px - env(safe-area-inset-bottom));min-height:435px;display:flex;flex-direction:column}.scene{flex:1;height:auto;min-height:240px;max-height:none;border-radius:15px}
+ .game-active .heading{display:none}.game-active .play-console{height:calc(100svh - 74px - env(safe-area-inset-bottom))}
+ .control-panel{flex-shrink:0;padding:9px 10px;margin-top:7px;border-radius:13px}.control-top{margin-bottom:8px;align-items:center;gap:8px}
+ .control-label,.effect-status{display:none}.level{font-size:12px;line-height:1.35;letter-spacing:0}.weapon-mode{font-size:11px;margin:4px 0 0;line-height:1.35}
+ .cannon-progress{min-width:0;flex:1}.upgrade{min-width:120px;max-width:47%;min-height:48px;padding:6px 9px;gap:6px}.upgrade b{font-size:12px}.upgrade small{font-size:11px}.upgrade svg{width:17px;height:17px}
+ .abilities{gap:6px;grid-template-columns:repeat(3,minmax(0,1fr))}.ability{min-height:59px;padding:6px 3px 7px;display:grid;grid-template-columns:23px 1fr;grid-template-rows:auto auto;column-gap:4px;row-gap:1px;align-content:center;text-align:left;border-radius:10px}
+ .ability-symbol{grid-row:1/3}.ability-symbol svg{width:22px;height:22px}.ability>span:not(.ability-symbol){font-size:12px;justify-self:start}.ability small{font-size:11px;justify-self:start;text-align:left;white-space:normal;min-height:0}.ability kbd,.hud-pause kbd,.upgrade kbd{display:none}
+ .hud{left:12px;right:10px;top:12px}.hud-right{gap:6px}.score-label{font-size:11px}.score-sub{font-size:11px}.timer{display:none}.score-value{font-size:28px}.combo{top:77px}.combo b{font-size:21px}.event{top:113px;font-size:12px}.mission{font-size:11px;max-width:calc(50% - 44px);bottom:10px;left:10px}
+ .card{padding:17px 18px}.card h2{font-size:25px}.card p{font-size:12px}.card .label{font-size:10px;letter-spacing:.12em}.card .modal-language{min-height:36px;font-size:11px}.difficulty{margin:10px 0!important}.primary{min-height:46px}.overlay{padding:12px}.footer{padding-top:4px}
+ .wrap:fullscreen,.wrap.expanded{padding:max(6px,env(safe-area-inset-top)) 7px max(6px,env(safe-area-inset-bottom))}.wrap:fullscreen .play-console,.wrap.expanded .play-console{height:auto;min-height:0}.wrap:fullscreen .control-panel,.wrap.expanded .control-panel{padding:9px}.wrap:fullscreen .ability,.wrap.expanded .ability{min-height:59px}
+}
+@media(max-width:350px){.brand-name{font-size:12px}.eyebrow{display:none}.top-actions{gap:3px}.wrap{padding-inline:7px}.top{gap:4px}.ability{grid-template-columns:18px 1fr;column-gap:3px}.ability-symbol svg{width:18px;height:18px}.ability>span:not(.ability-symbol){font-size:11px}.ability small{font-size:10px}.control-panel{padding:8px}.upgrade{min-width:110px;padding:6px;gap:4px}.upgrade svg{display:none}.level{font-size:11px}.weapon-mode{font-size:10px}}
+@media(max-width:750px) and (orientation:portrait){
+ .wrap{height:100svh;display:flex;flex-direction:column}.top,.heading,.footer{flex-shrink:0}.play-console,.game-active .play-console{height:auto;min-height:0;flex:1}.scene{min-height:190px}.footer .keys>span{display:none}.footer .keys{flex-shrink:0}.footer{font-size:10px}.card h2{font-size:23px}.card .label{display:none}.card .modal-language{margin-bottom:5px}.card p{line-height:1.5}
+}
+@media(max-height:600px) and (orientation:landscape){
+ .wrap,.wrap:fullscreen,.wrap.expanded{padding:8px}.top,.heading,.footer,.wrap:fullscreen .top,.wrap.expanded .top{display:none}
+ .play-console,.game-active .play-console,.wrap:fullscreen .play-console,.wrap.expanded .play-console{display:grid;grid-template-columns:minmax(0,1fr) 236px;gap:8px;height:calc(100svh - 16px);min-height:280px;flex:none}
+ .scene,.wrap:fullscreen .scene,.wrap.expanded .scene{height:100%;min-height:0;max-height:none}.control-panel,.wrap:fullscreen .control-panel,.wrap.expanded .control-panel{margin:0;padding:10px;overflow:auto}.control-top{display:block;margin-bottom:10px}.control-label,.effect-status{display:none}.upgrade{margin-top:8px;width:100%;max-width:none;min-height:45px}.abilities{grid-template-columns:1fr 1fr;gap:6px}.ability,.wrap:fullscreen .ability,.wrap.expanded .ability{min-height:62px;display:flex;padding:5px;gap:2px}.ability span{font-size:11px}.ability small{font-size:10px}.ability kbd{display:none}.hud{top:8px;left:10px;right:8px}.hud-right{gap:5px}.timer{display:none}.game-language{display:block}.card{max-height:100%;padding:12px 18px}.card h2{font-size:23px}.card .label{display:none}.score-value{font-size:24px}.combo{top:65px}.event{top:97px}.mission{font-size:11px}.modal-language{min-height:32px}
+}
+@media(max-height:600px) and (orientation:landscape){.game-tool{display:grid;width:36px;height:36px}.game-language{padding:4px;min-height:36px;font-size:10px}.hud-pause{width:36px;height:36px}.hud-pause kbd{display:none}.hud-right{gap:4px}}
+@media(max-height:600px) and (orientation:landscape){.control-panel .upgrade{min-height:44px;padding:5px 8px}.abilities .ability{min-height:54px;display:grid;grid-template-columns:21px 1fr;grid-template-rows:auto auto;column-gap:4px;row-gap:1px;padding:6px 3px;text-align:left;align-content:center}.ability-symbol{grid-row:1/3}.ability-symbol svg{width:21px;height:21px}.ability>span:not(.ability-symbol),.ability small{justify-self:start;text-align:left}.control-top{margin-bottom:8px}}
