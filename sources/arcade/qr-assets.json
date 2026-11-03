@@ -5,18 +5,18 @@
   "items": [
     {
       "file": "site/arcade/knife-qr.svg",
-      "url": "https://rysung2406.github.io/fulam-money-journey/game/?mode=web&v=booth-v3",
-      "sha256": "ec358adaa78b4c05528cdf00c4720c3a0408e8837b3ffec4abbc5594e6411c42"
+      "url": "https://rysung2406.github.io/fulam-money-journey/game/?mode=web&v=booth-v4",
+      "sha256": "f9d8ba32de840cc5ed62cfaf9ec4e051d305976b78c8162ad5d36f8803b77625"
     },
     {
       "file": "site/arcade/fishing-qr.svg",
-      "url": "https://rysung2406.github.io/fulam-money-journey/fishing/?mode=web&v=booth-v3",
-      "sha256": "afb8cdfc5fe2b920aacd87bf3b4bb33771d14a07870902fe0a1e726ac2902e0d"
+      "url": "https://rysung2406.github.io/fulam-money-journey/fishing/?mode=web&v=booth-v4",
+      "sha256": "17ef1f6bcca2931fa5809f6dfef2a6d8d33b56a85bd00ae203bc9edd6a49f8fd"
     },
     {
       "file": "site/arcade/fleet-qr.svg",
-      "url": "https://rysung2406.github.io/fulam-money-journey/fleet/?mode=web&v=booth-v3",
-      "sha256": "10d49ab867e0876fd9c85e9827c573f9cabac79077723d5cb9f0e2c464614ee7"
+      "url": "https://rysung2406.github.io/fulam-money-journey/fleet/?mode=web&v=booth-v4",
+      "sha256": "a9ae07c3e5294085014e618ca8141a516990db9bf310a8e54ebdd35bc00585c3"
     }
   ]
 }

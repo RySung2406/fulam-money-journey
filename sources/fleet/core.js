@@ -49,15 +49,21 @@
   };
   const MAX = { weapon: 5, escort: 3, reserve: 3 };
   const COSTS = { weapon: [0, 45, 85, 145, 220], escort: [65, 120, 190], reserve: [50, 90, 140] };
+  const MODE_RULES = {
+    standard: { armour: 100, enemy: 1, bullet: 1 },
+    booth: { armour: 88, enemy: 1.1, bullet: 1.08 },
+    storm: { armour: 75, enemy: 1.2, bullet: 1.16 }
+  };
   function createState({ seed = Date.now(), mode = 'standard', arcade = false } = {}) {
+    mode = Object.hasOwn(MODE_RULES, mode) ? mode : 'standard';
     const state = {
       arcade, weaponKind: 0, power: 1, paidPower: 0,
-      mode: mode === 'storm' ? 'storm' : 'standard', random: rng(seed), time: 0, wave: 1, waveKills: 0,
+      mode, random: rng(seed), time: 0, wave: 1, waveKills: 0,
       goal: 8, kills: 0, score: 0, cash: 35, income: 0, dividend: 0, combo: 0, comboTime: 0,
       weapon: 1, escort: 0, reserve: 0, shield: 0, shieldCooldown: 0, invulnerable: 1.5,
       fireTime: 0.1, escortTime: 0.5, shots: 0, spawnTime: 0.45, bossSpawned: false,
       entities: [], raised: [], events: [], running: true, lastReason: null,
-      hero: createEntity('player', { position: new Position(W / 2, H - 100, -Math.PI / 2), velocity: new Velocity(230), collision: new Collision(true, true, 13, FRIEND), hp: mode === 'storm' ? 75 : 100, maxHp: mode === 'storm' ? 75 : 100 })
+      hero: createEntity('player', { position: new Position(W / 2, H - 100, -Math.PI / 2), velocity: new Velocity(230), collision: new Collision(true, true, 13, FRIEND), hp: MODE_RULES[mode].armour, maxHp: MODE_RULES[mode].armour })
     };
     return state;
   }
@@ -73,10 +79,10 @@
   function spawnEnemy(s, kind) {
     const r = s.random, spec = SPECS[kind];
     const growth = 1 + (s.wave - 1) * 0.14;
-    const hp = Math.round(spec.hp * growth * (s.mode === 'storm' ? 1.2 : 1));
+    const hp = Math.round(spec.hp * growth * MODE_RULES[s.mode].enemy);
     const x = kind === 'boss' ? W / 2 : 38 + r() * (W - 76);
     const entity = createEntity('ship', {
-      kind, position: new Position(x, -65, Math.PI / 2), velocity: new Velocity(spec.speed * (s.mode === 'storm' ? 1.2 : 1)),
+      kind, position: new Position(x, -65, Math.PI / 2), velocity: new Velocity(spec.speed * MODE_RULES[s.mode].enemy),
       collision: new Collision(true, true, spec.radius, ENEMY), strategy: new Strategy(kind, spec.attack / Math.min(2, 1 + s.wave * 0.035)),
       hp, maxHp: hp, value: spec.value, age: 0, phase: r() * TAU, originX: x, flash: 0
     });
@@ -150,7 +156,7 @@
   function enemyFire(s, entity) {
     const p = entity.position, h = s.hero.position;
     const a = Math.atan2(h.y - p.y, h.x - p.x);
-    const threat = (s.mode === 'storm' ? 1.16 : 1) * Math.min(1.7, 1 + s.wave * 0.025);
+    const threat = MODE_RULES[s.mode].bullet * Math.min(1.7, 1 + s.wave * 0.025);
     let angles = [a];
     if (entity.kind === 'inflation') angles = [a - 0.28, a, a + 0.28];
     if (entity.kind === 'boss') angles = Array.from({ length: 9 }, (_, i) => a + (i - 4) * 0.21);
@@ -229,7 +235,7 @@
     if (s.wave % (s.arcade ? 3 : 4) === 0 && !s.bossSpawned) { spawnEnemy(s, 'boss'); s.bossSpawned = true; emit(s, 'boss'); }
     s.spawnTime -= dt;
     if (s.spawnTime <= 0) {
-      s.spawnTime += Math.max(0.42, 1.5 - s.wave * 0.1) / (s.mode === 'storm' ? 1.2 : 1);
+      s.spawnTime += Math.max(0.42, 1.5 - s.wave * 0.1) / MODE_RULES[s.mode].enemy;
       if (ships.length < Math.min(14, 4 + s.wave * 2)) {
         const types = s.wave === 1 ? ['fee', 'fee', 'scam'] : s.wave === 2 ? ['fee', 'scam', 'inflation'] : ['fee', 'scam', 'inflation', 'debt'];
         spawnEnemy(s, types[Math.floor(s.random() * types.length)]);

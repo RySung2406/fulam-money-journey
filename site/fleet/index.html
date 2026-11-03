@@ -533,15 +533,21 @@ from (http://code.google.com/p/pyqrnative):
   };
   const MAX = { weapon: 5, escort: 3, reserve: 3 };
   const COSTS = { weapon: [0, 45, 85, 145, 220], escort: [65, 120, 190], reserve: [50, 90, 140] };
+  const MODE_RULES = {
+    standard: { armour: 100, enemy: 1, bullet: 1 },
+    booth: { armour: 88, enemy: 1.1, bullet: 1.08 },
+    storm: { armour: 75, enemy: 1.2, bullet: 1.16 }
+  };
   function createState({ seed = Date.now(), mode = 'standard', arcade = false } = {}) {
+    mode = Object.hasOwn(MODE_RULES, mode) ? mode : 'standard';
     const state = {
       arcade, weaponKind: 0, power: 1, paidPower: 0,
-      mode: mode === 'storm' ? 'storm' : 'standard', random: rng(seed), time: 0, wave: 1, waveKills: 0,
+      mode, random: rng(seed), time: 0, wave: 1, waveKills: 0,
       goal: 8, kills: 0, score: 0, cash: 35, income: 0, dividend: 0, combo: 0, comboTime: 0,
       weapon: 1, escort: 0, reserve: 0, shield: 0, shieldCooldown: 0, invulnerable: 1.5,
       fireTime: 0.1, escortTime: 0.5, shots: 0, spawnTime: 0.45, bossSpawned: false,
       entities: [], raised: [], events: [], running: true, lastReason: null,
-      hero: createEntity('player', { position: new Position(W / 2, H - 100, -Math.PI / 2), velocity: new Velocity(230), collision: new Collision(true, true, 13, FRIEND), hp: mode === 'storm' ? 75 : 100, maxHp: mode === 'storm' ? 75 : 100 })
+      hero: createEntity('player', { position: new Position(W / 2, H - 100, -Math.PI / 2), velocity: new Velocity(230), collision: new Collision(true, true, 13, FRIEND), hp: MODE_RULES[mode].armour, maxHp: MODE_RULES[mode].armour })
     };
     return state;
   }
@@ -557,10 +563,10 @@ from (http://code.google.com/p/pyqrnative):
   function spawnEnemy(s, kind) {
     const r = s.random, spec = SPECS[kind];
     const growth = 1 + (s.wave - 1) * 0.14;
-    const hp = Math.round(spec.hp * growth * (s.mode === 'storm' ? 1.2 : 1));
+    const hp = Math.round(spec.hp * growth * MODE_RULES[s.mode].enemy);
     const x = kind === 'boss' ? W / 2 : 38 + r() * (W - 76);
     const entity = createEntity('ship', {
-      kind, position: new Position(x, -65, Math.PI / 2), velocity: new Velocity(spec.speed * (s.mode === 'storm' ? 1.2 : 1)),
+      kind, position: new Position(x, -65, Math.PI / 2), velocity: new Velocity(spec.speed * MODE_RULES[s.mode].enemy),
       collision: new Collision(true, true, spec.radius, ENEMY), strategy: new Strategy(kind, spec.attack / Math.min(2, 1 + s.wave * 0.035)),
       hp, maxHp: hp, value: spec.value, age: 0, phase: r() * TAU, originX: x, flash: 0
     });
@@ -634,7 +640,7 @@ from (http://code.google.com/p/pyqrnative):
   function enemyFire(s, entity) {
     const p = entity.position, h = s.hero.position;
     const a = Math.atan2(h.y - p.y, h.x - p.x);
-    const threat = (s.mode === 'storm' ? 1.16 : 1) * Math.min(1.7, 1 + s.wave * 0.025);
+    const threat = MODE_RULES[s.mode].bullet * Math.min(1.7, 1 + s.wave * 0.025);
     let angles = [a];
     if (entity.kind === 'inflation') angles = [a - 0.28, a, a + 0.28];
     if (entity.kind === 'boss') angles = Array.from({ length: 9 }, (_, i) => a + (i - 4) * 0.21);
@@ -713,7 +719,7 @@ from (http://code.google.com/p/pyqrnative):
     if (s.wave % (s.arcade ? 3 : 4) === 0 && !s.bossSpawned) { spawnEnemy(s, 'boss'); s.bossSpawned = true; emit(s, 'boss'); }
     s.spawnTime -= dt;
     if (s.spawnTime <= 0) {
-      s.spawnTime += Math.max(0.42, 1.5 - s.wave * 0.1) / (s.mode === 'storm' ? 1.2 : 1);
+      s.spawnTime += Math.max(0.42, 1.5 - s.wave * 0.1) / MODE_RULES[s.mode].enemy;
       if (ships.length < Math.min(14, 4 + s.wave * 2)) {
         const types = s.wave === 1 ? ['fee', 'fee', 'scam'] : s.wave === 2 ? ['fee', 'scam', 'inflation'] : ['fee', 'scam', 'inflation', 'debt'];
         spawnEnemy(s, types[Math.floor(s.random() * types.length)]);
@@ -1013,16 +1019,16 @@ from (http://code.google.com/p/pyqrnative):
   root.FuLamArcade = { Audio, Effects, bindAction, Pointers };
 })(globalThis);
 </script>
-<script>/* FuLam arcade progression v3. Original code; scores are local, not verified online records. */
+<script>/* FuLam arcade progression v4. Original code; scores are local, not verified online records. */
 (function(root){
  'use strict';
- const VERSION='booth-v3', LIMIT=180, ROUND=30, CHOICE=8;
+ const VERSION='booth-v4', LIMIT=180, ROUND=30, CHOICE=8;
  const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function random(seed){return()=>{let t=seed+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;};}
  class Run {
   constructor(game,scene='web',difficulty='standard',seed=Date.now()){
-   this.game=game;this.scene=scene==='booth'?'booth':'web';this.difficulty=this.scene==='booth'?'standard':difficulty==='challenge'?'challenge':'standard';
+   this.game=game;this.scene=scene==='booth'?'booth':'web';this.difficulty=this.scene==='booth'?'intermediate':difficulty==='challenge'?'challenge':'standard';
    this.seed=this.scene==='booth'?20261104:seed;this.random=random(this.seed);this.active=0;this.total=0;this.wave=1;this.roundTime=0;this.choiceTime=0;this.phase='play';this.choices=[];this.reason='';this.power=0;this.support=0;this.swaps=0;this.weapon=0;this.reserveWeapon=1;this.swapCooldown=0;
   }
   tick(dt,playing=true){
@@ -1050,17 +1056,18 @@ from (http://code.google.com/p/pyqrnative):
  function saveBoard(storage,key,record){const a=readBoard(storage,key);a.push(record);a.sort((x,y)=>y.score-x.score||y.wave-x.wave);const rank=a.indexOf(record)+1;try{storage.setItem(key,JSON.stringify(a.slice(0,10)));return{rank,board:a.slice(0,10),saved:true};}catch{return{rank,board:a.slice(0,10),saved:false};}}
  const WEAPONS={fishing:[['散射炮','Spread'],['穿透光束','Beam'],['連鎖電炮','Chain lightning'],['重型能量炮','Plasma']],fleet:[['速射機炮','Autocannon'],['扇形散射','Spread'],['聚焦雷射','Laser'],['追蹤導彈','Missiles']],knife:[['精準短刀','Precision'],['連斬長刀','Combo blade'],['蓄能刀','Focus blade']]};
  class UI {
-  constructor(game,language){this.game=game;this.language=language;this.scene=new URLSearchParams(location.search).get('mode')==='booth'?'booth':'web';this.difficulty='standard';this.run=null;this.overlay=null;this.saved=false;this.onChoice=()=>{};this.onEnd=()=>{};this.onSwap=()=>{};this.onIntermission=()=>{};}
+  constructor(game,language){this.game=game;this.language=language;this.scene=new URLSearchParams(location.search).get('mode')==='booth'?'booth':'web';this.difficulty=this.scene==='booth'?'intermediate':'standard';this.run=null;this.overlay=null;this.saved=false;this.onChoice=()=>{};this.onEnd=()=>{};this.onSwap=()=>{};this.onIntermission=()=>{};}
   en(){return this.language()==='en';}
   text(zh,en){return this.en()?en:zh;}
+  sliceHearts(){return this.scene==='booth'?4:this.difficulty==='challenge'?3:5;}
   name(id){return WEAPONS[this.game][id][this.en()?1:0];}
   best(){try{const r=this.run||new Run(this.game,this.scene,this.difficulty);return readBoard(localStorage,r.key(this.topic||'',this.recordLanguage||''))[0]?.score||0;}catch{return 0;}}
   settings(host,change=()=>{}){
    if(!host)return;
    const hints=this.game==='knife'?[this.text('5 顆心 · 循序闖關','5 hearts · Steady pace'),this.text('3 顆心 · 更快拋袋','3 hearts · Faster bags')]:this.game==='fleet'?[this.text('100 護甲 · 循序加壓','100 armour · Steady pace'),this.text('75 護甲 · 高速彈幕','75 armour · Faster threats')]:[this.text('較慢魚群 · 輕鬆上手','Slower fish · Get started'),this.text('更快更強 · 能源壓力','Stronger fish · Energy pressure')];
-   host.innerHTML=`<div class="journey-settings"><p class="journey-setting-label">${this.text('自由遊玩 · 選擇難度','FREE PLAY · CHOOSE DIFFICULTY')}</p><div class="journey-options" role="group" aria-label="${this.text('頁遊難度','Free play difficulty')}"><button type="button" data-difficulty="standard"><b>${this.text('標準','Standard')}</b><small>${hints[0]}</small></button><button type="button" data-difficulty="challenge"><b>${this.text('挑戰','Challenge')}</b><small>${hints[1]}</small></button></div><button type="button" class="journey-booth" data-scene="booth"><span><b>Booth ${this.text('現場挑戰','Challenge')}</b><small>${this.text('固定標準 · 獨立本機榜','Fixed standard · Separate local board')}</small></span><strong>180s</strong></button><p class="journey-rule" aria-live="polite"></p></div>`;
+   host.innerHTML=`<div class="journey-settings"><p class="journey-setting-label">${this.text('自由遊玩 · 選擇難度','FREE PLAY · CHOOSE DIFFICULTY')}</p><div class="journey-options" role="group" aria-label="${this.text('頁遊難度','Free play difficulty')}"><button type="button" data-difficulty="standard"><b>${this.text('標準','Standard')}</b><small>${hints[0]}</small></button><button type="button" data-difficulty="challenge"><b>${this.text('挑戰','Challenge')}</b><small>${hints[1]}</small></button></div><button type="button" class="journey-booth" data-scene="booth"><span><b>Booth ${this.text('現場挑戰','Challenge')}</b><small>${this.text('中等難度 · 獨立本機榜','Intermediate · Separate local board')}</small></span><strong>180s</strong></button><p class="journey-rule" aria-live="polite"></p></div>`;
    const update=()=>{host.querySelectorAll('[data-difficulty]').forEach(b=>b.setAttribute('aria-pressed',String(this.scene==='web'&&b.dataset.difficulty===this.difficulty)));host.querySelector('[data-scene]').setAttribute('aria-pressed',String(this.scene==='booth'));host.querySelector('.journey-rule').textContent=this.scene==='booth'?this.text('已選 Booth · 180 秒包含暫停及強化','Booth selected · 180s includes pauses & upgrades'):this.game==='knife'?this.text('每關 20 個選項 · 完成後三選一強化','20 choices per stage · Pick an upgrade between stages'):this.text('無盡回合 · 每 30 秒三選一強化','Endless rounds · Pick an upgrade every 30s');change(this.difficulty,this.scene);};
-   host.querySelector('[data-scene]').onclick=()=>{this.scene='booth';this.difficulty='standard';update();};
+   host.querySelector('[data-scene]').onclick=()=>{this.scene='booth';this.difficulty='intermediate';update();};
    host.querySelectorAll('[data-difficulty]').forEach(b=>b.onclick=()=>{this.scene='web';this.difficulty=b.dataset.difficulty;update();});update();
   }
   guide(host,onStart,onBack,question=''){
@@ -1079,9 +1086,9 @@ from (http://code.google.com/p/pyqrnative):
     ['01',this.text('先看題目，再切正確錢袋','Read first, then slice correct bags'),this.text('每關 20 個選項，分批出現；讓錯誤選項落下。','20 choices per stage, shown in small groups. Let wrong choices fall.')],
     ['↗',this.text('手指／滑鼠劃過錢袋','Swipe with your finger or mouse'),this.text('鍵盤可用 Tab 選袋，再按 Enter 或 Space。','Keyboard: Tab to a bag, then Enter or Space.')],
     ['E / Q',this.text('換刀／慢時：就在畫面下方','Switch / Focus: buttons below the arena'),this.text('E 換刀；蓄能刀充滿後按 Q 慢時。P 暫停。','E switches blades; Q slows time when Focus is charged. P pauses.')],
-    ['♥',this.text('錯切扣 1 心；漏切也有代價','Wrong cuts cost a heart; misses add up'),this.text(this.difficulty==='challenge'?'挑戰 3 心；每漏切 3 個正確選項扣 1 心。':'標準 5 心；每漏切 5 個正確選項扣 1 心。',this.difficulty==='challenge'?'Challenge: 3 hearts; 3 missed correct bags cost a heart.':'Standard: 5 hearts; 5 missed correct bags cost a heart.')]
+    ['♥',this.text('錯切扣 1 心；漏切也有代價','Wrong cuts cost a heart; misses add up'),this.text(`${this.scene==='booth'?'Booth 中等':this.difficulty==='challenge'?'挑戰':'標準'} ${this.sliceHearts()} 心；每漏切 ${this.sliceHearts()} 個正確選項扣 1 心。`,`${this.scene==='booth'?'Booth intermediate':this.difficulty==='challenge'?'Challenge':'Standard'}: ${this.sliceHearts()} hearts; ${this.sliceHearts()} missed correct bags cost a heart.`)]
    ];
-   o.innerHTML=`<div class="journey-card"><span class="journey-kicker">${this.text('開始前 · 操作指引','BEFORE YOU PLAY')}</span><h2>${this.text('準備好，再開始。','Ready when you are.')}</h2>${question?`<p class="journey-guide-question">${esc(question)}</p>`:''}<div class="journey-guide-grid">${rows.map(([key,title,copy])=>`<div><kbd>${esc(key)}</kbd><p><b>${esc(title)}</b><small>${esc(copy)}</small></p></div>`).join('')}</div><p class="journey-guide-rule">${this.scene==='booth'?this.text('Booth · 按開始後才計時，最多 180 秒。','Booth · The 180s clock starts only when you press Start.'):this.text('自由遊玩 · 沒有總時限，挑戰最高分。','Free play · No overall time limit. Chase your best score.')}</p><div class="journey-guide-actions"><button class="journey-exit" data-guide-back>${this.text('返回選單','Back')}</button><button class="journey-begin" data-guide-start>${this.text('知道了，開始！','Got it — start!')}</button></div></div>`;
+   o.innerHTML=`<div class="journey-card"><span class="journey-kicker">${this.text('開始前 · 操作指引','BEFORE YOU PLAY')}</span><h2>${this.text('準備好，再開始。','Ready when you are.')}</h2>${question?`<p class="journey-guide-question">${esc(question)}</p>`:''}<div class="journey-guide-grid">${rows.map(([key,title,copy])=>`<div><kbd>${esc(key)}</kbd><p><b>${esc(title)}</b><small>${esc(copy)}</small></p></div>`).join('')}</div><p class="journey-guide-rule">${this.scene==='booth'?this.text('Booth 中等難度 · 按開始後才計時，最多 180 秒。','Booth intermediate · The 180s clock starts only when you press Start.'):this.text('自由遊玩 · 沒有總時限，挑戰最高分。','Free play · No overall time limit. Chase your best score.')}</p><div class="journey-guide-actions"><button class="journey-exit" data-guide-back>${this.text('返回選單','Back')}</button><button class="journey-begin" data-guide-start>${this.text('知道了，開始！','Got it — start!')}</button></div></div>`;
    host.append(o);o.querySelector('[data-guide-start]').onclick=()=>{this.close();onStart();};o.querySelector('[data-guide-back]').onclick=()=>{this.close();onBack();};
    o.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();o.querySelector('[data-guide-back]').click();}if(e.key==='Tab'){const b=[...o.querySelectorAll('button')];if(e.shiftKey&&document.activeElement===b[0]){e.preventDefault();b.at(-1).focus();}else if(!e.shiftKey&&document.activeElement===b.at(-1)){e.preventDefault();b[0].focus();}}});o.querySelector('[data-guide-start]').focus({preventScroll:true});
   }
@@ -1108,7 +1115,7 @@ from (http://code.google.com/p/pyqrnative):
   pick(kind){if(!this.run?.choose(kind))return;this.close();this.onChoice(kind,this.run);this.host.querySelector('canvas')?.focus({preventScroll:true});this.update();}
   close(){this.overlay?.remove();this.overlay=null;}
   swap(){if(!this.run?.swap())return;this.onSwap(this.run.weapon);this.update();}
-  update(){if(!this.status||!this.run)return;const r=this.run;this.status.textContent=`${r.scene==='booth'?'BOOTH':this.text(r.difficulty==='challenge'?'挑戰':'標準',r.difficulty==='challenge'?'CHALLENGE':'STANDARD')} · ${this.text('回合','ROUND')} ${r.wave} · ${r.scene==='booth'?Math.ceil(Math.max(0,LIMIT-r.total))+'s':Math.floor(r.active)+'s'} · ${this.name(r.weapon)}`;}
+  update(){if(!this.status||!this.run)return;const r=this.run;this.status.textContent=`${r.scene==='booth'?this.text('BOOTH 中等','BOOTH INTERMEDIATE'):this.text(r.difficulty==='challenge'?'挑戰':'標準',r.difficulty==='challenge'?'CHALLENGE':'STANDARD')} · ${this.text('回合','ROUND')} ${r.wave} · ${r.scene==='booth'?Math.ceil(Math.max(0,LIMIT-r.total))+'s':Math.floor(r.active)+'s'} · ${this.name(r.weapon)}`;}
   result(score,extra={},reason='defeat'){
    if(!this.run)return '';this.run.finish(reason);this.close();if(this.status)this.status.hidden=true;
    if(!this.saved){let storage;try{storage=localStorage;}catch{}this.resultData=saveBoard(storage,this.run.key(this.topic,this.recordLanguage),this.run.record(score,extra));this.saved=true;}
@@ -1157,9 +1164,9 @@ from (http://code.google.com/p/pyqrnative):
     weaponNext: 'Next: ', equipped: 'Equipped: ', noCash: 'Collect more coins first', shieldWait: 'Shield is recharging', upgraded: 'Upgrade installed', repaired: 'Capital repaired',
     shieldRaised: 'EMERGENCY SHIELD', waveBanner: 'ENTERING SECTOR', bossBanner: 'WARNING · DEBT STORM', dividend: 'Reserve income', graze: 'CLOSE CALL +20',
     newBest: 'NEW LOCAL BEST', storageUnavailable: 'Saving is unavailable in this browser.', copied: 'Result copied — ready to share.', copyFallback: 'Copy this result:', fullscreenError: 'Full screen is not available in this browser.',
-    endStats: (s) => `Sector ${s.wave} · ${s.kills} aircraft down · ${s.mode === 'storm' ? 'Challenge' : 'Standard'}`,
+    endStats: (s) => `Sector ${s.wave} · ${s.kills} aircraft down · ${s.mode === 'booth' ? 'Booth intermediate' : s.mode === 'storm' ? 'Challenge' : 'Standard'}`,
     tip: 'Keep a small cash reserve. A shield can save your next run.',
-    shareText: s => `FuLam Wealth Wings: ${s.score.toLocaleString('en')} points · sector ${s.wave} · ${s.kills} aircraft down (${s.mode === 'storm' ? 'Challenge' : 'Standard'}). Can you beat me? https://rysung2406.github.io/fulam-money-journey/fleet/`
+    shareText: s => `FuLam Wealth Wings: ${s.score.toLocaleString('en')} points · sector ${s.wave} · ${s.kills} aircraft down (${s.mode === 'booth' ? 'Booth intermediate' : s.mode === 'storm' ? 'Challenge' : 'Standard'}). Can you beat me? https://rysung2406.github.io/fulam-money-journey/fleet/`
   };
   const ZH = {
     soundOn: '音效：開', wave: '空域', combo: '連擊', max: '滿級', full: '已滿', ready: '幣 · 就緒', active: '護盾生效中', cooldown: '冷卻', seconds: '秒', coins: '幣',
@@ -1170,9 +1177,9 @@ from (http://code.google.com/p/pyqrnative):
     weaponNext: '下級：', equipped: '裝備：', noCash: '先收集更多金幣', shieldWait: '護盾正在冷卻', upgraded: '升級完成', repaired: '本金已修復',
     shieldRaised: '應急護盾啟動', waveBanner: '進入空域', bossBanner: '警報 · 債務風暴來襲', dividend: '儲備收益', graze: '擦彈 +20',
     newBest: '刷新本機最佳', storageUnavailable: '此瀏覽器暫時無法保存成績。', copied: '已複製戰績，可以分享了。', copyFallback: '請複製以下戰績：', fullscreenError: '此瀏覽器暫不支援全螢幕。',
-    endStats: s => `空域 ${s.wave} · 擊落 ${s.kills} 架 · ${s.mode === 'storm' ? '挑戰' : '標準'}`,
+    endStats: s => `空域 ${s.wave} · 擊落 ${s.kills} 架 · ${s.mode === 'booth' ? 'Booth 中等' : s.mode === 'storm' ? '挑戰' : '標準'}`,
     tip: '留一筆應急金，下次危急時按 Q 開盾。',
-    shareText: s => `富臨財富戰機：${s.score.toLocaleString('en')} 分 · 空域 ${s.wave} · 擊落 ${s.kills} 架（${s.mode === 'storm' ? '挑戰' : '標準'}）。你能超越我嗎？https://rysung2406.github.io/fulam-money-journey/fleet/`
+    shareText: s => `富臨財富戰機：${s.score.toLocaleString('en')} 分 · 空域 ${s.wave} · 擊落 ${s.kills} 架（${s.mode === 'booth' ? 'Booth 中等' : s.mode === 'storm' ? '挑戰' : '標準'}）。你能超越我嗎？https://rysung2406.github.io/fulam-money-journey/fleet/`
   };
   const translated = [...document.querySelectorAll('[data-t]')];
   const originals = new Map(translated.map(e => [e, e.innerHTML]));
@@ -1510,7 +1517,7 @@ from (http://code.google.com/p/pyqrnative):
     const exit=document.createElement('button');exit.id='exit-game';exit.className='journey-exit';$('pause').parentNode.append(exit);bindAction(exit,()=>{if(phase==='play'){journey.run.finish('exit');game.running=false;paused=false;shopOpen=false;$('combat-layout').classList.remove('workshop-open');phase='over';clearInput();showOverlay('end-menu');renderEnd();}else returnMenu();});
     const settings=document.createElement('div');settings.id='journey-settings';$('menu').insertBefore(settings,$('start'));$('menu').querySelector('.modes').hidden=true;
     const swap=document.createElement('button');swap.id='swap-weapon';swap.className='journey-swap';$('shield').parentNode.insertBefore(swap,$('shield'));bindAction(swap,()=>{if(phase==='play'&&!paused)journey.swap();});
-    const setup=()=>{journey.settings(settings,d=>chooseMode(d==='challenge'?'storm':'standard'));swap.innerHTML=journey.text('⇄ 換武器 <kbd>E</kbd>','⇄ Switch <kbd>E</kbd>');exit.textContent=journey.text('退出','Exit');$('change-mode').textContent=journey.text('返回選單','Back to menu');$('change-mode').classList.add('journey-exit');};setup();
+    const setup=()=>{journey.settings(settings,d=>chooseMode(d==='intermediate'?'booth':d==='challenge'?'storm':'standard'));swap.innerHTML=journey.text('⇄ 換武器 <kbd>E</kbd>','⇄ Switch <kbd>E</kbd>');exit.textContent=journey.text('退出','Exit');$('change-mode').textContent=journey.text('返回選單','Back to menu');$('change-mode').classList.add('journey-exit');};setup();
     const originalLanguage=setLanguage;setLanguage=function(next){originalLanguage(next);setup();};
     journey.onIntermission=()=>{paused=true;clearInput();soundscape.play('upgrade');};
     journey.onChoice=(kind,r)=>{
@@ -1521,7 +1528,7 @@ from (http://code.google.com/p/pyqrnative):
     };
     journey.onSwap=kind=>{game.weaponKind=kind;soundscape.play('upgrade');};
     journey.onEnd=()=>{game.running=false;paused=false;phase='over';clearInput();showOverlay('end-menu');renderEnd();};
-    window.FuLamFleet={getState:()=>({phase,paused,score:game.score,hp:game.hero.hp,wave:game.wave,kills:game.kills,weaponKind:game.weaponKind,weapon:game.weapon,power:game.power,shield:game.shield,shots:game.shots,run:journey.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,phase:journey.run.phase,active:journey.run.active,total:journey.run.total,wave:journey.run.wave,choiceTime:journey.run.choiceTime,reason:journey.run.reason}:null})};
+    window.FuLamFleet={getState:()=>({phase,paused,score:game.score,hp:game.hero.hp,maxHp:game.hero.maxHp,mode:game.mode,wave:game.wave,kills:game.kills,weaponKind:game.weaponKind,weapon:game.weapon,power:game.power,shield:game.shield,shots:game.shots,run:journey.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,phase:journey.run.phase,active:journey.run.active,total:journey.run.total,wave:journey.run.wave,choiceTime:journey.run.choiceTime,reason:journey.run.reason}:null})};
   }
   if(journey)document.body.classList.add('fleet-menu');setLanguage(lang);sizeCanvas();requestAnimationFrame(frame);
 })();

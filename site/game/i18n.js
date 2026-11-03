@@ -5,7 +5,7 @@
  let language='zh-Hant';
  try { language=localStorage.getItem(key)==='en'?'en':'zh-Hant'; } catch {}
  const pairs={
- 'Standard':'標準','Challenge':'挑戰',
+ 'Standard':'標準','Challenge':'挑戰','Booth intermediate':'Booth 中等',
   'FuLam One Slice':'富臨一刀','FuLam One Slice home':'富臨一刀主頁','← FuLam home':'← 返回富臨主頁',
   'Beta · The Money Journey · FuLam':'測試版 · 富臨錢進號','FINANCE MEETS ARCADE':'理財 × 遊戲',
   'Everyday choices. Lifelong skills.':'每天的選擇，一生受用的能力。','About the game':'關於遊戲',

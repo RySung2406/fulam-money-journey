@@ -13,7 +13,7 @@ const prefs = {
 const journey=window.FuLamJourney?new window.FuLamJourney.UI('knife',()=>window.FuLamSliceLanguage?.getLanguage()||prefs.get('language','zh-Hant')):null;
 let hearts=5,missDebt=0,focusCharge=0,focusTime=0,startTopic='',roundSpawned=0,roundResolved=0;
 const roundRandom=()=>journey?.run?.random()??Math.random();
-if(journey){window.GameEngine.DIFFICULTIES.easy.label='Standard';window.GameEngine.DIFFICULTIES.hard.label='Challenge';}
+if(journey){window.GameEngine.DIFFICULTIES.easy.label='Standard';window.GameEngine.DIFFICULTIES.hard.label='Challenge';window.GameEngine.DIFFICULTIES.medium.label='Booth intermediate';}
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const effects = new MoneyEffects(reducedMotion), coinAudio = new CoinAudio();
 let mode = prefs.get('mode', 'easy'), playKind = prefs.get('play-kind', 'practice');
@@ -138,7 +138,7 @@ function about() {
 }
 $('#about-button').onclick = about;
 function rules() {
- if(journey){showModal(journey.text('切對、連擊、升級','Slice, combo, upgrade'),'<p>'+journey.text('切正確選項得分，切錯扣心；累積漏切亦扣心。每關 20 個選項，完成後選擇強化、換刀或回復。標準 5 心，挑戰 3 心。Booth 固定標準難度，180 秒含暫停及升級。','Correct choices score; wrong cuts and repeated misses cost hearts. Finish 20 choices per stage, then choose power, a blade or recovery. Standard: 5 hearts. Challenge: 3. Booth uses standard rules for 180s including pauses and upgrades.')+'</p>','<button class="primary" id="close-modal">'+journey.text('知道了','Got it')+'</button>');$('#close-modal').onclick=closeModal;return;}
+ if(journey){showModal(journey.text('切對、連擊、升級','Slice, combo, upgrade'),'<p>'+journey.text('切正確選項得分，切錯扣心；累積漏切亦扣心。每關 20 個選項，完成後選擇強化、換刀或回復。標準 5 心，挑戰 3 心。Booth 中等難度 4 心，速度介於標準與挑戰之間；180 秒含暫停及升級。','Correct choices score; wrong cuts and repeated misses cost hearts. Finish 20 choices per stage, then choose power, a blade or recovery. Standard: 5 hearts. Challenge: 3. Booth uses 4 hearts and an intermediate pace, for 180s including pauses and upgrades.')+'</p>','<button class="primary" id="close-modal">'+journey.text('知道了','Got it')+'</button>');$('#close-modal').onclick=closeModal;return;}
 
  showModal('Read. Choose. Slice.', `<ol><li><strong>Pick a topic.</strong> Its question stays visible throughout your run.</li><li><strong>Swipe through correct bags.</strong> Hold your mouse button or use your finger. Let wrong choices fall.</li><li><strong>Keep going.</strong> Bags arrive continuously in a shuffled order, with varied timing and flight paths.</li><li><strong>Choose your finish.</strong> Practice lasts until you finish. Sprint ends at ${E.GAME_RULES.sprintTarget} correct cuts; every wrong cut adds ${E.GAME_RULES.wrongPenaltySeconds} seconds.</li></ol><div class="rule-points"><span>Correct +100</span><span>Wrong −150</span><span>Combo bonus</span></div><p>Keyboard: Tab to an active bag, then press Enter or Space. A missed correct bag breaks your combo. Review explanations after your run, whenever you want.</p>`, `<button class="primary" id="close-modal">Got it ${icon('slice')}</button>`);
  $('#close-modal').onclick = closeModal;
@@ -175,7 +175,7 @@ function home() {
  $('#how-to').onclick = rules;
  if(journey){
   $('.mode-picker')?.remove();$('.play-kind-picker')?.remove();const settings=document.createElement('div');settings.id='journey-settings';$('.hero-copy').insertBefore(settings,$('.hero-actions'));
-  const setup=()=>journey.settings(settings,d=>{mode=d==='challenge'?'hard':'easy';playKind='practice';});setup();
+  const setup=()=>journey.settings(settings,d=>{mode=d==='intermediate'?'medium':d==='challenge'?'hard':'easy';playKind='practice';});setup();
   $('.hero-copy h1').innerHTML=journey.text('切準一刀。<br><span class="gold">再破紀錄。</span>','Make it count.<br><span class="gold">Beat your best.</span>');$('.topic-menu-heading h2').textContent=journey.text('揀一個起始主題。','Choose your first topic.');$('.topic-menu-heading p').textContent=journey.text('回合之間會切換主題；先看清楚題目，再開始切袋。','Topics change between rounds. Read each question before slicing.');$('.bottom-strip').hidden=true;
   $('.hero-desc').textContent=journey.text('切正確選項、保持連擊。每回合換題與強化刀具，挑戰你的最高分。','Slice correct choices and keep your combo. New topics and blade upgrades each round. Chase your high score.');
   $('.hero-meta').textContent=journey.text('標準／挑戰 · 無盡回合 · Booth 180 秒','Standard / Challenge · Endless rounds · Booth 180s');
@@ -194,7 +194,7 @@ function startGame(topicId) {
  if(journey)topicId=QUESTIONS[0].id;startTopic=topicId;roundSpawned=0;roundResolved=0;
  const selected = QUESTIONS.find(q => q.id === topicId);
  if (!selected) return;
- if(journey){hearts=journey.difficulty==='challenge'?3:5;missDebt=0;focusCharge=0;focusTime=0;}
+ if(journey){hearts=journey.sliceHearts();missDebt=0;focusCharge=0;focusTime=0;}
  question = selected; session = E.createSession(); optionDeck = E.createOptionDeck(question.options);
  optionStats = new Map(question.options.map(option => [option.id, {option, shown: 0, correct: 0, wrong: 0, missed: 0, avoided: 0}]));
  elapsed = 0; nextSpawnAt = 0; spawned = 0; avoided = 0; lastGroup = []; finalTimeMs = null; bestResult = null; runSerial++;
@@ -212,10 +212,10 @@ function renderGame() {
  $('#ready-button').onclick = beginStream;
  if(journey){
   $('.round-number').textContent=journey.text('回合 1 · 最高分挑戰','Round 1 · High score');
-  $('.mode-label').textContent=journey.text(journey.difficulty==='challenge'?'挑戰':'標準',journey.difficulty==='challenge'?'Challenge':'Standard');
-  $('.arena-footer>span').textContent=journey.text('錯切 −1♥ · 漏切 '+(journey.difficulty==='challenge'?3:5)+' 次 −1♥','Wrong −1♥ · '+(journey.difficulty==='challenge'?3:5)+' misses −1♥');
+  $('.mode-label').textContent=journey.text(journey.scene==='booth'?'Booth 中等':journey.difficulty==='challenge'?'挑戰':'標準',journey.scene==='booth'?'Booth intermediate':journey.difficulty==='challenge'?'Challenge':'Standard');
+  $('.arena-footer>span').textContent=journey.text('錯切 −1♥ · 漏切 '+(journey.sliceHearts())+' 次 −1♥','Wrong −1♥ · '+(journey.sliceHearts())+' misses −1♥');
   $('.small-note').textContent=journey.text('切錯扣心；漏切正確選項會斷連擊，累積漏切亦會扣心。每回合先看清新題目。','Wrong cuts cost a heart. Missed correct choices break combos; repeated misses cost a heart. Read each new round’s question.');
-  $('.ready-card p').textContent=journey.text('先閱讀上方題目。切正確選項，讓錯誤選項落下。'+hearts+' 顆心；每 30 秒選擇刀具強化。','Read the question above. Slice correct choices and leave wrong ones. '+hearts+' hearts; choose a blade upgrade every 30s.');
+  $('.ready-card p').textContent=journey.text('先閱讀上方題目。切正確選項，讓錯誤選項落下。'+hearts+' 顆心；每關 20 個選項後選擇刀具強化。','Read the question above. Slice correct choices and leave wrong ones. '+hearts+' hearts; choose a blade upgrade after each 20-choice stage.');
   $('#finish-session').classList.add('journey-exit');$('#finish-session').textContent=journey.text('退出','Exit');$('#finish-session').disabled=false;$('#finish-session').onclick=()=>phase==='ready'?home():finishSession(false);
   $('#ready-overlay').remove();journey.guide($('.game-wrap'),beginStream,home,window.FuLamSliceLanguage?.translate(q.question)||q.question);
   const swap=document.createElement('button');swap.id='knife-swap';swap.className='journey-swap';swap.textContent=journey.text('⇄ 換刀 · E','⇄ Blade · E');$('.arena-footer').append(swap);swap.onclick=()=>{if(phase==='playing'&&!paused)journey.swap();};
@@ -277,10 +277,10 @@ function chooseLaunch(initial, metrics) {
  const others = targets.filter(target => !target.hit);
  if (!others.length) return initial;
  let best = initial, bestSeparation = -1;
- for (let attempt = 0; attempt < 12; attempt++) {
+ for (let attempt = 0; attempt < 24; attempt++) {
   const plan = attempt ? {...E.createLaunches(1, mode, roundRandom)[0], delay: initial.delay} : initial;
   let separation = Infinity;
-  for (const progress of [.35, .5, .65]) {
+  for (const progress of [.2, .3, .4, .5, .6, .7, .8]) {
    const future = elapsed + plan.delay + plan.duration * progress;
    const pos = targetPosition(plan, progress, metrics);
    for (const other of others) {
@@ -291,7 +291,8 @@ function chooseLaunch(initial, metrics) {
     if (otherPos.y > flightFloor || otherPos.y + otherMetrics.height < arenaCeiling) continue;
     const dx = (pos.x + metrics.width / 2 - otherPos.x - otherMetrics.width / 2) / ((metrics.width + otherMetrics.width) / 2 + 14);
     const dy = (pos.y + metrics.labelTop - otherPos.y - otherMetrics.labelTop) / ((metrics.labelHeight + otherMetrics.labelHeight) / 2 + 12);
-    separation = Math.min(separation, Math.hypot(dx, dy));
+    // Rectangular answer cards overlap unless one axis is fully separated.
+    separation = Math.min(separation, Math.max(Math.abs(dx), Math.abs(dy)));
    }
   }
   if (separation > bestSeparation) { best = plan; bestSeparation = separation; }
@@ -334,7 +335,7 @@ function positionTargets() {
    const stats = optionStats.get(target.option.id);
    if (target.shown) {
     E.recordMiss(session, target.instanceId, target.option);
-    if (target.option.good){stats.missed++;if(journey){missDebt++;if(missDebt>=(journey.difficulty==='challenge'?3:5)){hearts=Math.max(0,hearts-1);missDebt=0;}}}
+    if (target.option.good){stats.missed++;if(journey){missDebt++;if(missDebt>=(journey.sliceHearts())){hearts=Math.max(0,hearts-1);missDebt=0;}}}
     else { avoided++; stats.avoided++; }
    }
    target.el.remove(); continue;
@@ -527,7 +528,7 @@ if(journey){
  journey.nextHint=()=>{const initial=QUESTIONS.findIndex(q=>q.id===startTopic),q=QUESTIONS[(initial+journey.run.wave)%QUESTIONS.length];return window.FuLamSliceLanguage?.translate(q.question)||q.question;};
  journey.onIntermission=()=>{paused=true;releasePointer();targets.forEach(t=>t.el.remove());targets=[];playSound('start');};
  journey.onChoice=(kind,r)=>{
-  if(kind==='support')hearts=Math.min(journey.difficulty==='challenge'?3:5,hearts+1);
+  if(kind==='support')hearts=Math.min(journey.sliceHearts(),hearts+1);
   roundSpawned=0;roundResolved=0;const initial=QUESTIONS.findIndex(q=>q.id===startTopic);question=QUESTIONS[(initial+r.wave-1)%QUESTIONS.length];
   optionDeck=E.createOptionDeck(question.options,roundRandom);for(const option of question.options)if(!optionStats.has(option.id))optionStats.set(option.id,{option,shown:0,correct:0,wrong:0,missed:0,avoided:0});
   $('.question-bar h1').textContent=question.question;$('.question-context').textContent=question.context;$('.question-bar .eyebrow').textContent=question.eyebrow;$('.round-number').textContent='ROUND '+r.wave+' · '+question.chapter;

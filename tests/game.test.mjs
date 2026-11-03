@@ -61,6 +61,14 @@ test('all difficulty settings produce bounded arcs with continuous sideways move
     }
   }
 });
+test('The existing medium pace used by Booth stays between Standard and Challenge for identical launches', () => {
+  for (const randomValue of [0, .25, .5, .99]) {
+    const [standard, booth, challenge] = ['easy', 'medium', 'hard'].map(mode => E.createLaunches(3, mode, () => randomValue));
+    for (let i=0;i<3;i++) assert(standard[i].duration > booth[i].duration && booth[i].duration > challenge[i].duration);
+    const [a,b,c] = ['easy','medium','hard'].map(mode => E.nextSpawnDelay(mode, () => randomValue));
+    assert(a>b && b>c);
+  }
+});
 function fakeClient(user, profile = { participant_code: 'TEST' }, error = null) {
   const calls = [];
   const client = {

@@ -35,9 +35,9 @@
     weaponNext: 'Next: ', equipped: 'Equipped: ', noCash: 'Collect more coins first', shieldWait: 'Shield is recharging', upgraded: 'Upgrade installed', repaired: 'Capital repaired',
     shieldRaised: 'EMERGENCY SHIELD', waveBanner: 'ENTERING SECTOR', bossBanner: 'WARNING · DEBT STORM', dividend: 'Reserve income', graze: 'CLOSE CALL +20',
     newBest: 'NEW LOCAL BEST', storageUnavailable: 'Saving is unavailable in this browser.', copied: 'Result copied — ready to share.', copyFallback: 'Copy this result:', fullscreenError: 'Full screen is not available in this browser.',
-    endStats: (s) => `Sector ${s.wave} · ${s.kills} aircraft down · ${s.mode === 'storm' ? 'Challenge' : 'Standard'}`,
+    endStats: (s) => `Sector ${s.wave} · ${s.kills} aircraft down · ${s.mode === 'booth' ? 'Booth intermediate' : s.mode === 'storm' ? 'Challenge' : 'Standard'}`,
     tip: 'Keep a small cash reserve. A shield can save your next run.',
-    shareText: s => `FuLam Wealth Wings: ${s.score.toLocaleString('en')} points · sector ${s.wave} · ${s.kills} aircraft down (${s.mode === 'storm' ? 'Challenge' : 'Standard'}). Can you beat me? https://rysung2406.github.io/fulam-money-journey/fleet/`
+    shareText: s => `FuLam Wealth Wings: ${s.score.toLocaleString('en')} points · sector ${s.wave} · ${s.kills} aircraft down (${s.mode === 'booth' ? 'Booth intermediate' : s.mode === 'storm' ? 'Challenge' : 'Standard'}). Can you beat me? https://rysung2406.github.io/fulam-money-journey/fleet/`
   };
   const ZH = {
     soundOn: '音效：開', wave: '空域', combo: '連擊', max: '滿級', full: '已滿', ready: '幣 · 就緒', active: '護盾生效中', cooldown: '冷卻', seconds: '秒', coins: '幣',
@@ -48,9 +48,9 @@
     weaponNext: '下級：', equipped: '裝備：', noCash: '先收集更多金幣', shieldWait: '護盾正在冷卻', upgraded: '升級完成', repaired: '本金已修復',
     shieldRaised: '應急護盾啟動', waveBanner: '進入空域', bossBanner: '警報 · 債務風暴來襲', dividend: '儲備收益', graze: '擦彈 +20',
     newBest: '刷新本機最佳', storageUnavailable: '此瀏覽器暫時無法保存成績。', copied: '已複製戰績，可以分享了。', copyFallback: '請複製以下戰績：', fullscreenError: '此瀏覽器暫不支援全螢幕。',
-    endStats: s => `空域 ${s.wave} · 擊落 ${s.kills} 架 · ${s.mode === 'storm' ? '挑戰' : '標準'}`,
+    endStats: s => `空域 ${s.wave} · 擊落 ${s.kills} 架 · ${s.mode === 'booth' ? 'Booth 中等' : s.mode === 'storm' ? '挑戰' : '標準'}`,
     tip: '留一筆應急金，下次危急時按 Q 開盾。',
-    shareText: s => `富臨財富戰機：${s.score.toLocaleString('en')} 分 · 空域 ${s.wave} · 擊落 ${s.kills} 架（${s.mode === 'storm' ? '挑戰' : '標準'}）。你能超越我嗎？https://rysung2406.github.io/fulam-money-journey/fleet/`
+    shareText: s => `富臨財富戰機：${s.score.toLocaleString('en')} 分 · 空域 ${s.wave} · 擊落 ${s.kills} 架（${s.mode === 'booth' ? 'Booth 中等' : s.mode === 'storm' ? '挑戰' : '標準'}）。你能超越我嗎？https://rysung2406.github.io/fulam-money-journey/fleet/`
   };
   const translated = [...document.querySelectorAll('[data-t]')];
   const originals = new Map(translated.map(e => [e, e.innerHTML]));
@@ -388,7 +388,7 @@
     const exit=document.createElement('button');exit.id='exit-game';exit.className='journey-exit';$('pause').parentNode.append(exit);bindAction(exit,()=>{if(phase==='play'){journey.run.finish('exit');game.running=false;paused=false;shopOpen=false;$('combat-layout').classList.remove('workshop-open');phase='over';clearInput();showOverlay('end-menu');renderEnd();}else returnMenu();});
     const settings=document.createElement('div');settings.id='journey-settings';$('menu').insertBefore(settings,$('start'));$('menu').querySelector('.modes').hidden=true;
     const swap=document.createElement('button');swap.id='swap-weapon';swap.className='journey-swap';$('shield').parentNode.insertBefore(swap,$('shield'));bindAction(swap,()=>{if(phase==='play'&&!paused)journey.swap();});
-    const setup=()=>{journey.settings(settings,d=>chooseMode(d==='challenge'?'storm':'standard'));swap.innerHTML=journey.text('⇄ 換武器 <kbd>E</kbd>','⇄ Switch <kbd>E</kbd>');exit.textContent=journey.text('退出','Exit');$('change-mode').textContent=journey.text('返回選單','Back to menu');$('change-mode').classList.add('journey-exit');};setup();
+    const setup=()=>{journey.settings(settings,d=>chooseMode(d==='intermediate'?'booth':d==='challenge'?'storm':'standard'));swap.innerHTML=journey.text('⇄ 換武器 <kbd>E</kbd>','⇄ Switch <kbd>E</kbd>');exit.textContent=journey.text('退出','Exit');$('change-mode').textContent=journey.text('返回選單','Back to menu');$('change-mode').classList.add('journey-exit');};setup();
     const originalLanguage=setLanguage;setLanguage=function(next){originalLanguage(next);setup();};
     journey.onIntermission=()=>{paused=true;clearInput();soundscape.play('upgrade');};
     journey.onChoice=(kind,r)=>{
@@ -399,7 +399,7 @@
     };
     journey.onSwap=kind=>{game.weaponKind=kind;soundscape.play('upgrade');};
     journey.onEnd=()=>{game.running=false;paused=false;phase='over';clearInput();showOverlay('end-menu');renderEnd();};
-    window.FuLamFleet={getState:()=>({phase,paused,score:game.score,hp:game.hero.hp,wave:game.wave,kills:game.kills,weaponKind:game.weaponKind,weapon:game.weapon,power:game.power,shield:game.shield,shots:game.shots,run:journey.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,phase:journey.run.phase,active:journey.run.active,total:journey.run.total,wave:journey.run.wave,choiceTime:journey.run.choiceTime,reason:journey.run.reason}:null})};
+    window.FuLamFleet={getState:()=>({phase,paused,score:game.score,hp:game.hero.hp,maxHp:game.hero.maxHp,mode:game.mode,wave:game.wave,kills:game.kills,weaponKind:game.weaponKind,weapon:game.weapon,power:game.power,shield:game.shield,shots:game.shots,run:journey.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,phase:journey.run.phase,active:journey.run.active,total:journey.run.total,wave:journey.run.wave,choiceTime:journey.run.choiceTime,reason:journey.run.reason}:null})};
   }
   if(journey)document.body.classList.add('fleet-menu');setLanguage(lang);sizeCanvas();requestAnimationFrame(frame);
 })();

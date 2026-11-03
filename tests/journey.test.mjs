@@ -8,11 +8,15 @@ vm.runInContext(shared,context);
 vm.runInContext(fs.readFileSync(new URL('../sources/fleet/core.js',import.meta.url),'utf8'),context);
 const {Run,readBoard,saveBoard}=context.FuLamJourney,C=context.FleetCore;
 const tick=(r,seconds,playing=true)=>{for(let i=0;i<Math.round(seconds*60);i++)r.tick(1/60,playing);};
-test('Booth forces one difficulty and a reproducible seed; public runs keep two difficulties',()=>{
- const a=new Run('fleet','booth','challenge',99),b=new Run('fleet','booth','standard',222);
- assert.equal(a.difficulty,'standard');assert.equal(a.seed,b.seed);
- assert.deepEqual(Array.from({length:30},()=>a.random()),Array.from({length:30},()=>b.random()));
- assert.equal(new Run('fleet','web','challenge').difficulty,'challenge');
+test('Every Booth game forces intermediate difficulty and a reproducible seed; public runs keep two difficulties',()=>{
+ for(const game of ['knife','fishing','fleet']){
+  const a=new Run(game,'booth','challenge',99),b=new Run(game,'booth','standard',222);
+  assert.equal(a.difficulty,'intermediate');assert.equal(a.seed,b.seed);
+  assert.deepEqual(Array.from({length:30},()=>a.random()),Array.from({length:30},()=>b.random()));
+  assert.equal(new Run(game,'web','challenge').difficulty,'challenge');
+  assert.equal(new Run(game,'web','intermediate').difficulty,'standard');
+  assert.notEqual(a.key(),a.key().replace('booth-v4','booth-v3').replace('intermediate','standard'));
+ }
 });
 test('Thirty active seconds opens one choice and freezes the active play clock',()=>{
  const r=new Run('fishing');tick(r,30.1);assert.equal(r.phase,'choice');assert.equal(r.wave,1);const t=r.active;
@@ -62,6 +66,22 @@ test('Paid aircraft upgrades add real damage without spending score',()=>{
 });
 test('Aircraft boss second phase emits a wider, bounded pattern',()=>{
  for(const [health,count] of [[1,7],[.4,11]]){const s=C.createState({arcade:true,seed:1});s.spawnTime=100;s.fireTime=100;const boss=C.spawnEnemy(s,'boss');C.maintainWorld(s);boss.position.y=100;boss.hp=boss.maxHp*health;boss.strategy.remainingBeforeAttack=0;C.tick(s,.016);assert.equal(s.entities.filter(e=>e.type==='torpedo'&&e.collision.group===C.ENEMY).length,count);}
+});
+test('Booth aircraft armour, enemies, bullets and spawn interval stay between the public difficulties',()=>{
+ const between=(a,b,c)=>assert(a<b&&b<c,`${a} < ${b} < ${c}`);
+ for(const wave of [1,3,6,12])for(const kind of Object.keys(C.SPECS)){
+  const rows=['standard','booth','storm'].map(mode=>{
+   const s=C.createState({arcade:true,mode,seed:7});s.wave=wave;s.bossSpawned=true;s.spawnTime=0;s.fireTime=100;
+   const enemy=C.spawnEnemy(s,kind);C.maintainWorld(s);enemy.position.y=100;enemy.strategy.remainingBeforeAttack=0;
+   C.tick(s,.016);
+   const bullet=s.entities.find(e=>e.type==='torpedo'&&e.collision.group===C.ENEMY);
+   assert(bullet,`${mode} ${kind} fired`);
+   return {armour:s.hero.maxHp,hp:enemy.maxHp,speed:enemy.velocity.speed,bullet:bullet.velocity.speed,interval:s.spawnTime};
+  });
+  between(rows[2].armour,rows[1].armour,rows[0].armour);
+  for(const key of ['hp','speed','bullet'])between(...rows.map(r=>r[key]));
+  between(rows[2].interval,rows[1].interval,rows[0].interval);
+ }
 });
 test('Published shared files exactly match the authored runtime',()=>{
  assert.equal(fs.readFileSync(new URL('../site/arcade/journey.js',import.meta.url),'utf8'),shared);
