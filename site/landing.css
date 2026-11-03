@@ -399,9 +399,9 @@
  .plan-calendar { gap:6px; }
 }
 
-/* Mobile reading rhythm: clear actions and cards that grow with both languages. */
+/* Compact mobile cards: two columns, natural text height, and touch-sized actions. */
 @media (max-width:760px) {
-  .public-home .hero { padding-block:28px 36px; gap:28px; }
+  .public-home .hero { padding-block:24px 28px; gap:20px; }
   .public-home .hero h1 { font-size:clamp(36px,10vw,44px); line-height:1.25; margin-block:18px; }
   html[lang=en] .public-home .hero h1 { font-size:clamp(32px,8.5vw,42px); letter-spacing:-.035em; }
   .public-home .hero-copy > p { font-size:17px; line-height:1.8; }
@@ -410,31 +410,50 @@
   .public-home .hero-actions .text-link { justify-content:center; min-height:50px; padding:12px 18px; border:1px solid #b9c8b9; border-radius:8px; font-size:16px; }
   .public-home .hero-copy .eligibility-note { font-size:14px; }
   .instagram-link,.instagram-link strong { font-size:15px; }
-  .plan-preview { padding:22px; }
-  .plan-preview-top { flex-wrap:wrap; gap:10px; }
-  .plan-preview-title { font-size:21px; line-height:1.5; }
-  .plan-preview-bottom { gap:8px; font-size:14px; }
+  .plan-preview { padding:18px; border-radius:16px; }
+  .plan-preview-top { flex-wrap:wrap; gap:8px; }
+  .plan-number { font-size:64px; margin:14px 0 8px; }
+  .plan-number span { font-size:14px; }
+  .plan-preview-title { font-size:18px; line-height:1.5; }
+  .plan-calendar { gap:5px; margin:14px 0; }
+  .plan-calendar span { min-height:26px; font-size:12px; border-radius:5px; }
+  .plan-preview-bottom { gap:8px; padding-top:12px; font-size:14px; }
+  .public-home .section { padding-block:28px; }
+  .public-home .section-heading { gap:8px; margin-bottom:18px; }
   .public-home .section-heading h2 { font-size:28px; line-height:1.35; }
-  .public-home .play-layout { grid-template-rows:none; }
-  .public-home .play-layout .game-feature { min-height:0; padding:26px; }
-  .public-home .play-layout .game-feature h3 { font-size:28px; line-height:1.3; }
-  .public-home .play-layout .game-feature p { font-size:16px; line-height:1.8; }
-  .public-home .play-layout .game-feature .button { width:100%; }
-  .public-home .daily-feature { min-height:0; padding:26px; }
-  .public-home .daily-feature p { font-size:16px; }
+  .public-home .play-layout { grid-template-columns:repeat(2,minmax(0,1fr)); grid-template-rows:none; gap:12px; }
+  .public-home .play-layout .game-feature { min-width:0; min-height:0; padding:16px; }
+  .public-home .play-layout .game-feature .eyebrow { font-size:11px; letter-spacing:.02em; }
+  .public-home .play-layout .game-feature h3 { font-size:22px; line-height:1.3; margin:12px 0 10px; overflow-wrap:anywhere; }
+  .public-home .play-layout .game-feature p { font-size:14px; line-height:1.65; margin-bottom:14px; }
+  .public-home .play-layout .game-feature .button { width:100%; min-height:44px; padding:10px 8px; gap:6px; font-size:14px; }
+  .public-home .game-meta { gap:4px 8px; margin-top:12px; font-size:12px; line-height:1.5; }
+  .public-home .daily-feature { grid-column:auto; min-width:0; min-height:0; padding:16px; }
+  .public-home .booth-label { gap:6px; font-size:12px; }
+  .public-home .booth-label .coming { padding:3px 6px; font-size:12px; letter-spacing:0; }
+  .public-home .daily-feature > .icon { width:24px; height:24px; margin:14px 0 10px; }
+  .public-home .daily-feature h3 { font-size:22px; margin-bottom:10px; }
+  .public-home .daily-feature p { font-size:14px; line-height:1.65; margin-bottom:14px; }
+  .public-home .daily-feature a { min-height:44px; font-size:14px; gap:6px; }
   .pretest-card .posttest-entry { flex-wrap:wrap; }
   .story-dialog { padding:52px 22px 24px; max-height:calc(100dvh - 32px); }
   .story-dialog h2 { font-size:26px; margin-top:8px; }
 }
-@media (max-width:540px) {
-  .public-home .story-grid { grid-template-columns:minmax(0,1fr); gap:14px; }
-  .public-home .story-card { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,1fr); grid-template-rows:1fr 1fr; column-gap:16px; padding:10px; border:1px solid #d8ded1; border-radius:14px; background:#f8f8f1; }
-  .public-home .story-cover { grid-row:1/3; aspect-ratio:auto; min-height:160px; padding:14px; }
+@media (max-width:760px) {
+  .public-home .story-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+  .public-home .story-card { display:flex; flex-direction:column; padding:8px; border:1px solid #d8ded1; border-radius:12px; background:#f8f8f1; }
+  .public-home .story-cover { align-self:stretch; flex:1; aspect-ratio:auto; min-height:142px; gap:16px; padding:12px; }
   .public-home .cover-top > .icon { display:none; }
-  .public-home .cover-title { font-size:22px; line-height:1.3; overflow-wrap:anywhere; }
-  html[lang=en] .public-home .cover-title { font-size:19px; }
+  .public-home .cover-title { font-size:21px; line-height:1.3; overflow-wrap:anywhere; }
+  html[lang=en] .public-home .cover-title { font-size:18px; }
   .public-home .cover-subtitle { display:none; }
-  .public-home .story-meta { align-self:end; padding:0 0 5px; font-size:12px; }
-  .public-home .story-card .story-title { align-self:start; margin:0; font-size:18px; line-height:1.4; overflow-wrap:anywhere; }
-  .public-home .cover-art { width:90px; height:90px; top:36px; }
+  .public-home .story-meta { padding:8px 2px 0; font-size:12px; line-height:1.5; }
+  .public-home .story-card .story-title { margin:4px 2px 2px; font-size:16px; line-height:1.4; overflow-wrap:anywhere; }
+  .public-home .cover-art { width:80px; height:80px; top:32px; }
+}
+@media (max-width:360px) {
+  .public-home .play-layout .game-feature,.public-home .daily-feature { padding:12px; }
+  .public-home .play-layout .game-feature h3,.public-home .daily-feature h3 { font-size:20px; }
+  .public-home .story-cover { padding:10px; }
+  .public-home .cover-title { font-size:19px; }
 }
