@@ -130,3 +130,7 @@ The confirmation is the participant's own statement, not verification from Micro
 Set `whatsappCommunityUrl` in `site/config.js` to the verified participant community invitation (not the internal team chat). The project owner's invitation remains configured. Empty or invalid invitations show a clear pending message; only HTTPS `chat.whatsapp.com` invitations enable the external link. Joining is voluntary. The homepage and existing game routes remain available through the normal site navigation.
 
 Validation: all 17 existing tests, JavaScript syntax checks and both browser builds passed. Local browser fixtures exercised fresh OTP sign-in, saved-session restoration, survey opening without advancing, explicit continuation, back navigation, sign-out/reset, invalid invitation handling and profile-load failure. Layouts were inspected at 320 px, 390 px and 1280 px; a narrow-header overflow was corrected. Auth responses and external destinations were mocked, so these checks sent no real OTP, submitted no questionnaire and joined no group.
+
+## Arcade / Booth v2
+
+`/booth/` provides the three-minute activity presets. Free play retains Standard and Challenge. `/fleet/` now hosts the aircraft game Wealth Wings. Gameplay rules, local record separation, build steps and QA limits are documented in [docs/arcade-booth-v2.md](docs/arcade-booth-v2.md).

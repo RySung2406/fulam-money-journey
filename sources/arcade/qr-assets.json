@@ -1,0 +1,22 @@
+{
+  "generator": "python-qrcode 8.2",
+  "source": "https://github.com/lincolnloop/python-qrcode",
+  "license": "BSD-3-Clause, with retained MIT ancestry notice",
+  "items": [
+    {
+      "file": "site/arcade/knife-qr.svg",
+      "url": "https://rysung2406.github.io/fulam-money-journey/game/?mode=web&v=booth-v2",
+      "sha256": "5043343f8f156017ed0268e3ec8fd62af04d93d1800403697855e43f4bb88b58"
+    },
+    {
+      "file": "site/arcade/fishing-qr.svg",
+      "url": "https://rysung2406.github.io/fulam-money-journey/fishing/?mode=web&v=booth-v2",
+      "sha256": "f233e4e969eac8d4741db831c335420965887305aaa24834968eb8e555e3d092"
+    },
+    {
+      "file": "site/arcade/fleet-qr.svg",
+      "url": "https://rysung2406.github.io/fulam-money-journey/fleet/?mode=web&v=booth-v2",
+      "sha256": "e0125f9b078d47a70f56811b0aa99021f41574d327aa09d4ce39b03ea9f46431"
+    }
+  ]
+}

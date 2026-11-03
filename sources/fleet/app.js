@@ -10,24 +10,24 @@
   let lang = safeGet('fulam-language') === 'en' ? 'en' : 'zh-Hant';
   const EN = {
     home: 'Back to FuLam Money Journey', settings: 'Game settings', arcade: 'ARCADE HARBOUR', soundOff: 'Sound: off', soundOn: 'Sound: on', fullscreen: 'Full screen',
-    tag: 'ENDLESS NAVAL ARCADE · BETA', title: 'Wealth<br>Fleet', subtitle: 'Protect your capital.<br>Chart your own course.',
+    tag: 'ENDLESS AIR ARCADE · BETA', title: 'Wealth<br>Wings', subtitle: 'Protect your capital.<br>Chart your own course.',
     intro: 'The enemy keeps coming. Turn your loot into firepower, or keep a cash reserve for an emergency shield?',
-    move: 'Move · drag or tap the sea on mobile', autofire: 'Automatic targeting & rapid fire', shieldRule: 'Spend your reserve to raise a shield', best: 'LOCAL BEST', local: 'Only your best result stays in this browser', back: '← Back to the arcade',
-    battle: 'Naval battle', capital: 'CAPITAL ARMOUR', cash: 'GAME COINS', score: 'WEALTH SCORE',
-    canvas: 'Naval shooter. WASD or arrow keys to move, Q for shield, 1 to 4 for upgrades, P to pause.',
-    auto: 'AUTO FIRE', boss: 'DEBT STORM · BOSS', menuTag: 'CAPTAIN, READY TO SAIL.', menuTitle: 'How long can you<br>protect your capital?',
-    menuHint: 'Drag to dodge. Your guns fire automatically.<br>Endless waves. Sail until you sink.', chooseMode: 'Choose a route',
-    standard: 'Standard route', standardHint: '100 capital · rising pressure', storm: 'Storm route', stormHint: '75 capital · faster fire', start: 'Set sail',
-    pausedTag: 'AT ANCHOR', paused: 'Battle paused', pausedHint: 'Return to sea when you are ready.', resume: 'Continue sailing',
-    endTag: 'VOYAGE COMPLETE', endTitle: 'Fleet down.<br>Go further next time.', restart: 'Set sail again', share: 'Copy result', changeMode: 'Change route',
-    pause: 'Pause', mobileHint: 'Drag or tap the sea to move. Firing is automatic.', shield: 'Emergency shield', directionPad: 'Movement buttons', left: 'Move left', right: 'Move right', up: 'Move up', down: 'Move down',
-    dockTag: 'YOUR UPGRADE DECISIONS', dock: 'Fleet workshop', dockHint: 'Invest in strength. Keep cash for survival.',
+    move: 'Move · drag or tap the sky on mobile', autofire: 'Automatic targeting & rapid fire', shieldRule: 'Spend your reserve to raise a shield', best: 'LOCAL BEST', local: 'Only your best result stays in this browser', back: '← Back to the arcade',
+    battle: 'Air battle', capital: 'CAPITAL ARMOUR', cash: 'GAME COINS', score: 'WEALTH SCORE',
+    canvas: 'Air shooter. WASD or arrow keys to move, Q for shield, 1 to 4 for upgrades, P to pause.',
+    auto: 'AUTO FIRE', boss: 'DEBT STORM · BOSS', menuTag: 'PILOT, READY TO FLY.', menuTitle: 'How long can you<br>protect your capital?',
+    menuHint: 'Drag to dodge. Your guns fire automatically.<br>Endless waves. Fly until defeated.', chooseMode: 'Choose difficulty',
+    standard: 'Standard', standardHint: '100 capital · rising pressure', storm: 'Challenge', stormHint: '75 capital · faster fire', start: 'Take off',
+    pausedTag: 'FLIGHT PAUSED', paused: 'Battle paused', pausedHint: 'Return to sea when you are ready.', resume: 'Continue flight',
+    endTag: 'FLIGHT COMPLETE', endTitle: 'Aircraft down.<br>Go further next time.', restart: 'Fly again', share: 'Copy result', changeMode: 'Change difficulty',
+    pause: 'Pause', mobileHint: 'Drag or tap the sky to move. Firing is automatic.', shield: 'Emergency shield', directionPad: 'Movement buttons', left: 'Move left', right: 'Move right', up: 'Move up', down: 'Move down',
+    dockTag: 'YOUR UPGRADE DECISIONS', dock: 'Aircraft workshop', dockHint: 'Invest in strength. Keep cash for survival.',
     weapon: 'Compound cannon', escort: 'Diversify escorts', reserve: 'Reserve system', repair: 'Repair capital', repairHint: 'Restore 35 armour immediately',
     income: 'RESERVE INCOME', incomeHint: 'Cash earns game income every 15 seconds. Upgrade reserves to increase income and coin pickup range.',
     enemyTag: 'KNOW THE THREAT', fee: 'Impulse spending', feeHint: 'Light raider', inflation: 'Inflation', inflationHint: 'Fan-shaped fire', scam: 'Investment scam', scamHint: 'Fast zigzag', debt: 'High-interest debt', debtHint: 'Homing torpedoes',
     label_fee: 'Spending', label_inflation: 'Inflation', label_scam: 'Scam', label_debt: 'Debt',
-    metaphor: 'Money concepts become ship abilities. Coins, income and armour are fictional game values.', credits: 'Open-source credits & licence', creditNote: 'Combat core adapted from',
-    changes: 'Adds endless waves, finance-themed upgrades, new ship art, touch controls and bilingual UI. Original music and font assets are not used.',
+    metaphor: 'Money concepts become aircraft abilities. Coins, income and armour are fictional game values.', credits: 'Open-source credits & licence', creditNote: 'Combat core adapted from',
+    changes: 'Adds endless waves, finance-themed upgrades, new aircraft art, touch controls and bilingual UI. Original music and font assets are not used.',
     wave: 'SECTOR', combo: 'COMBO', max: 'MAX', full: 'FULL', ready: 'coins · ready', active: 'Shield active', cooldown: 'Ready in', seconds: 's', coins: 'coins',
     weapons: ['Homing cannon', 'Twin homing guns', 'Three-way spread', 'Piercing beams', 'Heavy plasma orbs'],
     escorts: ['Add a homing escort', 'Add a second escort', 'Rapid-fire escorts', 'Two rapid-fire escorts'],
@@ -35,22 +35,22 @@
     weaponNext: 'Next: ', equipped: 'Equipped: ', noCash: 'Collect more coins first', shieldWait: 'Shield is recharging', upgraded: 'Upgrade installed', repaired: 'Capital repaired',
     shieldRaised: 'EMERGENCY SHIELD', waveBanner: 'ENTERING SECTOR', bossBanner: 'WARNING · DEBT STORM', dividend: 'Reserve income', graze: 'CLOSE CALL +20',
     newBest: 'NEW LOCAL BEST', storageUnavailable: 'Saving is unavailable in this browser.', copied: 'Result copied — ready to share.', copyFallback: 'Copy this result:', fullscreenError: 'Full screen is not available in this browser.',
-    endStats: (s) => `Sector ${s.wave} · ${s.kills} ships sunk · ${s.mode === 'storm' ? 'Storm' : 'Standard'}`,
+    endStats: (s) => `Sector ${s.wave} · ${s.kills} aircraft down · ${s.mode === 'storm' ? 'Challenge' : 'Standard'}`,
     tip: 'Keep a small cash reserve. A shield can save your next run.',
-    shareText: s => `FuLam Wealth Fleet: ${s.score.toLocaleString('en')} points · sector ${s.wave} · ${s.kills} ships sunk (${s.mode === 'storm' ? 'Storm' : 'Standard'}). Can you beat me? https://rysung2406.github.io/fulam-money-journey/fleet/`
+    shareText: s => `FuLam Wealth Wings: ${s.score.toLocaleString('en')} points · sector ${s.wave} · ${s.kills} aircraft down (${s.mode === 'storm' ? 'Challenge' : 'Standard'}). Can you beat me? https://rysung2406.github.io/fulam-money-journey/fleet/`
   };
   const ZH = {
-    soundOn: '音效：開', wave: '航區', combo: '連擊', max: '滿級', full: '已滿', ready: '幣 · 就緒', active: '護盾生效中', cooldown: '冷卻', seconds: '秒', coins: '幣',
+    soundOn: '音效：開', wave: '空域', combo: '連擊', max: '滿級', full: '已滿', ready: '幣 · 就緒', active: '護盾生效中', cooldown: '冷卻', seconds: '秒', coins: '幣',
     label_fee: '衝動消費', label_inflation: '通脹', label_scam: '投資騙局', label_debt: '高息債務',
     weapons: ['追蹤火炮', '雙管追蹤炮', '三路散射炮', '貫穿射線炮', '重型能量球'],
-    escorts: ['增加一艘追蹤僚艦', '增加第二艘僚艦', '僚艦射速提升', '雙艘高速僚艦'],
+    escorts: ['增加一架追蹤僚機', '增加第二架僚機', '僚機射速提升', '雙架高速僚機'],
     reserves: ['護盾更長 · 拾幣更遠', '收益提升 · 護盾更省', '護盾與儲備全面提升', '儲備系統已滿級'],
     weaponNext: '下級：', equipped: '裝備：', noCash: '先收集更多金幣', shieldWait: '護盾正在冷卻', upgraded: '升級完成', repaired: '本金已修復',
-    shieldRaised: '應急護盾啟動', waveBanner: '進入航區', bossBanner: '警報 · 債務風暴來襲', dividend: '儲備收益', graze: '擦彈 +20',
+    shieldRaised: '應急護盾啟動', waveBanner: '進入空域', bossBanner: '警報 · 債務風暴來襲', dividend: '儲備收益', graze: '擦彈 +20',
     newBest: '刷新本機最佳', storageUnavailable: '此瀏覽器暫時無法保存成績。', copied: '已複製戰績，可以分享了。', copyFallback: '請複製以下戰績：', fullscreenError: '此瀏覽器暫不支援全螢幕。',
-    endStats: s => `航區 ${s.wave} · 擊沉 ${s.kills} 艘 · ${s.mode === 'storm' ? '風暴航線' : '標準航線'}`,
+    endStats: s => `空域 ${s.wave} · 擊落 ${s.kills} 架 · ${s.mode === 'storm' ? '挑戰' : '標準'}`,
     tip: '留一筆應急金，下次危急時按 Q 開盾。',
-    shareText: s => `富臨財富艦隊：${s.score.toLocaleString('en')} 分 · 航區 ${s.wave} · 擊沉 ${s.kills} 艘（${s.mode === 'storm' ? '風暴' : '標準'}）。你能超越我嗎？https://rysung2406.github.io/fulam-money-journey/fleet/`
+    shareText: s => `富臨財富戰機：${s.score.toLocaleString('en')} 分 · 空域 ${s.wave} · 擊落 ${s.kills} 架（${s.mode === 'storm' ? '挑戰' : '標準'}）。你能超越我嗎？https://rysung2406.github.io/fulam-money-journey/fleet/`
   };
   const translated = [...document.querySelectorAll('[data-t]')];
   const originals = new Map(translated.map(e => [e, e.innerHTML]));
@@ -58,6 +58,7 @@
   const originalLabels = new Map(labels.map(e => [e, e.getAttribute('aria-label')]));
   for (const e of translated) if (!(e.dataset.t in ZH)) ZH[e.dataset.t] = e.textContent;
   const t = key => (lang === 'en' ? EN : ZH)[key] ?? key;
+  const journey=window.FuLamJourney?new window.FuLamJourney.UI('fleet',()=>lang):null;
   let mode = 'standard', phase = 'menu', game = C.createState({ seed: 742 }), best = null, paused = false;
   let sound = safeGet('fulam-fleet-sound-v1') !== 'off', lastSound = 0, resultIsBest = false, saveFailed = false;
   const soundscape = new window.FuLamArcade.Audio(sound);
@@ -76,7 +77,7 @@
   function toast(key) { $('toast').textContent = t(key); $('toast').classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => $('toast').classList.remove('show'), 2400); }
   function setLanguage(next) {
     lang = next; safeSet('fulam-language', lang); document.documentElement.lang = lang;
-    document.title = lang === 'en' ? 'FuLam Wealth Fleet · FuLam Money Journey' : '富臨財富艦隊 · FuLam Wealth Fleet';
+    document.title = lang === 'en' ? 'FuLam Wealth Wings · FuLam Money Journey' : '富臨財富戰機 · FuLam Wealth Wings';
     for (const e of translated) e.innerHTML = lang === 'en' ? (EN[e.dataset.t] ?? originals.get(e)) : originals.get(e);
     for (const e of labels) e.setAttribute('aria-label', lang === 'en' ? (EN[e.dataset.label] ?? originalLabels.get(e)) : originalLabels.get(e));
     $('lang').textContent = lang === 'en' ? '繁中' : 'EN'; $('lang').setAttribute('aria-label', lang === 'en' ? '切換至繁體中文' : 'Switch to English');
@@ -126,19 +127,21 @@
   function start() {
     shopOpen = false; deathTime = lowHealthSound = 0; fx.clear();
     $('combat-layout').classList.remove('workshop-open');
-    game = C.createState({ mode }); phase = 'play'; paused = false; accumulator = 0; lastTime = null; lastSound = 0; saveFailed = false;
+    game = C.createState({ mode, arcade:!!journey, seed:journey?.scene==='booth'?20261104:Date.now() }); if(journey){journey.start($('sea'));$('sea').classList.add('journey-live');} phase = 'play'; paused = false; accumulator = 0; lastTime = null; lastSound = 0; saveFailed = false;
     clearInput(); particles.length = ripples.length = floats.length = 0; bannerTime = 0; $('banner').classList.remove('show'); shake = 0;
     showOverlay(null); unlockAudio(); $('pause').disabled = false; canvas.focus({ preventScroll: true }); updateHUD();
     if (matchMedia('(max-width:650px)').matches) document.querySelector('.battle').scrollIntoView({ block: 'start' });
   }
   function setPaused(value) {
     if (phase !== 'play') return;
+    if (journey?.run?.phase==='choice') return;
     if (shopOpen) { if (!value) closeWorkshop(); return; }
     paused = value; clearInput(); accumulator = 0; showOverlay(paused ? 'pause-menu' : null); updateHUD();
     if (paused) soundscape.stop();
     if (paused) $('resume').focus({ preventScroll: true }); else { canvas.focus({ preventScroll: true }); unlockAudio(); }
   }
   function end() {
+    journey?.run?.finish('defeat');journey?.close();
     if (phase !== 'play') return;
     phase = 'sinking'; paused = false; deathTime = reduced.matches ? .45 : 1.15; clearInput();
     fx.burst(game.hero.position.x, game.hero.position.y, { size: 48, heavy: true });
@@ -148,13 +151,14 @@
   }
   function finishSinking() {
     phase = 'over';
+    if(journey){journey.result(game.score,{kills:game.kills},journey.run.reason||'defeat');}
     resultIsBest = !best || game.score > best.score; best = C.bestRecord(best, game);
-    if (resultIsBest) saveFailed = !safeSet(KEY, JSON.stringify(best));
+    if (resultIsBest && !journey) saveFailed = !safeSet(KEY, JSON.stringify(best));
     showOverlay('end-menu'); renderEnd(); updateHUD(); $('restart').focus({ preventScroll: true });
   }
   function renderEnd() {
-    put('end-label', t(resultIsBest ? 'newBest' : 'endTag')); put('end-score', game.score.toLocaleString('en'));
-    put('end-stats', t('endStats')(game)); put('end-tip', t('tip')); if (saveFailed) put('share-status', t('storageUnavailable'));
+    put('end-label', journey?journey.text('本局戰績','RUN RECORD'):t(resultIsBest ? 'newBest' : 'endTag'));if(journey&&journey.run.reason==='time')document.querySelector('[data-t="endTitle"]').textContent=journey.text('Booth 挑戰完成！','Booth challenge complete!');else document.querySelector('[data-t="endTitle"]').innerHTML=t('endTitle'); put('end-score', game.score.toLocaleString('en'));
+    put('end-stats', t('endStats')(game)); put('end-tip', t('tip'));if(journey)$('end-tip').innerHTML=journey.result(game.score,{kills:game.kills},journey.run.reason||'defeat'); if (saveFailed) put('share-status', t('storageUnavailable'));
   }
   function chooseMode(value) {
     mode = value;
@@ -176,9 +180,9 @@
     const active = phase === 'play' && (!paused || shopOpen), s = game;
     const hpHTML = `${s.hero.hp}<span>/ ${s.hero.maxHp}</span>`; if ($('hp').innerHTML !== hpHTML) $('hp').innerHTML = hpHTML;
     $('hp-bar').style.width = `${s.hero.hp / s.hero.maxHp * 100}%`; $('hp-bar').style.background = s.hero.hp < 30 ? 'var(--danger)' : 'var(--aqua)';
-    put('cash', s.cash.toLocaleString('en')); put('score', s.score.toLocaleString('en')); put('best', (best?.score || 0).toLocaleString('en'));
+    put('cash', s.cash.toLocaleString('en')); put('score', s.score.toLocaleString('en')); put('best', (journey?journey.best():(best?.score || 0)).toLocaleString('en'));
     put('sector', `${t('wave')} ${String(s.wave).padStart(2, '0')}`); put('combo', s.combo >= 2 ? `${s.combo} ${t('combo')}` : '');
-    put('wave-progress', `${Math.min(s.waveKills, s.goal)} / ${s.goal}`); $('wave-bar').style.width = `${Math.min(100, s.waveKills / s.goal * 100)}%`;
+    put('wave-progress', journey?.run?`${Math.ceil(Math.max(0,30-journey.run.roundTime))}s`:`${Math.min(s.waveKills, s.goal)} / ${s.goal}`); $('wave-bar').style.width = `${journey?.run?journey.run.roundTime/30*100:Math.min(100, s.waveKills / s.goal * 100)}%`;
     put('income', `+${s.income}`); $('income-bar').style.width = `${s.dividend / 15 * 100}%`;
     $('pause').disabled = phase !== 'play' || shopOpen; $('shield').disabled = !active || shopOpen || s.shieldCooldown > 0 || s.cash < C.shieldCost(s);
     $('dock-toggle').disabled = phase !== 'play' || (paused && !shopOpen);
@@ -195,7 +199,7 @@
         let desc;
         if (kind === 'weapon') desc = `${t(s.weapon < 5 ? 'weaponNext' : 'equipped')}${t('weapons')[Math.min(4, s.weapon)]}`;
         else desc = t(kind === 'escort' ? 'escorts' : 'reserves')[s[kind]];
-        put(`${kind}-desc`, desc);
+        if(journey?.run&&kind==='weapon')desc=journey.name(journey.run.weapon)+' · '+game.power.toFixed(2)+'×';put(`${kind}-desc`, desc);
       }
     }
     const boss = s.entities.find(e => e.kind === 'boss' && !e.dead); $('boss-bar').hidden = !boss || phase !== 'play';
@@ -209,25 +213,14 @@
   function ship(x, y, angle, scale, kind, time, flash = 0) {
     const fill = flash > 0 ? '#fff5d6' : COLORS[kind];
     ctx.save(); ctx.translate(x, y); ctx.rotate(angle + Math.PI / 2); ctx.scale(scale, scale);
-    // Wake and bow waves make movement and orientation visible without sprite assets.
-    ctx.lineWidth = 1; ctx.strokeStyle = '#b0f0e33e';
-    for (let i = 0; i < 3; i++) {
-      const n = (time * 28 + i * 18) % 55;
-      ctx.globalAlpha = (1 - n / 55) * .5;
-      ctx.beginPath(); ctx.moveTo(-8 - n * .21, 14 + n); ctx.quadraticCurveTo(0, 24 + n, 8 + n * .21, 14 + n); ctx.stroke();
-    }
-    ctx.globalAlpha = 1; ctx.fillStyle = '#04131d88'; ctx.beginPath(); ctx.ellipse(4, 6, 17, 32, 0, 0, Math.PI * 2); ctx.fill();
-    path([[0,-32],[10,-19],[14,11],[10,28],[-10,28],[-14,11],[-10,-19]], '#153541', '#d8e6d044');
-    path([[0,-29],[8,-17],[10,12],[7,24],[-7,24],[-10,12],[-8,-17]], fill, '#edf8ed80');
-    path([[0,-22],[5,-10],[6,19],[-6,19],[-5,-10]], '#47646a');
-    ctx.fillStyle = '#1c3845'; ctx.fillRect(-5,-2,10,13); ctx.fillStyle = '#d6e7d9'; ctx.fillRect(-4,0,8,4);
-    ctx.strokeStyle = '#d9ecdf'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0,-8); ctx.lineTo(0,-22); ctx.stroke();
-    ctx.fillStyle = kind === 'player' ? '#f3c77c' : '#203d48'; ctx.beginPath(); ctx.arc(0,-8,4.5,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle = '#0c2834'; ctx.fillRect(-6,15,12,3);
-    if (kind === 'boss' || kind === 'debt') {
-      for (const side of [-1,1]) { ctx.fillStyle = '#354951'; ctx.fillRect(side * 9 - 2, -2, 4, 15); ctx.fillStyle = '#ead6b6'; ctx.fillRect(side * 9 - 1, -7, 2, 9); }
-    }
-    if (kind === 'player') { ctx.fillStyle = '#ffda91'; ctx.fillRect(-3,6,6,3); }
+    // Original vector aircraft: swept wings, cockpit, wingtip lights and jet exhaust.
+    ctx.fillStyle='#09192355';ctx.beginPath();ctx.ellipse(5,10,28,12,0,0,Math.PI*2);ctx.fill();
+    const flame=10+Math.sin(time*38)*4;ctx.fillStyle=kind==='player'?'#a2f3ee':'#ffbd7d';
+    path([[-4,19],[0,28+flame],[4,19]],ctx.fillStyle);ctx.globalAlpha=.35;path([[-7,18],[0,36+flame],[7,18]],ctx.fillStyle);ctx.globalAlpha=1;
+    path([[0,-32],[6,-10],[31,12],[30,19],[7,11],[5,23],[13,29],[13,33],[0,28],[-13,33],[-13,29],[-5,23],[-7,11],[-30,19],[-31,12],[-6,-10]],fill,'#e1f3e9aa');
+    path([[0,-23],[4,-7],[3,9],[-3,9],[-4,-7]],'#204758','#adf3ed');
+    ctx.fillStyle='#f4d58f';ctx.fillRect(-25,14,5,2);ctx.fillRect(20,14,5,2);
+    if(kind==='boss'){path([[-44,9],[-10,-11],[10,-11],[44,9],[42,27],[15,18],[-15,18],[-42,27]],'#d39582','#ffe2a8');path([[0,-35],[9,8],[0,26],[-9,8]],fill);}
     ctx.restore();
   }
   const ocean = document.createElement('canvas'); ocean.width = C.W; ocean.height = C.H;
@@ -243,10 +236,9 @@
       const x = (i * 127 + 18) % C.W, y = ((i * 71 + time * 11) % (C.H + 35)) - 18;
       ctx.strokeStyle = i % 3 === 0 ? '#a4d5d01d' : '#a4d5d00d'; ctx.beginPath(); ctx.moveTo(x-14,y); ctx.quadraticCurveTo(x,y-5,x+14,y); ctx.stroke();
     }
-    // Distant harbour contours stay outside the playable channel.
-    ctx.fillStyle = '#173b41'; ctx.strokeStyle = '#618c8030'; ctx.lineWidth = 5;
-    for (const [x,y,rx,ry] of [[-34,105,62,105],[490,450,55,90]]) { ctx.beginPath(); ctx.ellipse(x,y,rx,ry,.25,0,Math.PI*2); ctx.fill(); ctx.stroke(); }
-    ctx.fillStyle = '#62826e30'; ctx.fillRect(4,72,13,25); ctx.fillRect(5,102,18,22); ctx.fillRect(445,412,9,32);
+    ctx.fillStyle='#c2e8e50d';
+    for(let i=0;i<5;i++){const x=(i*139+45)%C.W,y=(i*173+time*21)%(C.H+130)-65;ctx.beginPath();ctx.ellipse(x,y,85,32,.2,0,Math.PI*2);ctx.fill();}
+
   }
   function drawLabel(text, x, y, color = '#d8e6e2', size = 12) {
     size = Math.max(size, 12 * labelScale);
@@ -260,7 +252,7 @@
     const p = e.position;
     if (e.type === 'ship') {
       const scale = e.kind === 'boss' ? 2.3 : e.kind === 'debt' ? 1.3 : e.kind === 'inflation' ? 1.1 : e.kind === 'scam' ? .8 : .87;
-      ship(p.x,p.y,Math.PI/2,scale,e.kind,time,e.flash);
+      ship(p.x,p.y,Math.PI/2,scale,e.kind,time,e.flash);if(e.kind==='boss'&&e.strategy.remainingBeforeAttack<.65){ctx.strokeStyle='#ffdb9c';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,55+Math.sin(time*14)*3,0,Math.PI*2);ctx.stroke();}
       if (e.hp < e.maxHp) { const w=e.kind==='boss'?80:35; ctx.fillStyle='#09242f';ctx.fillRect(p.x-w/2,p.y-scale*35,w,3);ctx.fillStyle=COLORS[e.kind];ctx.fillRect(p.x-w/2,p.y-scale*35,w*Math.max(0,e.hp/e.maxHp),3); }
       if (e.kind !== 'boss') drawLabel(t(`label_${e.kind}`),p.x,p.y+scale*34,COLORS[e.kind],13);
     } else if (e.type === 'torpedo') {
@@ -321,6 +313,7 @@
   }
   function sizeCanvas(){const rect=canvas.getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.round(rect.width*dpr);canvas.height=Math.round(rect.height*dpr);labelScale=C.W/Math.max(1,rect.width);}
   function frame(now){
+    if(phase==='play')journey?.step(!paused);
     const dt=lastTime===null?0:Math.min(.2,(now-lastTime)/1000);lastTime=now;
     if(!paused){animation+=dt;fx.update(dt);}
     if(phase==='sinking'){deathTime-=dt;if(deathTime<=0)finishSinking();}
@@ -347,7 +340,7 @@
     if(keyMap[e.code]&&phase==='play'&&!paused){e.preventDefault();pressed.add(keyMap[e.code]);pointerTarget=null;}
     if(e.repeat)return;
     if(e.code==='KeyP'||e.code==='Escape'){if(phase==='play'){e.preventDefault();setPaused(!paused);}}
-    if(e.code==='KeyQ')shield();
+    if(e.code==='KeyQ')shield();if(e.code==='KeyE'&&phase==='play'&&!paused)journey?.swap();
     const kind={Digit1:'weapon',Digit2:'escort',Digit3:'reserve',Digit4:'repair'}[e.code];if(kind)purchase(kind);
   });
   window.addEventListener('keyup',e=>{if(keyMap[e.code])pressed.delete(keyMap[e.code]);});
@@ -388,5 +381,21 @@
     sizeCanvas();
   });document.addEventListener('fullscreenchange',sizeCanvas);
   new ResizeObserver(sizeCanvas).observe($('sea'));
+  if(journey){
+    const settings=document.createElement('div');settings.id='journey-settings';$('menu').insertBefore(settings,$('start'));$('menu').querySelector('.modes').hidden=true;
+    const swap=document.createElement('button');swap.id='swap-weapon';swap.className='journey-swap';$('shield').parentNode.insertBefore(swap,$('shield'));bindAction(swap,()=>{if(phase==='play'&&!paused)journey.swap();});
+    const setup=()=>{journey.settings(settings,d=>chooseMode(d==='challenge'?'storm':'standard'));swap.textContent=journey.text('⇄ 換武器 · E','⇄ Switch · E');};setup();
+    const originalLanguage=setLanguage;setLanguage=function(next){originalLanguage(next);setup();};
+    journey.onIntermission=()=>{paused=true;clearInput();soundscape.play('upgrade');};
+    journey.onChoice=(kind,r)=>{
+      if(kind==='power'){game.weapon=Math.min(5,game.weapon+1);}
+      if(kind==='support'){game.hero.hp=Math.min(game.hero.maxHp,game.hero.hp+25);game.escort=Math.min(3,game.escort+1);}
+      game.power=1+(r.wave-1)*.10+r.power*.18+game.paidPower;game.weaponKind=r.weapon;game.wave=r.wave;game.waveKills=0;game.bossSpawned=false;game.spawnTime=.5;
+      game.entities=game.entities.filter(e=>e.type==='coin');game.raised=[];game.invulnerable=1.5;paused=false;accumulator=0;banner('waveBanner',r.wave);updateHUD();
+    };
+    journey.onSwap=kind=>{game.weaponKind=kind;soundscape.play('upgrade');};
+    journey.onEnd=()=>{game.running=false;paused=false;phase='over';clearInput();showOverlay('end-menu');renderEnd();};
+    window.FuLamFleet={getState:()=>({phase,paused,score:game.score,hp:game.hero.hp,wave:game.wave,kills:game.kills,weaponKind:game.weaponKind,weapon:game.weapon,power:game.power,shield:game.shield,shots:game.shots,run:journey.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,phase:journey.run.phase,active:journey.run.active,total:journey.run.total,wave:journey.run.wave,choiceTime:journey.run.choiceTime,reason:journey.run.reason}:null})};
+  }
   setLanguage(lang);sizeCanvas();requestAnimationFrame(frame);
 })();

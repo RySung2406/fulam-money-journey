@@ -18,3 +18,7 @@ Audio decoding is optional and non-blocking, with synthesised fallback cues. Dis
 Touch handling is original FuLam code. Combat controls accept independent touches, so aiming or movement can continue while another finger activates a skill. Compatibility clicks are deduplicated, and mouse and keyboard controls remain supported.
 
 The existing gameplay attributions remain: Fishing Joy formations (MIT) and SUBmersible WARship 2063 combat core (MIT). Third-party assets retain their own licences.
+
+## Booth QR codes (2026-11-04)
+
+Static SVG QR codes are generated locally using python-qrcode 8.2 (BSD-3-Clause with MIT ancestry notice): https://github.com/lincolnloop/python-qrcode . Full notice: `licenses/python-qrcode.txt`. The generated codes contain only public game URLs; no external QR service or tracking request is used. URLs and SHA-256 hashes are in `qr-assets.json`.

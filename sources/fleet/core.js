@@ -49,8 +49,9 @@
   };
   const MAX = { weapon: 5, escort: 3, reserve: 3 };
   const COSTS = { weapon: [0, 45, 85, 145, 220], escort: [65, 120, 190], reserve: [50, 90, 140] };
-  function createState({ seed = Date.now(), mode = 'standard' } = {}) {
+  function createState({ seed = Date.now(), mode = 'standard', arcade = false } = {}) {
     const state = {
+      arcade, weaponKind: 0, power: 1, paidPower: 0,
       mode: mode === 'storm' ? 'storm' : 'standard', random: rng(seed), time: 0, wave: 1, waveKills: 0,
       goal: 8, kills: 0, score: 0, cash: 35, income: 0, dividend: 0, combo: 0, comboTime: 0,
       weapon: 1, escort: 0, reserve: 0, shield: 0, shieldCooldown: 0, invulnerable: 1.5,
@@ -119,6 +120,13 @@
     const angle = target ? Math.atan2(target.position.y - s.hero.position.y, target.position.x - s.hero.position.x) : -Math.PI / 2;
     s.hero.position.r = angle;
     const level = s.weapon;
+    if(s.arcade){
+      const kind=s.weaponKind, a=-Math.PI/2;
+      s.hero.position.r=a;
+      const offsets=kind===1?[-.25,-.125,0,.125,.25]:kind===3?[-.08,.08]:level>=3?[-.035,.035]:[0];
+      for(const off of offsets)fireTorpedo(s,{x:s.hero.position.x,y:s.hero.position.y-26},a+off,FRIEND,{damage:(kind===1?9:kind===3?22:kind===2?28:16)*s.power,speed:kind===3?265:kind===2?850:520,radius:kind===3?5:3.5,homing:kind===3?3:0,pierce:kind===2?4:kind===0&&level>=4?1:0,style:kind===3?'orb':'beam'});
+      s.shots++;emit(s,'fire');return;
+    }
     const angles = level === 1 ? [0] : level === 2 ? [-0.055, 0.055] : [-0.18, 0, 0.18];
     const orb = level === 5 && s.shots % 3 === 0;
     for (const offset of angles) {
@@ -146,6 +154,10 @@
     let angles = [a];
     if (entity.kind === 'inflation') angles = [a - 0.28, a, a + 0.28];
     if (entity.kind === 'boss') angles = Array.from({ length: 9 }, (_, i) => a + (i - 4) * 0.21);
+    if(s.arcade&&entity.kind==='boss'){
+      const second=entity.hp<entity.maxHp*.5, count=second?11:7;
+      angles=Array.from({length:count},(_,i)=>a+Math.sin(entity.age*.6)*.25+(i-(count-1)/2)*(second?.23:.25));
+    }
     for (const angle of angles) fireTorpedo(s, p, angle, ENEMY, { damage: entity.kind === 'boss' ? 20 : entity.kind === 'debt' ? 18 : 12,
       speed: (entity.kind === 'debt' ? 90 : 113) * threat, radius: entity.kind === 'debt' ? 6 : 4.8,
       homing: entity.kind === 'debt' ? 0.36 : 0, style: entity.kind === 'debt' ? 'debt' : 'hostile' });
@@ -181,6 +193,7 @@
     s.cash -= cost;
     if (kind === 'repair') s.hero.hp = Math.min(s.hero.maxHp, s.hero.hp + 35);
     else s[kind]++;
+    if(s.arcade&&kind==='weapon'){s.paidPower+=.18;s.power+=.18;}
     emit(s, 'upgrade', { kind }); return true;
   }
   function tick(s, dt, input = {}) {
@@ -199,7 +212,7 @@
     h.x = clamp(h.x + dx / length * s.hero.velocity.speed * dt, 22, W - 22);
     h.y = clamp(h.y + dy / length * s.hero.velocity.speed * dt, 48, H - 27);
     s.hero.echo = { ...h };
-    s.fireTime -= dt; if (s.fireTime <= 0) { s.fireTime += Math.max(0.17, 0.34 - s.weapon * 0.025); weaponFire(s); }
+    s.fireTime -= dt; if (s.fireTime <= 0) { s.fireTime += (s.arcade ? (s.weaponKind===3?.65:s.weaponKind===2?.42:s.weaponKind===1?.32:.20) : Math.max(0.17, 0.34 - s.weapon * 0.025)); weaponFire(s); }
     s.escortTime -= dt; if (s.escortTime <= 0) { s.escortTime += s.escort === 3 ? 0.32 : 0.7; escortFire(s); }
     s.dividend += dt;
     if (s.dividend >= 15) {
@@ -209,11 +222,11 @@
       if (amount > 0) emit(s, 'dividend', { amount });
     }
     const ships = s.entities.filter(e => e.type === 'ship' && !e.dead);
-    if (s.waveKills >= s.goal && !ships.some(e => e.kind === 'boss')) {
+    if (!s.arcade && s.waveKills >= s.goal && !ships.some(e => e.kind === 'boss')) {
       s.wave++; s.waveKills = 0; s.goal = 7 + s.wave * 2; s.bossSpawned = false;
       emit(s, 'wave', { wave: s.wave });
     }
-    if (s.wave % 4 === 0 && !s.bossSpawned) { spawnEnemy(s, 'boss'); s.bossSpawned = true; emit(s, 'boss'); }
+    if (s.wave % (s.arcade ? 3 : 4) === 0 && !s.bossSpawned) { spawnEnemy(s, 'boss'); s.bossSpawned = true; emit(s, 'boss'); }
     s.spawnTime -= dt;
     if (s.spawnTime <= 0) {
       s.spawnTime += Math.max(0.42, 1.5 - s.wave * 0.1) / (s.mode === 'storm' ? 1.2 : 1);

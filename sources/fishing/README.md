@@ -1,3 +1,5 @@
+> Current v2 gameplay, Booth rules, storage and build instructions: [arcade-booth-v2.md](../../docs/arcade-booth-v2.md). The original implementation notes below describe the retained pre-v2 fallback.
+
 # FuLam Catch source
 
 Edit the shell, gameplay and Canvas art here. Rebuild the self-contained public HTML with:

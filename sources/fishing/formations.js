@@ -189,7 +189,7 @@ function gridMembers(config, width, height) {
         speedMultiplier: config.speedMultiplier || 1
     }));
 }
-function create(kind, count, width, height, direction = 1) {
+function create(kind, count, width, height, direction = 1, random = Math.random) {
     width = Math.max(200, Number(width) || 800);
     height = Math.max(220, Number(height) || 600);
     count = Math.max(1, Math.min(36, Math.floor(Number(count) || 5)));
@@ -219,9 +219,9 @@ function create(kind, count, width, height, direction = 1) {
     const bottomLimit = height - 125;
     const minYOffset = Math.min(...members.map(entry => entry.offsetY - 22));
     const maxYOffset = Math.max(...members.map(entry => entry.offsetY + 22));
-    const baseY = height * (0.24 + Math.random() * 0.38);
+    const baseY = height * (0.24 + random() * 0.38);
     const clampedBaseY = Math.max(topLimit - minYOffset, Math.min(bottomLimit - maxYOffset, baseY));
-    const sharedPhase = Math.random() * Math.PI * 2;
+    const sharedPhase = random() * Math.PI * 2;
     return members.map((entry, index) => {
         const spawnOffset = 70 + Math.abs(entry.offsetX);
         return {

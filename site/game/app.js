@@ -10,11 +10,15 @@ const prefs = {
  get(key, fallback) { try { return localStorage.getItem('fulam-' + key) ?? fallback; } catch { return fallback; } },
  set(key, value) { try { localStorage.setItem('fulam-' + key, String(value)); return true; } catch { return false; } }
 };
+const journey=window.FuLamJourney?new window.FuLamJourney.UI('knife',()=>window.FuLamSliceLanguage?.getLanguage()||prefs.get('language','zh-Hant')):null;
+let hearts=5,missDebt=0,focusCharge=0,focusTime=0,startTopic='';
+const roundRandom=()=>journey?.run?.random()??Math.random();
+if(journey){window.GameEngine.DIFFICULTIES.easy.label='Standard';window.GameEngine.DIFFICULTIES.hard.label='Challenge';}
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const effects = new MoneyEffects(reducedMotion), coinAudio = new CoinAudio();
 let mode = prefs.get('mode', 'easy'), playKind = prefs.get('play-kind', 'practice');
 if (!E.DIFFICULTIES[mode]) mode = 'easy';
-if (!['practice', 'sprint'].includes(playKind)) playKind = 'practice';
+if (!['practice', 'sprint'].includes(playKind)) playKind = 'practice';if(journey){playKind='practice';mode='easy';}
 let sound = prefs.get('sound', 'true') === 'true', phase = 'home', paused = false;
 let session = E.createSession(), question = null, optionDeck = null, optionStats = new Map();
 let arena = null, targets = [], elapsed = 0, lastTime = 0, raf = 0, nextSpawnAt = 0, spawned = 0;
@@ -107,7 +111,7 @@ function render(markup) {
  window.scrollTo({top: 0, behavior: 'instant'});
 }
 function advanceClock(now = performance.now()) {
- if (phase === 'playing' && !paused) elapsed += Math.max(0, now - lastTime) / 1000;
+ if (phase === 'playing' && !paused) elapsed += Math.max(0, now - lastTime) / 1000 * (focusTime>0?.5:1);
  lastTime = now;
 }
 function freezeGame() {
@@ -132,6 +136,8 @@ function about() {
 }
 $('#about-button').onclick = about;
 function rules() {
+ if(journey){showModal(journey.text('切對、連擊、升級','Slice, combo, upgrade'),'<p>'+journey.text('切正確選項得分，切錯扣心；累積漏切亦扣心。每 30 秒選擇強化、換刀或回復。標準 5 心，挑戰 3 心。Booth 固定標準難度，180 秒含暫停及升級。','Correct choices score; wrong cuts and repeated misses cost hearts. Every 30s choose power, a blade or recovery. Standard: 5 hearts. Challenge: 3. Booth uses standard rules for 180s including pauses and upgrades.')+'</p>','<button class="primary" id="close-modal">'+journey.text('知道了','Got it')+'</button>');$('#close-modal').onclick=closeModal;return;}
+
  showModal('Read. Choose. Slice.', `<ol><li><strong>Pick a topic.</strong> Its question stays visible throughout your run.</li><li><strong>Swipe through correct bags.</strong> Hold your mouse button or use your finger. Let wrong choices fall.</li><li><strong>Keep going.</strong> Bags arrive continuously in a shuffled order, with varied timing and flight paths.</li><li><strong>Choose your finish.</strong> Practice lasts until you finish. Sprint ends at ${E.GAME_RULES.sprintTarget} correct cuts; every wrong cut adds ${E.GAME_RULES.wrongPenaltySeconds} seconds.</li></ol><div class="rule-points"><span>Correct +100</span><span>Wrong −150</span><span>Combo bonus</span></div><p>Keyboard: Tab to an active bag, then press Enter or Space. A missed correct bag breaks your combo. Review explanations after your run, whenever you want.</p>`, `<button class="primary" id="close-modal">Got it ${icon('slice')}</button>`);
  $('#close-modal').onclick = closeModal;
 }
@@ -164,6 +170,15 @@ function home() {
  });
  app.querySelectorAll('[data-topic]').forEach(button => { button.onclick = () => startGame(button.dataset.topic); });
  $('#how-to').onclick = rules;
+ if(journey){
+  $('.mode-picker')?.remove();$('.play-kind-picker')?.remove();const settings=document.createElement('div');settings.id='journey-settings';$('.hero-copy').insertBefore(settings,$('.hero-actions'));
+  const setup=()=>journey.settings(settings,(d,scene)=>{mode=d==='challenge'?'hard':'easy';playKind='practice';app.querySelectorAll('[data-topic]').forEach(b=>b.disabled=scene==='booth'&&b.dataset.topic!==QUESTIONS[0].id);});setup();
+  $('.hero-copy h1').innerHTML=journey.text('切準一刀。<br><span class="gold">再破紀錄。</span>','Make it count.<br><span class="gold">Beat your best.</span>');$('.topic-menu-heading h2').textContent=journey.text('揀一個起始主題。','Choose your first topic.');$('.topic-menu-heading p').textContent=journey.text('回合之間會切換主題；先看清楚題目，再開始切袋。','Topics change between rounds. Read each question before slicing.');$('.bottom-strip').hidden=true;
+  $('.hero-desc').textContent=journey.text('切正確選項、保持連擊。每回合換題與強化刀具，挑戰你的最高分。','Slice correct choices and keep your combo. New topics and blade upgrades each round. Chase your high score.');
+  $('.hero-meta').textContent=journey.text('標準／挑戰 · 無盡回合 · Booth 180 秒','Standard / Challenge · Endless rounds · Booth 180s');
+  document.addEventListener('fulam-language',()=>{if(phase==='home'&&settings.isConnected)setup();},{once:true});
+ }
+
 }
 $('#brand-home').onclick = () => {
  if (['playing', 'ready'].includes(phase)) {
@@ -172,8 +187,10 @@ $('#brand-home').onclick = () => {
  } else home();
 };
 function startGame(topicId) {
+ if(journey?.scene==='booth')topicId=QUESTIONS[0].id;startTopic=topicId;
  const selected = QUESTIONS.find(q => q.id === topicId);
  if (!selected) return;
+ if(journey){hearts=journey.difficulty==='challenge'?3:5;missDebt=0;focusCharge=0;focusTime=0;}
  question = selected; session = E.createSession(); optionDeck = E.createOptionDeck(question.options);
  optionStats = new Map(question.options.map(option => [option.id, {option, shown: 0, correct: 0, wrong: 0, missed: 0, avoided: 0}]));
  elapsed = 0; nextSpawnAt = 0; spawned = 0; avoided = 0; lastGroup = []; finalTimeMs = null; bestResult = null; runSerial++;
@@ -189,6 +206,16 @@ function renderGame() {
  $('#game-fullscreen').onclick = () => $('#fullscreen').click();
  $('#finish-session').disabled = true; $('#finish-session').onclick = () => finishSession(false);
  $('#ready-button').onclick = beginStream;
+ if(journey){
+  $('.round-number').textContent=journey.text('回合 1 · 最高分挑戰','Round 1 · High score');
+  $('.mode-label').textContent=journey.text(journey.difficulty==='challenge'?'挑戰':'標準',journey.difficulty==='challenge'?'Challenge':'Standard');
+  $('.arena-footer>span').textContent=journey.text('錯切 −1♥ · 漏切 '+(journey.difficulty==='challenge'?3:5)+' 次 −1♥','Wrong −1♥ · '+(journey.difficulty==='challenge'?3:5)+' misses −1♥');
+  $('.small-note').textContent=journey.text('切錯扣心；漏切正確選項會斷連擊，累積漏切亦會扣心。每回合先看清新題目。','Wrong cuts cost a heart. Missed correct choices break combos; repeated misses cost a heart. Read each new round’s question.');
+  $('.ready-card p').textContent=journey.text('先閱讀上方題目。切正確選項，讓錯誤選項落下。'+hearts+' 顆心；每 30 秒選擇刀具強化。','Read the question above. Slice correct choices and leave wrong ones. '+hearts+' hearts; choose a blade upgrade every 30s.');
+  const swap=document.createElement('button');swap.id='knife-swap';swap.className='journey-swap';swap.textContent=journey.text('⇄ 換刀','⇄ Blade');$('.arena-footer').append(swap);swap.onclick=()=>{if(phase==='playing'&&!paused)journey.swap();};
+  const focus=document.createElement('button');focus.id='knife-focus';focus.className='journey-swap';focus.textContent=journey.text('慢時 0%','Focus 0%');$('.arena-footer').append(focus);focus.onclick=()=>{if(phase==='playing'&&!paused&&journey.run?.weapon===2&&focusCharge>=100){focusCharge=0;focusTime=2.5;playSound('start');}};
+ }
+
  updateSound();
 }
 function resizeArena() {
@@ -212,6 +239,7 @@ function resizeArena() {
 window.addEventListener('resize', resizeArena);
 function beginStream() {
  if (phase !== 'ready') return;
+ if(journey){journey.start($('.game-wrap'),startTopic);$('.game-wrap').classList.add('journey-live');optionDeck=E.createOptionDeck(question.options,roundRandom);}
  phase = 'playing'; paused = false; $('#ready-overlay')?.remove(); $('#finish-session').disabled = false;
  arena.classList.add('knife-enabled'); lastTime = performance.now(); nextSpawnAt = 0;
  playSound('start'); spawnIfReady(); positionTargets(); updateHUD(); raf = requestAnimationFrame(loop);
@@ -244,7 +272,7 @@ function chooseLaunch(initial, metrics) {
  if (!others.length) return initial;
  let best = initial, bestSeparation = -1;
  for (let attempt = 0; attempt < 12; attempt++) {
-  const plan = attempt ? {...E.createLaunches(1, mode)[0], delay: initial.delay} : initial;
+  const plan = attempt ? {...E.createLaunches(1, mode, roundRandom)[0], delay: initial.delay} : initial;
   let separation = Infinity;
   for (const progress of [.35, .5, .65]) {
    const future = elapsed + plan.delay + plan.duration * progress;
@@ -269,8 +297,8 @@ function spawnIfReady() {
  if (!arena || phase !== 'playing' || paused || elapsed < nextSpawnAt) return;
  const available = Math.max(0, liveCap() - targets.filter(target => !target.hit).length);
  if (!available) return;
- const count = Math.min(available, Math.max(1, E.spawnGroupSize(available)));
- const launches = E.createLaunches(count, mode);
+ const count = Math.min(available, Math.max(1, E.spawnGroupSize(available, roundRandom)));
+ const launches = E.createLaunches(count, mode, roundRandom);
  lastGroup = [];
  for (let index = 0; index < count; index++) {
   const option = optionDeck.next();
@@ -287,7 +315,7 @@ function spawnIfReady() {
   // Keep the handler on this short-lived node, not the run's shared AbortSignal.
   el.onclick = event => { if (event.detail === 0) cutTarget(target); };
  }
- nextSpawnAt = elapsed + E.nextSpawnDelay(mode);
+ nextSpawnAt = elapsed + E.nextSpawnDelay(mode, roundRandom)/(journey?.run?Math.min(1.8,1+(journey.run.wave-1)*.07):1);
 }
 function positionTargets() {
  if (!arena) return;
@@ -299,7 +327,7 @@ function positionTargets() {
    const stats = optionStats.get(target.option.id);
    if (target.shown) {
     E.recordMiss(session, target.instanceId, target.option);
-    if (target.option.good) stats.missed++;
+    if (target.option.good){stats.missed++;if(journey){missDebt++;if(missDebt>=(journey.difficulty==='challenge'?3:5)){hearts=Math.max(0,hearts-1);missDebt=0;}}}
     else { avoided++; stats.avoided++; }
    }
    target.el.remove(); continue;
@@ -324,9 +352,10 @@ function positionTargets() {
 }
 function loop(now) {
  if (phase !== 'playing') return;
+ journey?.step(!paused);if(phase!=='playing')return;
  const frameDelta = Math.max(0, now - lastTime) / 1000;
  advanceClock(now);
- if (!paused) { positionTargets(); spawnIfReady(); drawTrail(now, Math.min(frameDelta, .05)); updateHUD(); }
+ if (!paused) { focusTime=Math.max(0,focusTime-Math.min(frameDelta,.1));positionTargets();if(journey&&hearts<=0){journey.run.finish('hearts');finishSession(false);return;} spawnIfReady(); drawTrail(now, Math.min(frameDelta, .05)); updateHUD(); }
  raf = requestAnimationFrame(loop);
 }
 function updateHUD() {
@@ -338,6 +367,7 @@ function updateHUD() {
  $('#missed-count').textContent = `${session.missed} missed`;
  $('#run-goal').textContent = playKind === 'sprint' ? `${session.correct} / ${E.GAME_RULES.sprintTarget} CORRECT` : 'NO TIME LIMIT';
  $('#run-clock').textContent = timeLabel(playKind === 'sprint' ? E.sprintTimeMs(elapsed, session.wrong) : Math.ceil(elapsed * 1000));
+ if(journey?.run){$('#run-goal').textContent='♥ '+hearts+' · '+journey.name(journey.run.weapon);$('#run-clock').hidden=false;$('#run-clock').textContent=journey.scene==='booth'?Math.ceil(Math.max(0,180-journey.run.total))+'s':Math.floor(journey.run.active)+'s';if($('#knife-swap'))$('#knife-swap').disabled=paused||journey.run.swapCooldown>0;if($('#knife-focus')){$('#knife-focus').disabled=paused||journey.run.weapon!==2||focusCharge<100;$('#knife-focus').textContent=journey.text('慢時 ','Focus ')+Math.floor(focusCharge)+'%';}}
  $('#run-clock').title = playKind === 'sprint' ? `Includes ${session.wrong * E.GAME_RULES.wrongPenaltySeconds} seconds of wrong-slice penalties` : 'Time played';
 }
 function cutTarget(target) {
@@ -345,6 +375,7 @@ function cutTarget(target) {
  advanceClock();
  const result = E.recordHit(session, question.id, target.option, target.instanceId);
  if (!result) return;
+ if(journey){if(target.option.good){const bonus=Math.round(result.delta*(journey.run.power*.15+(journey.run.weapon===1?.25:0)));session.score+=bonus;result.delta+=bonus;focusCharge=Math.min(100,focusCharge+12);}else hearts=Math.max(0,hearts-1);session.score=Math.max(0,session.score);}
  target.hit = true; target.active = false; target.el.disabled = true;
  target.el.classList.add(target.option.good ? 'cut-good' : 'cut-bad');
  const stats = optionStats.get(target.option.id); stats[target.option.good ? 'correct' : 'wrong']++;
@@ -353,6 +384,7 @@ function cutTarget(target) {
  splitBag(target); effects.burst(centerX, centerY, target.option.good, arenaWidth < 650 ? .8 : 1);
  feedback(centerX, centerY, result.delta > 0 ? '+' + result.delta : String(result.delta), target.option.good ? (result.combo > 1 ? result.combo + ' COMBO' : 'Good choice!') : (playKind === 'sprint' ? '+3 seconds' : 'Wrong choice'), target.option.good);
  updateHUD(); announce(target.option.text + ': ' + (target.option.good ? 'Correct slice' : 'Wrong slice'));
+ if(journey&&hearts<=0){journey.run.finish('hearts');finishSession(false);return;}
  if (playKind === 'sprint' && session.correct >= E.GAME_RULES.sprintTarget) finishSession(true);
 }
 function feedback(x, y, text, sub, good) {
@@ -395,7 +427,8 @@ function bindPointer() {
   for (const target of targets) {
    if (target.hit || !target.active) continue;
    const width = target.el.offsetWidth, height = target.el.offsetHeight;
-   const rect = {left: target.x + 12, right: target.x + width - 12, top: Math.max(arenaCeiling, target.y + 18), bottom: Math.min(flightFloor, target.y + height - 10)};
+   const pad=journey?.run?(journey.run.weapon===0?22:journey.run.weapon===1?4:12):12;
+   const rect = {left: target.x + pad, right: target.x + width - pad, top: Math.max(arenaCeiling, target.y + 18), bottom: Math.min(flightFloor, target.y + height - 10)};
    if (E.segmentIntersectsRect(previous, point, rect)) cutTarget(target);
    if (!canSlice()) return;
   }
@@ -456,12 +489,14 @@ function finishSession(completed) {
  showResults(completed);
 }
 function showResults(completed) {
+ const newResult=journey?journey.result(session.score,{correct:session.correct,wrong:session.wrong},journey.run?.reason||'finish'):'';
  const q = question, mistakes = [...optionStats.values()].filter(stats => stats.wrong || stats.missed).length;
  const sprintComplete = playKind === 'sprint' && completed;
  const primaryResult = sprintComplete ? timeLabel(finalTimeMs) : session.score.toLocaleString();
  const resultCaption = sprintComplete ? `Raw time ${timeLabel(Math.ceil(elapsed * 1000))} + ${session.wrong * E.GAME_RULES.wrongPenaltySeconds}s penalties` : `Time played ${timeLabel(Math.ceil(elapsed * 1000))} · Best ${session.bestCombo} combo`;
  render(`<section class="results-page page-in"><div class="result-top"><div class="result-emblem">${icon('slice')}</div><div class="eyebrow">${sprintComplete ? '20-CORRECT SPRINT COMPLETE' : playKind === 'sprint' ? 'SPRINT ENDED EARLY' : 'PRACTICE COMPLETE'}</div><h1>${sprintComplete ? 'Your next target: a faster run.' : 'That was your rhythm.'}</h1><p>${escape(q.chapter)} · ${difficulty().label}</p><div class="big-score">${primaryResult}<small>${sprintComplete ? 'final time' : 'points'}</small></div><p>${resultCaption}</p>${sprintComplete ? `<p class="local-best">${bestResult.saved ? `${bestResult.improved ? 'New best! ' : ''}On this device: ${timeLabel(bestResult.timeMs)}` : 'This browser could not save your best time.'}</p>` : playKind === 'sprint' ? '<p class="local-best">Complete 20 correct slices to record a sprint best on this device.</p>' : ''}</div><div class="results-stats"><div class="result-stat"><strong>${session.correct}</strong><small>Correct bags sliced</small></div><div class="result-stat"><strong>${avoided}</strong><small>Wrong bags avoided</small></div><div class="result-stat needs-work"><strong>${session.wrong}</strong><small>Wrong bags sliced</small></div><div class="result-stat needs-work"><strong>${session.missed}</strong><small>Correct bags missed</small></div></div><div class="action-card"><div class="action-number">✦</div><div><div class="eyebrow">${sprintComplete ? `${session.score} POINTS · BEST ${session.bestCombo} COMBO` : 'ONE THING TO KEEP'}</div><p>${escape(q.takeaway)}</p></div></div><div class="result-actions"><button class="primary" id="replay">Play this topic again ${icon('arrow')}</button><button class="secondary" id="choose-topic">Choose another topic</button><button class="secondary" id="review-mistakes">Review choices${mistakes ? ' · ' + mistakes : ''}</button><button class="text-button" id="copy-result">Copy results ↗</button></div><p class="result-caption">Every run reshuffles the answer pool and flight paths. Best times stay on this device, separately for each topic and difficulty.</p><div class="result-review" id="result-review" hidden><h2>A closer look at your choices.</h2>${reviewCards()}${sourceLinks(q)}</div></section>`);
- $('#replay').onclick = () => startGame(q.id); $('#choose-topic').onclick = home;
+ if(journey){const box=document.createElement('div');box.innerHTML=newResult;$('.result-top').append(box);$('.result-top .eyebrow').textContent=journey.text('最高分挑戰','HIGH SCORE CHALLENGE');$('.result-top h1').textContent=journey.text('下一局，再進一步。','Go further next run.');$('.result-caption').textContent=journey.text('不同模式、起始主題及語言分榜 · 紀錄只保存在此瀏覽器','Separate boards by mode, starting topic and language · Records stay on this browser');$('#replay').textContent=journey.text(journey.scene==='booth'?'下一位':'再玩一次',journey.scene==='booth'?'Next player':'Play again');}
+ $('#replay').onclick = () => startGame(journey?startTopic:q.id); $('#choose-topic').onclick = home;
  $('#review-mistakes').onclick = () => {
   const box = $('#result-review'); box.hidden = !box.hidden;
   if (!box.hidden) box.scrollIntoView({behavior: reducedMotion ? 'instant' : 'smooth', block: 'start'});
@@ -479,9 +514,22 @@ function freezeSnapshot(value) {
  if (value && typeof value === 'object') { Object.values(value).forEach(freezeSnapshot); Object.freeze(value); }
  return value;
 }
+if(journey){
+ journey.nextHint=()=>{const initial=QUESTIONS.findIndex(q=>q.id===startTopic),q=QUESTIONS[(initial+journey.run.wave)%QUESTIONS.length];return window.FuLamSliceLanguage?.translate(q.question)||q.question;};
+ journey.onIntermission=()=>{paused=true;releasePointer();targets.forEach(t=>t.el.remove());targets=[];playSound('start');};
+ journey.onChoice=(kind,r)=>{
+  if(kind==='support')hearts=Math.min(journey.difficulty==='challenge'?3:5,hearts+1);
+  const initial=QUESTIONS.findIndex(q=>q.id===startTopic);question=QUESTIONS[(initial+r.wave-1)%QUESTIONS.length];
+  optionDeck=E.createOptionDeck(question.options,roundRandom);for(const option of question.options)if(!optionStats.has(option.id))optionStats.set(option.id,{option,shown:0,correct:0,wrong:0,missed:0,avoided:0});
+  $('.question-bar h1').textContent=question.question;$('.question-context').textContent=question.context;$('.question-bar .eyebrow').textContent=question.eyebrow;$('.round-number').textContent='ROUND '+r.wave+' · '+question.chapter;
+  nextSpawnAt=elapsed+2;lastTime=performance.now();paused=false;arena?.classList.remove('is-paused');resizeArena();updateHUD();
+ };
+ journey.onSwap=()=>{playSound('start');updateHUD();};
+ journey.onEnd=()=>finishSession(false);
+}
 Object.defineProperty(window, 'FuLamSlice', {value: Object.freeze({getState() {
  return freezeSnapshot({
-  phase, paused, topic: question?.id ?? null, mode: playKind, playKind, difficulty: mode, elapsed,
+  phase, paused, hearts,focusCharge,focusTime,run:journey?.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,wave:journey.run.wave,phase:journey.run.phase,active:journey.run.active,total:journey.run.total,weapon:journey.run.weapon,power:journey.run.power,reason:journey.run.reason}:null, topic: question?.id ?? null, mode: playKind, playKind, difficulty: mode, elapsed,
   score: session.score, correct: session.correct, wrong: session.wrong, missed: session.missed, flightFloor, arenaCeiling,
   combo: session.combo, bestCombo: session.bestCombo, avoided, spawned, cap: liveCap(),
   pending: targets.filter(target => !target.hit && elapsed < target.bornAt + target.launch.delay).length,

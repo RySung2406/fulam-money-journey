@@ -9,15 +9,21 @@ const canvasPointers=new window.FuLamArcade.Pointers();
 function clearPointerInput(){canvasPointers.clear();pointerDown=false}
 // Share the site's language choice while preserving the current game session.
 let language='zh-Hant';try{language=localStorage.getItem('fulam-language')==='en'?'en':'zh-Hant'}catch{}
+const journey=window.FuLamJourney?new window.FuLamJourney.UI('fishing',()=>language):null;
+let energy=100;
+const gameRandom=()=>journey?.run?.random()??Math.random();
+const gameRnd=(a,b)=>a+gameRandom()*(b-a);
 const translations={
- '全螢幕':'Full screen','退出全螢幕':'Exit full screen','音效 /':'audio /','圖示':'icons','炮台升級與道具':'Cannon upgrades and skills','捕財道具':'Fishing skills','12 級變形炮台 ·':'12 cannon levels ·',
+ '能源耗盡便結算；捕魚可回復能源。每 30 秒選擇強化，U 切換炮台。':'Energy drains over time; catches refill it. Choose an upgrade every 30s; U switches cannons.',
+ '捕魚補能源 · 回合升級 · 最高分挑戰':'Catch for energy · Round upgrades · High scores',
+ '全螢幕':'Full screen','退出全螢幕':'Exit full screen','音效 /':'audio /','圖示':'icons','炮台升級與道具':'Cannon upgrades and skills','捕財道具':'Fishing skills','四種炮台 · 回合強化 ·':'12 cannon levels ·',
  '小目標 · 捕獲 10 條':'Goal · Catch 10 fish','定投單發 · 穩定射擊':'Steady single shot','捕財升級，解鎖更多道具。':'Upgrade to unlock more skills.','Q W E R T Y 道具 · U 升級 · P 暫停':'Q W E R T Y skills · U upgrade · P pause','金幣 ×2':'Coins ×2','連射 ×2':'Rapid ×2','連射':'Fire',
  '捕財 · 連擊 · 升級':'Catch · Combo · Upgrade','準備就緒':'Ready','無限時':'No time limit','炮台':'Cannon','分數':'Score','秒':'s',
  '富臨錢進號':'The Money Journey','捕財達人':'FuLam Catch','投資海洋・無限挑戰':'Investment ocean · Endless play','個人最佳':'Personal best',
- '12 級變形炮台':'12 cannon levels','炮台養成 · 12 級火力':'12 cannon levels','本局捕財':'SCORE','可用金幣':'Coins','捕獲':'Caught','無限暢玩':'Endless','連續發射':'hold to fire','長按滑鼠':'Hold mouse','長按畫面':'Hold screen','純遊戲積分':'Game points only','製作與授權':'Credits & licences','返回遊戲區':'Back to games',
+ '四種炮台 · 回合強化':'4 cannons · round upgrades','炮台養成 · 12 級火力':'4 cannons · round upgrades','本局捕財':'SCORE','可用金幣':'Coins','捕獲':'Caught','無限暢玩':'Endless','連續發射':'hold to fire','長按滑鼠':'Hold mouse','長按畫面':'Hold screen','純遊戲積分':'Game points only','製作與授權':'Credits & licences','返回遊戲區':'Back to games',
  '大漁網技能，鍵盤 Q 或 1':'Net skill, press Q or 1','冰凍技能，鍵盤 W 或 2':'Freeze skill, press W or 2','狂熱連射技能，鍵盤 E 或 3':'Rapid fire, press E or 3','雙倍金幣技能，鍵盤 R 或 4':'Double coins, press R or 4','深海炸彈技能，鍵盤 T 或 5':'Bomb skill, press T or 5','黃金誘餌技能，鍵盤 Y 或 6':'Lure skill, press Y or 6','暫停遊戲，鍵盤 P':'Pause game, press P','升級炮台，鍵盤 U':'Upgrade cannon, press U','玩法說明':'How to play','開關音效':'Toggle sound','關閉音效':'Mute sound','開啟音效':'Enable sound','暫停 · P':'Pause · P',
  '捕財遊戲畫面。按住滑鼠或手指連射；鍵盤左右方向瞄準，空白鍵發射，Q 大漁網，W 冰凍，E 狂熱連射，R 雙倍金幣，T 深海炸彈，Y 黃金誘餌，U 升級，P 暫停。':'Fishing arena. Hold to fire. Arrow keys aim; Space fires; Q net, W freeze, E rapid fire, R double coins, T bomb, Y lure, U upgrade, P pause.',
- '想捕幾耐，':'Catch for','就捕幾耐。':'as long as you like.','瞄準大魚，長按連射。':'Aim for fish and hold to fire.','10 種投資海洋生物、12 級變形武器。':'10 investment-themed sea creatures, 12 weapon levels.','遊戲難度':'Difficulty','輕鬆':'Easy','標準':'Normal','挑戰':'Hard','開炮捕財':'Start fishing','01 · 無限時':'01 · NO TIME LIMIT','隨時暫停結算':'Pause and finish anytime','02 · 武器變形':'02 · EVOLVING WEAPONS','散射、大球、射線':'Spread, orbs and beams','03 · 海域升溫':'03 · RISING CHALLENGE','魚血量和速度漸增':'Fish get tougher and faster','魚種與武器是理財概念造型 · 分數不代表投資回報':'Financial themes are fictional · Scores are not investment returns',
+ '想捕幾耐，':'Catch for','就捕幾耐。':'as long as you like.','瞄準大魚，長按連射。':'Aim for fish and hold to fire.','捕魚補能源，換炮打大魚。':'Catch for energy. Switch cannons for bigger targets.','遊戲難度':'Difficulty','輕鬆':'Easy','標準':'Normal','挑戰':'Hard','開炮捕財':'Start fishing','01 · 無限時':'01 · NO TIME LIMIT','隨時暫停結算':'Pause and finish anytime','02 · 武器變形':'02 · EVOLVING WEAPONS','散射、大球、射線':'Spread, orbs and beams','03 · 海域升溫':'03 · RISING CHALLENGE','魚血量和速度漸增':'Fish get tougher and faster','魚種與武器是理財概念造型 · 分數不代表投資回報':'Financial themes are fictional · Scores are not investment returns',
  '遊戲已暫停':'Game paused','無限時，隨時繼續捕財。':'No time limit. Continue whenever you are ready.','本局':'This run','分 · 炮台 Lv.':'points · Cannon Lv.','繼續遊戲':'Resume','結算離場':'Finish run','結算後可重新開局 · 最佳分數已儲存':'Play again after finishing · Best score saved','滿載而歸！':'Great catch!','刷新個人最佳 · ':'New personal best · ','模式 · ':' · ','深海財神':'Ocean Tycoon','金庫大戶':'Vault Master','捕財高手':'Expert Fisher','新晉捕手':'New Fisher','捕獲魚數':'Fish caught','最高連擊':'Best combo','炮台等級':'Cannon level','今次捕財 ':'Played for ',' 分 ':' min ',' 秒。':' sec.','想玩隨時再出海。':'Come back to the ocean anytime.','重新開局':'Play again','返回遊戲首頁':'Game menu','最佳紀錄儲存在此瀏覽器 · 純遊戲積分':'Best score saved on this browser · Game points only','本局已結算，共 ':'Run complete: ',' 分，捕獲 ':' points, ',' 條。':' fish caught.',
  '無限捕財。':'Endless fishing.','長按畫面連射，移動手指或滑鼠瞄準。發射免費，無限時；想離場可按暫停，再選「結算離場」。':'Hold to fire and move your finger or mouse to aim. Shots are free and there is no time limit. Pause and choose Finish run when you are done.',
  '金幣可升級 12 級炮台，唔會扣總積分。分散投資炮會散射、複利炮會發射穿透大球、長線炮會射出光束。海域每 45 秒升一級，魚會更耐打、更快；最高 16 級，沒有時間上限。':'Spend coins on 12 cannon levels without reducing your score. Upgrade to spread shots, piercing orbs and beams. The sea gets tougher every 45 seconds, up to level 16, with no time limit.',
@@ -41,7 +47,7 @@ function localize(root){
  const modalSwitch=$('languageModal');if(modalSwitch){modalSwitch.textContent=language==='en'?'繁中':'English';modalSwitch.setAttribute('aria-label',language==='en'?'Switch to Traditional Chinese':'Switch to English')}
  document.documentElement.lang=language;document.title=language==='en'?'FuLam Catch · The Money Journey':'捕財達人 · 富臨錢進號';
 }
-function toggleLanguage(){language=language==='en'?'zh-Hant':'en';try{localStorage.setItem('fulam-language',language)}catch{}localize(document.body);updateHud()}
+function toggleLanguage(){language=language==='en'?'zh-Hant':'en';try{localStorage.setItem('fulam-language',language)}catch{}localize(document.body);updateHud();if(journey&&mode==='welcome'){const holder=overlay.querySelector('.journey-settings')?.parentNode;if(holder)journey.settings(holder,d=>{difficulty=d==='challenge'?'hard':'normal';});}}
 
 let w=1000,h=600,dpr=1,mode='welcome',difficulty='normal',last=0,time=0,round=0,score=0,wallet=0,caught=0,shots=0,hits=0,level=1,combo=0,maxCombo=0,lastCatch=-10,missionIndex=0,bossSpawned=0,nextBossAt=20,saveClock=5,startingBest=0;
 let fish=[],bullets=[],beams=[],particles=[],rings=[],floaters=[],coins=[],aim={x:500,y:240},pointerDown=false,keys=new Set(),shotClock=0,spawnClock=0,recoil=0,shake=0,freezeTime=0,netCooldown=0,freezeCooldown=0,hudClock=0,eventTime=0,sessionStarted=false;
@@ -84,8 +90,8 @@ const defs={
  gold:{name:'黃金海馬',value:75,hp:14,size:31,speed:68,color:'#ffd47d',swim:'orbit'}
 };
 const modes={easy:{speed:.82,hp:.9,spawn:1.5,label:'輕鬆'},normal:{speed:1.05,hp:1.15,spawn:1.35,label:'標準'},hard:{speed:1.35,hp:1.6,spawn:1.05,label:'挑戰'}};
-function pressureTier(){return Math.min(15,Math.floor(round/45));}
-function pressure(){return {tier:pressureTier(),hp:1+pressureTier()*.12,speed:1+pressureTier()*.025};}
+function pressureTier(){return journey?.run?journey.run.wave-1:Math.min(15,Math.floor(round/45));}
+function pressure(){return {tier:pressureTier(),hp:1+pressureTier()*.12,speed:1+Math.min(.9,pressureTier()*.025)};}
 const missions=[{n:10,bonus:50},{n:25,bonus:100},{n:45,bonus:180},{n:70,bonus:250},{n:100,bonus:400}];
 let prefs={sound:true,best:{easy:0,normal:0,hard:0}};try{let p=JSON.parse(localStorage.getItem('fulam-catch-v1')||'null');if(p){prefs.sound=p.sound!==false;for(const k of ['easy','normal','hard'])prefs.best[k]=Math.max(0,Number(p.best?.[k])||0)}}catch(e){}
 function save(){try{localStorage.setItem('fulam-catch-v1',JSON.stringify(prefs))}catch(e){}}
@@ -110,28 +116,28 @@ function fishSize(type){
  const boss=!!defs[type].boss,base=defs[type].size*(boss?1.3:1.55)*(w<600?.9:1);
  return Math.min(base,w*(boss?.26:.16),h*.20);
 }
-function fishLimit(){return w<600?30:42}
+function fishLimit(){return journey?(w<600?18:28):(w<600?30:42)}
 function mission(){
  if(missionIndex<missions.length)return {...missions[missionIndex],previous:missionIndex?missions[missionIndex-1].n:0};
  const extra=missionIndex-missions.length;return {n:150+extra*50,bonus:Math.min(1000,450+extra*50),previous:100+extra*50};
 }
-function persistBest(){if(score>prefs.best[difficulty]){prefs.best[difficulty]=score;save()}}
+function persistBest(){if(journey)return;if(score>prefs.best[difficulty]){prefs.best[difficulty]=score;save()}}
 function resetItems(){freezeTime=rapidTime=doubleTime=netCooldown=freezeCooldown=rapidCooldown=doubleCooldown=bombCooldown=lureCooldown=0}
 function cooldownFor(id){return {net:netCooldown,freeze:freezeCooldown,rapid:rapidCooldown,double:doubleCooldown,bomb:bombCooldown,lure:lureCooldown}[id]}
-function canUse(id){return mode==='playing'&&level>=itemDefs[id].unlock&&cooldownFor(id)<=0}
+function canUse(id){return mode==='playing'&&(!journey||['net','freeze'].includes(id))&&level>=itemDefs[id].unlock&&cooldownFor(id)<=0}
 function activeSeconds(id){return id==='freeze'?freezeTime:id==='rapid'?rapidTime:id==='double'?doubleTime:0}
 function visibleFish(f){return !f.dead&&f.x>-f.size&&f.x<w+f.size}
 function spawn(type,opts={}){
  if(fish.filter(f=>!f.dead).length>=fishLimit())return false;
- const d=defs[type],dir=opts.dir||(Math.random()<.5?1:-1),sz=fishSize(type),y=clamp(opts.y??rnd(...swimBounds(sz)),...swimBounds(sz)),boss=!!d.boss;
- const growth=opts.demo?1:(boss?1+(level-1)*.65:1+Math.pow(level-1,1.3)*.18)*pressure().hp;
+ const d=defs[type],dir=opts.dir||(gameRandom()<.5?1:-1),sz=fishSize(type),y=clamp(opts.y??gameRnd(...swimBounds(sz)),...swimBounds(sz)),boss=!!d.boss;
+ const growth=opts.demo?1:(journey?1:(boss?1+(level-1)*.65:1+Math.pow(level-1,1.3)*.18))*pressure().hp;
  const hp=Math.max(1,Math.round(d.hp*(opts.demo?1:modes[difficulty].hp)*growth));
  const value=Math.round(d.value*(boss?1+Math.min(1.5,(level-1)*.10):1));
- fish.push({uid:++fishSerial,type,swim:d.swim,swimTime:0,x:opts.x??(dir===1?-sz*3:w+sz*3),y,baseY:y,size:sz,angle:dir===1?0:Math.PI,dir,speed:opts.speed??d.speed*(opts.demo?.55:modes[difficulty].speed*pressure().speed),phase:opts.phase??rnd(0,TAU),hp,maxHp:hp,value,hit:0,dead:false,age:0,seen:false,school:!!opts.school});return true;
+ fish.push({uid:++fishSerial,type,swim:d.swim,swimTime:0,x:opts.x??(dir===1?-sz*3:w+sz*3),y,baseY:y,size:sz,angle:dir===1?0:Math.PI,dir,speed:opts.speed??d.speed*(opts.demo?.55:modes[difficulty].speed*pressure().speed),phase:opts.phase??gameRnd(0,TAU),hp,maxHp:hp,value,hit:0,dead:false,age:0,seen:false,school:!!opts.school});return true;
 }
 function school(demo=false){
  if(fish.filter(f=>!f.dead).length>fishLimit()-6)return;
- const dir=Math.random()<.5?1:-1,types=['coin','coin','save','fund','bond'],type=types[Math.floor(Math.random()*types.length)],kind=['line','wave','v','circle'][Math.floor(Math.random()*4)],count=w<600?4:6,points=FuLamFormations.create(kind,count,w,h,dir),speed=defs[type].speed*(demo?.55:modes[difficulty].speed);
+ const dir=gameRandom()<.5?1:-1,types=['coin','coin','save','fund','bond'],type=types[Math.floor(gameRandom()*types.length)],kind=['line','wave','v','circle'][Math.floor(gameRandom()*4)],count=w<600?4:6,points=FuLamFormations.create(kind,count,w,h,dir,gameRandom),speed=defs[type].speed*(demo?.55:modes[difficulty].speed);
  const [lo,hi]=swimBounds(fishSize(type)),ys=points.map(p=>p.y),minY=Math.min(...ys),maxY=Math.max(...ys),spread=maxY-minY,scale=Math.min(1,(hi-lo)/Math.max(1,spread)),center=clamp((minY+maxY)/2,lo+spread*scale/2,hi-spread*scale/2);
  for(const p of points)spawn(type,{x:p.x,y:center+(p.y-(minY+maxY)/2)*scale,dir,speed,phase:p.phase,school:true,demo});
 }
@@ -143,14 +149,16 @@ function openModal(html){oldFocus=document.activeElement;clearPointerInput();key
 function closeModal(){overlay.hidden=true;overlay.innerHTML='';canvas.focus({preventScroll:true})}
 function showWelcome(){
  fx.clear();soundscape.stop();mode='welcome';sessionStarted=false;$('pause').disabled=true;document.body.classList.remove('game-active');resetItems();score=wallet=caught=round=0;level=1;combo=0;missionIndex=0;bullets=[];beams=[];particles=[];rings=[];floaters=[];coins=[];eventTime=0;seedDemo();
- openModal(welcomeIcon+'<div class="label">FULAM · ENDLESS FISHING</div><h2 id="dialogTitle">想捕幾耐，<br><em>就捕幾耐。</em></h2><p>瞄準大魚，長按連射。<br>10 種投資海洋生物、12 級變形武器。</p><div class="difficulty" role="group" aria-label="遊戲難度"><button data-diff="easy">輕鬆</button><button data-diff="normal">標準</button><button data-diff="hard">挑戰</button></div><button class="primary" id="start" data-autofocus>開炮捕財 <span aria-hidden="true">↗</span></button><div class="how"><span><b>01 · 無限時</b>隨時暫停結算</span><span><b>02 · 武器變形</b>散射、大球、射線</span><span><b>03 · 海域升溫</b>魚血量和速度漸增</span></div><div class="micro">魚種與武器是理財概念造型 · 分數不代表投資回報</div>');
- overlay.querySelectorAll('[data-diff]').forEach(b=>{b.classList.toggle('selected',b.dataset.diff===difficulty);b.setAttribute('aria-pressed',String(b.dataset.diff===difficulty));b.onclick=()=>{difficulty=b.dataset.diff;overlay.querySelectorAll('[data-diff]').forEach(e=>{e.classList.toggle('selected',e===b);e.setAttribute('aria-pressed',String(e===b))});updateHud()}});$('start').onclick=start;updateHud();
+ openModal(welcomeIcon+'<div class="label">FULAM · ENDLESS FISHING</div><h2 id="dialogTitle">想捕幾耐，<br><em>就捕幾耐。</em></h2><p>瞄準大魚，長按連射。<br>捕魚補能源，換炮打大魚。</p><div class="difficulty" role="group" aria-label="遊戲難度"><button data-diff="easy">輕鬆</button><button data-diff="normal">標準</button><button data-diff="hard">挑戰</button></div><button class="primary" id="start" data-autofocus>開炮捕財 <span aria-hidden="true">↗</span></button><div class="how"><span><b>01 · 無限時</b>隨時暫停結算</span><span><b>02 · 武器變形</b>散射、大球、射線</span><span><b>03 · 海域升溫</b>魚血量和速度漸增</span></div><div class="micro">魚種與武器是理財概念造型 · 分數不代表投資回報</div>');
+ overlay.querySelectorAll('[data-diff]').forEach(b=>{b.classList.toggle('selected',b.dataset.diff===difficulty);b.setAttribute('aria-pressed',String(b.dataset.diff===difficulty));b.onclick=()=>{difficulty=b.dataset.diff;overlay.querySelectorAll('[data-diff]').forEach(e=>{e.classList.toggle('selected',e===b);e.setAttribute('aria-pressed',String(e===b))});updateHud()}});$('start').onclick=start;if(journey){const container=document.createElement('div');overlay.querySelector('.difficulty').replaceWith(container);journey.settings(container,d=>{difficulty=d==='challenge'?'hard':'normal';});}updateHud();
 }
 function start(){
- fx.clear();initAudio();mode='playing';sessionStarted=true;round=0;score=wallet=caught=shots=hits=0;level=1;combo=maxCombo=0;lastCatch=-10;missionIndex=0;bossSpawned=0;nextBossAt=20;saveClock=5;startingBest=prefs.best[difficulty];resultRecord=false;lastPressureTier=0;
+ if(journey){journey.start(scene);scene.classList.add('journey-live');energy=100;difficulty=journey.difficulty==='challenge'?'hard':'normal';}
+ fx.clear();initAudio();mode='playing';sessionStarted=true;round=0;score=wallet=caught=shots=hits=0;level=1;combo=maxCombo=0;lastCatch=-10;missionIndex=0;bossSpawned=0;nextBossAt=20;saveClock=5;startingBest=journey?journey.best():prefs.best[difficulty];resultRecord=false;lastPressureTier=0;
  fish=[];bullets=[];beams=[];particles=[];floaters=[];coins=[];rings=[];resetItems();shotClock=0;spawnClock=.5;clearPointerInput();keys.clear();aim={x:w/2,y:h*.35};angle=-Math.PI/2;closeModal();document.body.classList.add('game-active');
- for(let i=0;i<10;i++)spawn(['coin','save','coin','fund','stock','ray','bond','crypto','gold','coin'][i%10],{x:rnd(w*.06,w*.94)});
- notify('無限時捕財 · U 升級可改變攻擊方式',3);updateHud();
+ if(journey)nextBossAt=Infinity;
+ for(let i=0;i<(journey?6:10);i++)spawn(['coin','save','coin','fund','stock','bond','gold','crypto','gold','coin'][i%10],journey?{x:w*(.17+.33*(i%3)),y:h*(.35+.25*Math.floor(i/3))}:{x:gameRnd(w*.06,w*.94)});
+ notify(journey?'捕魚補能源 · 回合升級 · 最高分挑戰':'無限時捕財 · U 升級可改變攻擊方式',3);updateHud();
 }
 function pause(){
  if(mode!=='playing')return;persistBest();mode='paused';soundscape.stop();
@@ -159,12 +167,14 @@ function pause(){
 }
 function resume(){mode='playing';closeModal();initAudio();updateHud()}
 function finish(commit=true){
- mode='ended';clearPointerInput();keys.clear();if(commit){resultRecord=score>startingBest;persistBest();sound('end')}
+ mode='ended';journey?.close();clearPointerInput();keys.clear();if(commit){resultRecord=score>startingBest;persistBest();sound('end')}
  const rank=score>=20000?'深海財神':score>=8000?'金庫大戶':score>=2000?'捕財高手':'新晉捕手';
  openModal('<div class="label">YOUR CATCH OF THE DAY</div><h2 id="dialogTitle">滿載而歸！</h2><div class="result-score">'+fmt(score)+'</div><div class="badge">'+(resultRecord?'刷新個人最佳 · ':modes[difficulty].label+'模式 · ')+rank+'</div><div class="result-grid"><div><b>'+caught+'</b><span>捕獲魚數</span></div><div><b>'+maxCombo+'</b><span>最高連擊</span></div><div><b>Lv.'+level+'</b><span>炮台等級</span></div></div><p>今次捕財 '+Math.floor(round/60)+' 分 '+Math.floor(round%60)+' 秒。<br>想玩隨時再出海。</p><button class="primary" id="again" data-autofocus>重新開局</button><button class="secondary" id="home">返回遊戲首頁</button><div class="micro">最佳紀錄儲存在此瀏覽器 · 純遊戲積分</div>');
+ if(journey){const result=document.createElement('div');result.innerHTML=journey.result(score,{caught,maxCombo},journey.run.reason||'finish');overlay.querySelector('.card').insertBefore(result,$('again'));$('again').textContent=journey.text(journey.scene==='booth'?'下一位':'再玩一次',journey.scene==='booth'?'Next player':'Play again');}
  $('again').onclick=start;$('home').onclick=showWelcome;$('live').textContent='本局已結算，共 '+score+' 分，捕獲 '+caught+' 條。';updateHud();
 }
 function help(){
+ if(journey){if(mode==='upgrading')return;modalReturn=mode;mode='help';clearPointerInput();openModal('<h2 id="dialogTitle">'+journey.text('捕財達人','FuLam Catch')+'</h2><p>'+journey.text('長按連射，U 換炮；另一手可放漁網或冰凍。捕魚補能源，能源耗盡結算。每 30 秒免費三選一強化；Booth 在 180 秒結算，包含暫停及升級時間。','Hold to fire, U to switch. A second finger can cast a net or freeze. Catch fish to refill energy; zero ends the run. Choose a free upgrade every 30s. Booth ends at 180s, including pauses and upgrades.')+'</p><button id="helpClose" class="primary">'+journey.text('返回','Back')+'</button>');$('helpClose').onclick=returnModal;return;}
  if(mode==='help'||mode==='credits')return;modalReturn=mode;if(mode==='playing')clearPointerInput();soundscape.stop();mode='help';
  openModal('<div class="label">HOW TO PLAY</div><h2 id="dialogTitle">無限捕財。</h2><p style="text-align:left">長按畫面連射，移動手指或滑鼠瞄準。發射免費，無限時；想離場可按暫停，再選「結算離場」。<br><br>金幣可升級 12 級炮台，唔會扣總積分。分散投資炮會散射、複利炮會發射穿透大球、長線炮會射出光束。海域每 45 秒升一級，魚會更耐打、更快；最高 16 級，沒有時間上限。<br><br>ETF 魔鬼魚滑翔、股票魚走折線、槓桿快鯊突然衝刺，債券海龜則較慢但更耐打。造型只借用理財概念，不代表真實投資風險或回報。<br><br><b>Q / 1 大漁網</b>：範圍捕捉，冷卻 16 秒。<br><b>W / 2 冰凍</b>：慢速 5 秒，冷卻 20 秒。<br><b>E / 3 狂熱連射 · Lv.3</b>：射速加倍 8 秒，冷卻 24 秒。<br><b>R / 4 雙倍金幣 · Lv.5</b>：捕魚收益加倍 8 秒，冷卻 30 秒。<br><b>T / 5 深海炸彈 · Lv.7</b>：大範圍爆破，冷卻 28 秒。<br><b>Y / 6 黃金誘餌 · Lv.9</b>：召喚高值魚群，冷卻 32 秒。</p><p style="font-size:11px">鍵盤：← → 瞄準 · 空白鍵射擊<br>Q/W/E/R/T/Y 道具（亦可 1–6）· U 升級 · P 暫停</p><button class="primary" id="helpClose" data-autofocus>知道了</button>');
  $('helpClose').onclick=returnModal;updateHud();
@@ -174,7 +184,7 @@ function finishWithoutSound(){finish(false)}
 function addParticles(x,y,color,n=15){n=reduced?Math.min(n,5):n;for(let i=0;i<n&&particles.length<250;i++){const a=rnd(0,TAU),s=rnd(25,150);particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:rnd(.3,.8),max:.8,r:rnd(1.5,4),color})}}
 function floater(x,y,text,color='#ffe3a0',big=false){floaters.push({x,y,text,color,life:1.1,max:1.1,big});if(floaters.length>30)floaters.shift()}
 function capture(f){
- if(f.dead)return;f.dead=true;caught++;combo=round-lastCatch<2.6?combo+1:1;lastCatch=round;maxCombo=Math.max(maxCombo,combo);
+ if(f.dead)return;f.dead=true;if(journey)energy=Math.min(100,energy+(f.type==='whale'?18:f.type==='shark'?10:Math.min(5,.8+f.value/35)));caught++;combo=round-lastCatch<2.6?combo+1:1;lastCatch=round;maxCombo=Math.max(maxCombo,combo);
  const mult=(1+Math.min(1,Math.floor(combo/5)*.15))*(doubleTime>0?2:1),gain=Math.round(f.value*mult);score+=gain;wallet+=gain;
  fx.burst(f.x,f.y,{color:defs[f.type].color,size:f.size*.7,water:true,heavy:f.type==='whale'||f.type==='shark'});if(['bond','crypto'].includes(f.type)){fx.shatter(f.x,f.y,defs[f.type].color,f.size*.4);sound('crack');}rings.push({x:f.x,y:f.y,r:10,end:f.size*2.3,life:.45,max:.45,color:defs[f.type].color,net:false});floater(f.x,f.y-15,'+'+gain,defs[f.type].color,f.type==='whale'||f.type==='shark');
  for(let i=0;i<(reduced?2:Math.min(8,Math.ceil(gain/15)))&&coins.length<180;i++)coins.push({x:f.x+rnd(-12,12),y:f.y+rnd(-12,12),sx:f.x,sy:f.y,age:0,delay:i*.035,life:.8+Math.random()*.2,spin:rnd(0,TAU),vx:rnd(-60,60)});
@@ -198,8 +208,24 @@ function emitBeam(cannon,a,amount=cannon.damage){
  for(const f of fish)if(visibleFish(f)&&segmentFish(x,y,ex,ey,f,width*.5)!==null){hits++;damage(f,amount)}
  shots++;
 }
+function currentCannon(){
+ if(!journey?.run)return cannons[level-1];
+ const r=journey.run,power=1+(r.wave-1)*.10+r.power*.22;
+ if(r.weapon===1)return {name:journey.name(1),kind:'beam',label:journey.name(1),damage:4*power,beamWidth:9+Math.min(12,r.power),interval:.32,speed:900,spread:[0]};
+ if(r.weapon===2)return {name:journey.name(2),kind:'chain',label:journey.name(2),damage:3.6*power,interval:.42,speed:900,spread:[0]};
+ if(r.weapon===3)return {name:journey.name(3),kind:'orb',label:journey.name(3),damage:10*power,interval:.62,speed:480,spread:[0],pierce:2+Math.min(3,r.power),blast:48};
+ return {name:journey.name(0),kind:'spread',label:journey.name(0),damage:1.5*power,interval:.22,speed:720,spread:r.power>=2?[-.24,-.12,0,.12,.24]:[-.13,0,.13]};
+}
 function fire(){
- if(mode!=='playing'||bullets.length>180)return;const o=origin(),cannon=cannons[level-1];
+ if(mode!=='playing'||bullets.length>180)return;const o=origin(),cannon=currentCannon();
+ if(cannon.kind==='chain'){
+  const pool=fish.filter(visibleFish),used=new Set();let x=aim.x,y=aim.y,from=o;
+  for(let i=0;i<3+Math.min(3,journey.run.power);i++){
+   const f=pool.filter(f=>!used.has(f.uid)&&!f.dead&&Math.hypot(f.x-x,f.y-y)<(i?210:150)).sort((a,b)=>Math.hypot(a.x-x,a.y-y)-Math.hypot(b.x-x,b.y-y))[0];if(!f)break;
+   used.add(f.uid);beams.push({x:from.x,y:from.y,ex:f.x,ey:f.y,width:5,life:.2,max:.2,color:'#a8caff'});hits++;damage(f,cannon.damage*Math.pow(.85,i));x=f.x;y=f.y;from=f;
+  }
+  if(beams.length>18)beams.splice(0,beams.length-18);shots++;sound('fire');recoil=1;return;
+ }
  if(cannon.kind==='beam'||cannon.kind==='hybrid')emitBeam(cannon,angle,cannon.beamDamage||cannon.damage);
  if(cannon.kind!=='beam')for(const spread of cannon.spread){
   const a=angle+spread,isOrb=cannon.kind==='orb'||cannon.kind==='hybrid';
@@ -233,6 +259,7 @@ function useLure(){
  sound('lure');notify('黃金誘餌 · 高值魚群入場',2.5);updateHud();
 }
 function upgrade(){
+ if(journey){if(mode==='playing')journey.swap();return;}
  if(mode!=='playing'||level>=maxLevel)return;const next=cannons[level],price=next.cost;
  if(wallet<price){toast('再捕 '+(price-wallet)+' 金幣就可以升級');return}
  wallet-=price;level++;sound('upgrade');shake=reduced?0:3;const o=origin();addParticles(o.x,o.y-20,'#ffe29a',32);
@@ -240,7 +267,7 @@ function upgrade(){
  notify('Lv.'+level+' '+next.name+(unlocked?' · 解鎖'+unlocked.name:''),3);updateHud();
 }
 function updateHud(){
- $('score').textContent=fmt(score);$('wallet').textContent=fmt(wallet);$('caught').textContent=caught;$('timer').textContent='∞';$('timerBox').classList.remove('urgent');$('best').textContent=fmt(Math.max(prefs.best[difficulty],score));
+ $('score').textContent=fmt(score);$('wallet').textContent=fmt(wallet);$('caught').textContent=caught;$('timer').textContent='∞';$('timerBox').classList.remove('urgent');$('best').textContent=fmt(Math.max(journey?journey.best():prefs.best[difficulty],score));
  $('level').textContent=translated('LV.'+level+' / '+maxLevel+' · '+cannons[level-1].name);const weaponMode=$('weaponMode');if(weaponMode)weaponMode.textContent=translated(cannons[level-1].label+' · 海域 '+(pressureTier()+1));$('pause').disabled=mode!=='playing';
  for(const [id,item] of Object.entries(itemDefs)){
   const locked=level<item.unlock,cooldown=cooldownFor(id),active=activeSeconds(id),button=$(id);
@@ -251,7 +278,9 @@ function updateHud(){
  const effects=[];if(freezeTime>0)effects.push('冰凍 '+Math.ceil(freezeTime)+'s');if(rapidTime>0)effects.push('連射 ×2 '+Math.ceil(rapidTime)+'s');if(doubleTime>0)effects.push('金幣 ×2 '+Math.ceil(doubleTime)+'s');
  $('effectStatus').textContent=translated(effects.join(' · ')||(level===maxLevel?'全部道具已解鎖 · 自由組合火力':'升級炮台，解鎖更多道具'));
  const next=cannons[level];$('upgrade').disabled=mode!=='playing'||!next||wallet<next.cost;$('upgradeTitle').textContent=translated(next?'升級炮台':'已達最高等級');$('upgradePrice').textContent=translated(next?fmt(next.cost)+' 金幣 → Lv.'+(level+1):cannons[level-1].name+' · 巨球＋射線');
+ if(journey?.run){$('timer').textContent=Math.ceil(energy)+'%';$('timerBox').querySelector('small').textContent=journey.text('能源','ENERGY');$('timerBox').classList.toggle('urgent',energy<25);$('level').textContent=journey.name(journey.run.weapon)+' · +'+journey.run.power;$('weaponMode').textContent=journey.text('回合 ','ROUND ')+journey.run.wave;$('upgrade').disabled=mode!=='playing'||journey.run.swapCooldown>0;$('upgradeTitle').textContent=journey.text('⇄ 換炮','⇄ Switch');$('upgradePrice').textContent=journey.run.swapCooldown>0?Math.ceil(journey.run.swapCooldown)+'s':journey.name(journey.run.reserveWeapon);$('effectStatus').textContent=journey.text('捕魚補充能源 · 每回合選擇強化','Catch fish for energy · upgrade each round');}
  const m=mission();$('missionLabel').textContent=translated('捕獲 '+caught+' / '+m.n+' · 獎勵 '+fmt(m.bonus));$('missionFill').style.width=clamp((caught-m.previous)/(m.n-m.previous)*100,0,100)+'%';
+ if(journey?.run){$('missionLabel').textContent=journey.text('能源 ','ENERGY ')+Math.ceil(energy)+' / 100';$('missionFill').style.width=energy+'%';$('missionFill').style.background=energy<25?'#f4a381':'#94dfc2';}
  $('combo').classList.toggle('show',combo>=3&&round-lastCatch<2.6&&mode==='playing');$('comboNum').textContent=combo+' COMBO';$('comboSub').textContent=translated('連捕加成 ×'+(1+Math.min(1,Math.floor(combo/5)*.15)).toFixed(2));
  $('freezeVeil').classList.toggle('on',freezeTime>0&&mode==='playing');$('event').classList.toggle('visible',eventTime>0&&mode==='playing');
 }
@@ -276,14 +305,15 @@ function moveFish(dt,demo=false){
 function step(dt,elapsed=dt){
  const playing=mode==='playing';
  if(playing){
+  if(journey){energy=Math.max(0,energy-elapsed*((difficulty==='hard'?1.25:.85)+Math.min(1.4,pressureTier()*.09)));if(energy<=0){journey.run.finish('energy');finish();return;}}
   round+=elapsed;const tier=pressureTier();if(tier>lastPressureTier){lastPressureTier=tier;notify('海域 '+(tier+1)+' · 魚群血量與速度提升',2.8)}
   freezeTime=Math.max(0,freezeTime-elapsed);rapidTime=Math.max(0,rapidTime-elapsed);doubleTime=Math.max(0,doubleTime-elapsed);
   netCooldown=Math.max(0,netCooldown-elapsed);freezeCooldown=Math.max(0,freezeCooldown-elapsed);rapidCooldown=Math.max(0,rapidCooldown-elapsed);doubleCooldown=Math.max(0,doubleCooldown-elapsed);bombCooldown=Math.max(0,bombCooldown-elapsed);lureCooldown=Math.max(0,lureCooldown-elapsed);eventTime=Math.max(0,eventTime-elapsed);
   saveClock-=elapsed;if(saveClock<=0){persistBest();saveClock=5}
   if(keys.has('ArrowLeft')||keys.has('ArrowRight')){angle=clamp(angle+(keys.has('ArrowLeft')?-1:1)*dt*1.7,-Math.PI+.16,-.16);const o=origin();aim={x:o.x+Math.cos(angle)*h*.65,y:o.y+Math.sin(angle)*h*.65}}
   else{const o=origin();angle=clamp(Math.atan2(Math.min(aim.y,o.y-24)-o.y,aim.x-o.x),-Math.PI+.16,-.16)}
-  shotClock=Math.max(-.3,shotClock-dt);if(pointerDown||keys.has(' ')){let catchUp=0;while(shotClock<=0&&catchUp++<4){fire();shotClock+=cannons[level-1].interval/(rapidTime>0?2:1)}}else shotClock=Math.max(0,shotClock)
-  spawnClock-=dt;if(spawnClock<=0){spawnClock=modes[difficulty].spawn*(1-Math.min(.4,(level-1)*.025+pressureTier()*.01));if(fish.length<fishLimit()){if(Math.random()<.24)school();else{const pool=['coin','coin','save','fund','stock','ray','bond','crypto','gold','shark'];spawn(pool[Math.floor(Math.random()*pool.length)])}}}
+  shotClock=Math.max(-.3,shotClock-dt);if(pointerDown||keys.has(' ')){let catchUp=0;while(shotClock<=0&&catchUp++<4){fire();shotClock+=currentCannon().interval/(rapidTime>0?2:1)}}else shotClock=Math.max(0,shotClock)
+  spawnClock-=dt;if(spawnClock<=0){spawnClock=modes[difficulty].spawn*(1-Math.min(.4,(level-1)*.025+pressureTier()*.01));if(fish.length<fishLimit()){if(gameRandom()<.24)school();else{const pool=['coin','coin','save','fund','stock','ray','bond','crypto','gold','shark'];spawn(pool[Math.floor(gameRandom()*pool.length)])}}}
   if(round>=nextBossAt){
    if(fish.filter(f=>!f.dead).length>=fishLimit()){const index=fish.findIndex(f=>f.type!=='whale'&&f.type!=='shark');if(index>=0)fish.splice(index,1)}
    const type=bossSpawned%2===0?'whale':'shark';
@@ -325,10 +355,11 @@ for(const r of rings){const progress=1-r.life/r.max,rad=r.end*(1-Math.pow(1-prog
 for(const p of particles){ctx.globalAlpha=clamp(p.life/p.max,0,1);ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,TAU);ctx.fill()}ctx.globalAlpha=1;
 fx.draw(ctx);
 const o=origin();if(mode==='playing'&&overlay.hidden){ctx.save();ctx.globalAlpha=.16;ctx.strokeStyle='#fff2c8';ctx.setLineDash([3,10]);ctx.beginPath();ctx.moveTo(o.x+Math.cos(angle)*55,o.y+Math.sin(angle)*55);ctx.lineTo(o.x+Math.cos(angle)*150,o.y+Math.sin(angle)*150);ctx.stroke();ctx.restore()}
-Art.drawCannon(ctx,o.x,o.y,angle,level,recoil,time,cannons[level-1].kind);
+Art.drawCannon(ctx,o.x,o.y,angle,level,recoil,time,currentCannon().kind);
 for(const c of coins){const t=clamp((c.age-c.delay)/c.life,0,1);if(c.age<c.delay)continue;const e=t*t,x=c.sx+(55-c.sx)*e+Math.sin(t*Math.PI)*c.vx,y=c.sy+(47-c.sy)*e-Math.sin(t*Math.PI)*60;ctx.globalAlpha=1-t*.7;Art.drawCoin(ctx,x,y,7,c.spin+time*9)}ctx.globalAlpha=1;
 for(const f of floaters){ctx.save();ctx.globalAlpha=clamp(f.life/.3,0,1);ctx.font='800 '+(f.big?25:19)+'px system-ui';ctx.textAlign='center';ctx.strokeStyle='#05232bdd';ctx.lineWidth=4;ctx.strokeText(f.text,f.x,f.y);ctx.fillStyle=f.color;ctx.fillText(f.text,f.x,f.y);ctx.restore()}ctx.restore()}
 function loop(now){
+ if(sessionStarted&&journey?.run?.phase!=='over')journey?.step(mode==='playing');
  const elapsed=last?Math.max(0,(now-last)/1000):0;last=now;
  // Bounded fixed-size integration keeps 15 Hz and 60 Hz play at the same speed.
  // A stalled tab cannot produce an unbounded catch-up loop; wall-clock cooldowns still advance.
@@ -350,12 +381,20 @@ window.addEventListener('keydown',e=>{if(!overlay.hidden){if(e.key==='Tab'){cons
 $('sound').onclick=()=>{prefs.sound=!prefs.sound;soundscape.setEnabled(prefs.sound);if(prefs.sound)initAudio();syncSound();save()};$('soundGame').onclick=$('sound').onclick;$('pause').onclick=pause;$('help').onclick=help;$('net').onclick=useNet;$('freeze').onclick=useFreeze;$('rapid').onclick=useRapid;$('double').onclick=useDouble;$('bomb').onclick=useBomb;$('lure').onclick=useLure;$('upgrade').onclick=upgrade;
 $('credits').onclick=()=>{if(mode==='help'||mode==='credits')return;modalReturn=mode;soundscape.stop();mode='credits';openModal('<div class="label">MADE FOR FULAM</div><h2 id="dialogTitle">捕財達人</h2><p style="text-align:left">富臨錢進號 · 投資海洋單機版 v3.0<br>沿用 Fishing Joy 的魚群編排程式，重製為 Canvas 遊戲。畫面、魚種、炮台及計分玩法為此版本重新製作。<br><br>Kenney · CC0 音效 / Lucide · ISC 圖示<br>原始專案：imtonyjaa/ggemu-fishing-joy<br>授權：MIT · Copyright (c) 2026 大帅老猿</p><pre class="license" id="licenseText"></pre><button class="primary" id="creditsClose" data-autofocus>返回遊戲</button>');$('licenseText').textContent=UPSTREAM_LICENSE+'\n\n'+ARCADE_LICENSE;$('creditsClose').onclick=returnModal;updateHud()};
 // Small read-only state snapshot makes local gameplay QA possible without changing outcomes.
-window.FuLamGame={getState:()=>({mode,difficulty,pressure:pressure(),endless:true,timeLimit:null,score,wallet,caught,shots,hits,level,maxLevel,round,maxCombo,missionIndex,mission:mission(),bossSpawned,nextBossAt,netCooldown,freezeCooldown,freezeTime,rapidCooldown,doubleCooldown,bombCooldown,lureCooldown,rapidTime,doubleTime,cannon:{...cannons[level-1],spread:[...cannons[level-1].spread]},nextUpgradeCost:cannons[level]?.cost??null,abilities:Object.fromEntries(Object.entries(itemDefs).map(([id,item])=>[id,{...item,unlocked:level>=item.unlock,cooldownRemaining:cooldownFor(id),activeRemaining:activeSeconds(id)}])),fishCount:fish.filter(f=>!f.dead).length,bulletCount:bullets.length,beamCount:beams.length,fishTypes:Object.keys(defs),particleCount:particles.length,coinCount:coins.length,ringCount:rings.length,fish:fish.filter(f=>!f.dead&&f.x>0&&f.x<w).map(f=>({x:f.x,y:f.y,baseY:f.baseY,hp:f.hp,maxHp:f.maxHp,type:f.type,swim:f.swim,speed:f.speed,dashing:!!f.dashing,size:f.size,value:f.value,bounds:swimBounds(f.size)})),width:w,height:h}),version:'3.0'};
+window.FuLamGame={getState:()=>({mode,difficulty,energy,run:journey?.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,wave:journey.run.wave,phase:journey.run.phase,total:journey.run.total,active:journey.run.active,weapon:journey.run.weapon,power:journey.run.power,reason:journey.run.reason}:null,pressure:pressure(),endless:journey?.scene!=='booth',timeLimit:journey?.scene==='booth'?180:null,score,wallet,caught,shots,hits,level,maxLevel,round,maxCombo,missionIndex,mission:mission(),bossSpawned,nextBossAt,netCooldown,freezeCooldown,freezeTime,rapidCooldown,doubleCooldown,bombCooldown,lureCooldown,rapidTime,doubleTime,cannon:{...currentCannon(),spread:[...currentCannon().spread]},nextUpgradeCost:cannons[level]?.cost??null,abilities:Object.fromEntries(Object.entries(itemDefs).map(([id,item])=>[id,{...item,unlocked:level>=item.unlock,cooldownRemaining:cooldownFor(id),activeRemaining:activeSeconds(id)}])),fishCount:fish.filter(f=>!f.dead).length,bulletCount:bullets.length,beamCount:beams.length,fishTypes:Object.keys(defs),particleCount:particles.length,coinCount:coins.length,ringCount:rings.length,fish:fish.filter(f=>!f.dead&&f.x>0&&f.x<w).map(f=>({x:f.x,y:f.y,baseY:f.baseY,hp:f.hp,maxHp:f.maxHp,type:f.type,swim:f.swim,speed:f.speed,dashing:!!f.dashing,size:f.size,value:f.value,bounds:swimBounds(f.size)})),width:w,height:h}),version:'3.0'};
 $('screen').onclick=async()=>{const wrap=document.querySelector('.wrap');try{if(document.fullscreenElement)await document.exitFullscreen();else if(wrap.classList.contains('expanded'))wrap.classList.remove('expanded');else if(wrap.requestFullscreen)await wrap.requestFullscreen();else wrap.classList.add('expanded')}catch{wrap.classList.toggle('expanded')}document.body.classList.toggle('screen-expanded',wrap.classList.contains('expanded'));resize()};
 $('screenGame').onclick=$('screen').onclick;
 if($('languageSwitch'))$('languageSwitch').onclick=toggleLanguage;if($('languageGame'))$('languageGame').onclick=toggleLanguage;window.addEventListener('storage',e=>{if(e.key==='fulam-language'){language=e.newValue==='en'?'en':'zh-Hant';localize(document.body);updateHud()}});
 for(const id of ['sound','soundGame','pause','help','net','freeze','rapid','double','bomb','lure','upgrade','screen','screenGame','languageSwitch','languageGame']){
  const button=$(id);if(button)window.FuLamArcade.bindAction(button,button.onclick,{onRelease:id==='screen'||id==='screenGame'});
+}
+if(journey){
+ journey.onIntermission=()=>{mode='upgrading';clearPointerInput();keys.clear();sound('upgrade');};
+ journey.onChoice=(kind,r)=>{level=Math.min(12,r.wave);if(kind==='support')energy=Math.min(100,energy+25);fish=[];bullets=[];beams=[];spawnClock=.1;mode='playing';if(r.wave%3===0){spawn(r.wave%6===0?'shark':'whale',{x:w*.5});bossSpawned++;sound('boss');}updateHud();};
+ journey.onSwap=()=>{sound('upgrade');updateHud();};
+ journey.onEnd=()=>finish();
+ for(const id of ['rapid','double','bomb','lure'])$(id).classList.add('journey-hidden');
+ const abilities=$('net').parentNode;abilities.style.gridTemplateColumns='repeat(2,minmax(0,1fr))';
 }
 resize();syncSound();showWelcome();requestAnimationFrame(loop);
 })();

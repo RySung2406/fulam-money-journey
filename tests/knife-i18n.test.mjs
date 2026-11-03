@@ -19,12 +19,12 @@ function setup() {
  const body=new Element(), heading=body.append(new Element()), text=heading.append(new Text('PICK YOUR TOPIC'));
  const answer=body.append(new Element()).append(new Text('Stocks'));
  const button=body.append(new Element('language-switch'));buttons.push(button);
- const store=new Map(),document={body,documentElement:{},title:'',querySelectorAll:s=>s==='.language-switch'?buttons:[],addEventListener:(name,fn)=>{listeners[name]=fn}};
+ const store=new Map(),document={body,documentElement:{},title:'',querySelectorAll:s=>s==='.language-switch'?buttons:[],addEventListener:(name,fn)=>{listeners[name]=fn},dispatchEvent:event=>listeners[event.type]?.(event)};
  const localStorage={getItem:key=>store.get(key)??null,setItem:(key,value)=>store.set(key,value)};
  let observer;
  class MutationObserver {constructor(fn){observer=fn}observe(){}}
  const window={addEventListener(){}};
- const context=vm.createContext({window,document,localStorage,MutationObserver});
+ const context=vm.createContext({window,document,localStorage,MutationObserver,Event});
  vm.runInContext(fs.readFileSync(new URL('../site/game/questions.js',import.meta.url),'utf8'),context);
  vm.runInContext(fs.readFileSync(new URL('../site/game/i18n.js',import.meta.url),'utf8'),context);
  return {text,answer,button,store,document,window,click:()=>listeners.click({target:button}),appendAnswer:value=>{const node=body.append(new Element()).append(new Text(value));observer([{type:'childList',addedNodes:[node]}]);return node;}};

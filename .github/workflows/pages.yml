@@ -24,6 +24,8 @@ jobs:
           cache: npm
       - name: Install locked dependencies
         run: npm ci
+      - name: Build self-contained arcade games
+        run: python3 sources/arcade/build.py && python3 sources/fishing/build.py && python3 sources/fleet/build.py
       - name: Check syntax, authentication and game rules
         run: npm run check && npm test
       - name: Bundle the current source

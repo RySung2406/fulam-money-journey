@@ -1,3 +1,5 @@
+> Current v2 gameplay, Booth rules, storage and build instructions: [arcade-booth-v2.md](../../docs/arcade-booth-v2.md). The original implementation notes below describe the retained pre-v2 fallback.
+
 # FuLam Wealth Fleet / 富臨財富艦隊
 
 Self-contained bilingual naval arcade game at `site/fleet/index.html`.

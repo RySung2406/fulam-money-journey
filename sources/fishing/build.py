@@ -7,6 +7,8 @@ p = Path(__file__).resolve().parent
 shell = (p / 'shell.html').read_text(encoding="utf-8")
 shell = icons(shell).replace("/* COMPACT_STYLE */", (p / "compact.css").read_text(encoding="utf-8"))
 shell = shell.replace("<!--ARCADE-->", "<script>" + feedback_script() + "</script>")
+shell = shell.replace('</style>', (p.parent / 'arcade' / 'journey.css').read_text(encoding='utf-8') + '</style>')
+shell = shell.replace('<!--GAME-->', '<script>' + (p.parent / 'arcade' / 'journey.js').read_text(encoding='utf-8') + '</script><!--GAME-->')
 license_text = (p / 'upstream-license.txt').read_text(encoding="utf-8")
 for name, filename in [('ART', 'art.js'), ('FORMATIONS', 'formations.js'), ('GAME', 'game.js')]:
     code = (p / filename).read_text(encoding="utf-8")
