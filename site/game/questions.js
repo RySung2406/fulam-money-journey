@@ -1731,3 +1731,8 @@ window.QUESTIONS_ZH = window.QUESTIONS.map(q => {
  return {...q, chapter:z[0], eyebrow:q.eyebrow.slice(0,2)+" / "+z[1], question:z[2], context:z[3], takeaway:z[4], action:z[5], menuDescription:z[6], options:q.options.map((o,i)=>({...o,text:z[7][i][0],why:z[7][i][1]})), sources:q.sources.map((source,i)=>({...source,title:sourceTitles[q.id][i]}))};
 });
 })();
+
+// Twenty choices per stage: ten correct and ten decoys, in both languages.
+for (const bank of [window.QUESTIONS, window.QUESTIONS_ZH]) {
+ for (const q of bank) q.options=q.options.filter((_,i)=>i<10||(i>=15&&i<25));
+}

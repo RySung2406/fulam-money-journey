@@ -17,6 +17,7 @@ const translations={
  '能源耗盡便結算；捕魚可回復能源。每 30 秒選擇強化，U 切換炮台。':'Energy drains over time; catches refill it. Choose an upgrade every 30s; U switches cannons.',
  '捕魚補能源 · 回合升級 · 最高分挑戰':'Catch for energy · Round upgrades · High scores',
  '全螢幕':'Full screen','退出全螢幕':'Exit full screen','音效 /':'audio /','圖示':'icons','炮台升級與道具':'Cannon upgrades and skills','捕財道具':'Fishing skills','四種炮台 · 回合強化 ·':'12 cannon levels ·',
+ '退出':'Exit','返回選單':'Back to menu',
  '小目標 · 捕獲 10 條':'Goal · Catch 10 fish','定投單發 · 穩定射擊':'Steady single shot','捕財升級，解鎖更多道具。':'Upgrade to unlock more skills.','Q W E R T Y 道具 · U 升級 · P 暫停':'Q W E R T Y skills · U upgrade · P pause','金幣 ×2':'Coins ×2','連射 ×2':'Rapid ×2','連射':'Fire',
  '捕財 · 連擊 · 升級':'Catch · Combo · Upgrade','準備就緒':'Ready','無限時':'No time limit','炮台':'Cannon','分數':'Score','秒':'s',
  '富臨錢進號':'The Money Journey','捕財達人':'FuLam Catch','投資海洋・無限挑戰':'Investment ocean · Endless play','個人最佳':'Personal best',
@@ -124,7 +125,7 @@ function mission(){
 function persistBest(){if(journey)return;if(score>prefs.best[difficulty]){prefs.best[difficulty]=score;save()}}
 function resetItems(){freezeTime=rapidTime=doubleTime=netCooldown=freezeCooldown=rapidCooldown=doubleCooldown=bombCooldown=lureCooldown=0}
 function cooldownFor(id){return {net:netCooldown,freeze:freezeCooldown,rapid:rapidCooldown,double:doubleCooldown,bomb:bombCooldown,lure:lureCooldown}[id]}
-function canUse(id){return mode==='playing'&&(!journey||['net','freeze'].includes(id))&&level>=itemDefs[id].unlock&&cooldownFor(id)<=0}
+function canUse(id){return mode==='playing'&&level>=itemDefs[id].unlock&&cooldownFor(id)<=0}
 function activeSeconds(id){return id==='freeze'?freezeTime:id==='rapid'?rapidTime:id==='double'?doubleTime:0}
 function visibleFish(f){return !f.dead&&f.x>-f.size&&f.x<w+f.size}
 function spawn(type,opts={}){
@@ -148,10 +149,12 @@ const welcomeIcon='<div class="welcome-icon" aria-hidden="true"><svg viewBox="0 
 function openModal(html){oldFocus=document.activeElement;clearPointerInput();keys.clear();overlay.innerHTML='<div class="card"><button type="button" class="modal-language" id="languageModal">English</button>'+html+'</div>';overlay.hidden=false;const langButton=$('languageModal');if(langButton)langButton.onclick=toggleLanguage;localize(document.body);requestAnimationFrame(()=>{const first=overlay.querySelector('[data-autofocus]')||overlay.querySelector('button');first?.focus({preventScroll:true})})}
 function closeModal(){overlay.hidden=true;overlay.innerHTML='';canvas.focus({preventScroll:true})}
 function showWelcome(){
+ journey?.close();if(journey?.status)journey.status.hidden=true;scene.classList.remove('journey-live');
  fx.clear();soundscape.stop();mode='welcome';sessionStarted=false;$('pause').disabled=true;document.body.classList.remove('game-active');resetItems();score=wallet=caught=round=0;level=1;combo=0;missionIndex=0;bullets=[];beams=[];particles=[];rings=[];floaters=[];coins=[];eventTime=0;seedDemo();
  openModal(welcomeIcon+'<div class="label">FULAM · ENDLESS FISHING</div><h2 id="dialogTitle">想捕幾耐，<br><em>就捕幾耐。</em></h2><p>瞄準大魚，長按連射。<br>捕魚補能源，換炮打大魚。</p><div class="difficulty" role="group" aria-label="遊戲難度"><button data-diff="easy">輕鬆</button><button data-diff="normal">標準</button><button data-diff="hard">挑戰</button></div><button class="primary" id="start" data-autofocus>開炮捕財 <span aria-hidden="true">↗</span></button><div class="how"><span><b>01 · 無限時</b>隨時暫停結算</span><span><b>02 · 武器變形</b>散射、大球、射線</span><span><b>03 · 海域升溫</b>魚血量和速度漸增</span></div><div class="micro">魚種與武器是理財概念造型 · 分數不代表投資回報</div>');
- overlay.querySelectorAll('[data-diff]').forEach(b=>{b.classList.toggle('selected',b.dataset.diff===difficulty);b.setAttribute('aria-pressed',String(b.dataset.diff===difficulty));b.onclick=()=>{difficulty=b.dataset.diff;overlay.querySelectorAll('[data-diff]').forEach(e=>{e.classList.toggle('selected',e===b);e.setAttribute('aria-pressed',String(e===b))});updateHud()}});$('start').onclick=start;if(journey){const container=document.createElement('div');overlay.querySelector('.difficulty').replaceWith(container);journey.settings(container,d=>{difficulty=d==='challenge'?'hard':'normal';});}updateHud();
+ overlay.querySelectorAll('[data-diff]').forEach(b=>{b.classList.toggle('selected',b.dataset.diff===difficulty);b.setAttribute('aria-pressed',String(b.dataset.diff===difficulty));b.onclick=()=>{difficulty=b.dataset.diff;overlay.querySelectorAll('[data-diff]').forEach(e=>{e.classList.toggle('selected',e===b);e.setAttribute('aria-pressed',String(e===b))});updateHud()}});$('start').onclick=prepareStart;if(journey){const container=document.createElement('div');overlay.querySelector('.difficulty').replaceWith(container);journey.settings(container,d=>{difficulty=d==='challenge'?'hard':'normal';});}updateHud();
 }
+function prepareStart(){if(!journey){start();return;}closeModal();document.body.classList.add('game-active');resize();journey.guide(scene,start,showWelcome);}
 function start(){
  if(journey){journey.start(scene);scene.classList.add('journey-live');energy=100;difficulty=journey.difficulty==='challenge'?'hard':'normal';}
  fx.clear();initAudio();mode='playing';sessionStarted=true;round=0;score=wallet=caught=shots=hits=0;level=1;combo=maxCombo=0;lastCatch=-10;missionIndex=0;bossSpawned=0;nextBossAt=20;saveClock=5;startingBest=journey?journey.best():prefs.best[difficulty];resultRecord=false;lastPressureTier=0;
@@ -162,19 +165,19 @@ function start(){
 }
 function pause(){
  if(mode!=='playing')return;persistBest();mode='paused';soundscape.stop();
- openModal('<div class="label">GAME PAUSED</div><h2 id="dialogTitle">遊戲已暫停</h2><p>無限時，隨時繼續捕財。<br>本局 '+fmt(score)+' 分 · 炮台 Lv.'+level+'</p><button class="primary" id="resume" data-autofocus>繼續遊戲</button><button class="secondary" id="finishSession">結算離場</button><div class="micro">結算後可重新開局 · 最佳分數已儲存</div>');
+ openModal('<div class="label">GAME PAUSED</div><h2 id="dialogTitle">遊戲已暫停</h2><p>無限時，隨時繼續捕財。<br>本局 '+fmt(score)+' 分 · 炮台 Lv.'+level+'</p><button class="primary" id="resume" data-autofocus>繼續遊戲</button><button class="journey-exit" id="finishSession">結算離場</button><div class="micro">結算後可重新開局 · 最佳分數已儲存</div>');
  $('resume').onclick=resume;$('finishSession').onclick=()=>finish();updateHud();
 }
 function resume(){mode='playing';closeModal();initAudio();updateHud()}
 function finish(commit=true){
  mode='ended';journey?.close();clearPointerInput();keys.clear();if(commit){resultRecord=score>startingBest;persistBest();sound('end')}
  const rank=score>=20000?'深海財神':score>=8000?'金庫大戶':score>=2000?'捕財高手':'新晉捕手';
- openModal('<div class="label">YOUR CATCH OF THE DAY</div><h2 id="dialogTitle">滿載而歸！</h2><div class="result-score">'+fmt(score)+'</div><div class="badge">'+(resultRecord?'刷新個人最佳 · ':modes[difficulty].label+'模式 · ')+rank+'</div><div class="result-grid"><div><b>'+caught+'</b><span>捕獲魚數</span></div><div><b>'+maxCombo+'</b><span>最高連擊</span></div><div><b>Lv.'+level+'</b><span>炮台等級</span></div></div><p>今次捕財 '+Math.floor(round/60)+' 分 '+Math.floor(round%60)+' 秒。<br>想玩隨時再出海。</p><button class="primary" id="again" data-autofocus>重新開局</button><button class="secondary" id="home">返回遊戲首頁</button><div class="micro">最佳紀錄儲存在此瀏覽器 · 純遊戲積分</div>');
+ openModal('<div class="label">YOUR CATCH OF THE DAY</div><h2 id="dialogTitle">滿載而歸！</h2><div class="result-score">'+fmt(score)+'</div><div class="badge">'+(resultRecord?'刷新個人最佳 · ':modes[difficulty].label+'模式 · ')+rank+'</div><div class="result-grid"><div><b>'+caught+'</b><span>捕獲魚數</span></div><div><b>'+maxCombo+'</b><span>最高連擊</span></div><div><b>Lv.'+level+'</b><span>炮台等級</span></div></div><p>今次捕財 '+Math.floor(round/60)+' 分 '+Math.floor(round%60)+' 秒。<br>想玩隨時再出海。</p><button class="primary" id="again" data-autofocus>重新開局</button><button class="journey-exit" id="home">返回遊戲首頁</button><div class="micro">最佳紀錄儲存在此瀏覽器 · 純遊戲積分</div>');
  if(journey){const result=document.createElement('div');result.innerHTML=journey.result(score,{caught,maxCombo},journey.run.reason||'finish');overlay.querySelector('.card').insertBefore(result,$('again'));$('again').textContent=journey.text(journey.scene==='booth'?'下一位':'再玩一次',journey.scene==='booth'?'Next player':'Play again');}
- $('again').onclick=start;$('home').onclick=showWelcome;$('live').textContent='本局已結算，共 '+score+' 分，捕獲 '+caught+' 條。';updateHud();
+ $('again').onclick=prepareStart;$('home').onclick=showWelcome;$('live').textContent='本局已結算，共 '+score+' 分，捕獲 '+caught+' 條。';updateHud();
 }
 function help(){
- if(journey){if(mode==='upgrading')return;modalReturn=mode;mode='help';clearPointerInput();openModal('<h2 id="dialogTitle">'+journey.text('捕財達人','FuLam Catch')+'</h2><p>'+journey.text('長按連射，U 換炮；另一手可放漁網或冰凍。捕魚補能源，能源耗盡結算。每 30 秒免費三選一強化；Booth 在 180 秒結算，包含暫停及升級時間。','Hold to fire, U to switch. A second finger can cast a net or freeze. Catch fish to refill energy; zero ends the run. Choose a free upgrade every 30s. Booth ends at 180s, including pauses and upgrades.')+'</p><button id="helpClose" class="primary">'+journey.text('返回','Back')+'</button>');$('helpClose').onclick=returnModal;return;}
+ if(journey){if(mode==='upgrading')return;modalReturn=mode;mode='help';clearPointerInput();openModal('<h2 id="dialogTitle">'+journey.text('捕財達人','FuLam Catch')+'</h2><p>'+journey.text('長按連射，U 換炮；另一手可按六種道具，依回合解鎖。Q/W/E/R/T/Y 或 1–6 施放。捕魚補能源，能源耗盡結算。每 30 秒免費三選一強化；Booth 在 180 秒結算，包含暫停及升級時間。','Hold to fire, U to switch. Use a second finger for six skills, unlocked by rounds; Q/W/E/R/T/Y or 1–6. Catch fish to refill energy; zero ends the run. Choose a free upgrade every 30s. Booth ends at 180s, including pauses and upgrades.')+'</p><button id="helpClose" class="primary">'+journey.text('返回','Back')+'</button>');$('helpClose').onclick=returnModal;return;}
  if(mode==='help'||mode==='credits')return;modalReturn=mode;if(mode==='playing')clearPointerInput();soundscape.stop();mode='help';
  openModal('<div class="label">HOW TO PLAY</div><h2 id="dialogTitle">無限捕財。</h2><p style="text-align:left">長按畫面連射，移動手指或滑鼠瞄準。發射免費，無限時；想離場可按暫停，再選「結算離場」。<br><br>金幣可升級 12 級炮台，唔會扣總積分。分散投資炮會散射、複利炮會發射穿透大球、長線炮會射出光束。海域每 45 秒升一級，魚會更耐打、更快；最高 16 級，沒有時間上限。<br><br>ETF 魔鬼魚滑翔、股票魚走折線、槓桿快鯊突然衝刺，債券海龜則較慢但更耐打。造型只借用理財概念，不代表真實投資風險或回報。<br><br><b>Q / 1 大漁網</b>：範圍捕捉，冷卻 16 秒。<br><b>W / 2 冰凍</b>：慢速 5 秒，冷卻 20 秒。<br><b>E / 3 狂熱連射 · Lv.3</b>：射速加倍 8 秒，冷卻 24 秒。<br><b>R / 4 雙倍金幣 · Lv.5</b>：捕魚收益加倍 8 秒，冷卻 30 秒。<br><b>T / 5 深海炸彈 · Lv.7</b>：大範圍爆破，冷卻 28 秒。<br><b>Y / 6 黃金誘餌 · Lv.9</b>：召喚高值魚群，冷卻 32 秒。</p><p style="font-size:11px">鍵盤：← → 瞄準 · 空白鍵射擊<br>Q/W/E/R/T/Y 道具（亦可 1–6）· U 升級 · P 暫停</p><button class="primary" id="helpClose" data-autofocus>知道了</button>');
  $('helpClose').onclick=returnModal;updateHud();
@@ -272,7 +275,7 @@ function updateHud(){
  for(const [id,item] of Object.entries(itemDefs)){
   const locked=level<item.unlock,cooldown=cooldownFor(id),active=activeSeconds(id),button=$(id);
   button.disabled=mode!=='playing'||locked||cooldown>0;button.classList.toggle('active',active>0);button.classList.toggle('locked',locked);button.style.setProperty('--charge',(locked?0:Math.max(0,1-cooldown/item.cooldown))*100+'%');
-  $(id+'Count').textContent=translated(locked?'Lv.'+item.unlock+' 解鎖':active>0?Math.ceil(active)+' 秒生效':cooldown>0?Math.ceil(cooldown)+' 秒冷卻':item.ready);
+  $(id+'Count').textContent=translated(locked?(journey?'R'+item.unlock+' 解鎖':'Lv.'+item.unlock+' 解鎖'):active>0?Math.ceil(active)+' 秒生效':cooldown>0?Math.ceil(cooldown)+' 秒冷卻':item.ready);
   button.setAttribute('title',translated(item.name)+' · '+$(id+'Count').textContent);
  }
  const effects=[];if(freezeTime>0)effects.push('冰凍 '+Math.ceil(freezeTime)+'s');if(rapidTime>0)effects.push('連射 ×2 '+Math.ceil(rapidTime)+'s');if(doubleTime>0)effects.push('金幣 ×2 '+Math.ceil(doubleTime)+'s');
@@ -393,8 +396,8 @@ if(journey){
  journey.onChoice=(kind,r)=>{level=Math.min(12,r.wave);if(kind==='support')energy=Math.min(100,energy+25);fish=[];bullets=[];beams=[];spawnClock=.1;mode='playing';if(r.wave%3===0){spawn(r.wave%6===0?'shark':'whale',{x:w*.5});bossSpawned++;sound('boss');}updateHud();};
  journey.onSwap=()=>{sound('upgrade');updateHud();};
  journey.onEnd=()=>finish();
- for(const id of ['rapid','double','bomb','lure'])$(id).classList.add('journey-hidden');
- const abilities=$('net').parentNode;abilities.style.gridTemplateColumns='repeat(2,minmax(0,1fr))';
+ for(const [id,unlock] of Object.entries({rapid:2,double:3,bomb:4,lure:5}))itemDefs[id].unlock=unlock;
+ const exit=document.createElement('button');exit.id='exit-game';exit.className='journey-exit';exit.textContent=translated('退出');document.querySelector('.control-top').append(exit);window.FuLamArcade.bindAction(exit,()=>{if(sessionStarted&&mode!=='ended'){journey.run.finish('exit');finish();}else showWelcome();});
 }
 resize();syncSound();showWelcome();requestAnimationFrame(loop);
 })();

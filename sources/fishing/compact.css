@@ -42,3 +42,33 @@
 }
 @media(max-height:600px) and (orientation:landscape){.game-tool{display:grid;width:36px;height:36px}.game-language{padding:4px;min-height:36px;font-size:10px}.hud-pause{width:36px;height:36px}.hud-pause kbd{display:none}.hud-right{gap:4px}}
 @media(max-height:600px) and (orientation:landscape){.control-panel .upgrade{min-height:44px;padding:5px 8px}.abilities .ability,.wrap:fullscreen .abilities .ability,.wrap.expanded .abilities .ability{min-height:54px;display:grid;grid-template-columns:21px 1fr;grid-template-rows:auto auto;column-gap:4px;row-gap:1px;padding:6px 3px;text-align:left;align-content:center}.ability-symbol{grid-row:1/3}.ability-symbol svg{width:21px;height:21px}.ability>span:not(.ability-symbol),.ability small{justify-self:start;text-align:left}.control-top{margin-bottom:8px}}
+
+
+/* v3: a full-height play surface and all six skills within reach. */
+.game-active{overflow:hidden}.game-active .wrap{position:fixed;inset:0;width:100%;max-width:none;height:100dvh;padding:8px;display:flex;flex-direction:column}
+.game-active .top,.game-active .heading,.game-active .footer{display:none!important}
+.game-active .play-console{flex:1;min-height:0;height:auto;display:flex;flex-direction:column}
+.game-active .scene{flex:1;height:auto;min-height:0;max-height:none}
+.game-active .control-panel{flex-shrink:0;padding:8px 10px;margin-top:6px}
+.game-active .control-top{display:flex;gap:10px;margin-bottom:7px;align-items:center}
+.game-active .control-label,.game-active .effect-status{display:none}.game-active .cannon-progress{flex:1;min-width:0}
+.game-active .weapon-mode{margin:0;font-size:11px}.game-active .level{font-size:13px;letter-spacing:0}
+.game-active .upgrade{min-height:44px;max-width:none;min-width:120px;margin:0;padding:5px 9px;flex-shrink:0}.game-active .upgrade b{font-size:12px}.game-active .upgrade small{font-size:11px}
+.game-active .abilities{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.game-active .ability{min-height:56px;display:grid;grid-template-columns:27px 1fr;grid-template-rows:auto auto;gap:1px 7px;padding:6px 8px;align-content:center;text-align:left}
+.game-active .ability-symbol{grid-row:1/3;position:relative}.game-active .ability-symbol svg{width:23px;height:23px}
+.game-active .ability>span:not(.ability-symbol){font-size:12px;justify-self:start}.game-active .ability small{font-size:11px;justify-self:start;min-height:0;white-space:normal}
+.game-active .ability kbd{display:block;position:static;font-size:10px;width:auto;height:auto;padding:1px 3px;margin:3px auto 0;text-align:center}
+.game-active .game-tool{display:grid;width:38px;height:38px}.game-active .hud-right{gap:5px}.game-active .game-language{display:none}
+.game-active .mission{max-width:calc(100% - 24px)!important}.game-active .scene.journey-live>.hud{top:36px!important}
+.back-link{background:#ac303d;color:white!important;padding:10px 13px;border:1px solid #ffaaa0;border-radius:8px;min-height:44px;display:inline-flex;align-items:center}
+@media(max-width:650px){.game-active .wrap{padding:5px 5px max(5px,env(safe-area-inset-bottom))}.game-active .abilities{grid-template-columns:repeat(3,minmax(0,1fr))}.game-active .ability{min-height:54px;padding:5px;gap:1px 4px;grid-template-columns:22px 1fr}.game-active .ability-symbol svg{width:20px;height:20px}.game-active .ability kbd{font-size:9px;margin-top:1px}.game-active .ability>span:not(.ability-symbol){font-size:12px}.game-active .ability small{font-size:10px}.game-active .control-panel{padding:6px}.game-active .control-top{gap:5px}.game-active .upgrade{min-width:106px;padding:5px}.game-active .upgrade svg{display:none}.game-active .level{font-size:11px}.game-active .weapon-mode{font-size:10px}.game-active .scene.journey-live .hud{left:9px;right:8px}.game-active .score-value{font-size:25px}.game-active .score-sub{font-size:10px}.game-active .game-tool{width:34px;height:36px}.game-active .hud-pause{width:38px;height:38px}.game-active .scene.journey-live .timer{padding:3px 5px;min-width:47px}.game-active .scene.journey-live .timer b{font-size:17px}}
+@media(max-height:500px) and (orientation:landscape){.game-active .play-console{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:6px;height:100%;min-height:0}.game-active .control-panel{margin:0;overflow:auto;padding:6px}.game-active .control-top{display:grid;grid-template-columns:1fr auto;gap:5px}.game-active .cannon-progress{grid-column:1/-1}.game-active .upgrade{min-width:0;width:auto;max-width:none}.game-active .upgrade small{font-size:10px}.game-active .abilities{grid-template-columns:1fr 1fr;gap:5px}.game-active .ability{min-height:52px;padding:4px;grid-template-columns:18px 1fr;gap:1px 3px}.game-active .ability kbd{font-size:9px}.game-active .ability small{font-size:10px}.game-active .ability>span:not(.ability-symbol){font-size:11px}.game-active .scene.journey-live>.hud{top:26px!important}.game-active .game-tool{display:none}.game-active .scene .journey-guide{position:fixed;inset:6px;z-index:200}}
+
+
+.game-active .ability-symbol{display:flex;flex-direction:column;gap:1px;align-items:center;justify-content:center;height:auto}.game-active .ability-symbol kbd{margin:0;line-height:1.1}.game-active .ability.locked{opacity:.78}.game-active .ability.locked small{color:#c7d6d2}.game-active .ability small{line-height:1.3}
+body:not(.game-active) .control-panel{display:none}body:not(.game-active) .how{display:none}body:not(.game-active) .welcome-icon{width:56px;height:46px;margin:0 auto 7px}body:not(.game-active) .card h2{margin:6px 0 9px}body:not(.game-active) .card p{margin:6px 0 9px}
+@media(max-height:500px) and (orientation:landscape){body:not(.game-active) .play-console{display:block}body:not(.game-active) .scene{height:100%}body:not(.game-active) .card{max-width:700px;display:grid;grid-template-columns:1fr 1fr;column-gap:18px;text-align:left}body:not(.game-active) .card>.modal-language{grid-column:2;grid-row:1;margin:0 0 5px auto}body:not(.game-active) .card>.welcome-icon,body:not(.game-active) .card>.label,body:not(.game-active) .card>.micro{display:none}body:not(.game-active) .card>div:has(.journey-settings){grid-column:2;grid-row:2/5}body:not(.game-active) .card>.primary{align-self:end}body:not(.game-active) .card>h2{grid-column:1;grid-row:2}}
+
+
+@media(max-width:650px) and (max-height:700px){body:not(.game-active) .card>.welcome-icon,body:not(.game-active) .card>p,body:not(.game-active) .card>.micro{display:none}body:not(.game-active) .heading{display:none}body:not(.game-active) .card h2{font-size:21px;line-height:1.2;margin:5px 0}body:not(.game-active) .journey-settings{margin:8px 0}body:not(.game-active) .card{padding:12px 15px}}

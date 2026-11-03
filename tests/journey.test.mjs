@@ -23,7 +23,7 @@ test('An upgrade applies once and switching retains common power with a cooldown
  assert(r.swap());assert.equal(r.weapon,1);assert.equal(r.power,1);assert(!r.swap());tick(r,3.1);assert(r.swap());assert.equal(r.weapon,0);
 });
 test('Every offered aircraft and fishing weapon can be reached; knives have three',()=>{
- for(const game of ['fishing','fleet','knife']){const r=new Run(game);const seen=new Set([0]);for(let i=0;i<4;i++){tick(r,30.1);assert(r.choose('weapon'));seen.add(r.weapon);}assert.equal(seen.size,game==='knife'?3:4);}
+ for(const game of ['fishing','fleet','knife']){const r=new Run(game);const seen=new Set([0]);for(let i=0;i<4;i++){if(game==='knife')r.completeRound();else tick(r,30.1);assert(r.choose('weapon'));seen.add(r.weapon);}assert.equal(seen.size,game==='knife'?3:4);}
 });
 test('A paused public run cannot advance rounds or time out, even after an hour',()=>{
  const r=new Run('knife');r.tick(3600,false);assert.equal(r.phase,'play');assert.equal(r.active,0);assert.equal(r.wave,1);
@@ -66,4 +66,11 @@ test('Aircraft boss second phase emits a wider, bounded pattern',()=>{
 test('Published shared files exactly match the authored runtime',()=>{
  assert.equal(fs.readFileSync(new URL('../site/arcade/journey.js',import.meta.url),'utf8'),shared);
  for(const name of ['fishing','fleet']){const html=fs.readFileSync(new URL(`../site/${name}/index.html`,import.meta.url),'utf8');assert(html.includes(shared));assert(!html.includes('window.__qa'));}
+});
+
+test('Slice stages wait for their choice pool, not thirty seconds; completing twice cannot skip a stage',()=>{
+ const r=new Run('knife');tick(r,60);assert.equal(r.phase,'play');assert.equal(r.wave,1);
+ assert(r.completeRound());assert(!r.completeRound());assert.equal(r.phase,'choice');assert.equal(r.choiceTime,8);
+ assert(r.choose('weapon'));assert.equal(r.wave,2);assert.equal(r.weapon,1);assert.equal(r.roundTime,0);
+ const booth=new Run('knife','booth');booth.tick(180);assert.equal(booth.reason,'time');assert(!booth.completeRound());
 });

@@ -63,19 +63,69 @@
  .dock,.combat-layout:fullscreen .dock,.combat-layout.expanded .dock{display:block;padding:0;min-width:0;margin:0;max-width:none}.dock-heading h2{display:block;font-size:20px;margin:0 0 6px}.dock-heading p,.dock-heading .eyebrow,.income,.enemy-guide{display:none}.upgrades{display:flex;flex-direction:column;gap:5px;margin:0}.upgrade{min-height:58px;padding:6px;gap:7px}.upgrade-num{display:flex}.upgrade-num kbd{display:none}.upgrade-num svg{width:20px;height:20px}.upgrade-copy b{font-size:12px}.upgrade-copy small{font-size:11px;margin-top:2px}.level-dots{margin-top:4px}.upgrade>strong{font-size:12px}
  .dock-toggle{display:none!important}.overlay{padding:7px 14px}.overlay-card{padding:0}.overlay h2,html[lang=en] .overlay h2{font-size:20px;line-height:1.2;margin:2px 0 6px}.overlay h2 br{display:none}#menu>.eyebrow,#menu>p:not(.eyebrow),.badge-mark{display:none}.modes{margin:6px 0}.mode{min-height:48px;padding:5px}.primary{min-height:44px;padding:6px 10px}.primary>span:last-child:not(:first-child){font-size:18px}
 }
+
+
+/* v3: the battlefield fills the play view; the hangar is an in-game panel. */
+.fleet-playing{overflow:hidden}.fleet-playing>.topbar,.fleet-playing .brief,.fleet-playing>.site-footer{display:none}
+.fleet-playing .layout{padding:0;margin:0;max-width:none;display:block}
+.fleet-playing .combat-layout,.fleet-playing .combat-layout:fullscreen,.fleet-playing .combat-layout.expanded{position:fixed;inset:0;width:100%;height:100dvh;display:flex;justify-content:center;align-items:stretch;gap:0;padding:6px;background:radial-gradient(ellipse at center,#173944,#071c28);overflow:hidden;z-index:50}
+.fleet-playing .combat-layout .battle{display:flex;flex-direction:column;width:min(100%,720px);max-width:720px;height:100%;align-self:stretch;margin:0}
+.fleet-playing .combat-layout .hud{height:56px;flex-shrink:0;padding:7px 13px;gap:10px}.fleet-playing .hud strong{font-size:23px}.fleet-playing .hud>div>span{font-size:11px}
+.fleet-playing .combat-layout .sea{flex:1;height:auto!important;max-height:none!important;min-height:0!important;aspect-ratio:auto;width:100%}
+.fleet-playing .battle-footer{height:48px;padding:3px 10px;flex-shrink:0;gap:6px}.fleet-playing .battle-footer .wave-track{max-width:80px}.fleet-playing .battle-footer .journey-exit{margin-left:auto;font-size:12px;padding:7px 10px}
+.fleet-playing .combat-actions{height:56px;flex-shrink:0;padding:4px 10px 8px;gap:8px}.fleet-playing .shield-btn{min-height:44px;padding:5px 10px}.fleet-playing .shield-btn>span{display:flex;align-items:center;justify-content:space-between;gap:8px}.fleet-playing .shield-btn small{font-size:11px}.fleet-playing .shield-btn svg{width:21px;height:21px}
+.fleet-playing .direction-pad,.fleet-playing .mobile-hint{display:none}.fleet-playing .dock-toggle{display:flex!important;min-height:40px;padding:5px 10px!important}.fleet-playing .combat-layout .dock{display:none}
+.fleet-playing .combat-layout.workshop-open .dock{display:block;position:absolute;inset:16px;max-width:560px;max-height:calc(100% - 32px);margin:auto;padding:20px;border:1px solid #9abba6;border-radius:18px;background:#102f3bfa;box-shadow:0 20px 80px #0009;z-index:150;overflow:auto;backdrop-filter:blur(10px)}
+.fleet-playing .workshop-open .workshop-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;color:#b8e1cf;font-size:12px}
+.fleet-playing .dock-heading h2{font-size:25px}.fleet-playing .dock-heading p{display:block;font-size:13px}.fleet-playing .upgrades{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.fleet-playing .upgrade{min-height:105px;padding:12px 10px}.fleet-playing .upgrade-num{display:flex}.fleet-playing .upgrade-num kbd{display:block}.fleet-playing .upgrade-copy b{font-size:14px}.fleet-playing .upgrade-copy small{font-size:12px}.fleet-playing .income{display:block}.fleet-playing .enemy-guide{display:none}
+#dock-close{background:#ac303d;color:white;border:1px solid #ffaaa0}.other-games{background:#ac303d;color:white;border-radius:8px;padding:10px 13px}.fleet-playing .boss-bar{top:62px}
+@media(max-width:500px){.fleet-playing .combat-layout{padding:0 0 env(safe-area-inset-bottom)}.fleet-playing .combat-layout .battle{border-radius:0;border:0}.fleet-playing .battle-footer .wave-track{display:none}.fleet-playing .battle-footer .tool-icon{padding:6px;min-width:36px}.fleet-playing .battle-footer #wave-progress{font-size:11px}.fleet-playing .battle-footer{padding-inline:7px;gap:4px}.fleet-playing .combat-actions{padding-inline:7px}.fleet-playing .shield-btn svg{display:none}.fleet-playing .shield-btn kbd{display:inline-block}.fleet-playing .combat-actions .journey-swap{font-size:12px;padding:7px 9px}.fleet-playing .combat-layout.workshop-open .dock{inset:8px;padding:14px;max-height:calc(100% - 16px)}.fleet-playing .upgrades{gap:7px}.fleet-playing .upgrade{padding:9px 7px;gap:5px}.fleet-playing .upgrade-copy b{font-size:12px}.fleet-playing .upgrade-copy small{font-size:11px}.fleet-playing .upgrade>strong{font-size:12px}}
+@media(max-height:500px) and (orientation:landscape){.fleet-playing .combat-layout .battle{width:100%;max-width:1050px}.fleet-playing .combat-layout .hud{height:44px;padding:3px 12px}.fleet-playing .hud strong{font-size:19px}.fleet-playing .hud>div>span{font-size:10px}.fleet-playing .battle-footer{height:44px}.fleet-playing .combat-actions{height:47px;padding:2px 10px 5px}.fleet-playing .shield-btn{min-height:40px}.fleet-playing .combat-layout .sea .journey-guide{position:fixed;inset:6px;z-index:200}.fleet-playing .combat-layout.workshop-open .dock{inset:6px;max-width:680px;max-height:calc(100% - 12px)}.fleet-playing .dock .income{display:none}}
+
+
+
+.fleet-menu .hud,.fleet-menu .battle-footer,.fleet-menu .combat-actions,.fleet-menu .mobile-hint,.fleet-menu .dock{display:none}.fleet-menu .combat-layout{display:block}.fleet-menu .battle{width:100%}.fleet-menu .sea{height:clamp(440px,calc(100svh - 150px),700px);max-height:none;min-height:0}.fleet-menu .overlay-card{max-width:410px}
+@media(max-width:760px){.fleet-menu .layout{padding:8px;max-width:580px}.fleet-menu .sea{height:calc(100svh - 84px);min-height:0}.fleet-menu .badge-mark{display:none}.fleet-menu #menu>.eyebrow{display:none}.fleet-menu .overlay{padding:12px}.fleet-menu .overlay-card{padding:0}}
+@media(max-height:500px) and (orientation:landscape){.fleet-menu .topbar{display:flex;min-height:50px;padding:3px 12px}.fleet-menu .brief,.fleet-menu .site-footer{display:none}.fleet-menu .layout{padding:6px;max-width:1000px}.fleet-menu .sea{height:calc(100svh - 66px);min-height:0}.fleet-menu .overlay-card{max-width:850px;display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;align-items:center;text-align:left}.fleet-menu #journey-settings{grid-column:2;grid-row:1/4}.fleet-menu #menu>h2{grid-column:1;grid-row:1;font-size:25px;line-height:1.25}.fleet-menu #menu>#start{grid-column:1;grid-row:2}.fleet-menu #menu>p,.fleet-menu .badge-mark{display:none}.fleet-menu .journey-settings{margin:0}.fleet-menu .overlay{padding:8px 14px}}
 .journey-settings{margin:12px 0;color:inherit}.journey-options{display:flex;gap:8px;margin:8px 0}.journey-options button{flex:1;min-width:0;min-height:44px;border:1px solid #78988b;border-radius:12px;padding:9px;background:#f4f2e8;color:#214b3b;font:700 14px inherit;cursor:pointer}.journey-options button[aria-pressed=true]{background:#214b3b;color:#fff4cb;border-color:#d4b36d}.journey-options button:disabled{opacity:.6;cursor:default}.journey-rule{font-size:12px!important;line-height:1.5!important;margin:6px 0!important}.journey-status{position:relative;z-index:4;background:#153b35;color:#fff1c9;padding:7px 12px;font-size:12px;line-height:1.4;flex-shrink:0;border-bottom:1px solid #75877c;white-space:normal}.journey-overlay{position:absolute;inset:0;background:#071f28e8;display:flex;align-items:center;justify-content:center;z-index:120;padding:12px;overflow:auto;color:#eef6e8}.journey-card{max-width:620px;width:100%;max-height:100%;overflow:auto;padding:22px;background:#143b38;border:1px solid #c4b67d;border-radius:20px;box-shadow:0 20px 60px #0005;text-align:left}.journey-card h2{font-size:26px;line-height:1.2;color:#fff1c9;margin:10px 0}.journey-card p{font-size:14px;line-height:1.5}.journey-kicker{color:#a7dbce;font-size:12px;letter-spacing:2px}.journey-upgrades{display:grid;gap:10px}.journey-upgrades button{display:flex;flex-direction:column;gap:6px;text-align:left;padding:15px;border:1px solid #7a9a8a;border-radius:12px;background:#e9eddd;color:#214b3b;font:inherit;cursor:pointer;min-height:60px}.journey-upgrades button:first-child{background:#f1d797}.journey-upgrades small{font-size:12px}.journey-upgrades button:focus-visible,.journey-options button:focus-visible{outline:3px solid #f1c36c;outline-offset:2px}.journey-result{margin:12px 0;padding:14px;border:1px solid #97ac91;border-radius:12px;text-align:left;font-size:13px;line-height:1.55}.journey-result p{font-size:13px!important;margin:8px 0!important}.journey-result small{display:block;font-size:11px;margin:6px 0;opacity:.85}.journey-result details{margin:8px 0}.journey-result a{color:inherit;text-decoration:underline}.journey-swap{min-height:44px;border:1px solid #c1b77f;border-radius:10px;background:#f1ddb0;color:#214b3b;font:700 14px sans-serif;padding:8px 12px;touch-action:none;cursor:pointer}.journey-live{position:relative}.journey-live>.journey-status{position:absolute;left:0;right:0;top:0}.journey-live .journey-overlay{position:absolute}.journey-counter{color:#e9c879;font-size:12px}.journey-hidden{display:none!important}@media(max-height:450px){.journey-card{padding:12px}.journey-card h2{font-size:20px;margin:4px 0}.journey-card p{margin:5px 0}.journey-upgrades{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.journey-upgrades button{padding:9px;font-size:13px;min-height:70px}.journey-status{padding:3px 8px;font-size:10px}}@media(prefers-reduced-motion:reduce){.journey-overlay *{animation:none!important;transition:none!important}}
 .scene.journey-live>.hud{top:42px!important}.scene.journey-live .timer{display:grid!important;gap:0;min-width:62px;padding:5px 8px;background:#133a35dd;border:1px solid #82b79b}.scene.journey-live .timer small{font-size:10px}.scene.journey-live .timer b{font-size:20px}.scene.journey-live .timer.urgent{border-color:#ffac84;color:#ffbf9c}.scene.journey-live .mission{left:12px;right:12px;display:flex;gap:10px;align-items:center}.scene.journey-live .mission .bar{flex:1;max-width:160px}.sea.journey-live>.sector{top:38px}.game-wrap.journey-live>.game-topline{padding-top:35px}.game-wrap.journey-live>.journey-status{z-index:15}.journey-result summary{cursor:pointer;min-height:36px;padding:6px 0}.journey-result ol{padding-left:24px}.journey-result li{padding:4px 0;border-bottom:1px solid #b7bca533}.journey-upgrades button:hover{filter:brightness(1.04)}.journey-upgrades b{font-size:15px}.journey-upgrades small{line-height:1.5}.journey-next{padding:10px 12px;border-left:3px solid #e6cb85;background:#ffffff0a}.journey-next:empty{display:none}.journey-result a{display:inline-flex;padding:8px 0}.journey-settings button{font-family:inherit;font-weight:700}.journey-rule{opacity:.9}.game-wrap .arena-footer{flex-wrap:wrap;gap:6px}.game-wrap .arena-footer>.journey-swap{font-size:12px;padding:7px 10px}.game-wrap .arena-footer>span{flex:1;min-width:90px}@media(max-width:450px){.journey-card{padding:18px}.journey-card h2{font-size:24px}.journey-upgrades button{min-height:68px;padding:12px}.game-wrap .arena-footer>span{font-size:10px}.game-wrap .arena-footer>.finish-session{font-size:11px;padding:8px}.game-wrap .arena-footer .journey-swap{min-height:42px}}@media(max-height:450px){.scene.journey-live>.hud{top:27px!important}.scene.journey-live .timer{padding:2px 6px;min-width:48px}.scene.journey-live .timer b{font-size:15px}.scene.journey-live .timer small{font-size:8px}.game-wrap.journey-live>.game-topline{padding-top:20px}.journey-next{padding:5px 8px;font-size:12px!important}.journey-upgrades button{min-height:65px}.journey-card{padding:10px}}
 
 #dock-toggle{white-space:nowrap;flex-shrink:0}#dock-toggle span{white-space:nowrap}.game-wrap .arena-footer{display:grid;grid-template-columns:minmax(50px,1fr) auto auto auto;align-items:center}.game-wrap .arena-footer .journey-swap{white-space:nowrap}@media(max-width:360px){.game-wrap .arena-footer{grid-template-columns:1fr 1fr 1fr}.game-wrap .arena-footer>span{grid-column:1/-1}.game-wrap .arena-footer>button{min-width:0;max-width:none;width:100%}}
 
 .journey-qr{display:flex;align-items:center;gap:12px;margin:12px 0}.journey-qr img{flex:0 0 112px;width:112px;height:112px;background:white;border-radius:8px}.journey-qr a{font-size:12px;line-height:1.5}
+
+/* Clear mode cards and a separate violet Booth entrance. */
+.journey-setting-label{font-size:11px!important;letter-spacing:.08em;margin:0 0 6px!important;text-align:left;font-weight:700}
+.journey-settings .journey-options{margin:0 0 10px;gap:8px}
+.journey-options button{display:flex;flex-direction:column;gap:4px;align-items:flex-start;justify-content:center;min-height:68px;padding:10px 12px;text-align:left;border:2px solid #92ac9d;background:#e9eee2;color:#143c35}
+.journey-options button b{font-size:17px}.journey-options button small{font-size:12px;line-height:1.4}
+.journey-options button[aria-pressed=true]{background:#24594a;border-color:#a6ebc4;box-shadow:inset 0 0 0 1px #a6ebc4;color:white}
+.journey-booth{width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;min-height:64px;padding:10px 14px;border:2px solid #bba1ef;border-radius:12px;background:#e5ddf6;color:#39255f;cursor:pointer;font:inherit}
+.journey-booth b,.journey-booth small{display:block}.journey-booth b{font-size:16px}.journey-booth small{font-size:12px;margin-top:3px;line-height:1.4}.journey-booth strong{font:700 22px/1.2 ui-monospace,monospace}
+.journey-booth[aria-pressed=true]{background:#66439a;border-color:#e4c9ff;color:white;box-shadow:inset 0 0 0 1px #e4c9ff}
+.journey-exit,button.journey-exit,a.journey-exit{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:60px;padding:8px 13px;border:1px solid #ffaaa0;border-radius:9px;background:#ac303d!important;color:#fff!important;font:700 13px/1.35 sans-serif;font-family:inherit;text-decoration:none;white-space:nowrap;cursor:pointer;box-shadow:none;flex-shrink:0;touch-action:manipulation}
+.journey-exit:hover{background:#c43e48!important}.journey-exit:focus-visible,.journey-booth:focus-visible{outline:3px solid #ffe0a1;outline-offset:3px}
+.journey-guide .journey-card{max-width:720px;padding:24px}.journey-guide h2{margin:8px 0 16px}
+.journey-guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.journey-guide-grid>div{display:flex;align-items:flex-start;gap:10px;padding:12px;border-radius:12px;background:#e7efdf;color:#173d35}
+.journey-guide-grid kbd{flex:0 0 auto;min-width:32px;padding:7px 5px;border:1px solid #759184;background:#fff4d6;color:#173d35;border-radius:7px;font:700 13px/1.2 ui-monospace,monospace;text-align:center}
+.journey-guide-grid p{margin:0!important;text-align:left}.journey-guide-grid b,.journey-guide-grid small{display:block}.journey-guide-grid b{font-size:14px;line-height:1.4}.journey-guide-grid small{font-size:12px;line-height:1.6;margin-top:4px}
+.journey-guide-rule{color:#e5d4ff;font-size:12px!important;margin:12px 0!important}.journey-guide-actions{display:flex;gap:10px;justify-content:space-between}
+.journey-begin{min-height:48px;flex:1;padding:10px 15px;border:1px solid #fff1be;border-radius:10px;background:#f3d18a;color:#163b34;font:700 15px/1.4 sans-serif;font-family:inherit;cursor:pointer}
+@media(max-width:500px){.journey-guide .journey-card{padding:16px}.journey-guide-grid{grid-template-columns:1fr;gap:7px}.journey-guide-grid>div{padding:9px}.journey-guide h2{font-size:23px;margin:6px 0 10px}.journey-guide-grid small{line-height:1.45}.journey-setting-label{font-size:10px!important}.journey-options button{min-height:65px}.journey-options button small,.journey-booth small{font-size:11px}}
+@media(max-height:500px) and (orientation:landscape){.journey-guide .journey-card{padding:12px;max-width:850px}.journey-guide-grid{grid-template-columns:1fr 1fr;gap:6px}.journey-guide-grid>div{padding:7px;gap:6px}.journey-guide-grid b{font-size:12px}.journey-guide-grid small{font-size:11px;line-height:1.4}.journey-guide .journey-kicker{display:none}.journey-guide h2{font-size:20px;margin:0 0 8px}.journey-guide-rule{margin:6px 0!important}.journey-guide-actions button{min-height:40px}.journey-options button{min-height:52px;padding:6px 10px}.journey-booth{min-height:50px;padding:6px 10px}}
+
+@media(max-width:650px){body.immersive-game .game-wrap .arena-footer{grid-template-columns:64px 1fr 1fr;gap:6px}body.immersive-game .game-wrap .arena-footer>button{width:100%;min-width:0}body.immersive-game .game-wrap .arena-footer>span{display:none}}
+
+
+.journey-guide .journey-card{display:flex;flex-direction:column;overflow:hidden}.journey-guide .journey-guide-grid{min-height:0;overflow:auto;overscroll-behavior:contain}.journey-guide .journey-kicker,.journey-guide h2,.journey-guide-rule,.journey-guide-actions{flex-shrink:0}.journey-guide-actions{padding-top:3px}
+.journey-guide-question{flex-shrink:0;margin:0 0 12px!important;padding:9px 12px;background:#fff1cd;color:#173d35;font-size:15px!important;font-weight:700;border-left:4px solid #d5ac65;border-radius:6px}
 </style>
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="https://rysung2406.github.io/fulam-money-journey/#play" aria-label="返回富臨錢進號" data-label="home">
-    <svg viewBox="0 0 32 32" aria-hidden="true"><path d="m16 3 9 8-3 15H10L7 11Z"/><path d="M16 8v14M11 17h10M4 27q6-3 12 0t12 0"/></svg>
-    <span>FULAM <b data-t="arcade">遊戲港口</b></span>
+  <a class="brand journey-exit" href="https://rysung2406.github.io/fulam-money-journey/#play" aria-label="返回富臨錢進號" data-label="home">
+    <span data-t="back">← 返回</span>
   </a>
   <nav aria-label="遊戲設定" data-label="settings">
     <button id="sound" class="quiet" aria-pressed="false" data-t="soundOff">音效：關</button>
@@ -89,10 +139,10 @@
     <h1 data-t="title">富臨<br>財富戰機</h1>
     <p class="subtitle" data-t="subtitle">守住本金。<br>打出你的財富難度。</p>
     <div class="route-line"><span>01</span><div></div><span>∞</span></div>
-    <p class="intro" data-t="intro">敵艦不停來襲。把戰利品變成火力，還是留一筆錢，在危急時開盾？</p>
+    <p class="intro" data-t="intro">敵機不停來襲。把戰利品變成火力，還是留一筆錢，在危急時開盾？</p>
     <div class="brief-rules">
       <p><kbd>WASD</kbd><span data-t="move">移動 · 手機拖曳或點擊天空</span></p>
-      <p><span class="rule-symbol">◎</span><span data-t="autofire">自動瞄準與連射</span></p>
+      <p><span class="rule-symbol">◎</span><span data-t="autofire">自動向前連射</span></p>
       <p><kbd>Q</kbd><span data-t="shieldRule">使用儲備金開啟護盾</span></p>
     </div>
     <div class="record"><span data-t="best">本機最佳</span><strong id="best">0</strong><small data-t="local">只保存最佳戰績於此瀏覽器</small></div>
@@ -116,7 +166,7 @@
           <div class="badge-mark" aria-hidden="true"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="29"/><path d="M32 11 44 29l-5 21H25l-5-21Z"/><path d="M32 20v22M26 32h12M7 45q12-8 25 0t25 0"/></svg></div>
           <p class="eyebrow" data-t="menuTag">艦長，準備起飛。</p>
           <h2 data-t="menuTitle">這一局，<br>能守住多少本金？</h2>
-          <p data-t="menuHint">拖曳戰機閃避，火炮會自動還擊。<br>無限波次，沉船才結束。</p>
+          <p data-t="menuHint">拖曳戰機閃避，火炮會自動還擊。<br>無限波次，墜機才結束。</p>
           <div class="modes" role="group" aria-label="選擇難度" data-label="chooseMode">
             <button id="standard" class="mode active" aria-pressed="true"><b data-t="standard">標準</b><span data-t="standardHint">100 本金 · 循序加壓</span></button>
             <button id="storm" class="mode" aria-pressed="false"><b data-t="storm">挑戰</b><span data-t="stormHint">75 本金 · 高速彈幕</span></button>
@@ -124,8 +174,8 @@
           <button id="start" class="primary"><span data-t="start">立即起飛</span><span aria-hidden="true">↗</span></button>
         </div>
         <div class="overlay-card" id="pause-menu" hidden>
-          <p class="eyebrow" data-t="pausedTag">暫時靠岸</p><h2 data-t="paused">戰局已暫停</h2>
-          <p data-t="pausedHint">準備好就回到海上。</p><button id="resume" class="primary" data-t="resume">繼續飛行</button>
+          <p class="eyebrow" data-t="pausedTag">暫時休息</p><h2 data-t="paused">戰局已暫停</h2>
+          <p data-t="pausedHint">準備好就重返天空。</p><button id="resume" class="primary" data-t="resume">繼續飛行</button>
         </div>
         <div class="overlay-card" id="end-menu" hidden>
           <p class="eyebrow" id="end-label" data-t="endTag">本次飛行結束</p><h2 data-t="endTitle">戰機墜毀。<br>下一局，再進一步。</h2>
@@ -152,7 +202,7 @@
   <path d="M3 12h18" />
   <rect x="3" y="3" width="18" height="18" rx="2" />
 </svg>
-<span data-t="workshop">升級</span></button><button id="battle-sound" class="quiet tool-icon" aria-label="音效：開" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m11 5-6 4H2v6h3l6 4Z M16 8a6 6 0 0 1 0 8"/></svg></button><button id="battle-fullscreen" class="quiet tool-icon" aria-label="全螢幕" data-label="fullscreen"><svg aria-hidden="true"
+<span data-t="workshop">機庫</span></button><button id="battle-sound" class="quiet tool-icon" aria-label="音效：開" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m11 5-6 4H2v6h3l6 4Z M16 8a6 6 0 0 1 0 8"/></svg></button><button id="battle-fullscreen" class="quiet tool-icon" aria-label="全螢幕" data-label="fullscreen"><svg aria-hidden="true"
   xmlns="http://www.w3.org/2000/svg"
   width="24"
   height="24"
@@ -176,7 +226,7 @@
     </div>
   </section>
   <aside class="dock" id="dock" aria-labelledby="dock-title"><div class="workshop-bar"><span data-t="shopPaused">戰局已暫停 · 安心選購升級</span><button id="dock-close" class="quiet" data-t="closeDock">返回戰場</button></div>
-    <div class="dock-heading"><span class="eyebrow" data-t="dockTag">你的升級決定</span><h2 id="dock-title" data-t="dock">隨行船塢</h2><p data-t="dockHint">花錢變強，也記得留錢保命。</p></div>
+    <div class="dock-heading"><span class="eyebrow" data-t="dockTag">你的升級決定</span><h2 id="dock-title" data-t="dock">隨行機庫</h2><p data-t="dockHint">花錢變強，也記得留錢保命。</p></div>
     <div class="upgrades">
       <button class="upgrade" id="weapon" disabled><span class="upgrade-num"><svg aria-hidden="true"
   xmlns="http://www.w3.org/2000/svg"
@@ -963,10 +1013,10 @@ from (http://code.google.com/p/pyqrnative):
   root.FuLamArcade = { Audio, Effects, bindAction, Pointers };
 })(globalThis);
 </script>
-<script>/* FuLam arcade progression v2. Original code; scores are local, not verified online records. */
+<script>/* FuLam arcade progression v3. Original code; scores are local, not verified online records. */
 (function(root){
  'use strict';
- const VERSION='booth-v2', LIMIT=180, ROUND=30, CHOICE=8;
+ const VERSION='booth-v3', LIMIT=180, ROUND=30, CHOICE=8;
  const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function random(seed){return()=>{let t=seed+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;};}
@@ -982,9 +1032,10 @@ from (http://code.google.com/p/pyqrnative):
    if(this.phase==='choice'){this.choiceTime=Math.max(0,this.choiceTime-dt);return this.choiceTime===0?'auto':null;}
    if(!playing)return null;
    const step=Math.min(dt,.1);this.active+=step;this.roundTime+=step;this.swapCooldown=Math.max(0,this.swapCooldown-step);
-   if(this.roundTime>=ROUND){this.roundTime=ROUND;this.phase='choice';this.choiceTime=CHOICE;return 'choice';}
+   if(this.game!=='knife'&&this.roundTime>=ROUND){this.roundTime=ROUND;this.completeRound();return 'choice';}
    return null;
   }
+  completeRound(){if(this.phase!=='play')return false;this.phase='choice';this.choiceTime=CHOICE;return true;}
   choose(kind){
    if(this.phase!=='choice'||!['power','weapon','support'].includes(kind))return false;
    this.choices.push(kind);if(this.choices.length>100)this.choices.shift();if(kind==='power')this.power++;if(kind==='support')this.support++;if(kind==='weapon'){this.reserveWeapon=this.weapon;this.weapon=(this.weapon+1)%(this.game==='knife'?3:4);this.swaps++;}
@@ -1005,10 +1056,36 @@ from (http://code.google.com/p/pyqrnative):
   name(id){return WEAPONS[this.game][id][this.en()?1:0];}
   best(){try{const r=this.run||new Run(this.game,this.scene,this.difficulty);return readBoard(localStorage,r.key(this.topic||'',this.recordLanguage||''))[0]?.score||0;}catch{return 0;}}
   settings(host,change=()=>{}){
-   if(!host)return;host.innerHTML=`<div class="journey-settings"><div class="journey-options" aria-label="${this.text('遊玩模式','Play setting')}"><button type="button" data-scene="web">${this.text('自由遊玩','Free play')}</button><button type="button" data-scene="booth">Booth · 180s</button></div><div class="journey-options"><button type="button" data-difficulty="standard">${this.text('標準','Standard')}</button><button type="button" data-difficulty="challenge">${this.text('挑戰','Challenge')}</button></div><p class="journey-rule"></p></div>`;
-   const update=()=>{host.querySelectorAll('[data-scene]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.scene===this.scene)));host.querySelectorAll('[data-difficulty]').forEach(b=>{b.disabled=this.scene==='booth';b.setAttribute('aria-pressed',String(b.dataset.difficulty===this.difficulty));});host.querySelector('.journey-rule').textContent=this.scene==='booth'?this.text('固定標準難度 · 180 秒含升級及暫停 · 獨立本機榜','Fixed standard rules · 180s includes upgrades & pauses · Local booth board'):this.text('無盡回合 · 每 30 秒三選一強化 · 失敗才結算','Endless rounds · Choose an upgrade every 30s · Play until defeated');change(this.difficulty,this.scene);};
-   host.querySelectorAll('[data-scene]').forEach(b=>b.onclick=()=>{this.scene=b.dataset.scene;if(this.scene==='booth')this.difficulty='standard';update();});host.querySelectorAll('[data-difficulty]').forEach(b=>b.onclick=()=>{this.difficulty=b.dataset.difficulty;update();});update();
+   if(!host)return;
+   const hints=this.game==='knife'?[this.text('5 顆心 · 循序闖關','5 hearts · Steady pace'),this.text('3 顆心 · 更快拋袋','3 hearts · Faster bags')]:this.game==='fleet'?[this.text('100 護甲 · 循序加壓','100 armour · Steady pace'),this.text('75 護甲 · 高速彈幕','75 armour · Faster threats')]:[this.text('較慢魚群 · 輕鬆上手','Slower fish · Get started'),this.text('更快更強 · 能源壓力','Stronger fish · Energy pressure')];
+   host.innerHTML=`<div class="journey-settings"><p class="journey-setting-label">${this.text('自由遊玩 · 選擇難度','FREE PLAY · CHOOSE DIFFICULTY')}</p><div class="journey-options" role="group" aria-label="${this.text('頁遊難度','Free play difficulty')}"><button type="button" data-difficulty="standard"><b>${this.text('標準','Standard')}</b><small>${hints[0]}</small></button><button type="button" data-difficulty="challenge"><b>${this.text('挑戰','Challenge')}</b><small>${hints[1]}</small></button></div><button type="button" class="journey-booth" data-scene="booth"><span><b>Booth ${this.text('現場挑戰','Challenge')}</b><small>${this.text('固定標準 · 獨立本機榜','Fixed standard · Separate local board')}</small></span><strong>180s</strong></button><p class="journey-rule" aria-live="polite"></p></div>`;
+   const update=()=>{host.querySelectorAll('[data-difficulty]').forEach(b=>b.setAttribute('aria-pressed',String(this.scene==='web'&&b.dataset.difficulty===this.difficulty)));host.querySelector('[data-scene]').setAttribute('aria-pressed',String(this.scene==='booth'));host.querySelector('.journey-rule').textContent=this.scene==='booth'?this.text('已選 Booth · 180 秒包含暫停及強化','Booth selected · 180s includes pauses & upgrades'):this.game==='knife'?this.text('每關 20 個選項 · 完成後三選一強化','20 choices per stage · Pick an upgrade between stages'):this.text('無盡回合 · 每 30 秒三選一強化','Endless rounds · Pick an upgrade every 30s');change(this.difficulty,this.scene);};
+   host.querySelector('[data-scene]').onclick=()=>{this.scene='booth';this.difficulty='standard';update();};
+   host.querySelectorAll('[data-difficulty]').forEach(b=>b.onclick=()=>{this.scene='web';this.difficulty=b.dataset.difficulty;update();});update();
   }
+  guide(host,onStart,onBack,question=''){
+   this.close();const o=document.createElement('div');o.className='journey-overlay journey-guide';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label',this.text('開始前指引','Before you play'));this.overlay=o;
+   const rows=this.game==='fishing'?[
+    ['↗',this.text('長按瞄準，持續射擊','Hold and aim to keep firing'),this.text('手指／滑鼠拖曳 · ← → 瞄準，Space 射擊','Drag with finger / mouse · ← → aim, Space fires')],
+    ['U',this.text('隨時換炮，保留強化','Switch weapons, keep upgrades'),this.text('按「換炮」或 U · 每回合三選一強化','Tap Switch or U · Choose an upgrade each round')],
+    ['1–6',this.text('六種道具，逐回合解鎖','Six skills, unlocked by rounds'),this.text('Q 網、W 冰、E 連射、R 雙倍、T 炸彈、Y 誘餌；亦可 1–6。另一手可同時按技能。','Q net, W freeze, E rapid, R double, T bomb, Y lure; or 1–6. Use a second finger for skills.')],
+    ['⚡',this.text('捕魚補能源；零能源結算','Catches refill energy; zero ends the run'),this.text('已解鎖道具可用畫面按鈕；冷卻秒數就在旁邊。','Tap an unlocked skill on screen; its cooldown is shown.')]
+   ]:this.game==='fleet'?[
+    ['↗',this.text('拖曳移動，自動向前射擊','Drag to move; fire automatically'),this.text('手指／滑鼠拖曳 · WASD 或方向鍵移動','Drag with finger / mouse · WASD or arrow keys')],
+    ['E',this.text('換武器，應付不同敵機','Switch weapons for different threats'),this.text('機炮、散射、雷射、導彈；按畫面按鈕或 E','Autocannon, spread, laser, missiles · Tap Switch or E')],
+    ['Q',this.text('開盾保命，留意儲備金','Shield up; keep a cash reserve'),this.text('按護盾或 Q；可一指移動、另一指開盾','Tap Shield or Q · Move and shield with two fingers')],
+    ['1–4',this.text('機庫升級：火力／僚機／儲備／維修','Hangar: power / wingmen / reserve / repair'),this.text('按「機庫」安心選購，或用 1–4 快捷鍵。P 暫停。','Open Hangar to pause and shop, or use 1–4. P pauses.')]
+   ]:[
+    ['01',this.text('先看題目，再切正確錢袋','Read first, then slice correct bags'),this.text('每關 20 個選項，分批出現；讓錯誤選項落下。','20 choices per stage, shown in small groups. Let wrong choices fall.')],
+    ['↗',this.text('手指／滑鼠劃過錢袋','Swipe with your finger or mouse'),this.text('鍵盤可用 Tab 選袋，再按 Enter 或 Space。','Keyboard: Tab to a bag, then Enter or Space.')],
+    ['E / Q',this.text('換刀／慢時：就在畫面下方','Switch / Focus: buttons below the arena'),this.text('E 換刀；蓄能刀充滿後按 Q 慢時。P 暫停。','E switches blades; Q slows time when Focus is charged. P pauses.')],
+    ['♥',this.text('錯切扣 1 心；漏切也有代價','Wrong cuts cost a heart; misses add up'),this.text(this.difficulty==='challenge'?'挑戰 3 心；每漏切 3 個正確選項扣 1 心。':'標準 5 心；每漏切 5 個正確選項扣 1 心。',this.difficulty==='challenge'?'Challenge: 3 hearts; 3 missed correct bags cost a heart.':'Standard: 5 hearts; 5 missed correct bags cost a heart.')]
+   ];
+   o.innerHTML=`<div class="journey-card"><span class="journey-kicker">${this.text('開始前 · 操作指引','BEFORE YOU PLAY')}</span><h2>${this.text('準備好，再開始。','Ready when you are.')}</h2>${question?`<p class="journey-guide-question">${esc(question)}</p>`:''}<div class="journey-guide-grid">${rows.map(([key,title,copy])=>`<div><kbd>${esc(key)}</kbd><p><b>${esc(title)}</b><small>${esc(copy)}</small></p></div>`).join('')}</div><p class="journey-guide-rule">${this.scene==='booth'?this.text('Booth · 按開始後才計時，最多 180 秒。','Booth · The 180s clock starts only when you press Start.'):this.text('自由遊玩 · 沒有總時限，挑戰最高分。','Free play · No overall time limit. Chase your best score.')}</p><div class="journey-guide-actions"><button class="journey-exit" data-guide-back>${this.text('返回選單','Back')}</button><button class="journey-begin" data-guide-start>${this.text('知道了，開始！','Got it — start!')}</button></div></div>`;
+   host.append(o);o.querySelector('[data-guide-start]').onclick=()=>{this.close();onStart();};o.querySelector('[data-guide-back]').onclick=()=>{this.close();onBack();};
+   o.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();o.querySelector('[data-guide-back]').click();}if(e.key==='Tab'){const b=[...o.querySelectorAll('button')];if(e.shiftKey&&document.activeElement===b[0]){e.preventDefault();b.at(-1).focus();}else if(!e.shiftKey&&document.activeElement===b.at(-1)){e.preventDefault();b[0].focus();}}});o.querySelector('[data-guide-start]').focus({preventScroll:true});
+  }
+  completeRound(){if(this.run?.completeRound()){this.onIntermission();this.showChoices();}}
   start(host,topic=''){
    this.close();this.run=new Run(this.game,this.scene,this.difficulty);this.topic=topic;this.recordLanguage=this.game==='knife'?this.language():'';this.saved=false;this.last=performance.now();this.host=host;
    this.status=host.querySelector('.journey-status')||document.createElement('div');this.status.className='journey-status';this.status.setAttribute('role','status');if(!this.status.parentNode)host.prepend(this.status);
@@ -1057,13 +1134,13 @@ from (http://code.google.com/p/pyqrnative):
     home: 'Back to FuLam Money Journey', settings: 'Game settings', arcade: 'ARCADE HARBOUR', soundOff: 'Sound: off', soundOn: 'Sound: on', fullscreen: 'Full screen',
     tag: 'ENDLESS AIR ARCADE · BETA', title: 'Wealth<br>Wings', subtitle: 'Protect your capital.<br>Chart your own course.',
     intro: 'The enemy keeps coming. Turn your loot into firepower, or keep a cash reserve for an emergency shield?',
-    move: 'Move · drag or tap the sky on mobile', autofire: 'Automatic targeting & rapid fire', shieldRule: 'Spend your reserve to raise a shield', best: 'LOCAL BEST', local: 'Only your best result stays in this browser', back: '← Back to the arcade',
+    move: 'Move · drag or tap the sky on mobile', autofire: 'Automatic forward fire', shieldRule: 'Spend your reserve to raise a shield', best: 'LOCAL BEST', local: 'Only your best result stays in this browser', back: '← Back',
     battle: 'Air battle', capital: 'CAPITAL ARMOUR', cash: 'GAME COINS', score: 'WEALTH SCORE',
     canvas: 'Air shooter. WASD or arrow keys to move, Q for shield, 1 to 4 for upgrades, P to pause.',
     auto: 'AUTO FIRE', boss: 'DEBT STORM · BOSS', menuTag: 'PILOT, READY TO FLY.', menuTitle: 'How long can you<br>protect your capital?',
     menuHint: 'Drag to dodge. Your guns fire automatically.<br>Endless waves. Fly until defeated.', chooseMode: 'Choose difficulty',
     standard: 'Standard', standardHint: '100 capital · rising pressure', storm: 'Challenge', stormHint: '75 capital · faster fire', start: 'Take off',
-    pausedTag: 'FLIGHT PAUSED', paused: 'Battle paused', pausedHint: 'Return to sea when you are ready.', resume: 'Continue flight',
+    pausedTag: 'FLIGHT PAUSED', paused: 'Battle paused', pausedHint: 'Return to the sky when you are ready.', resume: 'Continue flight',
     endTag: 'FLIGHT COMPLETE', endTitle: 'Aircraft down.<br>Go further next time.', restart: 'Fly again', share: 'Copy result', changeMode: 'Change difficulty',
     pause: 'Pause', mobileHint: 'Drag or tap the sky to move. Firing is automatic.', shield: 'Emergency shield', directionPad: 'Movement buttons', left: 'Move left', right: 'Move right', up: 'Move up', down: 'Move down',
     dockTag: 'YOUR UPGRADE DECISIONS', dock: 'Aircraft workshop', dockHint: 'Invest in strength. Keep cash for survival.',
@@ -1115,8 +1192,8 @@ from (http://code.google.com/p/pyqrnative):
   const fx = new window.FuLamArcade.Effects(reduced.matches);
   const canvasPointers = new window.FuLamArcade.Pointers(), directionPointers = new Map();
   const bindAction = window.FuLamArcade.bindAction;
-  Object.assign(EN, { workshop: 'Upgrades', closeDock: 'Back to sea', shopPaused: 'Battle paused · choose an upgrade', lowHealth: 'LOW ARMOUR · REPAIR OR SHIELD', exitScreen: 'Exit full screen' });
-  Object.assign(ZH, { workshop: '升級', closeDock: '返回戰場', shopPaused: '戰局已暫停 · 安心選購升級', lowHealth: '護甲危急 · 修復或開盾', exitScreen: '退出全螢幕' });
+  Object.assign(EN, { workshop: 'Hangar', closeDock: 'Back to battle', shopPaused: 'Battle paused · choose an upgrade', lowHealth: 'LOW ARMOUR · REPAIR OR SHIELD', exitScreen: 'Exit full screen' });
+  Object.assign(ZH, { workshop: '機庫', closeDock: '返回戰場', shopPaused: '戰局已暫停 · 安心選購升級', lowHealth: '護甲危急 · 修復或開盾', exitScreen: '退出全螢幕' });
   try { const stored = safeGet(KEY); if (stored && stored.length < 600) { const r = JSON.parse(stored); if (Number.isFinite(r.score) && r.score >= 0 && Number.isInteger(r.wave) && r.wave > 0 && Number.isInteger(r.kills) && r.kills >= 0 && ['standard', 'storm'].includes(r.mode)) best = r; } } catch { /* invalid records are ignored */ }
   function put(id, text) { const e = $(id); const s = String(text); if (e.textContent !== s) e.textContent = s; }
   function toast(key) { $('toast').textContent = t(key); $('toast').classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => $('toast').classList.remove('show'), 2400); }
@@ -1169,7 +1246,10 @@ from (http://code.google.com/p/pyqrnative):
     $('overlay').hidden = !which;
     for (const id of ['menu', 'pause-menu', 'end-menu']) $(id).hidden = id !== which;
   }
+  function prepareStart(){if(!journey){start();return;}document.body.classList.remove('fleet-menu');document.body.classList.add('fleet-playing');showOverlay(null);journey.guide($('sea'),start,returnMenu);}
+  function returnMenu(){journey?.close();if(journey?.status)journey.status.hidden=true;$('sea').classList.remove('journey-live');document.body.classList.remove('fleet-playing');document.body.classList.add('fleet-menu');phase='menu';paused=false;shopOpen=false;$('combat-layout').classList.remove('workshop-open');clearInput();game=C.createState({mode});showOverlay('menu');updateHUD();$('start').focus({preventScroll:true});}
   function start() {
+    document.body.classList.remove('fleet-menu');document.body.classList.add('fleet-playing');
     shopOpen = false; deathTime = lowHealthSound = 0; fx.clear();
     $('combat-layout').classList.remove('workshop-open');
     game = C.createState({ mode, arcade:!!journey, seed:journey?.scene==='booth'?20261104:Date.now() }); if(journey){journey.start($('sea'));$('sea').classList.add('journey-live');} phase = 'play'; paused = false; accumulator = 0; lastTime = null; lastSound = 0; saveFailed = false;
@@ -1202,7 +1282,7 @@ from (http://code.google.com/p/pyqrnative):
     showOverlay('end-menu'); renderEnd(); updateHUD(); $('restart').focus({ preventScroll: true });
   }
   function renderEnd() {
-    put('end-label', journey?journey.text('本局戰績','RUN RECORD'):t(resultIsBest ? 'newBest' : 'endTag'));if(journey&&journey.run.reason==='time')document.querySelector('[data-t="endTitle"]').textContent=journey.text('Booth 挑戰完成！','Booth challenge complete!');else document.querySelector('[data-t="endTitle"]').innerHTML=t('endTitle'); put('end-score', game.score.toLocaleString('en'));
+    put('end-label', journey?journey.text('本局戰績','RUN RECORD'):t(resultIsBest ? 'newBest' : 'endTag'));if(journey&&journey.run.reason==='exit')document.querySelector('[data-t="endTitle"]').textContent=journey.text('本局已結束','Run complete');else if(journey&&journey.run.reason==='time')document.querySelector('[data-t="endTitle"]').textContent=journey.text('Booth 挑戰完成！','Booth challenge complete!');else document.querySelector('[data-t="endTitle"]').innerHTML=t('endTitle'); put('end-score', game.score.toLocaleString('en'));
     put('end-stats', t('endStats')(game)); put('end-tip', t('tip'));if(journey)$('end-tip').innerHTML=journey.result(game.score,{kills:game.kills},journey.run.reason||'defeat'); if (saveFailed) put('share-status', t('storageUnavailable'));
   }
   function chooseMode(value) {
@@ -1402,14 +1482,14 @@ from (http://code.google.com/p/pyqrnative):
     b.addEventListener('pointerdown',e=>{if(phase!=='play'||paused)return;e.preventDefault();b.setPointerCapture(e.pointerId);pointerTarget=null;directionPointers.set(e.pointerId,b.dataset.dir);});
     for(const event of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(event,e=>directionPointers.delete(e.pointerId));
   }
-  $('start').addEventListener('click',start);$('restart').addEventListener('click',start);bindAction($('pause'),()=>setPaused(!paused));$('resume').addEventListener('click',()=>setPaused(false));
+  $('start').addEventListener('click',prepareStart);$('restart').addEventListener('click',prepareStart);bindAction($('pause'),()=>setPaused(!paused));$('resume').addEventListener('click',()=>setPaused(false));
   bindAction($('shield'),shield);for(const kind of ['weapon','escort','reserve','repair'])bindAction($(kind),()=>purchase(kind));
   for(const id of ['standard','storm'])$(id).addEventListener('click',()=>chooseMode(id));
   bindAction($('lang'),()=>setLanguage(lang==='en'?'zh-Hant':'en'));
   window.addEventListener('storage',e=>{if(e.key==='fulam-language')setLanguage(e.newValue==='en'?'en':'zh-Hant');});
   bindAction($('sound'),toggleSound);bindAction($('battle-sound'),toggleSound);
   bindAction($('dock-toggle'),()=>shopOpen?closeWorkshop():openWorkshop());bindAction($('dock-close'),closeWorkshop);
-  $('change-mode').addEventListener('click',()=>{phase='menu';paused=false;clearInput();game=C.createState({mode});showOverlay('menu');updateHUD();$('start').focus({preventScroll:true});});
+  $('change-mode').addEventListener('click',returnMenu);
   $('share').addEventListener('click',async()=>{const text=t('shareText')(game);try{await navigator.clipboard.writeText(text);put('share-status',t('copied'));}catch{put('share-status',`${t('copyFallback')} ${text}`);}});
   async function fullscreen(){
     const layout=$('combat-layout');
@@ -1427,9 +1507,10 @@ from (http://code.google.com/p/pyqrnative):
   });document.addEventListener('fullscreenchange',sizeCanvas);
   new ResizeObserver(sizeCanvas).observe($('sea'));
   if(journey){
+    const exit=document.createElement('button');exit.id='exit-game';exit.className='journey-exit';$('pause').parentNode.append(exit);bindAction(exit,()=>{if(phase==='play'){journey.run.finish('exit');game.running=false;paused=false;shopOpen=false;$('combat-layout').classList.remove('workshop-open');phase='over';clearInput();showOverlay('end-menu');renderEnd();}else returnMenu();});
     const settings=document.createElement('div');settings.id='journey-settings';$('menu').insertBefore(settings,$('start'));$('menu').querySelector('.modes').hidden=true;
     const swap=document.createElement('button');swap.id='swap-weapon';swap.className='journey-swap';$('shield').parentNode.insertBefore(swap,$('shield'));bindAction(swap,()=>{if(phase==='play'&&!paused)journey.swap();});
-    const setup=()=>{journey.settings(settings,d=>chooseMode(d==='challenge'?'storm':'standard'));swap.textContent=journey.text('⇄ 換武器 · E','⇄ Switch · E');};setup();
+    const setup=()=>{journey.settings(settings,d=>chooseMode(d==='challenge'?'storm':'standard'));swap.innerHTML=journey.text('⇄ 換武器 <kbd>E</kbd>','⇄ Switch <kbd>E</kbd>');exit.textContent=journey.text('退出','Exit');$('change-mode').textContent=journey.text('返回選單','Back to menu');$('change-mode').classList.add('journey-exit');};setup();
     const originalLanguage=setLanguage;setLanguage=function(next){originalLanguage(next);setup();};
     journey.onIntermission=()=>{paused=true;clearInput();soundscape.play('upgrade');};
     journey.onChoice=(kind,r)=>{
@@ -1442,7 +1523,7 @@ from (http://code.google.com/p/pyqrnative):
     journey.onEnd=()=>{game.running=false;paused=false;phase='over';clearInput();showOverlay('end-menu');renderEnd();};
     window.FuLamFleet={getState:()=>({phase,paused,score:game.score,hp:game.hero.hp,wave:game.wave,kills:game.kills,weaponKind:game.weaponKind,weapon:game.weapon,power:game.power,shield:game.shield,shots:game.shots,run:journey.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,phase:journey.run.phase,active:journey.run.active,total:journey.run.total,wave:journey.run.wave,choiceTime:journey.run.choiceTime,reason:journey.run.reason}:null})};
   }
-  setLanguage(lang);sizeCanvas();requestAnimationFrame(frame);
+  if(journey)document.body.classList.add('fleet-menu');setLanguage(lang);sizeCanvas();requestAnimationFrame(frame);
 })();
 </script>
 </body></html>

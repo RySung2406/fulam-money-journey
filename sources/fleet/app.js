@@ -12,13 +12,13 @@
     home: 'Back to FuLam Money Journey', settings: 'Game settings', arcade: 'ARCADE HARBOUR', soundOff: 'Sound: off', soundOn: 'Sound: on', fullscreen: 'Full screen',
     tag: 'ENDLESS AIR ARCADE · BETA', title: 'Wealth<br>Wings', subtitle: 'Protect your capital.<br>Chart your own course.',
     intro: 'The enemy keeps coming. Turn your loot into firepower, or keep a cash reserve for an emergency shield?',
-    move: 'Move · drag or tap the sky on mobile', autofire: 'Automatic targeting & rapid fire', shieldRule: 'Spend your reserve to raise a shield', best: 'LOCAL BEST', local: 'Only your best result stays in this browser', back: '← Back to the arcade',
+    move: 'Move · drag or tap the sky on mobile', autofire: 'Automatic forward fire', shieldRule: 'Spend your reserve to raise a shield', best: 'LOCAL BEST', local: 'Only your best result stays in this browser', back: '← Back',
     battle: 'Air battle', capital: 'CAPITAL ARMOUR', cash: 'GAME COINS', score: 'WEALTH SCORE',
     canvas: 'Air shooter. WASD or arrow keys to move, Q for shield, 1 to 4 for upgrades, P to pause.',
     auto: 'AUTO FIRE', boss: 'DEBT STORM · BOSS', menuTag: 'PILOT, READY TO FLY.', menuTitle: 'How long can you<br>protect your capital?',
     menuHint: 'Drag to dodge. Your guns fire automatically.<br>Endless waves. Fly until defeated.', chooseMode: 'Choose difficulty',
     standard: 'Standard', standardHint: '100 capital · rising pressure', storm: 'Challenge', stormHint: '75 capital · faster fire', start: 'Take off',
-    pausedTag: 'FLIGHT PAUSED', paused: 'Battle paused', pausedHint: 'Return to sea when you are ready.', resume: 'Continue flight',
+    pausedTag: 'FLIGHT PAUSED', paused: 'Battle paused', pausedHint: 'Return to the sky when you are ready.', resume: 'Continue flight',
     endTag: 'FLIGHT COMPLETE', endTitle: 'Aircraft down.<br>Go further next time.', restart: 'Fly again', share: 'Copy result', changeMode: 'Change difficulty',
     pause: 'Pause', mobileHint: 'Drag or tap the sky to move. Firing is automatic.', shield: 'Emergency shield', directionPad: 'Movement buttons', left: 'Move left', right: 'Move right', up: 'Move up', down: 'Move down',
     dockTag: 'YOUR UPGRADE DECISIONS', dock: 'Aircraft workshop', dockHint: 'Invest in strength. Keep cash for survival.',
@@ -70,8 +70,8 @@
   const fx = new window.FuLamArcade.Effects(reduced.matches);
   const canvasPointers = new window.FuLamArcade.Pointers(), directionPointers = new Map();
   const bindAction = window.FuLamArcade.bindAction;
-  Object.assign(EN, { workshop: 'Upgrades', closeDock: 'Back to sea', shopPaused: 'Battle paused · choose an upgrade', lowHealth: 'LOW ARMOUR · REPAIR OR SHIELD', exitScreen: 'Exit full screen' });
-  Object.assign(ZH, { workshop: '升級', closeDock: '返回戰場', shopPaused: '戰局已暫停 · 安心選購升級', lowHealth: '護甲危急 · 修復或開盾', exitScreen: '退出全螢幕' });
+  Object.assign(EN, { workshop: 'Hangar', closeDock: 'Back to battle', shopPaused: 'Battle paused · choose an upgrade', lowHealth: 'LOW ARMOUR · REPAIR OR SHIELD', exitScreen: 'Exit full screen' });
+  Object.assign(ZH, { workshop: '機庫', closeDock: '返回戰場', shopPaused: '戰局已暫停 · 安心選購升級', lowHealth: '護甲危急 · 修復或開盾', exitScreen: '退出全螢幕' });
   try { const stored = safeGet(KEY); if (stored && stored.length < 600) { const r = JSON.parse(stored); if (Number.isFinite(r.score) && r.score >= 0 && Number.isInteger(r.wave) && r.wave > 0 && Number.isInteger(r.kills) && r.kills >= 0 && ['standard', 'storm'].includes(r.mode)) best = r; } } catch { /* invalid records are ignored */ }
   function put(id, text) { const e = $(id); const s = String(text); if (e.textContent !== s) e.textContent = s; }
   function toast(key) { $('toast').textContent = t(key); $('toast').classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => $('toast').classList.remove('show'), 2400); }
@@ -124,7 +124,10 @@
     $('overlay').hidden = !which;
     for (const id of ['menu', 'pause-menu', 'end-menu']) $(id).hidden = id !== which;
   }
+  function prepareStart(){if(!journey){start();return;}document.body.classList.remove('fleet-menu');document.body.classList.add('fleet-playing');showOverlay(null);journey.guide($('sea'),start,returnMenu);}
+  function returnMenu(){journey?.close();if(journey?.status)journey.status.hidden=true;$('sea').classList.remove('journey-live');document.body.classList.remove('fleet-playing');document.body.classList.add('fleet-menu');phase='menu';paused=false;shopOpen=false;$('combat-layout').classList.remove('workshop-open');clearInput();game=C.createState({mode});showOverlay('menu');updateHUD();$('start').focus({preventScroll:true});}
   function start() {
+    document.body.classList.remove('fleet-menu');document.body.classList.add('fleet-playing');
     shopOpen = false; deathTime = lowHealthSound = 0; fx.clear();
     $('combat-layout').classList.remove('workshop-open');
     game = C.createState({ mode, arcade:!!journey, seed:journey?.scene==='booth'?20261104:Date.now() }); if(journey){journey.start($('sea'));$('sea').classList.add('journey-live');} phase = 'play'; paused = false; accumulator = 0; lastTime = null; lastSound = 0; saveFailed = false;
@@ -157,7 +160,7 @@
     showOverlay('end-menu'); renderEnd(); updateHUD(); $('restart').focus({ preventScroll: true });
   }
   function renderEnd() {
-    put('end-label', journey?journey.text('本局戰績','RUN RECORD'):t(resultIsBest ? 'newBest' : 'endTag'));if(journey&&journey.run.reason==='time')document.querySelector('[data-t="endTitle"]').textContent=journey.text('Booth 挑戰完成！','Booth challenge complete!');else document.querySelector('[data-t="endTitle"]').innerHTML=t('endTitle'); put('end-score', game.score.toLocaleString('en'));
+    put('end-label', journey?journey.text('本局戰績','RUN RECORD'):t(resultIsBest ? 'newBest' : 'endTag'));if(journey&&journey.run.reason==='exit')document.querySelector('[data-t="endTitle"]').textContent=journey.text('本局已結束','Run complete');else if(journey&&journey.run.reason==='time')document.querySelector('[data-t="endTitle"]').textContent=journey.text('Booth 挑戰完成！','Booth challenge complete!');else document.querySelector('[data-t="endTitle"]').innerHTML=t('endTitle'); put('end-score', game.score.toLocaleString('en'));
     put('end-stats', t('endStats')(game)); put('end-tip', t('tip'));if(journey)$('end-tip').innerHTML=journey.result(game.score,{kills:game.kills},journey.run.reason||'defeat'); if (saveFailed) put('share-status', t('storageUnavailable'));
   }
   function chooseMode(value) {
@@ -357,14 +360,14 @@
     b.addEventListener('pointerdown',e=>{if(phase!=='play'||paused)return;e.preventDefault();b.setPointerCapture(e.pointerId);pointerTarget=null;directionPointers.set(e.pointerId,b.dataset.dir);});
     for(const event of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(event,e=>directionPointers.delete(e.pointerId));
   }
-  $('start').addEventListener('click',start);$('restart').addEventListener('click',start);bindAction($('pause'),()=>setPaused(!paused));$('resume').addEventListener('click',()=>setPaused(false));
+  $('start').addEventListener('click',prepareStart);$('restart').addEventListener('click',prepareStart);bindAction($('pause'),()=>setPaused(!paused));$('resume').addEventListener('click',()=>setPaused(false));
   bindAction($('shield'),shield);for(const kind of ['weapon','escort','reserve','repair'])bindAction($(kind),()=>purchase(kind));
   for(const id of ['standard','storm'])$(id).addEventListener('click',()=>chooseMode(id));
   bindAction($('lang'),()=>setLanguage(lang==='en'?'zh-Hant':'en'));
   window.addEventListener('storage',e=>{if(e.key==='fulam-language')setLanguage(e.newValue==='en'?'en':'zh-Hant');});
   bindAction($('sound'),toggleSound);bindAction($('battle-sound'),toggleSound);
   bindAction($('dock-toggle'),()=>shopOpen?closeWorkshop():openWorkshop());bindAction($('dock-close'),closeWorkshop);
-  $('change-mode').addEventListener('click',()=>{phase='menu';paused=false;clearInput();game=C.createState({mode});showOverlay('menu');updateHUD();$('start').focus({preventScroll:true});});
+  $('change-mode').addEventListener('click',returnMenu);
   $('share').addEventListener('click',async()=>{const text=t('shareText')(game);try{await navigator.clipboard.writeText(text);put('share-status',t('copied'));}catch{put('share-status',`${t('copyFallback')} ${text}`);}});
   async function fullscreen(){
     const layout=$('combat-layout');
@@ -382,9 +385,10 @@
   });document.addEventListener('fullscreenchange',sizeCanvas);
   new ResizeObserver(sizeCanvas).observe($('sea'));
   if(journey){
+    const exit=document.createElement('button');exit.id='exit-game';exit.className='journey-exit';$('pause').parentNode.append(exit);bindAction(exit,()=>{if(phase==='play'){journey.run.finish('exit');game.running=false;paused=false;shopOpen=false;$('combat-layout').classList.remove('workshop-open');phase='over';clearInput();showOverlay('end-menu');renderEnd();}else returnMenu();});
     const settings=document.createElement('div');settings.id='journey-settings';$('menu').insertBefore(settings,$('start'));$('menu').querySelector('.modes').hidden=true;
     const swap=document.createElement('button');swap.id='swap-weapon';swap.className='journey-swap';$('shield').parentNode.insertBefore(swap,$('shield'));bindAction(swap,()=>{if(phase==='play'&&!paused)journey.swap();});
-    const setup=()=>{journey.settings(settings,d=>chooseMode(d==='challenge'?'storm':'standard'));swap.textContent=journey.text('⇄ 換武器 · E','⇄ Switch · E');};setup();
+    const setup=()=>{journey.settings(settings,d=>chooseMode(d==='challenge'?'storm':'standard'));swap.innerHTML=journey.text('⇄ 換武器 <kbd>E</kbd>','⇄ Switch <kbd>E</kbd>');exit.textContent=journey.text('退出','Exit');$('change-mode').textContent=journey.text('返回選單','Back to menu');$('change-mode').classList.add('journey-exit');};setup();
     const originalLanguage=setLanguage;setLanguage=function(next){originalLanguage(next);setup();};
     journey.onIntermission=()=>{paused=true;clearInput();soundscape.play('upgrade');};
     journey.onChoice=(kind,r)=>{
@@ -397,5 +401,5 @@
     journey.onEnd=()=>{game.running=false;paused=false;phase='over';clearInput();showOverlay('end-menu');renderEnd();};
     window.FuLamFleet={getState:()=>({phase,paused,score:game.score,hp:game.hero.hp,wave:game.wave,kills:game.kills,weaponKind:game.weaponKind,weapon:game.weapon,power:game.power,shield:game.shield,shots:game.shots,run:journey.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,phase:journey.run.phase,active:journey.run.active,total:journey.run.total,wave:journey.run.wave,choiceTime:journey.run.choiceTime,reason:journey.run.reason}:null})};
   }
-  setLanguage(lang);sizeCanvas();requestAnimationFrame(frame);
+  if(journey)document.body.classList.add('fleet-menu');setLanguage(lang);sizeCanvas();requestAnimationFrame(frame);
 })();

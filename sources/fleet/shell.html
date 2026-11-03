@@ -9,9 +9,8 @@
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="https://rysung2406.github.io/fulam-money-journey/#play" aria-label="返回富臨錢進號" data-label="home">
-    <svg viewBox="0 0 32 32" aria-hidden="true"><path d="m16 3 9 8-3 15H10L7 11Z"/><path d="M16 8v14M11 17h10M4 27q6-3 12 0t12 0"/></svg>
-    <span>FULAM <b data-t="arcade">遊戲港口</b></span>
+  <a class="brand journey-exit" href="https://rysung2406.github.io/fulam-money-journey/#play" aria-label="返回富臨錢進號" data-label="home">
+    <span data-t="back">← 返回</span>
   </a>
   <nav aria-label="遊戲設定" data-label="settings">
     <button id="sound" class="quiet" aria-pressed="false" data-t="soundOff">音效：關</button>
@@ -25,10 +24,10 @@
     <h1 data-t="title">富臨<br>財富戰機</h1>
     <p class="subtitle" data-t="subtitle">守住本金。<br>打出你的財富難度。</p>
     <div class="route-line"><span>01</span><div></div><span>∞</span></div>
-    <p class="intro" data-t="intro">敵艦不停來襲。把戰利品變成火力，還是留一筆錢，在危急時開盾？</p>
+    <p class="intro" data-t="intro">敵機不停來襲。把戰利品變成火力，還是留一筆錢，在危急時開盾？</p>
     <div class="brief-rules">
       <p><kbd>WASD</kbd><span data-t="move">移動 · 手機拖曳或點擊天空</span></p>
-      <p><span class="rule-symbol">◎</span><span data-t="autofire">自動瞄準與連射</span></p>
+      <p><span class="rule-symbol">◎</span><span data-t="autofire">自動向前連射</span></p>
       <p><kbd>Q</kbd><span data-t="shieldRule">使用儲備金開啟護盾</span></p>
     </div>
     <div class="record"><span data-t="best">本機最佳</span><strong id="best">0</strong><small data-t="local">只保存最佳戰績於此瀏覽器</small></div>
@@ -52,7 +51,7 @@
           <div class="badge-mark" aria-hidden="true"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="29"/><path d="M32 11 44 29l-5 21H25l-5-21Z"/><path d="M32 20v22M26 32h12M7 45q12-8 25 0t25 0"/></svg></div>
           <p class="eyebrow" data-t="menuTag">艦長，準備起飛。</p>
           <h2 data-t="menuTitle">這一局，<br>能守住多少本金？</h2>
-          <p data-t="menuHint">拖曳戰機閃避，火炮會自動還擊。<br>無限波次，沉船才結束。</p>
+          <p data-t="menuHint">拖曳戰機閃避，火炮會自動還擊。<br>無限波次，墜機才結束。</p>
           <div class="modes" role="group" aria-label="選擇難度" data-label="chooseMode">
             <button id="standard" class="mode active" aria-pressed="true"><b data-t="standard">標準</b><span data-t="standardHint">100 本金 · 循序加壓</span></button>
             <button id="storm" class="mode" aria-pressed="false"><b data-t="storm">挑戰</b><span data-t="stormHint">75 本金 · 高速彈幕</span></button>
@@ -60,8 +59,8 @@
           <button id="start" class="primary"><span data-t="start">立即起飛</span><span aria-hidden="true">↗</span></button>
         </div>
         <div class="overlay-card" id="pause-menu" hidden>
-          <p class="eyebrow" data-t="pausedTag">暫時靠岸</p><h2 data-t="paused">戰局已暫停</h2>
-          <p data-t="pausedHint">準備好就回到海上。</p><button id="resume" class="primary" data-t="resume">繼續飛行</button>
+          <p class="eyebrow" data-t="pausedTag">暫時休息</p><h2 data-t="paused">戰局已暫停</h2>
+          <p data-t="pausedHint">準備好就重返天空。</p><button id="resume" class="primary" data-t="resume">繼續飛行</button>
         </div>
         <div class="overlay-card" id="end-menu" hidden>
           <p class="eyebrow" id="end-label" data-t="endTag">本次飛行結束</p><h2 data-t="endTitle">戰機墜毀。<br>下一局，再進一步。</h2>
@@ -73,7 +72,7 @@
         </div>
       </div>
     </div>
-    <div class="battle-footer"><span id="wave-progress">0 / 8</span><div class="wave-track"><i id="wave-bar"></i></div><button id="dock-toggle" class="quiet dock-toggle" aria-expanded="false" aria-controls="dock" disabled><!-- ICON:grid-2x2 --><span data-t="workshop">升級</span></button><button id="battle-sound" class="quiet tool-icon" aria-label="音效：開" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m11 5-6 4H2v6h3l6 4Z M16 8a6 6 0 0 1 0 8"/></svg></button><button id="battle-fullscreen" class="quiet tool-icon" aria-label="全螢幕" data-label="fullscreen"><!-- ICON:maximize --></button><button id="pause" class="quiet" disabled><span data-t="pause">暫停</span><kbd>P</kbd></button></div>
+    <div class="battle-footer"><span id="wave-progress">0 / 8</span><div class="wave-track"><i id="wave-bar"></i></div><button id="dock-toggle" class="quiet dock-toggle" aria-expanded="false" aria-controls="dock" disabled><!-- ICON:grid-2x2 --><span data-t="workshop">機庫</span></button><button id="battle-sound" class="quiet tool-icon" aria-label="音效：開" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m11 5-6 4H2v6h3l6 4Z M16 8a6 6 0 0 1 0 8"/></svg></button><button id="battle-fullscreen" class="quiet tool-icon" aria-label="全螢幕" data-label="fullscreen"><!-- ICON:maximize --></button><button id="pause" class="quiet" disabled><span data-t="pause">暫停</span><kbd>P</kbd></button></div>
     <div class="mobile-hint" data-t="mobileHint">拖曳／點擊天空移動，自動射擊。</div>
     <div class="combat-actions">
       <button id="shield" class="shield-btn" disabled><kbd>Q</kbd><span><b data-t="shield">應急護盾</b><small id="shield-status">20</small></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 8 3v6c0 5-8 10-8 10S4 16 4 11V5Z"/><path d="m8 11 3 3 5-6"/></svg></button>
@@ -81,7 +80,7 @@
     </div>
   </section>
   <aside class="dock" id="dock" aria-labelledby="dock-title"><div class="workshop-bar"><span data-t="shopPaused">戰局已暫停 · 安心選購升級</span><button id="dock-close" class="quiet" data-t="closeDock">返回戰場</button></div>
-    <div class="dock-heading"><span class="eyebrow" data-t="dockTag">你的升級決定</span><h2 id="dock-title" data-t="dock">隨行船塢</h2><p data-t="dockHint">花錢變強，也記得留錢保命。</p></div>
+    <div class="dock-heading"><span class="eyebrow" data-t="dockTag">你的升級決定</span><h2 id="dock-title" data-t="dock">隨行機庫</h2><p data-t="dockHint">花錢變強，也記得留錢保命。</p></div>
     <div class="upgrades">
       <button class="upgrade" id="weapon" disabled><span class="upgrade-num"><!-- ICON:crosshair --><kbd>1</kbd></span><span class="upgrade-copy"><b data-t="weapon">複利火炮</b><small id="weapon-desc"></small><span class="level-dots" id="weapon-dots" aria-hidden="true"></span></span><strong id="weapon-cost"></strong></button>
       <button class="upgrade" id="escort" disabled><span class="upgrade-num"><!-- ICON:ship --><kbd>2</kbd></span><span class="upgrade-copy"><b data-t="escort">分散僚機</b><small id="escort-desc"></small><span class="level-dots" id="escort-dots" aria-hidden="true"></span></span><strong id="escort-cost"></strong></button>
