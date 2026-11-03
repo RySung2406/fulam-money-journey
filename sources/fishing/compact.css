@@ -72,3 +72,40 @@ body:not(.game-active) .control-panel{display:none}body:not(.game-active) .how{d
 
 
 @media(max-width:650px) and (max-height:700px){body:not(.game-active) .card>.welcome-icon,body:not(.game-active) .card>p,body:not(.game-active) .card>.micro{display:none}body:not(.game-active) .heading{display:none}body:not(.game-active) .card h2{font-size:21px;line-height:1.2;margin:5px 0}body:not(.game-active) .journey-settings{margin:8px 0}body:not(.game-active) .card{padding:12px 15px}}
+
+/* The welcome card determines the sea's height; no nested scroll hides its intro. */
+body.welcome-screen .play-console{height:auto;min-height:0;display:block;flex:none}
+body.welcome-screen .scene{height:auto;min-height:clamp(640px,calc(100svh - 240px),820px);max-height:none}
+body.welcome-screen .scene>canvas{position:absolute;inset:0}
+body.welcome-screen .overlay{position:relative;inset:auto;min-height:inherit;padding:22px;grid-template-rows:auto}
+body.welcome-screen .card{width:min(520px,100%);max-height:none;overflow:visible;padding:24px 30px}
+body.welcome-screen .card>p{display:block;line-height:1.65;font-size:14px;margin:12px 0 18px}
+body.welcome-screen .card .journey-rule{font-size:12px!important}
+@media(min-width:701px) and (max-height:820px){
+ body.welcome-screen .wrap{padding-top:12px}.welcome-screen .top{margin-bottom:12px}.welcome-screen .heading{margin-bottom:12px}
+ body.welcome-screen .scene{min-height:max(390px,calc(100svh - 190px))}
+ body.welcome-screen .card{width:min(820px,100%);max-width:820px;display:grid;grid-template-columns:.9fr 1.1fr;column-gap:28px;align-items:center;text-align:left}
+ body.welcome-screen .card>.modal-language{grid-column:2;grid-row:1;justify-self:end;margin:0 0 8px}
+ body.welcome-screen .card>.welcome-icon,body.welcome-screen .card>.label,body.welcome-screen .card>.micro{display:none}
+ body.welcome-screen .card>h2{grid-column:1;grid-row:2;font-size:32px;align-self:end}
+ body.welcome-screen .card>p{grid-column:1;grid-row:3;align-self:start;margin:12px 0}
+ body.welcome-screen .card>div:has(.journey-settings){grid-column:2;grid-row:2/4}
+ body.welcome-screen .card>.primary{grid-column:2;grid-row:4}
+}
+@media(max-width:700px){
+ body.welcome-screen .wrap{height:auto;min-height:100svh}
+ body.welcome-screen .scene{min-height:0}
+ body.welcome-screen .overlay{padding:12px}
+ body.welcome-screen .card{padding:18px;width:min(460px,100%)}
+ body.welcome-screen .card>p{display:block;font-size:13px;line-height:1.55;margin:9px 0 12px}
+}
+@media(max-height:500px) and (orientation:landscape){
+ body.welcome-screen .wrap{padding:6px}
+ body.welcome-screen .scene{min-height:calc(100svh - 12px)}
+ body.welcome-screen .overlay{padding:10px}
+ body.welcome-screen .card{width:min(850px,100%);max-width:850px;padding:10px 16px;column-gap:20px}
+ body.welcome-screen .card>h2{font-size:24px}.welcome-screen .card>p{font-size:12px!important}
+ body.welcome-screen .journey-settings{margin:3px 0}
+ body.welcome-screen .card>.modal-language{min-height:28px;margin:0;font-size:11px;padding:3px 8px}
+}
+@media(min-height:501px){body.welcome-screen .card>.modal-language{display:none}}

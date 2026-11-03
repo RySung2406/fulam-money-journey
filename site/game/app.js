@@ -375,7 +375,7 @@ function updateHUD() {
  $('#missed-count').textContent = `${session.missed} missed`;
  $('#run-goal').textContent = playKind === 'sprint' ? `${session.correct} / ${E.GAME_RULES.sprintTarget} CORRECT` : 'NO TIME LIMIT';
  $('#run-clock').textContent = timeLabel(playKind === 'sprint' ? E.sprintTimeMs(elapsed, session.wrong) : Math.ceil(elapsed * 1000));
- if(journey?.run){$('#run-goal').textContent='♥ '+hearts+' · '+journey.text('護心 ','Guard ')+guardCharges;$('#run-clock').hidden=false;$('#run-clock').textContent=journey.scene==='booth'?Math.ceil(Math.max(0,180-journey.run.total))+'s':Math.floor(journey.run.active)+'s';$('.round-number').textContent=journey.text('第 '+journey.run.wave+' 關 · '+roundResolved+'/20','Stage '+journey.run.wave+' · '+roundResolved+'/20');if($('#knife-level'))$('#knife-level').textContent=journey.name(journey.run.weapon)+' Lv.'+(journey.run.weapon+1)+' · +'+(journey.run.weapon*25)+'%';if($('#knife-focus')){$('#knife-focus').disabled=paused||focusCharge<100;$('#knife-focus').textContent=journey.text('慢時 ','Focus ')+Math.floor(focusCharge)+'% · Q';}}
+ if(journey?.run){$('#run-goal').textContent='♥ '+hearts+'/'+journey.sliceMaxHearts()+' · '+journey.text('護心 ','Guard ')+guardCharges;$('#run-clock').hidden=false;$('#run-clock').textContent=journey.scene==='booth'?Math.ceil(Math.max(0,180-journey.run.total))+'s':Math.floor(journey.run.active)+'s';$('.round-number').textContent=journey.text('第 '+journey.run.wave+' 關 · '+roundResolved+'/20','Stage '+journey.run.wave+' · '+roundResolved+'/20');if($('#knife-level'))$('#knife-level').textContent=journey.name(journey.run.weapon)+' Lv.'+(journey.run.weapon+1)+' · +'+(journey.run.weapon*25)+'%';if($('#knife-focus')){$('#knife-focus').disabled=paused||focusCharge<100;$('#knife-focus').textContent=journey.text('慢時 ','Focus ')+Math.floor(focusCharge)+'% · Q';}}
  $('#run-clock').title = playKind === 'sprint' ? `Includes ${session.wrong * E.GAME_RULES.wrongPenaltySeconds} seconds of wrong-slice penalties` : 'Time played';
 }
 function cutTarget(target) {
@@ -528,7 +528,8 @@ if(journey){
  journey.nextHint=()=>{const initial=QUESTIONS.findIndex(q=>q.id===startTopic),q=QUESTIONS[(initial+journey.run.wave)%QUESTIONS.length];return window.FuLamSliceLanguage?.translate(q.question)||q.question;};
  journey.onIntermission=()=>{paused=true;releasePointer();targets.forEach(t=>t.el.remove());targets=[];playSound('start');};
  journey.onChoice=(kind,r)=>{
-  if(kind==='guard'){guardCharges++;hearts=Math.min(journey.sliceHearts(),hearts+1);}
+  if(kind==='guard'){guardCharges++;hearts=Math.min(journey.sliceMaxHearts(),hearts+1);}
+  if(kind==='life')hearts=Math.min(journey.sliceMaxHearts(),hearts+2);
   roundSpawned=0;roundResolved=0;const initial=QUESTIONS.findIndex(q=>q.id===startTopic);question=QUESTIONS[(initial+r.wave-1)%QUESTIONS.length];
   optionDeck=E.createOptionDeck(question.options,roundRandom);for(const option of question.options)if(!optionStats.has(option.id))optionStats.set(option.id,{option,shown:0,correct:0,wrong:0,missed:0,avoided:0});
   $('.question-bar h1').textContent=question.question;$('.question-context').textContent=question.context;$('.question-bar .eyebrow').textContent=question.eyebrow;$('.round-number').textContent='ROUND '+r.wave+' · '+question.chapter;
@@ -538,7 +539,7 @@ if(journey){
 }
 Object.defineProperty(window, 'FuLamSlice', {value: Object.freeze({getState() {
  return freezeSnapshot({
-  phase, paused, roundSpawned,roundResolved,hearts,focusCharge,focusTime,guardCharges,run:journey?.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,wave:journey.run.wave,phase:journey.run.phase,active:journey.run.active,total:journey.run.total,weapon:journey.run.weapon,focus:journey.run.focus,guard:journey.run.guard,reason:journey.run.reason}:null, topic: question?.id ?? null, mode: playKind, playKind, difficulty: mode, elapsed,
+  phase, paused, roundSpawned,roundResolved,hearts,maxHearts:journey?.sliceMaxHearts()||hearts,focusCharge,focusTime,guardCharges,run:journey?.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,wave:journey.run.wave,phase:journey.run.phase,active:journey.run.active,total:journey.run.total,weapon:journey.run.weapon,focus:journey.run.focus,guard:journey.run.guard,life:journey.run.life,reason:journey.run.reason}:null, topic: question?.id ?? null, mode: playKind, playKind, difficulty: mode, elapsed,
   score: session.score, correct: session.correct, wrong: session.wrong, missed: session.missed, flightFloor, arenaCeiling,
   combo: session.combo, bestCombo: session.bestCombo, avoided, spawned, cap: liveCap(),
   pending: targets.filter(target => !target.hit && elapsed < target.bornAt + target.launch.delay).length,

@@ -84,6 +84,20 @@ test('Shipped fishing fire supports all twelve evolution stages and preserves tr
 const near=(a,b,tol=.0001)=>assert(Math.abs(a-b)<tol,`${a} != ${b}`);
 const clone = value => JSON.parse(JSON.stringify(value));
 
+test('Fishing protection lowers actual idle drain, and catches respect expanded energy capacity',()=>{
+ const losses=[];
+ for(const protection of [0,1,3]){
+  const g=harness();g.click('start');g.installEvolution();
+  g.run(`journey={run:Object.assign(new FuLamJourney.Run('fishing','web','standard',1),{life:1,protection:${protection}}),name:()=> 'QA'};energy=120;fish=[]`);
+  g.run('hudClock=100;spawnClock=100;step(.05,.05)');losses.push(120-g.state().energy);
+  assert.equal(g.state().maxEnergy,120);
+  near(120-g.state().energy,.85*.05/(1+.15*protection));
+  g.run("energy=119.9;spawn('coin',{x:300,y:200});capture(fish[fish.length-1])");
+  near(g.state().energy,120);
+ }
+ assert(losses[0]>losses[1]&&losses[1]>losses[2]);
+});
+
 test('A secondary touch casts a skill while the first finger keeps firing',()=>{
   const g=harness();g.click('start');
   g.pointer('pointerdown',300,200,{pointerType:'touch',pointerId:11});g.advance(.3);

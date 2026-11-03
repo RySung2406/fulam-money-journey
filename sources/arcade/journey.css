@@ -39,3 +39,30 @@
 .journey-live .journey-overlay:not(.journey-guide){position:fixed}
 
 .journey-live.journey-choosing{z-index:150}
+
+/* Keep attack and survival choices together, with distinct support colours. */
+.journey-card.journey-choice-card{max-width:900px}
+.journey-choice-card .journey-upgrades{grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.journey-choice-card .journey-upgrades button{grid-column:span 2;min-height:102px;justify-content:flex-start}
+.journey-choice-card [data-upgrade=life],.journey-choice-card [data-upgrade=protection]{grid-column:span 3!important}
+.journey-choice-card [data-upgrade=life]{background:#d9ecde;border-color:#82bca1}
+.journey-choice-card [data-upgrade=protection],.journey-choice-card [data-upgrade=guard]{background:#e5dff1;border-color:#b6a1cf}
+.journey-choice-card .journey-upgrades[data-count="4"] button{grid-column:span 3}
+.journey-choice-card .journey-upgrades small{font-size:13px;line-height:1.45}
+@media(max-width:600px){
+ .journey-card.journey-choice-card{padding:16px}
+ .journey-choice-card .journey-upgrades{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .journey-choice-card .journey-upgrades button,.journey-choice-card .journey-upgrades[data-count="4"] button,.journey-choice-card [data-upgrade=life]{grid-column:span 1!important;min-height:94px;padding:10px;gap:5px}
+ .journey-choice-card .journey-upgrades [data-upgrade=protection]{grid-column:span 2!important;min-height:66px!important}
+ .journey-choice-card .journey-upgrades b{font-size:14px}.journey-choice-card .journey-upgrades small{font-size:12px}
+ .journey-choice-card h2{font-size:23px;margin:6px 0}.journey-choice-card .journey-scene-note{margin:8px 0}
+ .journey-choice-card .journey-next{margin:8px 0 0;padding:7px 9px}.journey-choice-card .journey-count{margin:8px 0}
+}
+@media(max-height:500px) and (orientation:landscape){
+ .journey-card.journey-choice-card{padding:12px}
+ .journey-choice-card .journey-upgrades{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+ .journey-choice-card .journey-upgrades[data-count="4"]{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .journey-choice-card .journey-upgrades button,.journey-choice-card .journey-upgrades[data-count="4"] button,.journey-choice-card .journey-upgrades [data-upgrade=life],.journey-choice-card .journey-upgrades [data-upgrade=protection]{grid-column:span 1!important;padding:8px;min-height:104px!important}
+ .journey-choice-card .journey-upgrades b{font-size:13px}.journey-choice-card .journey-upgrades small{font-size:12px}
+ .journey-choice-card h2{font-size:20px;margin:4px 0}.journey-choice-card .journey-next{padding:5px 8px;margin:5px 0}
+}

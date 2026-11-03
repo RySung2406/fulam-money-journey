@@ -1,10 +1,10 @@
-# FuLam arcade and Booth — v5 cumulative evolution
+# FuLam arcade and Booth — v6 survival choices and taller welcome
 
 Requested by Ryan on 2026-11-04. Updated after Ryan’s feedback on cumulative weapon upgrades, enemy pressure, clearer Slice abilities and meaningful round scenes. Three high-score games share two public difficulties (Standard and Challenge) and a separate Booth preset. `/booth/` links to each activity. `/fleet/` remains compatible with existing links and now hosts Wealth Wings, an aircraft shooter.
 
 ## Rules and storage
 
-- Web runs have no total time limit. Catch and Wings offer an eight-second upgrade choice every 30 active seconds. One Slice offers it after all 20 choices in a stage have been resolved, rather than on a timer. Catch and Wings offer fire rate, weapon evolution, or projectile coverage. Slice offers blade score, Focus duration, or a consumable mistake guard. Weapon/blade evolution is applied after eight seconds without a selection. Combat pauses during choices.
+- Web runs have no total time limit. Catch and Wings offer an twelve-second upgrade choice every 30 active seconds. One Slice offers it after all 20 choices in a stage have been resolved, rather than on a timer. Catch and Wings offer five choices: fire rate, weapon evolution, projectile coverage, energy/armour capacity, or protection. Slice offers four: blade score, Focus duration, a consumable mistake guard, or extra heart capacity. Weapon/blade evolution is applied after twelve seconds without a selection. Combat pauses during choices.
 - Booth fixes an intermediate difficulty between Standard and Challenge, with a reproducible seed. It ends at 180 elapsed seconds after starting, including pauses, intermissions and time spent away from the page. The visual result appears on the next animation frame after a hidden page returns. Defeat can finish earlier.
 - There is no weapon switching. Rate, weapon and trajectory levels accumulate independently for the current run. Catch and Wings have twelve named evolution stages, with further stat upgrades beyond stage twelve. One Slice has one evolving blade, a charged Focus skill and explicit single-use guard charges. A new run resets all upgrades.
 - Catch drains energy, replenishes it on catches, and ends at zero. All six skills are visible and independently touchable while firing. Net and freeze start unlocked; rapid fire, double coins, bomb and lure unlock in rounds 2, 3, 4 and 5. Buttons show shortcuts and cooldowns.
@@ -70,7 +70,7 @@ Phone bag art grew from 100px to 112px wide; answer cards from 138px to 148px (1
 Validation: 122 repository tests and syntax/bundle checks passed. Mounted Browser checks covered 24 game/language/viewport combinations at 320×568, 390×844, 740×320 and 1280×900: no horizontal overflow, clipped active labels or inaccessible exit/start controls. Actual mode starts confirmed 5/4/3 hearts, 100/88/75 armour, and ten-second idle Catch energy of about 91.5/89.5/87.5. Slice completed two 20-choice stages, lost one heart after four deliberate misses, and recovered to a cap of four. Both Canvas games advanced to round two, applied power and a weapon swap, and activated net/shield. All three Booth games expired at 180 seconds through pause and restarted with reset score/loadout. Balance still needs real participant play; these are browser checks, not iPhone hardware testing.
 
 
-## v5 evolution, pressure and scenes
+## v5 evolution, pressure and scenes (v6 extends these choices)
 
 Requested by Ryan on 2026-11-04: upgrade weapons instead of switching them; retain fire-rate and trajectory choices; more visible stages; enemies must grow alongside the player; explain Slice upgrades; give round backgrounds a purpose.
 
@@ -98,3 +98,20 @@ These are initial balancing parameters, not evidence of human completion difficu
 126 repository tests passed, including real emitted projectiles across all twelve stages, accumulation beyond visual caps, intermediate Booth ordering, clocks and boss pressure. Actual mounted-Browser inputs completed eleven Catch upgrade choices to round twelve and all three Wings choices to round four. Three Slice stages each resolved exactly twenty choices; the next stage verified an unchanged heart count but a 150-point deduction on a guarded wrong cut, and upgraded Focus lasted approximately 3.1 seconds. These checks used accelerated ordinary animation frames and read-only telemetry, with no production gameplay mutation interface.
 
 Thirty Chinese/English game/viewport combinations were checked at 320x568, 390x844, 430x932, 740x320 and 1280x900. The narrow Focus clipping was fixed and rechecked in both languages. Upgrade cards were separately tested in short portrait and landscape views: all three buttons fit and receive input without another control covering them. Wings upgrades and hangar operate inside fullscreen; keyboard choices do not purchase paid upgrades accidentally. All three Booth games expired through pause and restarted with zero score and reset upgrades. No JavaScript errors were reported in the final browser checks. This remains browser QA, not an iPhone hardware or participant balancing test.
+
+
+## v6 taller welcome and survival choices
+
+Requested by Ryan on 2026-11-04 after a screenshot showed the Catch welcome card clipped inside a short sea. The welcome sea now grows with its card, without nested scrolling. Wide, short displays use two columns; portrait displays keep the introduction visible. The duplicate in-card language button is hidden when the header language button is available. Active combat keeps its existing full-height layout.
+
+Catch and Wings show all five options every round; Slice shows all four. Only one can be chosen. Attack upgrades remain cumulative. The selection window is twelve seconds, with automatic weapon evolution on timeout; Booth's 180-second wall clock still includes this window. Green capacity and violet protection cards show their numeric effects. Keyboard 1-5 works in the choice dialog and does not activate combat shortcuts.
+
+- Catch capacity: +20 maximum energy per level, plus 35 extra energy on selection. The usual 12-point round refill still applies, capped at the new maximum. Catches also respect the new maximum; the percentage gauge uses the new capacity as its denominator.
+- Wings capacity: +20 maximum armour per level, plus 35 extra armour on selection, in addition to the usual 12-point round refill. Paid repairs respect the raised maximum.
+- Protection uses `multiplier = 1 / (1 + 0.15 * level)` for Catch energy consumption and Wings incoming damage. Level one reduces consumption/damage by approximately 13%. Protection does not increase attack strength or reset other upgrades. Wings shield duration gains `min(2, 0.4 * level)` seconds; the duration bonus is bounded to avoid a permanently active shield.
+- Slice life adds one to the heart limit and restores two hearts up to that limit. Guard still adds one consumable charge and restores one heart. Guard blocks only wrong-cut heart loss; it does not make an incorrect answer correct or cancel its score penalty. The missed-answer threshold remains the original mode threshold, independently of extra hearts.
+- All capacity/protection levels reset for the next player. Initial Booth values remain between the two public difficulties. v6 record keys separate the new scores, and QR links use `booth-v6`.
+
+Mounted-Browser checks confirmed the welcome intro and Start button are visible without internal scrolling in both languages at 320x568, 390x844, 1280x720 and 1440x900, plus wide and short-landscape checks. All five upgrade buttons were reachable and unclipped at 320/390 phone widths and 640x360/740x320 landscape, including Wings fullscreen. Actual choices raised Catch capacity to 120, Wings Booth armour from 88 to 108, and Slice Booth hearts from 4 to 5. A protected 12-point aircraft hit removed about 10.435 armour; its shield lasted 3.2 seconds. A guarded wrong Slice answer still deducted 150 points without losing a heart. These are browser simulations, not iPhone hardware or human balance tests.
+
+Validation: 130 repository tests, syntax checks, bundles and whitespace checks passed. New tests exercise real energy drain/refills, projectile damage, shield duration, capacity/repair caps and survival-upgrade reset.

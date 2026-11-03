@@ -181,7 +181,7 @@
   }
   function updateHUD() {
     const active = phase === 'play' && (!paused || shopOpen), s = game;if(journey&&$('swap-weapon')){put('swap-weapon','Lv.'+(game.evolution.weapon+1)+' '+journey.name(game.evolution.weapon)+'\n'+journey.text('射速','Rate')+game.evolution.rate+' · '+journey.text('彈道','Spread')+game.evolution.trajectory);$('swap-weapon').title=journey.name(game.evolution.weapon);}
-    const hpHTML = `${s.hero.hp}<span>/ ${s.hero.maxHp}</span>`; if ($('hp').innerHTML !== hpHTML) $('hp').innerHTML = hpHTML;
+    const hpHTML = `${Math.ceil(s.hero.hp)}<span>/ ${s.hero.maxHp}</span>`; if ($('hp').innerHTML !== hpHTML) $('hp').innerHTML = hpHTML;
     $('hp-bar').style.width = `${s.hero.hp / s.hero.maxHp * 100}%`; $('hp-bar').style.background = s.hero.hp < 30 ? 'var(--danger)' : 'var(--aqua)';
     put('cash', s.cash.toLocaleString('en')); put('score', s.score.toLocaleString('en')); put('best', (journey?journey.best():(best?.score || 0)).toLocaleString('en'));
     put('sector', `${t('wave')} ${String(s.wave).padStart(2, '0')}`); put('combo', s.combo >= 2 ? `${s.combo} ${t('combo')}` : '');
@@ -192,6 +192,7 @@
     $('sea').classList.toggle('low-health', phase === 'play' && s.hero.hp <= s.hero.maxHp * .3);
     $('low-health').hidden = phase !== 'play' || s.hero.hp > s.hero.maxHp * .3;
     put('shield-status', s.shield > 0 ? `${t('active')} ${Math.ceil(s.shield)}${t('seconds')}` : s.shieldCooldown > 0 ? `${t('cooldown')} ${Math.ceil(s.shieldCooldown)}${t('seconds')}` : `${C.shieldCost(s)} ${t('ready')}`);
+    if(journey&&game.evolution.protection)$('shield-status').textContent+=journey.text(' · 減傷 ',' · Guard ')+Math.round((1-journey.survival(game.evolution).multiplier)*100)+'%';
     for (const kind of ['weapon', 'escort', 'reserve', 'repair']) {
       const cost = C.upgradeCost(s, kind), full = kind === 'repair' && s.hero.hp >= s.hero.maxHp;
       $(kind).disabled = !active || cost === null || full || s.cash < cost;
@@ -392,13 +393,13 @@
     const originalLanguage=setLanguage;setLanguage=function(next){originalLanguage(next);setup();};
     journey.onIntermission=()=>{paused=true;clearInput();soundscape.play('upgrade');};
     journey.onChoice=(kind,r)=>{
-      game.evolution={weapon:r.weapon,rate:r.rate,trajectory:r.trajectory};game.weaponKind=Math.min(11,r.weapon);
-      game.power=window.FuLamJourney.weaponProfile('fleet',r).damage/16*(1+game.paidPower);game.hero.hp=Math.min(game.hero.maxHp,game.hero.hp+12);
+      C.applyRoundUpgrade(game,r,kind);game.weaponKind=Math.min(11,r.weapon);
+      game.power=window.FuLamJourney.weaponProfile('fleet',r).damage/16*(1+game.paidPower);
       game.wave=r.wave;game.waveKills=0;game.bossSpawned=false;game.spawnTime=.5;
       game.entities=game.entities.filter(e=>e.type==='coin');game.raised=[];game.invulnerable=1.5;paused=false;accumulator=0;banner('waveBanner',r.wave);updateHUD();
     };
     journey.onEnd=()=>{game.running=false;paused=false;phase='over';clearInput();showOverlay('end-menu');renderEnd();};
-    window.FuLamFleet={getState:()=>({phase,paused,hero:{x:game.hero.position.x,y:game.hero.position.y},threats:game.entities.filter(e=>!e.dead&&((e.type==='torpedo'&&e.collision.group===C.ENEMY)||e.type==='ship')).map(e=>({x:e.position.x,y:e.position.y,vx:e.type==='ship'?0:e.velocity.dx*e.velocity.speed,vy:e.type==='ship'?e.velocity.speed:e.velocity.dy*e.velocity.speed,r:e.collision.radius,type:e.type,elite:!!e.elite,hp:e.hp,kind:e.kind})),score:game.score,hp:game.hero.hp,maxHp:game.hero.maxHp,mode:game.mode,wave:game.wave,kills:game.kills,evolution:{...game.evolution},weaponKind:game.weaponKind,weapon:game.weapon,power:game.power,shield:game.shield,shots:game.shots,run:journey.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,phase:journey.run.phase,active:journey.run.active,total:journey.run.total,wave:journey.run.wave,weapon:journey.run.weapon,rate:journey.run.rate,trajectory:journey.run.trajectory,choiceTime:journey.run.choiceTime,reason:journey.run.reason}:null})};
+    window.FuLamFleet={getState:()=>({phase,paused,hero:{x:game.hero.position.x,y:game.hero.position.y},threats:game.entities.filter(e=>!e.dead&&((e.type==='torpedo'&&e.collision.group===C.ENEMY)||e.type==='ship')).map(e=>({x:e.position.x,y:e.position.y,vx:e.type==='ship'?0:e.velocity.dx*e.velocity.speed,vy:e.type==='ship'?e.velocity.speed:e.velocity.dy*e.velocity.speed,r:e.collision.radius,type:e.type,elite:!!e.elite,hp:e.hp,kind:e.kind})),score:game.score,hp:game.hero.hp,maxHp:game.hero.maxHp,mode:game.mode,wave:game.wave,kills:game.kills,evolution:{...game.evolution},weaponKind:game.weaponKind,weapon:game.weapon,power:game.power,shield:game.shield,shots:game.shots,run:journey.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,phase:journey.run.phase,active:journey.run.active,total:journey.run.total,wave:journey.run.wave,weapon:journey.run.weapon,rate:journey.run.rate,trajectory:journey.run.trajectory,life:journey.run.life,protection:journey.run.protection,choiceTime:journey.run.choiceTime,reason:journey.run.reason}:null})};
   }
   if(journey)document.body.classList.add('fleet-menu');setLanguage(lang);sizeCanvas();requestAnimationFrame(frame);
 })();

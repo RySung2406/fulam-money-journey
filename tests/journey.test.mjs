@@ -8,6 +8,34 @@ vm.runInContext(shared,context);
 vm.runInContext(fs.readFileSync(new URL('../sources/fleet/core.js',import.meta.url),'utf8'),context);
 const {Run,readBoard,saveBoard}=context.FuLamJourney,C=context.FleetCore;
 const tick=(r,seconds,playing=true)=>{for(let i=0;i<Math.round(seconds*60);i++)r.tick(1/60,playing);};
+test('Survival choices accumulate alongside weapons, and a new player starts fresh',()=>{
+ for(const game of ['fleet','fishing','knife']){
+  const r=new Run(game,'booth');
+  for(const kind of ['weapon','life',game==='knife'?'guard':'protection','life']){r.completeRound();assert(r.choose(kind));}
+  assert.equal(r.weapon,1);assert.equal(r.life,2);assert.equal(r[game==='knife'?'guard':'protection'],1);
+  const fresh=new Run(game,'booth');assert.equal(fresh.life,0);assert.equal(fresh.protection,0);assert.equal(fresh.guard,0);
+ }
+});
+test('Aircraft armour upgrades change the real cap and repair amount without losing firepower',()=>{
+ for(const [mode,base] of [['standard',100],['booth',88],['storm',75]]){
+  const s=C.createState({arcade:true,mode,seed:1});s.hero.hp=20;
+  C.applyRoundUpgrade(s,{weapon:3,rate:2,trajectory:1,life:1,protection:0},'life');
+  assert.equal(s.hero.maxHp,base+20);assert.equal(s.hero.hp,67);assert.equal(s.evolution.weapon,3);
+  s.hero.hp=s.hero.maxHp-1;s.cash=100;C.buy(s,'repair');assert.equal(s.hero.hp,s.hero.maxHp);
+ }
+});
+test('Protection reduces actual enemy projectile damage and extends shield within a bounded duration',()=>{
+ const lost=[];
+ for(const protection of [0,1,5]){
+  const s=C.createState({arcade:true,mode:'booth',seed:1});s.evolution.protection=protection;s.invulnerable=0;s.spawnTime=s.fireTime=100;
+  C.fireTorpedo(s,{x:s.hero.position.x,y:s.hero.position.y},0,C.ENEMY,{damage:20,speed:0});C.maintainWorld(s);C.tick(s,.016);
+  lost.push(88-s.hero.hp);
+  assert(Math.abs((88-s.hero.hp)-20/(1+.15*protection))<1e-9);
+  s.cash=100;assert(C.activateShield(s));assert(s.shield>=2.8&&s.shield<=4.8);
+ }
+ assert(lost[0]>lost[1]&&lost[1]>lost[2]);
+ const p=context.FuLamJourney.survivalProfile('fleet',{protection:1000});assert(p.multiplier>0);assert.equal(p.shieldBonus,2);
+});
 test('Every permanent upgrade improves output; late upgrades remain useful and finite',()=>{
  const profile=context.FuLamJourney.weaponProfile;
  const output=p=>p.damage*(p.count===2?1.3:p.count%2?1+(p.count-1)*.55:p.count*.55)/p.interval;
@@ -39,12 +67,12 @@ test('Every Booth game forces intermediate difficulty and a reproducible seed; p
   assert.deepEqual(Array.from({length:30},()=>a.random()),Array.from({length:30},()=>b.random()));
   assert.equal(new Run(game,'web','challenge').difficulty,'challenge');
   assert.equal(new Run(game,'web','intermediate').difficulty,'standard');
-  assert.notEqual(a.key(),a.key().replace('booth-v5','booth-v4'));
+  assert.notEqual(a.key(),a.key().replace('booth-v6','booth-v5'));
  }
 });
 test('Thirty active seconds opens one choice and freezes the active play clock',()=>{
  const r=new Run('fishing');tick(r,30.1);assert.equal(r.phase,'choice');assert.equal(r.wave,1);const t=r.active;
- tick(r,5);assert.equal(r.active,t);assert.equal(r.roundTime,30);assert(r.choiceTime<4);
+ tick(r,5);assert.equal(r.active,t);assert.equal(r.roundTime,30);assert(r.choiceTime<8);
 });
 test('An upgrade applies once; rate, evolution and trajectory accumulate without switching',()=>{
  const r=new Run('fleet');tick(r,30.1);assert(r.choose('weapon'));assert(!r.choose('weapon'));assert.equal(r.weapon,1);assert.equal(r.wave,2);
@@ -116,7 +144,7 @@ test('Published shared files exactly match the authored runtime',()=>{
 
 test('Slice stages wait for their choice pool, not thirty seconds; completing twice cannot skip a stage',()=>{
  const r=new Run('knife');tick(r,60);assert.equal(r.phase,'play');assert.equal(r.wave,1);
- assert(r.completeRound());assert(!r.completeRound());assert.equal(r.phase,'choice');assert.equal(r.choiceTime,8);
+ assert(r.completeRound());assert(!r.completeRound());assert.equal(r.phase,'choice');assert.equal(r.choiceTime,12);
  assert(r.choose('weapon'));assert.equal(r.wave,2);assert.equal(r.weapon,1);assert.equal(r.roundTime,0);
  const booth=new Run('knife','booth');booth.tick(180);assert.equal(booth.reason,'time');assert(!booth.completeRound());
 });
