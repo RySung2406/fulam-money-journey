@@ -230,13 +230,15 @@
     s.evolution={weapon:run.weapon,rate:run.rate,trajectory:run.trajectory,escort:run.escort||0,life:run.life||0,protection:run.protection||0};
     s.escort=run.escort||0;
     const p=root.FuLamJourney.survivalProfile('fleet',s.evolution,MODE_RULES[s.mode].armour);
-    s.hero.maxHp=p.max;s.hero.hp=Math.min(p.max,s.hero.hp+12+(kind==='life'?35:0));
+    s.hero.maxHp=p.max;s.hero.hp=Math.min(p.max,s.hero.hp+(s.arcade&&s.mode==='booth'?20:12)+(kind==='life'?35:0));
   }
   function defence(s){return s.arcade&&root.FuLamJourney?root.FuLamJourney.survivalProfile('fleet',s.evolution,MODE_RULES[s.mode].armour):{multiplier:1,shieldBonus:0};}
   function damageHero(s, amount, reason) {
     if (!s.running || s.shield > 0 || s.invulnerable > 0) return false;
-    amount*=defence(s).multiplier;
-    s.hero.hp = Math.max(0, s.hero.hp - amount); s.invulnerable = 0.9; s.combo = 0;
+    // Opening rounds forgive a few mistakes; the final round keeps full pressure.
+    const opening=s.arcade&&s.mode==='booth'?[.65,.8,.9,1][Math.min(3,Math.max(0,s.wave-1))]:1;
+    amount*=defence(s).multiplier*opening;
+    s.hero.hp = Math.max(0, s.hero.hp - amount); s.invulnerable = s.arcade ? 1.2 : .9; s.combo = 0;
     emit(s, 'damage', { amount, x: s.hero.position.x, y: s.hero.position.y });
     if (s.hero.hp === 0) { s.running = false; s.lastReason = reason; emit(s, 'over'); }
     return true;

@@ -9,6 +9,34 @@ vm.runInContext(fs.readFileSync(new URL('../sources/fleet/core.js',import.meta.u
 const C=context.FleetCore;
 const hostile=s=>s.entities.filter(e=>!e.dead&&e.type==='torpedo'&&e.collision.group===C.ENEMY);
 
+test('Booth opening hits are forgiving, last-round damage is full, and supply stays capped',()=>{
+ const damage=[];
+ for(let wave=1;wave<=4;wave++){
+  const s=C.createState({arcade:true,mode:'booth'});s.wave=wave;s.spawnTime=s.fireTime=100;s.bossSpawned=true;s.invulnerable=0;
+  C.fireTorpedo(s,s.hero.position,0,C.ENEMY,{speed:0,damage:20});C.maintainWorld(s);C.tick(s,1/60);
+  damage.push(88-s.hero.hp);assert.equal(s.combo,0);assert.equal(s.invulnerable,1.2);
+  C.applyRoundUpgrade(s,{weapon:wave,rate:0,trajectory:0},'trajectory');assert.equal(s.hero.hp,88);
+ }
+ assert.deepEqual(damage.map(n=>Math.round(n)),[13,16,18,20]);
+});
+
+test('A slow reactive beginner reaches R4 in most seeded runs; standing still cannot finish',()=>{
+ const counts={react:0,idle:0},finished={react:0,idle:0};
+ for(const style of ['react','idle'])for(let seed=1;seed<=20;seed++){
+  const s=C.createState({arcade:true,mode:'booth',seed});let input={},reached=false;
+  for(let frame=0;frame<7200&&s.running;frame++){
+   const wave=Math.min(4,Math.floor(frame/1200)+1);
+   if(wave!==s.wave){s.wave=wave;s.entities=[];s.raised=[];s.bossSpawned=false;s.invulnerable=1.5;s.spawnTime=.5;C.applyRoundUpgrade(s,{weapon:wave-1,escort:wave>1?1:0,trajectory:wave>2?1:0,rate:wave>3?1:0},'trajectory');}
+   if(wave===4)reached=true;
+   // 600ms decisions, no prediction, aiming, shield or repair input.
+   if(style==='react'&&frame%36===0){const h=s.hero.position,e=hostile(s).find(e=>Math.hypot(h.x-e.position.x,h.y-e.position.y)<175);let d=e?(h.x>e.position.x?1:-1):0;if(e&&h.x<65)d=1;if(e&&h.x>395)d=-1;input={x:d};}
+   C.tick(s,1/60,input);s.events=[];
+  }
+  counts[style]+=reached?1:0;finished[style]+=s.running?1:0;
+ }
+ assert(counts.react>=17,JSON.stringify(counts));assert(counts.react>counts.idle);assert.equal(finished.idle,0);
+});
+
 test('An ordinary volley gives reaction time, locks aim, and can be dodged with keyboard movement',()=>{
  const s=C.createState({arcade:true,mode:'booth',seed:1});s.spawnTime=s.fireTime=100;s.invulnerable=0;
  const e=C.spawnEnemy(s,'fee');C.maintainWorld(s);e.position.y=300;e.originX=230;e.phase=0;e.strategy.remainingBeforeAttack=0;

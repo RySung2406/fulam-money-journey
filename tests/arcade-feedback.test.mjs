@@ -57,3 +57,10 @@ test('Both deployed games carry audio and complete asset attribution without a r
     assert(html.includes('Lucide')); assert(!html.includes('window.__fleetQA')); assert(!html.includes('window.__fishQA'));
   }
 });
+
+test('Weapon, combo and result cues work with decoded audio and respect mute/voice bounds',async()=>{
+ const {Audio}=load({AudioContext:fakeAudio(),FuLamArcadeAssets:{shot:'AA==',heavy:'AA==',blast:'AA=='}}),a=new Audio();
+ await a.unlock();
+ for(const cue of ['laser','pierce','burstShot','blast','combo','end']){a.context.currentTime+=1;assert(a.play(cue),cue);assert(a.voices.size<=12);}
+ assert.equal(a.voices.size,4,'result chime replaces combat tails');a.setEnabled(false);assert.equal(a.voices.size,0);assert.equal(a.play('laser'),false);
+});

@@ -85,3 +85,10 @@
 #swap-weapon{white-space:pre-line;line-height:1.25;font-size:11px;min-height:44px}
 /* A landscape guide leaves the isolated sea; keep it above the shield/footer. */
 .fleet-playing .sea:has(>.journey-guide){z-index:150}
+.combat-score-mode .hud>div:last-child{order:-1}.combat-score-mode .hud #score{color:#ffe2a1;font-size:30px;font-weight:800}
+.combat-score-mode #sector,.combat-score-mode .auto-indicator,.combat-score-mode #wave-progress,.combat-score-mode .wave-track{display:none}
+.combat-score-mode .journey-swap{cursor:default;background:transparent;border:0;color:#dce9df;padding:5px 2px}
+.combat-score-mode #end-menu #share,.combat-score-mode .brief-rules,.combat-score-mode .modes{display:none!important}
+.combat-score-mode.fleet-menu .brief{display:none}
+.combat-score-mode.fleet-menu .layout{display:block;max-width:1000px}
+@media(max-height:500px){.combat-score-mode .hud #score{font-size:23px}}

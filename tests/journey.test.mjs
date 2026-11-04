@@ -7,6 +7,18 @@ const shared=fs.readFileSync(new URL('../sources/arcade/journey.js',import.meta.
 vm.runInContext(shared,context);
 vm.runInContext(fs.readFileSync(new URL('../sources/fleet/core.js',import.meta.url),'utf8'),context);
 const {Run,readBoard,saveBoard}=context.FuLamJourney,C=context.FleetCore;
+test('Combat results show score ranking and three short lessons without duplicate QR/share panels',()=>{
+ for(const game of ['fishing','fleet'])for(const lang of ['zh-Hant','en']){
+  const ui=new context.FuLamJourney.UI(game,()=>lang);
+  const html=ui.combatResult({rank:2,saved:true,board:[{score:300,wave:4},{score:200,wave:4},{score:100,wave:3}]});
+  assert(html.includes('#2'));assert.equal((html.match(/aria-current="true"/g)||[]).length,1);
+  assert(!html.includes('journey-qr'));assert(!html.includes('<details>'));
+  const lesson=html.match(/class="result-lesson">([^<]+)/)[1];assert.equal((lesson.match(lang==='en'?/\./g:/。/g)||[]).length,3);
+  const outside=ui.combatResult({rank:11,saved:false,board:[]});assert(outside.includes('<strong>10+</strong>'));assert(!outside.includes('#11'));
+ }
+ assert(new Run('fleet','booth').key().includes('combat3'));
+ assert(!new Run('knife','booth').key().includes('combat3'));
+});
 const tick=(r,seconds,playing=true)=>{for(let i=0;i<Math.round(seconds*60);i++)r.tick(1/60,playing);};
 test('Each stage grants a weapon, then one other upgrade, and a new player starts fresh',()=>{
  for(const game of ['fleet','fishing','knife']){
@@ -24,14 +36,14 @@ test('Aircraft armour upgrades change the real cap and repair amount without los
  for(const [mode,base] of [['standard',100],['booth',88],['storm',75]]){
   const s=C.createState({arcade:true,mode,seed:1});s.hero.hp=20;
   C.applyRoundUpgrade(s,{weapon:3,rate:2,trajectory:1,life:1,protection:0},'life');
-  assert.equal(s.hero.maxHp,base+20);assert.equal(s.hero.hp,67);assert.equal(s.evolution.weapon,3);
+  assert.equal(s.hero.maxHp,base+20);assert.equal(s.hero.hp,mode==='booth'?75:67);assert.equal(s.evolution.weapon,3);
   s.hero.hp=s.hero.maxHp-1;s.cash=100;C.buy(s,'repair');assert.equal(s.hero.hp,s.hero.maxHp);
  }
 });
 test('Protection reduces actual enemy projectile damage and extends shield within a bounded duration',()=>{
  const lost=[];
  for(const protection of [0,1,5]){
-  const s=C.createState({arcade:true,mode:'booth',seed:1});s.evolution.protection=protection;s.invulnerable=0;s.spawnTime=s.fireTime=100;
+  const s=C.createState({arcade:true,mode:'booth',seed:1});s.evolution.protection=protection;s.wave=4;s.invulnerable=0;s.spawnTime=s.fireTime=100;
   C.fireTorpedo(s,{x:s.hero.position.x,y:s.hero.position.y},0,C.ENEMY,{damage:20,speed:0});C.maintainWorld(s);C.tick(s,.016);
   lost.push(88-s.hero.hp);
   assert(Math.abs((88-s.hero.hp)-20/(1+.15*protection))<1e-9);

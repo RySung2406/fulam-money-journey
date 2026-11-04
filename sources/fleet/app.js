@@ -121,7 +121,7 @@
   function banner(key, value = '', seconds = 2.2) { bannerKey = key; bannerValue = value; bannerTime = seconds; $('banner').textContent = `${t(key)} ${value}`; $('banner').classList.add('show'); }
   function clearInput() { pressed.clear(); directionPointers.clear(); canvasPointers.clear(); pointerTarget = null; }
   function showOverlay(which) {
-    $('overlay').hidden = !which;
+    $('overlay').hidden = !which;$('sea').classList.toggle('showing-result',which==='end-menu'&&!!journey);
     for (const id of ['menu', 'pause-menu', 'end-menu']) $(id).hidden = id !== which;
   }
   function prepareStart(){if(!journey){start();return;}document.body.classList.remove('fleet-menu');document.body.classList.add('fleet-playing');showOverlay(null);journey.guide($('sea'),start,returnMenu);}
@@ -161,7 +161,7 @@
   }
   function renderEnd() {
     put('end-label', journey?journey.text('本局戰績','RUN RECORD'):t(resultIsBest ? 'newBest' : 'endTag'));if(journey&&journey.run.reason==='exit')document.querySelector('[data-t="endTitle"]').textContent=journey.text('本局已結束','Run complete');else if(journey&&(journey.run.reason==='time'||journey.run.reason==='stages'))document.querySelector('[data-t="endTitle"]').textContent=journey.text('Booth 挑戰完成！','Booth challenge complete!');else document.querySelector('[data-t="endTitle"]').innerHTML=t('endTitle'); put('end-score', game.score.toLocaleString('en'));
-    put('end-stats', t('endStats')(game)); put('end-tip', t('tip'));if(journey)$('end-tip').innerHTML=journey.result(game.score,{kills:game.kills},journey.run.reason||'defeat'); if (saveFailed) put('share-status', t('storageUnavailable'));
+    put('end-stats', journey?journey.text('第 '+game.wave+' / 4 回合 · 擊落 '+game.kills+' 架','Round '+game.wave+' / 4 · '+game.kills+' enemies defeated'):t('endStats')(game)); put('end-tip', t('tip'));if(journey){document.querySelector('[data-t="endTitle"]').textContent=journey.text('飛行挑戰完成','Flight complete');$('share').hidden=true;$('restart').textContent=journey.text('再玩一次','Play again');}$('end-tip').classList.toggle('compact-result',!!journey);if(journey)$('end-tip').innerHTML=journey.result(game.score,{kills:game.kills},journey.run.reason||'defeat'); if (saveFailed) put('share-status', t('storageUnavailable'));
   }
   function chooseMode(value) {
     mode = value;
@@ -289,12 +289,12 @@
   }
   function events() {
     for(const e of game.events){
-      if(e.type==='sink'){const boss=e.kind==='boss';fx.burst(e.x,e.y,{size:boss?60:28,heavy:boss});fx.shatter(e.x,e.y,COLORS[e.kind],boss?55:24);soundscape.play(boss?'heavy':'sink');if(boss&&!reduced.matches)shake=.2;}
+      if(e.type==='sink'){if(game.combo>=5&&game.combo%5===0)soundscape.play('combo');const boss=e.kind==='boss';fx.burst(e.x,e.y,{size:boss?60:28,heavy:boss});fx.shatter(e.x,e.y,COLORS[e.kind],boss?55:24);soundscape.play(boss?'heavy':'sink');if(boss&&!reduced.matches)shake=.2;}
       if(e.type==='damage'){fx.hit(e.x,e.y,'#ffad8f');if(!reduced.matches)shake=.14;soundscape.play('hit');}
       if(e.type==='blast'){fx.burst(e.x,e.y,{size:e.radius,color:'#ffbd84',heavy:false});soundscape.play('blast');}
       if(e.type==='impact'){fx.hit(e.x,e.y);soundscape.play('hit');}
       if(e.type==='coin')soundscape.play('coin');
-      if(e.type==='fire'&&game.time-lastSound>.12){soundscape.play('fire');lastSound=game.time;}
+      if(e.type==='fire'&&game.time-lastSound>.14){const tier=game.evolution.weapon;soundscape.play(tier===1?'laser':tier>=2?'burstShot':'fire');lastSound=game.time;}
       if(e.type==='block'){fx.hit(e.x,e.y,'#a9eee2');soundscape.play('crack');}
       if(e.type==='wave')banner('waveBanner',String(e.wave).padStart(2,'0'));
       if(e.type==='boss'){banner('bossBanner','',3);soundscape.play('boss');}
@@ -401,10 +401,14 @@
   });document.addEventListener('fullscreenchange',sizeCanvas);
   new ResizeObserver(sizeCanvas).observe($('sea'));
   if(journey){
+    const heading=document.createElement('div');heading.className='result-heading';
+    const title=document.createElement('div');title.append($('end-label'),document.querySelector('[data-t="endTitle"]'));
+    heading.append(title,document.querySelector('#end-menu .end-score'));$('end-menu').prepend(heading);
+    document.querySelector('#end-menu .end-actions').prepend($('restart'));
     const exit=document.createElement('button');exit.id='exit-game';exit.className='journey-exit';$('pause').parentNode.append(exit);bindAction(exit,()=>{if(phase==='play'){journey.run.finish('exit');game.running=false;paused=false;shopOpen=false;$('combat-layout').classList.remove('workshop-open');phase='over';clearInput();showOverlay('end-menu');renderEnd();}else returnMenu();});
     const settings=document.createElement('div');settings.id='journey-settings';$('menu').insertBefore(settings,$('start'));$('menu').querySelector('.modes').hidden=true;
-    const swap=document.createElement('span');swap.id='swap-weapon';swap.className='journey-swap';$('shield').parentNode.insertBefore(swap,$('shield'));document.body.classList.add('journey-no-hangar');
-    const setup=()=>{journey.settings(settings,d=>chooseMode(d==='intermediate'?'booth':d==='challenge'?'storm':'standard'));swap.textContent=journey.text('武器 Lv.1','Weapon Lv.1');exit.textContent=journey.text('退出','Exit');$('change-mode').textContent=journey.text('返回選單','Back to menu');$('change-mode').classList.add('journey-exit');};setup();
+    const swap=document.createElement('span');swap.id='swap-weapon';swap.className='journey-swap';$('shield').parentNode.insertBefore(swap,$('shield'));document.body.classList.add('journey-no-hangar','combat-score-mode');
+    const setup=()=>{journey.settings(settings,d=>chooseMode(d==='intermediate'?'booth':d==='challenge'?'storm':'standard'));swap.textContent=journey.text('普通子彈','Bullets');document.querySelector('[data-t="menuTag"]').textContent=journey.text('富臨 · 財富戰機','FULAM · WEALTH WINGS');document.querySelector('[data-t="menuTitle"]').textContent=journey.text('兩分鐘，飛出高分。','Two minutes. Aim higher.');document.querySelector('[data-t="menuHint"]').textContent=journey.text('拖曳閃避，自動連射。連擊、擦彈和 Boss 都能加分。','Drag to dodge; firing is automatic. Build combos, graze shots and defeat bosses for points.');$('low-health').textContent=journey.text('護甲偏低 · 閃避或開盾','LOW ARMOUR · DODGE OR SHIELD');canvas.setAttribute('aria-label',journey.text('拖曳、WASD 或方向鍵移動；自動射擊。Q 開盾，P 暫停。','Drag, WASD or arrows to move; automatic fire. Q shields; P pauses.'));exit.textContent=journey.text('退出','Exit');$('change-mode').textContent=journey.text('返回選單','Back to menu');$('change-mode').classList.add('journey-exit');};setup();
     const originalLanguage=setLanguage;setLanguage=function(next){originalLanguage(next);setup();};
     journey.onIntermission=()=>{if(journey.run){game.evolution={...game.evolution,weapon:journey.run.weapon};game.weaponKind=Math.min(11,journey.run.weapon);game.power=window.FuLamJourney.weaponProfile('fleet',{...game.evolution,weapon:journey.run.weapon}).damage/16*(1+game.paidPower);}paused=true;clearInput();soundscape.play('upgrade');};
     journey.onChoice=(kind,r)=>{
@@ -413,7 +417,7 @@
       game.wave=r.wave;game.waveKills=0;game.bossSpawned=false;game.spawnTime=.5;
       game.entities=game.entities.filter(e=>e.type==='coin');game.raised=[];game.invulnerable=1.5;paused=false;accumulator=0;banner('waveBanner',r.wave);updateHUD();
     };
-    journey.onEnd=()=>{game.running=false;paused=false;phase='over';clearInput();showOverlay('end-menu');renderEnd();};
+    journey.onEnd=()=>{soundscape.play('end');game.running=false;paused=false;phase='over';clearInput();showOverlay('end-menu');renderEnd();};
     window.FuLamFleet={getState:()=>({phase,paused,hero:{x:game.hero.position.x,y:game.hero.position.y,r:game.hero.collision.radius},threats:game.entities.filter(e=>!e.dead&&((e.type==='torpedo'&&e.collision.group===C.ENEMY)||e.type==='ship')).map(e=>({x:e.position.x,y:e.position.y,vx:e.type==='ship'?0:e.velocity.dx*e.velocity.speed,vy:e.type==='ship'?e.velocity.speed:e.velocity.dy*e.velocity.speed,r:e.collision.radius,type:e.type,elite:!!e.elite,hp:e.hp,kind:e.kind})),score:game.score,hp:game.hero.hp,maxHp:game.hero.maxHp,mode:game.mode,wave:game.wave,kills:game.kills,evolution:{...game.evolution},weaponKind:game.weaponKind,weapon:game.weapon,power:game.power,shield:game.shield,shots:game.shots,run:journey.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,phase:journey.run.phase,active:journey.run.active,total:journey.run.total,wave:journey.run.wave,weapon:journey.run.weapon,rate:journey.run.rate,trajectory:journey.run.trajectory,life:journey.run.life,protection:journey.run.protection,choiceTime:journey.run.choiceTime,reason:journey.run.reason}:null})};
   }
   if(journey)document.body.classList.add('fleet-menu');setLanguage(lang);sizeCanvas();requestAnimationFrame(frame);

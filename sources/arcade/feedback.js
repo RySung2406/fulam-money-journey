@@ -7,7 +7,9 @@
   const cues = {
     fire: ['shot', .18, 1.1, .09], hit: ['hit', .24, 1.3, .07],
     coin: ['coin', .45, 1.35, .10], net: ['net', .8, .8, .2],
-    blast: ['blast', .65, 1, .12], sink: ['blast', .55, 1.2, .09],
+    laser: ['shot', .12, 1.65, .14], pierce: ['heavy', .16, 1.5, .20],
+    burstShot: ['shot', .16, .85, .14],
+    blast: ['blast', .38, 1, .22], sink: ['blast', .42, 1.2, .12],
     heavy: ['heavy', .65, .85, .4], death: ['heavy', .8, .72, .8],
     crack: ['crack', .38, 1.15, .1], shield: ['shield', .55, 1, .25],
     freeze: ['crack', .45, 1.7, .2], rapid: ['shot', .5, .7, .2],
@@ -75,7 +77,7 @@
       if (c.currentTime - (this.last[kind] ?? -100) < interval) return false;
       this.last[kind] = c.currentTime;
       // Important warnings displace shot tails; no sound may grow the mix unbounded.
-      if (['death', 'boss', 'warning'].includes(kind)) this.stop();
+      if (['death', 'boss', 'warning', 'end', 'upgrade'].includes(kind)) this.stop();
       if (this.voices.size >= 12) return false;
       const buffer = spec && this.buffers[spec[0]];
       try {
@@ -94,6 +96,8 @@
         if (kind === 'freeze') [1400, 1800].forEach((n, i) => this.note(n, .17, i * .08, .08));
         if (kind === 'lure') [520, 780, 1040].forEach((n, i) => this.note(n, .2, i * .1, .1));
         if (kind === 'rapid') [0, .08, .16].forEach(d => this.note(280, .06, d, .1, 560));
+        if (kind === 'laser') this.note(850, .08, 0, .035, 330);
+        if (kind === 'combo') [659, 880, 1175].forEach((n,i)=>this.note(n,.12,i*.06,.10));
         return true;
       } catch { return false; }
     }

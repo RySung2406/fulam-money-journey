@@ -29,6 +29,9 @@ Existing licensed art/audio are reused; no new third-party assets are added.
 - Phones use two rows of two skills. The guide button says “Guide / 玩法”; weapon
   names on round choices now match the actual bullets, twin laser, piercing shot
   and blast shot.
+- Booth's base energy drain is 0.95/second. Catches and the 12-energy round
+  supply let a new player learn the controls before the final round. Scoring
+  still rewards aiming, consecutive catches, skill timing and bosses.
 
 ## Wings
 
@@ -48,16 +51,40 @@ Existing licensed art/audio are reused; no new third-party assets are added.
 - Booth enemy health uses a 1.2 multiplier instead of 1.7; player direct damage
   uses 80% of the shared profile instead of 50%. Opening bosses use a 1.35 health
   factor. Spawn and attack intervals are paced separately from projectile count.
+- Booth incoming damage is 65% / 80% / 90% / 100% across R1–4. Round supplies
+  restore 20 armour, capped at maximum armour. After a hit, arcade players get
+  1.2 seconds of immunity; hits still break the combo. The final round retains
+  full damage, so reaching it and achieving a high score are separate goals.
 - Legacy non-arcade naval movement/combat keeps its prior collision radius and
   targeting. Four stages, round choices, shields and the two-minute wall clock
   remain in place.
 
-Catch and Wings store new scores under `booth-v9-combat2` partitions. Existing
+## Clear controls, feedback and results
+
+- The opening guide has three instructions. The HUD prioritises score, health
+  and round/time; duplicate energy/sector displays and the unused currency
+  display in Catch are hidden. Unused difficulty, hangar and sharing controls
+  are absent from the Booth flow. Sound, fullscreen and pause remain available.
+- Laser, piercing and explosive shots have distinct cues; every fifth combo
+  has a short rising chime. Explosions are quieter and rate-limited. Upgrade
+  and end cues take priority over lingering shots. The existing 12-voice cap,
+  mute control and audio fallback remain in place.
+- Nearby simultaneous blast visuals are merged while every projectile still
+  applies its own damage. Existing particle limits and reduced motion support
+  keep feedback bounded; the enlarged R4 blast stays visible.
+- Results use an 860px-wide card on desktop and the available phone width.
+  They show a large score, local rank, the top five, and three short sentences
+  connecting the game with allocating resources, reserves and risk. Only Play
+  again and Menu actions remain. Short landscape screens use two columns so
+  those actions stay visible without scrolling. Scores below the stored top
+  ten display `10+` rather than implying an exact historical rank.
+
+Catch and Wings store new scores under `booth-v9-combat3` partitions. Existing
 records are retained. One Slice keeps its existing record keys and gameplay.
 
 ## Verification
 
-- `node --test tests/*.test.mjs`: 142 passing tests.
+- `node --test tests/*.test.mjs`: 146 passing tests.
 - `npm run check`, `npm run bundle`, source syntax and `git diff --check` pass.
 - Added behaviour checks for real blast damage/radius, early/late boss armour,
   boss scheduling and patrol, warning duration, locked aim, point-blank
@@ -66,6 +93,19 @@ records are retained. One Slice keeps its existing record keys and gameplay.
   paced keyboard movement, without shields or extra healing beyond round
   supplies. A controller samples visible trajectories every 150ms; this checks
   feasible routes, not human difficulty or a guarantee against every overlap.
+- An additional deterministic benchmark runs 40 seeds per control style,
+  without shields or repairs, using ordinary round supplies and one each of
+  wingman, spread and rate upgrades. The slow reactive controller checks nearby
+  bullets every 600ms and moves sideways without predicting trajectories.
+
+  | Control style | Reached R4 | Finished | Median score (upper middle) |
+  | --- | ---: | ---: | ---: |
+  | Stationary | 23/40 | 0/40 | 4,350 |
+  | Slow reactive | 38/40 | 0/40 | 8,515 |
+  | Continuous sideways sweep | 40/40 | 30/40 | 18,980 |
+
+  These are simulation outcomes, not measured first-time player probabilities.
+  The regression suite checks 20 of the slow-reactive and stationary seeds.
 
 Build the deliverables with `python sources/arcade/build.py`,
 `python sources/fishing/build.py` and `python sources/fleet/build.py`.
@@ -75,5 +115,11 @@ for both games (16 combinations; no page JavaScript errors). Normal mouse and
 keyboard inputs with an accelerated animation clock reached R4 in both games.
 Catch's Q/W/E/R and 1/2/3/4 activated the corresponding unlocked skills;
 Wings used paced direction keys to avoid incoming shots through R3 into R4.
-The landscape guide fix was rechecked in both languages. These are browser
-checks, not an on-device touchscreen, speaker or participant difficulty study.
+The landscape guide fix was rechecked in both languages. A second 16-case
+browser pass checks the compact HUD, wide top-five result, replay reset and
+visible landscape result actions. Real emulated two-touch events verify moving
+or firing while pressing Freeze/Shield; fullscreen works for both games. Web
+Audio decodes all eight bundled samples, plays the new cues, and clears voices
+on mute with no page errors. R4 Catch was visually inspected during live hits
+against the whale. These are browser checks, not an on-device touchscreen,
+speaker or participant difficulty study.

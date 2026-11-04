@@ -109,3 +109,9 @@ body.welcome-screen .card .journey-rule{font-size:12px!important}
  body.welcome-screen .card>.modal-language{min-height:28px;margin:0;font-size:11px;padding:3px 8px}
 }
 @media(min-height:501px){body.welcome-screen .card>.modal-language{display:none}}
+.combat-score-mode .score-sub,.combat-score-mode .timer,.combat-score-mode .control-label,.combat-score-mode .how,.combat-score-mode .welcome-icon{display:none!important}
+.combat-score-mode .scene.journey-live .timer{display:none!important}
+.combat-score-mode .control-panel .upgrade{min-width:64px;max-width:none;width:auto;background:#224b4e;border:1px solid #88afa5;color:#dcece2;box-shadow:none}
+.combat-score-mode .control-panel .upgrade svg{display:none}
+.combat-score-mode .control-panel .effect-status{display:none}
+.combat-score-mode .footer .desktop-hint,.combat-score-mode .heading .tag{display:none}
