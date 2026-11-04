@@ -91,7 +91,7 @@
       const radians=pickLaunchAngle(startX,random)*Math.PI/180;
       const velocity=(.65+random()*.5)*Math.cos(radians);
       const endX=Math.max(.02,Math.min(.98,startX+velocity));
-      return {startX,endX,depth:random()*.72,
+      return {startX,endX,depth:random()*.18,
         duration:config.min+random()*(config.max-config.min),
         delay:i*(.12+random()*.22),rotation:(random()-.5)*config.spin*2};
     });

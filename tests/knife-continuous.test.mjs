@@ -121,8 +121,11 @@ test('launches use varied continuous origins and remain visible through the apex
     for (const p of plans) {
       for (const [width, height, bagWidth, bagHeight, ceiling] of [[320, 600, 132, 180, 170], [1000, 720, 160, 205, 190]]) {
         const apex = E.arcadePosition(p, .5, width, height, bagWidth, bagHeight, ceiling);
+        const top = Math.max(24, Math.min(ceiling, height - bagHeight - 85));
+        const room = Math.max(0, height - bagHeight - 85 - top);
         assert(apex.x >= 0 && apex.x + bagWidth <= width, 'apex stays within horizontal viewport');
         assert(apex.y >= 0 && apex.y + bagHeight <= height, 'label is reachable on screen');
+        assert(apex.y < top + room / 2, 'throw clears the middle height');
       }
     }
   }
