@@ -90,6 +90,8 @@
 @media(max-height:500px) and (orientation:landscape){.fleet-menu .topbar{display:flex;min-height:50px;padding:3px 12px}.fleet-menu .brief,.fleet-menu .site-footer{display:none}.fleet-menu .layout{padding:6px;max-width:1000px}.fleet-menu .sea{height:calc(100svh - 66px);min-height:0}.fleet-menu .overlay-card{max-width:850px;display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;align-items:center;text-align:left}.fleet-menu #journey-settings{grid-column:2;grid-row:1/4}.fleet-menu #menu>h2{grid-column:1;grid-row:1;font-size:25px;line-height:1.25}.fleet-menu #menu>#start{grid-column:1;grid-row:2}.fleet-menu #menu>p,.fleet-menu .badge-mark{display:none}.fleet-menu .journey-settings{margin:0}.fleet-menu .overlay{padding:8px 14px}}
 
 #swap-weapon{white-space:pre-line;line-height:1.25;font-size:11px;min-height:44px}
+/* A landscape guide leaves the isolated sea; keep it above the shield/footer. */
+.fleet-playing .sea:has(>.journey-guide){z-index:150}
 .journey-settings{margin:12px 0;color:inherit}.journey-options{display:flex;gap:8px;margin:8px 0}.journey-options button{flex:1;min-width:0;min-height:44px;border:1px solid #78988b;border-radius:12px;padding:9px;background:#f4f2e8;color:#214b3b;font:700 14px inherit;cursor:pointer}.journey-options button[aria-pressed=true]{background:#214b3b;color:#fff4cb;border-color:#d4b36d}.journey-options button:disabled{opacity:.6;cursor:default}.journey-rule{font-size:12px!important;line-height:1.5!important;margin:6px 0!important}.journey-status{position:relative;z-index:4;background:#153b35;color:#fff1c9;padding:7px 12px;font-size:12px;line-height:1.4;flex-shrink:0;border-bottom:1px solid #75877c;white-space:normal}.journey-overlay{position:absolute;inset:0;background:#071f28e8;display:flex;align-items:center;justify-content:center;z-index:120;padding:12px;overflow:auto;color:#eef6e8}.journey-card{max-width:620px;width:100%;max-height:100%;overflow:auto;padding:22px;background:#143b38;border:1px solid #c4b67d;border-radius:20px;box-shadow:0 20px 60px #0005;text-align:left}.journey-card h2{font-size:26px;line-height:1.2;color:#fff1c9;margin:10px 0}.journey-card p{font-size:14px;line-height:1.5}.journey-kicker{color:#a7dbce;font-size:12px;letter-spacing:2px}.journey-upgrades{display:grid;gap:10px}.journey-upgrades button{display:flex;flex-direction:column;gap:6px;text-align:left;padding:15px;border:1px solid #7a9a8a;border-radius:12px;background:#e9eddd;color:#214b3b;font:inherit;cursor:pointer;min-height:60px}.journey-upgrades button[data-upgrade=weapon]{background:#f1d797}.journey-upgrades small{font-size:12px}.journey-upgrades button:focus-visible,.journey-options button:focus-visible{outline:3px solid #f1c36c;outline-offset:2px}.journey-result{margin:12px 0;padding:14px;border:1px solid #97ac91;border-radius:12px;text-align:left;font-size:13px;line-height:1.55}.journey-result p{font-size:13px!important;margin:8px 0!important}.journey-result small{display:block;font-size:11px;margin:6px 0;opacity:.85}.journey-result details{margin:8px 0}.journey-result a{color:inherit;text-decoration:underline}.journey-swap{min-height:44px;border:1px solid #c1b77f;border-radius:10px;background:#f1ddb0;color:#214b3b;font:700 14px sans-serif;padding:8px 12px;touch-action:none;cursor:pointer}.journey-live{position:relative}.journey-live>.journey-status{position:absolute;left:0;right:0;top:0}.journey-live .journey-overlay{position:absolute}.journey-counter{color:#e9c879;font-size:12px}.journey-hidden{display:none!important}@media(max-height:450px){.journey-card{padding:12px}.journey-card h2{font-size:20px;margin:4px 0}.journey-card p{margin:5px 0}.journey-upgrades{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.journey-upgrades button{padding:9px;font-size:13px;min-height:70px}.journey-status{padding:3px 8px;font-size:10px}}@media(prefers-reduced-motion:reduce){.journey-overlay *{animation:none!important;transition:none!important}}
 .scene.journey-live>.hud{top:42px!important}.scene.journey-live .timer{display:grid!important;gap:0;min-width:62px;padding:5px 8px;background:#133a35dd;border:1px solid #82b79b}.scene.journey-live .timer small{font-size:10px}.scene.journey-live .timer b{font-size:20px}.scene.journey-live .timer.urgent{border-color:#ffac84;color:#ffbf9c}.scene.journey-live .mission{left:12px;right:12px;display:flex;gap:10px;align-items:center}.scene.journey-live .mission .bar{flex:1;max-width:160px}.sea.journey-live>.sector{top:38px}.game-wrap.journey-live>.game-topline{padding-top:35px}.game-wrap.journey-live>.journey-status{z-index:15}.journey-result summary{cursor:pointer;min-height:36px;padding:6px 0}.journey-result ol{padding-left:24px}.journey-result li{padding:4px 0;border-bottom:1px solid #b7bca533}.journey-upgrades button:hover{filter:brightness(1.04)}.journey-upgrades b{font-size:15px}.journey-upgrades small{line-height:1.5}.journey-next{padding:10px 12px;border-left:3px solid #e6cb85;background:#ffffff0a}.journey-next:empty{display:none}.journey-result a{display:inline-flex;padding:8px 0}.journey-settings button{font-family:inherit;font-weight:700}.journey-rule{opacity:.9}.game-wrap .arena-footer{flex-wrap:wrap;gap:6px}.game-wrap .arena-footer>.journey-swap{font-size:12px;padding:7px 10px}.game-wrap .arena-footer>span{flex:1;min-width:90px}@media(max-width:450px){.journey-card{padding:18px}.journey-card h2{font-size:24px}.journey-upgrades button{min-height:68px;padding:12px}.game-wrap .arena-footer>span{font-size:10px}.game-wrap .arena-footer>.finish-session{font-size:11px;padding:8px}.game-wrap .arena-footer .journey-swap{min-height:42px}}@media(max-height:450px){.scene.journey-live>.hud{top:27px!important}.scene.journey-live .timer{padding:2px 6px;min-width:48px}.scene.journey-live .timer b{font-size:15px}.scene.journey-live .timer small{font-size:8px}.game-wrap.journey-live>.game-topline{padding-top:20px}.journey-next{padding:5px 8px;font-size:12px!important}.journey-upgrades button{min-height:65px}.journey-card{padding:10px}}
 
@@ -595,9 +597,9 @@ from (http://code.google.com/p/pyqrnative):
       mode, random: rng(seed), time: 0, wave: 1, waveKills: 0,
       goal: 8, kills: 0, score: 0, cash: 35, income: 0, dividend: 0, combo: 0, comboTime: 0,
       weapon: 1, escort: 0, reserve: 0, shield: 0, shieldCooldown: 0, invulnerable: 1.5,
-      fireTime: 0.1, escortTime: 0.5, shots: 0, spawnTime: 0.45, bossSpawned: false,
+      fireTime: 0.1, escortTime: 0.5, shots: 0, spawnTime: 0.45, bossSpawned: false, nextVolleyAt: 0,
       entities: [], raised: [], events: [], running: true, lastReason: null,
-      hero: createEntity('player', { position: new Position(W / 2, H - 100, -Math.PI / 2), velocity: new Velocity(230), collision: new Collision(true, true, 13, FRIEND), hp: MODE_RULES[mode].armour, maxHp: MODE_RULES[mode].armour })
+      hero: createEntity('player', { position: new Position(W / 2, H - 100, -Math.PI / 2), velocity: new Velocity(230), collision: new Collision(true, true, arcade ? 8 : 13, FRIEND), hp: MODE_RULES[mode].armour, maxHp: MODE_RULES[mode].armour })
     };
     return state;
   }
@@ -615,11 +617,11 @@ from (http://code.google.com/p/pyqrnative):
     const threat=s.arcade&&root.FuLamJourney?root.FuLamJourney.threatProfile(s.wave):null;
     const growth = threat?threat.health:1+(s.wave-1)*.14;
     const elite=!!(threat?.elite&&kind!=='boss'&&++s.spawnCount%4===0);
-    const hp = Math.round(spec.hp * growth * MODE_RULES[s.mode].enemy * (s.mode==='booth'?1.7:1) * (elite?1.6:1) * (threat&&kind==='boss'?2+s.wave*.15:1));
+    const hp = Math.round(spec.hp * growth * MODE_RULES[s.mode].enemy * (s.mode==='booth'?(s.arcade?1.2:1.7):1) * (elite?1.6:1) * (threat&&kind==='boss'?(s.wave<=4?1.35:2+s.wave*.15):1));
     const x = kind === 'boss' ? W / 2 : 38 + r() * (W - 76);
     const entity = createEntity('ship', {
       kind, elite, position: new Position(x, -65, Math.PI / 2), velocity: new Velocity(spec.speed * MODE_RULES[s.mode].enemy*(threat?.speed||1)),
-      collision: new Collision(true, true, spec.radius, ENEMY), strategy: new Strategy(kind, spec.attack / Math.min(2, 1 + s.wave * 0.035) / (s.mode==='booth'?1.45:1)),
+      collision: new Collision(true, true, spec.radius, ENEMY), strategy: new Strategy(kind, s.arcade ? Math.max(kind==='boss'?2.3:2.7,spec.attack/(1+Math.min(6,s.wave-1)*.035)) : spec.attack / Math.min(2, 1 + s.wave * 0.035) / (s.mode==='booth'?1.45:1)),
       hp, maxHp: hp, value: spec.value, age: 0, phase: r() * TAU, originX: x, flash: 0
     });
     s.raised.push(entity); return entity;
@@ -674,7 +676,7 @@ from (http://code.google.com/p/pyqrnative):
     const level = s.weapon;
     if(s.arcade&&root.FuLamJourney){
       const p=root.FuLamJourney.weaponProfile('fleet',s.evolution);s.hero.position.r=-Math.PI/2;
-      const booth=s.mode==='booth',form=!booth?null:p.tier>=4?'plane':p.tier===3?'bomb':p.tier===2?'laser':'bullet',reach=booth?1.8:1,hurt=booth?.5:1;
+      const booth=s.mode==='booth',form=!booth?null:p.tier>=4?'plane':p.tier===3?'bomb':p.tier===2?'laser':'bullet',reach=booth?1.8:1,hurt=booth?.8:1;
       const traj=Math.max(0,s.evolution.trajectory||0);
       const fan=(base,step)=>{const count=Math.min(7,base+traj);return Array.from({length:count},(_,i)=>count<=1?0:(i-(count-1)/2)*(count===2?step:.1));};
       const forms={bullet:{style:'shell',spread:fan(1,.1),radius:3.6,color:'#ffe39b',blast:0,pierce:0,speed:p.speed},laser:{style:'beam',count:Math.min(7,2+traj),radius:2.8,color:'#8cf4ff',blast:0,pierce:24,speed:0},bomb:{style:'bomb',spread:fan(1,.12),radius:6.2,color:'#ffb07a',blast:18,pierce:0,speed:480},plane:{style:'missile',spread:fan(1,.1),radius:4.6,color:'#ffd27a',blast:24,pierce:0,speed:640}};
@@ -709,7 +711,26 @@ from (http://code.google.com/p/pyqrnative):
       fireTorpedo(s, p, a, FRIEND, { damage: 11 + s.escort * 3, speed: 340, radius: 4, homing: 2.2, style: 'escort' });
     });
   }
-  function enemyFire(s, entity) {
+  // Arcade volleys lock their angle before the visible wind-up. A small
+  // hitbox, fixed paths and bounded density leave useful dodge corridors.
+  function hostileLimit(s) { return 24 + Math.min(4,s.wave)*6; }
+  function canAimAtHero(s, e) {
+    return e.position.y>15 && e.position.y<s.hero.position.y-65 && !inRange(e.position,s.hero.position,160);
+  }
+  function prepareVolley(s,e) {
+    if(!canAimAtHero(s,e)||s.time<s.nextVolleyAt)return false;
+    const occupied=[...s.entities,...s.raised].filter(b=>!b.dead&&b.type==='torpedo'&&b.collision.group===ENEMY).length;
+    const reserved=s.entities.reduce((n,ship)=>n+(ship.attack?.angles.length||0),0);
+    const a=Math.atan2(s.hero.position.y-e.position.y,s.hero.position.x-e.position.x);
+    let offsets=e.kind==='inflation'||e.elite?[-.32,0,.32]:[0];
+    if(e.kind==='boss')offsets=e.hp<e.maxHp*.5?[-1.12,-.8,-.48,-.16,.16,.48,.8,1.12]:[-.9,-.54,-.18,.18,.54,.9];
+    if(occupied+reserved+offsets.length>hostileLimit(s))return false;
+    const windup=e.kind==='boss'?.95:.7;
+    e.attack={angles:offsets.map(off=>a+off),remaining:windup,duration:windup};
+    s.nextVolleyAt=s.time+.22;
+    return true;
+  }
+  function enemyFire(s, entity, lockedAngles=null) {
     const p = entity.position, h = s.hero.position;
     const a = Math.atan2(h.y - p.y, h.x - p.x);
     const threat = MODE_RULES[s.mode].bullet * Math.min(1.7, 1 + s.wave * 0.025)*(s.arcade&&root.FuLamJourney?root.FuLamJourney.threatProfile(s.wave).bullet:1);
@@ -725,9 +746,10 @@ from (http://code.google.com/p/pyqrnative):
       else if(entity.elite)angles=[a-.3,a-.14,a,a+.14,a+.3];
       else angles=[a-.22,a,a+.22];
     }
+    if(lockedAngles)angles=lockedAngles;
     for (const angle of angles) fireTorpedo(s, p, angle, ENEMY, { damage: entity.kind === 'boss' ? 20 : entity.kind === 'debt' ? 18 : 12,
-      speed: (entity.kind === 'debt' ? 90 : 113) * threat, radius: entity.kind === 'debt' ? 6 : 4.8,
-      homing: entity.kind === 'debt' ? 0.36 : 0, style: entity.kind === 'debt' ? 'debt' : 'hostile' });
+      speed: s.arcade?Math.min(145,(entity.kind==='debt'?90:104)*threat):(entity.kind === 'debt' ? 90 : 113) * threat, radius: entity.kind === 'debt' ? 6 : 4.8,
+      homing: !s.arcade&&entity.kind === 'debt' ? 0.36 : 0, style: entity.kind === 'debt' ? 'debt' : 'hostile' });
   }
   function destroy(s, entity) {
     if (entity.dead) return;
@@ -809,8 +831,8 @@ from (http://code.google.com/p/pyqrnative):
     s.spawnTime -= dt;
     if (s.spawnTime <= 0) {
       const spawnBase=Math.max(0.42, 1.5 - s.wave * 0.1);
-      s.spawnTime += (s.mode==='booth'?spawnBase*0.55:spawnBase) / MODE_RULES[s.mode].enemy / (s.arcade&&root.FuLamJourney?root.FuLamJourney.threatProfile(s.wave).density:1);
-      if (ships.length < (s.mode==='booth'?Math.min(22, 8 + s.wave * 3):Math.min(14, 4 + s.wave * 2))) {
+      s.spawnTime += s.arcade?Math.max(.78,1.45-(s.wave-1)*.12)/MODE_RULES[s.mode].enemy:(s.mode==='booth'?spawnBase*0.55:spawnBase)/MODE_RULES[s.mode].enemy;
+      if (ships.length < (s.arcade?Math.min(10,4+s.wave):s.mode==='booth'?Math.min(22, 8 + s.wave * 3):Math.min(14, 4 + s.wave * 2))) {
         const types = s.wave === 1 ? ['fee', 'fee', 'scam'] : s.wave === 2 ? ['fee', 'scam', 'inflation'] : ['fee', 'scam', 'inflation', 'debt'];
         spawnEnemy(s, types[Math.floor(s.random() * types.length)]);
       }
@@ -826,7 +848,13 @@ from (http://code.google.com/p/pyqrnative):
         if (e.kind === 'boss') { e.position.y = Math.min(110, e.position.y); e.position.x = W / 2 + Math.sin(e.age * 0.55) * 125; }
         e.echo = { ...e.position };
         e.strategy.remainingBeforeAttack -= dt;
-        if (e.position.y > 15 && e.position.y < H - 70 && e.strategy.remainingBeforeAttack <= 0) {
+        if(s.arcade){
+          if(e.attack){
+            e.attack.remaining-=dt;
+            if(!canAimAtHero(s,e)){e.attack=null;e.strategy.remainingBeforeAttack=.8;}
+            else if(e.attack.remaining<=0){enemyFire(s,e,e.attack.angles);e.attack=null;e.strategy.remainingBeforeAttack=e.strategy.nextAttack;}
+          }else if(e.strategy.remainingBeforeAttack<=0&&prepareVolley(s,e))e.strategy.remainingBeforeAttack=e.strategy.nextAttack;
+        }else if (e.position.y > 15 && e.position.y < H - 70 && e.strategy.remainingBeforeAttack <= 0) {
           e.strategy.remainingBeforeAttack = e.strategy.nextAttack; enemyFire(s, e);
         }
         if (testCircleCollision(e, s.hero)) damageHero(s, e.kind === 'boss' ? 30 : 18, e.kind);
@@ -853,7 +881,7 @@ from (http://code.google.com/p/pyqrnative):
           const start=bullet.ray?bullet.ray.start:bullet.previous,end=bullet.ray?bullet.ray.end:bullet.position;
           if (segmentCircleHit(start, end, ship.position, bullet.collision.radius + ship.collision.radius)) {
             ship.hp -= bullet.damage; ship.flash = 0.1; bullet.hit.add(ship);
-            if(bullet.blast||bullet.chain){let arcs=bullet.chain;for(const other of ships){if(other===ship||other.dead)continue;const distance=Math.sqrt(distanceSquare(ship.position,other.position));if(distance<bullet.blast||(arcs>0&&distance<150)){if(distance>=bullet.blast)arcs--;other.hp-=bullet.damage*.25;other.flash=.1;if(other.hp<=0)destroy(s,other);else emit(s,'impact',{x:other.position.x,y:other.position.y});}}emit(s,'impact',{x:ship.position.x,y:ship.position.y});bullet.blast=bullet.chain=0;}
+            if(bullet.blast||bullet.chain){if(bullet.blast)emit(s,'blast',{x:ship.position.x,y:ship.position.y,radius:bullet.blast});let arcs=bullet.chain;for(const other of ships){if(other===ship||other.dead)continue;const distance=Math.sqrt(distanceSquare(ship.position,other.position));if(distance<bullet.blast||(arcs>0&&distance<150)){if(distance>=bullet.blast)arcs--;other.hp-=bullet.damage*.25;other.flash=.1;if(other.hp<=0)destroy(s,other);else emit(s,'impact',{x:other.position.x,y:other.position.y});}}emit(s,'impact',{x:ship.position.x,y:ship.position.y});bullet.blast=bullet.chain=0;}
             if (ship.hp <= 0) destroy(s, ship);
             else emit(s, 'impact', { x: ship.position.x, y: ship.position.y });
             if (bullet.pierce <= 0) { bullet.dead = true; break; }
@@ -1142,7 +1170,7 @@ from (http://code.google.com/p/pyqrnative):
    this.wave++;this.roundTime=0;this.choiceTime=0;this.phase='play';return true;
   }
   finish(reason='defeat'){if(this.phase==='over')return false;this.phase='over';this.reason=reason;return true;}
-  key(topic='',language=''){return [VERSION,this.game,this.scene,this.difficulty,topic,language].join(':');}
+  key(topic='',language=''){return [this.game==='knife'?VERSION:VERSION+'-combat2',this.game,this.scene,this.difficulty,topic,language].join(':');}
   record(score,extra={}){return{score:Math.max(0,Math.floor(Number(score)||0)),wave:this.wave,seconds:Math.round(this.active),reason:this.reason,...extra};}
  }
  function readBoard(storage,key){try{const a=JSON.parse(storage.getItem(key)||'[]');return Array.isArray(a)?a.filter(r=>r&&Number.isSafeInteger(r.score)&&r.score>=0&&Number.isInteger(r.wave)&&r.wave>0&&Number.isFinite(r.seconds)&&r.seconds>=0).slice(0,10):[];}catch{return[];}}
@@ -1189,7 +1217,7 @@ from (http://code.google.com/p/pyqrnative):
   sliceHearts(){return this.scene==='booth'?5:this.difficulty==='challenge'?3:6;}
   sliceMaxHearts(){return this.sliceHearts()+(this.run?.life||0);}
   survival(run=this.run){return survivalProfile(this.game,run||{},this.game==='knife'?this.sliceHearts():this.game==='fleet'?(this.scene==='booth'?88:this.difficulty==='challenge'?75:100):100);}
-  name(id){const tier=Math.max(0,id||0);return WEAPONS[this.game][Math.min(11,tier)][this.en()?1:0]+(tier>11?' +'+(tier-11):'');}
+  name(id){const tier=Math.max(0,id||0);if(this.scene==='booth'&&this.game!=='knife'){const names=this.game==='fishing'?[['普通子彈','Bullets'],['雙聯激光','Twin laser'],['穿透巨彈','Piercing shot'],['爆裂彈','Blast shot']]:[['普通子彈','Bullets'],['雙聯激光','Twin laser'],['炸彈','Bombs'],['小飛機炸彈','Plane bombs']];return names[Math.min(3,tier)][this.en()?1:0];}return WEAPONS[this.game][Math.min(11,tier)][this.en()?1:0]+(tier>11?' +'+(tier-11):'');}
   stageScene(wave=this.run?.wave||1){return sceneInfo(this.game,wave);}
   applyScene(){if(!this.host||!this.run)return;const s=this.stageScene();this.host.dataset.scene=String(s.index);this.host.style.setProperty('--stage-color',s.color);this.host.style.setProperty('--stage-bg',`url('../arcade/scenes/${this.game}-${s.index}.svg')`);}
   best(){try{const r=this.run||new Run(this.game,this.scene,this.difficulty);return readBoard(localStorage,r.key(this.topic||'',this.recordLanguage||''))[0]?.score||0;}catch{return 0;}}
@@ -1206,12 +1234,12 @@ from (http://code.google.com/p/pyqrnative):
    const rows=this.game==='fishing'?[
     ['↗',this.text('長按瞄準，持續射擊','Hold and aim to keep firing'),this.text('手指／滑鼠拖曳 · ← → 瞄準，Space 射擊','Drag with finger / mouse · ← → aim, Space fires')],
     ['↑',this.text('武器自動升級','Weapon upgrades automatically'),this.text('每階段炮台升一階，再揀彈道或速度。彈道數量會留在之後每一種武器。','Each stage levels the cannon, then choose spread or speed. Extra shots stay on every later weapon.')],
-    ['W–Y',this.text('四種道具','Four skills'),this.text('W 冰、E 連射、T 炸彈、Y 誘餌。另一手可同時按技能。','W freeze, E rapid, T bomb, Y lure. Use a second finger for skills.')],
-    ['⚡',this.text('捕魚補能源；零能源結算','Catches refill energy; zero ends the run'),this.text('已解鎖道具可用畫面按鈕；冷卻秒數就在旁邊。','Tap an unlocked skill on screen; its cooldown is shown.')]
+    ['Q–R',this.text('四種道具','Four skills'),this.text('Q/1 冰、W/2 連射、E/3 炸彈、R/4 誘餌。第 1–4 回合依序解鎖。','Q/1 freeze, W/2 rapid, E/3 bomb, R/4 lure. Unlocks in rounds 1–4.')],
+    ['⚡',this.text('捕魚補能源；零能源結算','Catches refill energy; zero ends the run'),this.text('鯊魚與鯨魚在第 3 回合破甲；第 4 回合爆裂彈可傷害周圍魚群。','Shark and whale armour breaks in R3. R4 blast shots also hit nearby fish.')]
    ]:this.game==='fleet'?[
-    ['↗',this.text('拖曳移動，自動向前射擊','Drag to move; fire automatically'),this.text('手指／滑鼠拖曳 · WASD 或方向鍵移動','Drag with finger / mouse · WASD or arrow keys')],
+    ['↗',this.text('拖曳移動，自動向前射擊','Drag to move; fire automatically'),this.text('手指／滑鼠拖曳 · WASD 或方向鍵移動；機心白點是受傷範圍','Drag / WASD / arrows · The white centre is your hit area')],
     ['↑',this.text('飛機自動升級','The jet upgrades automatically'),this.text('每階段飛機升一階，再揀僚機、彈道或速度。','Each stage upgrades the jet, then choose a wingman, spread or speed.')],
-    ['Q',this.text('開盾保命，留意儲備金','Shield up; keep a cash reserve'),this.text('按護盾或 Q；可一指移動、另一指開盾','Tap Shield or Q · Move and shield with two fingers')],
+    ['Q',this.text('開盾保命，留意儲備金','Shield up; keep a cash reserve'),this.text('敵機亮線後開火；子彈不追蹤。可一指移動、另一指按 Q 開盾。','Lines warn before shots; bullets do not home. Move and press Q with a second finger.')],
     ['1–3',this.text('再揀僚機、彈道或速度','Then choose a wingman, spread or speed'),this.text('唔使入機庫。飛機已經自動升級，畫面俾你揀僚機、彈道或速度。P 暫停。','No hangar. The jet is already upgraded; choose a wingman, spread or speed. P pauses.')]
    ]:[
     ['01',this.text('先看題目，再切正確錢袋','Read first, then slice correct bags'),this.text('每關 25 個選項，出過不再重複。','25 choices per stage. Each one appears only once.')],
@@ -1254,7 +1282,7 @@ from (http://code.google.com/p/pyqrnative):
    const fromName=this.name(r.grantedFrom??Math.max(0,r.weapon-1)),toName=this.name(r.weapon);
    const grant=this.game==='knife'?this.text(`刀刃已升級：${fromName} → ${toName}`,`Blade upgraded: ${fromName} → ${toName}`):this.game==='fleet'?this.text(`飛機已升級：${fromName} → ${toName}`,`Jet upgraded: ${fromName} → ${toName}`):this.text(`武器已升級：${fromName} → ${toName}`,`Weapon upgraded: ${fromName} → ${toName}`);
    const o=document.createElement('div');o.className='journey-overlay';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label',this.text('選擇進化','Choose an evolution'));this.overlay=o;
-   o.innerHTML=`<div class="journey-card journey-choice-card"><span class="journey-kicker">ROUND ${r.wave} → ${r.wave+1}</span><h2>${this.game==='knife'?this.text('刀刃已升級，再揀減速或加1心。','Blade upgraded. Choose slow-down or +1 heart.'):this.game==='fleet'?this.text('飛機已升級，再揀僚機、彈道或速度。','Jet upgraded. Choose a wingman, spread or speed.'):this.text('武器已升級，再揀彈道或速度。','Weapon upgraded. Choose spread or speed.')}</h2><p class="journey-granted">${esc(grant)}</p><p class="journey-scene-note"><b>${esc(s.name[this.en()?1:0])}</b> · ${esc(s.lesson[this.en()?1:0])}</p><div class="journey-upgrades" data-count="${cards.length}">${cards.map(([kind,zh,en,copy],i)=>`<button data-upgrade="${kind}"><b>${i+1} · ${this.text(zh,en)}</b><small>${esc(copy)}</small></button>`).join('')}</div><p class="journey-count"></p><p class="journey-next">${this.game==='knife'?esc(this.nextHint?.()||''):this.text('下一回合：敵人血量、速度及密度上升；第 3 回合起有精英與 Boss；每回合補給 12 點。','Next round: tougher, faster, denser enemies. Elites and bosses from round 3; recover 12 each round.')}</p></div>`;
+   o.innerHTML=`<div class="journey-card journey-choice-card"><span class="journey-kicker">ROUND ${r.wave} → ${r.wave+1}</span><h2>${this.game==='knife'?this.text('刀刃已升級，再揀減速或加1心。','Blade upgraded. Choose slow-down or +1 heart.'):this.game==='fleet'?this.text('飛機已升級，再揀僚機、彈道或速度。','Jet upgraded. Choose a wingman, spread or speed.'):this.text('武器已升級，再揀彈道或速度。','Weapon upgraded. Choose spread or speed.')}</h2><p class="journey-granted">${esc(grant)}</p><p class="journey-scene-note"><b>${esc(s.name[this.en()?1:0])}</b> · ${esc(s.lesson[this.en()?1:0])}</p><div class="journey-upgrades" data-count="${cards.length}">${cards.map(([kind,zh,en,copy],i)=>`<button data-upgrade="${kind}"><b>${i+1} · ${this.text(zh,en)}</b><small>${esc(copy)}</small></button>`).join('')}</div><p class="journey-count"></p><p class="journey-next">${this.game==='knife'?esc(this.nextHint?.()||''):this.game==='fishing'?this.text('每回合補給 12 能源；第 3 回合 Boss 破甲，第 4 回合爆裂彈。','Recover 12 energy each round. Boss armour breaks in R3; blast shots arrive in R4.'):this.text('下一回合：敵人血量、速度及密度上升；第 3 回合起有精英與 Boss；每回合補給 12 點。','Next round: tougher, faster, denser enemies. Elites and bosses from round 3; recover 12 each round.')}</p></div>`;
    this.host.classList.add('journey-choosing');this.host.append(o);o.querySelectorAll('[data-upgrade]').forEach(b=>b.onclick=()=>this.pick(b.dataset.upgrade));
    o.addEventListener('keydown',e=>{const b=[...o.querySelectorAll('button')];if(/^[1-5]$/.test(e.key)&&b[Number(e.key)-1]){e.preventDefault();e.stopPropagation();b[Number(e.key)-1].click();}if(e.key==='Tab'){if(e.shiftKey&&document.activeElement===b[0]){e.preventDefault();b.at(-1).focus();}else if(!e.shiftKey&&document.activeElement===b.at(-1)){e.preventDefault();b[0].focus();}}});o.querySelector('[data-upgrade]')?.focus({preventScroll:true});
   }
@@ -1534,7 +1562,8 @@ from (http://code.google.com/p/pyqrnative):
     const p = e.position;
     if (e.type === 'ship') {
       const scale = e.kind === 'boss' ? 2.3 : e.kind === 'debt' ? 1.3 : e.kind === 'inflation' ? 1.1 : e.kind === 'scam' ? .8 : .87;
-      ship(p.x,p.y,Math.PI/2,scale,e.kind,time,e.flash);if(e.elite){ctx.strokeStyle='#ffb37e';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,scale*29,0,Math.PI*2);ctx.stroke();}if(e.kind==='boss'&&e.strategy.remainingBeforeAttack<.65){ctx.strokeStyle='#ffdb9c';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,55+Math.sin(time*14)*3,0,Math.PI*2);ctx.stroke();}
+      ship(p.x,p.y,Math.PI/2,scale,e.kind,time,e.flash);if(e.elite){ctx.strokeStyle='#ffb37e';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,scale*29,0,Math.PI*2);ctx.stroke();}if(!game.arcade&&e.kind==='boss'&&e.strategy.remainingBeforeAttack<.65){ctx.strokeStyle='#ffdb9c';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,55+Math.sin(time*14)*3,0,Math.PI*2);ctx.stroke();}
+      if(e.attack){ctx.save();ctx.strokeStyle='#ffcf99';ctx.globalAlpha=.4+.4*(1-e.attack.remaining/e.attack.duration);ctx.lineWidth=2;ctx.setLineDash([5,7]);for(const a of e.attack.angles){ctx.beginPath();ctx.moveTo(p.x+Math.cos(a)*24,p.y+Math.sin(a)*24);ctx.lineTo(p.x+Math.cos(a)*(e.kind==='boss'?135:78),p.y+Math.sin(a)*(e.kind==='boss'?135:78));ctx.stroke();}ctx.setLineDash([]);ctx.beginPath();ctx.arc(p.x,p.y,scale*24,0,Math.PI*2);ctx.stroke();ctx.restore();}
       if (e.hp < e.maxHp) { const w=e.kind==='boss'?80:35; ctx.fillStyle='#09242f';ctx.fillRect(p.x-w/2,p.y-scale*35,w,3);ctx.fillStyle=COLORS[e.kind];ctx.fillRect(p.x-w/2,p.y-scale*35,w*Math.max(0,e.hp/e.maxHp),3); }
       if (e.kind !== 'boss') drawLabel(t(`label_${e.kind}`),p.x,p.y+scale*34,COLORS[e.kind],13);
     } else if (e.type === 'torpedo' && e.ray) {
@@ -1564,6 +1593,7 @@ from (http://code.google.com/p/pyqrnative):
     for(const e of game.events){
       if(e.type==='sink'){const boss=e.kind==='boss';fx.burst(e.x,e.y,{size:boss?60:28,heavy:boss});fx.shatter(e.x,e.y,COLORS[e.kind],boss?55:24);soundscape.play(boss?'heavy':'sink');if(boss&&!reduced.matches)shake=.2;}
       if(e.type==='damage'){fx.hit(e.x,e.y,'#ffad8f');if(!reduced.matches)shake=.14;soundscape.play('hit');}
+      if(e.type==='blast'){fx.burst(e.x,e.y,{size:e.radius,color:'#ffbd84',heavy:false});soundscape.play('blast');}
       if(e.type==='impact'){fx.hit(e.x,e.y);soundscape.play('hit');}
       if(e.type==='coin')soundscape.play('coin');
       if(e.type==='fire'&&game.time-lastSound>.12){soundscape.play('fire');lastSound=game.time;}
@@ -1590,12 +1620,16 @@ from (http://code.google.com/p/pyqrnative):
         const jetLevel=journey?game.evolution.weapon||0:Math.max(0,(game.weapon||1)-1);ship(h.x,h.y,h.r,1.08+Math.min(.22,jetLevel*.04),'player',time,0,jetLevel);ctx.globalAlpha=1;
         if(game.escort)for(const side of game.escort===1?[-1]:[-1,1])ship(Math.max(12,Math.min(C.W-12,h.x+side*32)),h.y+18,h.r,.43,'escort',time);
       }
-      for(const e of game.entities) if(e.type==='torpedo')drawEntity(e,time);
+      for(const e of game.entities) if(e.type==='torpedo'&&e.collision.group===C.FRIEND)drawEntity(e,time);
     }
     for(let i=particles.length-1;i>=0;i--){const p=particles[i];if(!paused){p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;}if(p.life<=0){particles.splice(i,1);continue;}ctx.globalAlpha=Math.min(1,p.life/.3);ctx.fillStyle=p.color;ctx.fillRect(p.x,p.y,p.size,p.size);}ctx.globalAlpha=1;
     for(let i=ripples.length-1;i>=0;i--){const p=ripples[i];if(!paused){p.life-=dt;p.r+=70*dt;}if(p.life<=0){ripples.splice(i,1);continue;}ctx.strokeStyle=`rgba(224,220,180,${p.life*.7})`;ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.stroke();}
     for(let i=floats.length-1;i>=0;i--){const p=floats[i];if(!paused){p.life-=dt;p.y-=22*dt;}if(p.life<=0){floats.splice(i,1);continue;}drawLabel(`${t(p.key)}${p.extra}`,p.x,p.y,'#ffe1a1',13);}
-    fx.draw(ctx); ctx.restore();
+    fx.draw(ctx);
+    // Threats and the centre hit marker stay above friendly explosions.
+    if(phase!=='menu'){for(const e of game.entities)if(!e.dead&&e.type==='torpedo'&&e.collision.group===C.ENEMY)drawEntity(e,time);}
+    if(phase==='play'){const h=game.hero.position;ctx.fillStyle='#f5ffff';ctx.strokeStyle='#123343';ctx.lineWidth=2;ctx.beginPath();ctx.arc(h.x,h.y,game.hero.collision.radius,0,Math.PI*2);ctx.fill();ctx.stroke();}
+    ctx.restore();
   }
   function sizeCanvas(){const rect=canvas.getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.round(rect.width*dpr);canvas.height=Math.round(rect.height*dpr);labelScale=C.W/Math.max(1,rect.width);}
   function frame(now){
@@ -1682,7 +1716,7 @@ from (http://code.google.com/p/pyqrnative):
       game.entities=game.entities.filter(e=>e.type==='coin');game.raised=[];game.invulnerable=1.5;paused=false;accumulator=0;banner('waveBanner',r.wave);updateHUD();
     };
     journey.onEnd=()=>{game.running=false;paused=false;phase='over';clearInput();showOverlay('end-menu');renderEnd();};
-    window.FuLamFleet={getState:()=>({phase,paused,hero:{x:game.hero.position.x,y:game.hero.position.y},threats:game.entities.filter(e=>!e.dead&&((e.type==='torpedo'&&e.collision.group===C.ENEMY)||e.type==='ship')).map(e=>({x:e.position.x,y:e.position.y,vx:e.type==='ship'?0:e.velocity.dx*e.velocity.speed,vy:e.type==='ship'?e.velocity.speed:e.velocity.dy*e.velocity.speed,r:e.collision.radius,type:e.type,elite:!!e.elite,hp:e.hp,kind:e.kind})),score:game.score,hp:game.hero.hp,maxHp:game.hero.maxHp,mode:game.mode,wave:game.wave,kills:game.kills,evolution:{...game.evolution},weaponKind:game.weaponKind,weapon:game.weapon,power:game.power,shield:game.shield,shots:game.shots,run:journey.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,phase:journey.run.phase,active:journey.run.active,total:journey.run.total,wave:journey.run.wave,weapon:journey.run.weapon,rate:journey.run.rate,trajectory:journey.run.trajectory,life:journey.run.life,protection:journey.run.protection,choiceTime:journey.run.choiceTime,reason:journey.run.reason}:null})};
+    window.FuLamFleet={getState:()=>({phase,paused,hero:{x:game.hero.position.x,y:game.hero.position.y,r:game.hero.collision.radius},threats:game.entities.filter(e=>!e.dead&&((e.type==='torpedo'&&e.collision.group===C.ENEMY)||e.type==='ship')).map(e=>({x:e.position.x,y:e.position.y,vx:e.type==='ship'?0:e.velocity.dx*e.velocity.speed,vy:e.type==='ship'?e.velocity.speed:e.velocity.dy*e.velocity.speed,r:e.collision.radius,type:e.type,elite:!!e.elite,hp:e.hp,kind:e.kind})),score:game.score,hp:game.hero.hp,maxHp:game.hero.maxHp,mode:game.mode,wave:game.wave,kills:game.kills,evolution:{...game.evolution},weaponKind:game.weaponKind,weapon:game.weapon,power:game.power,shield:game.shield,shots:game.shots,run:journey.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,phase:journey.run.phase,active:journey.run.active,total:journey.run.total,wave:journey.run.wave,weapon:journey.run.weapon,rate:journey.run.rate,trajectory:journey.run.trajectory,life:journey.run.life,protection:journey.run.protection,choiceTime:journey.run.choiceTime,reason:journey.run.reason}:null})};
   }
   if(journey)document.body.classList.add('fleet-menu');setLanguage(lang);sizeCanvas();requestAnimationFrame(frame);
 })();

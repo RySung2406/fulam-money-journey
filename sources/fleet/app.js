@@ -260,7 +260,8 @@
     const p = e.position;
     if (e.type === 'ship') {
       const scale = e.kind === 'boss' ? 2.3 : e.kind === 'debt' ? 1.3 : e.kind === 'inflation' ? 1.1 : e.kind === 'scam' ? .8 : .87;
-      ship(p.x,p.y,Math.PI/2,scale,e.kind,time,e.flash);if(e.elite){ctx.strokeStyle='#ffb37e';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,scale*29,0,Math.PI*2);ctx.stroke();}if(e.kind==='boss'&&e.strategy.remainingBeforeAttack<.65){ctx.strokeStyle='#ffdb9c';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,55+Math.sin(time*14)*3,0,Math.PI*2);ctx.stroke();}
+      ship(p.x,p.y,Math.PI/2,scale,e.kind,time,e.flash);if(e.elite){ctx.strokeStyle='#ffb37e';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,scale*29,0,Math.PI*2);ctx.stroke();}if(!game.arcade&&e.kind==='boss'&&e.strategy.remainingBeforeAttack<.65){ctx.strokeStyle='#ffdb9c';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,55+Math.sin(time*14)*3,0,Math.PI*2);ctx.stroke();}
+      if(e.attack){ctx.save();ctx.strokeStyle='#ffcf99';ctx.globalAlpha=.4+.4*(1-e.attack.remaining/e.attack.duration);ctx.lineWidth=2;ctx.setLineDash([5,7]);for(const a of e.attack.angles){ctx.beginPath();ctx.moveTo(p.x+Math.cos(a)*24,p.y+Math.sin(a)*24);ctx.lineTo(p.x+Math.cos(a)*(e.kind==='boss'?135:78),p.y+Math.sin(a)*(e.kind==='boss'?135:78));ctx.stroke();}ctx.setLineDash([]);ctx.beginPath();ctx.arc(p.x,p.y,scale*24,0,Math.PI*2);ctx.stroke();ctx.restore();}
       if (e.hp < e.maxHp) { const w=e.kind==='boss'?80:35; ctx.fillStyle='#09242f';ctx.fillRect(p.x-w/2,p.y-scale*35,w,3);ctx.fillStyle=COLORS[e.kind];ctx.fillRect(p.x-w/2,p.y-scale*35,w*Math.max(0,e.hp/e.maxHp),3); }
       if (e.kind !== 'boss') drawLabel(t(`label_${e.kind}`),p.x,p.y+scale*34,COLORS[e.kind],13);
     } else if (e.type === 'torpedo' && e.ray) {
@@ -290,6 +291,7 @@
     for(const e of game.events){
       if(e.type==='sink'){const boss=e.kind==='boss';fx.burst(e.x,e.y,{size:boss?60:28,heavy:boss});fx.shatter(e.x,e.y,COLORS[e.kind],boss?55:24);soundscape.play(boss?'heavy':'sink');if(boss&&!reduced.matches)shake=.2;}
       if(e.type==='damage'){fx.hit(e.x,e.y,'#ffad8f');if(!reduced.matches)shake=.14;soundscape.play('hit');}
+      if(e.type==='blast'){fx.burst(e.x,e.y,{size:e.radius,color:'#ffbd84',heavy:false});soundscape.play('blast');}
       if(e.type==='impact'){fx.hit(e.x,e.y);soundscape.play('hit');}
       if(e.type==='coin')soundscape.play('coin');
       if(e.type==='fire'&&game.time-lastSound>.12){soundscape.play('fire');lastSound=game.time;}
@@ -316,12 +318,16 @@
         const jetLevel=journey?game.evolution.weapon||0:Math.max(0,(game.weapon||1)-1);ship(h.x,h.y,h.r,1.08+Math.min(.22,jetLevel*.04),'player',time,0,jetLevel);ctx.globalAlpha=1;
         if(game.escort)for(const side of game.escort===1?[-1]:[-1,1])ship(Math.max(12,Math.min(C.W-12,h.x+side*32)),h.y+18,h.r,.43,'escort',time);
       }
-      for(const e of game.entities) if(e.type==='torpedo')drawEntity(e,time);
+      for(const e of game.entities) if(e.type==='torpedo'&&e.collision.group===C.FRIEND)drawEntity(e,time);
     }
     for(let i=particles.length-1;i>=0;i--){const p=particles[i];if(!paused){p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;}if(p.life<=0){particles.splice(i,1);continue;}ctx.globalAlpha=Math.min(1,p.life/.3);ctx.fillStyle=p.color;ctx.fillRect(p.x,p.y,p.size,p.size);}ctx.globalAlpha=1;
     for(let i=ripples.length-1;i>=0;i--){const p=ripples[i];if(!paused){p.life-=dt;p.r+=70*dt;}if(p.life<=0){ripples.splice(i,1);continue;}ctx.strokeStyle=`rgba(224,220,180,${p.life*.7})`;ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.stroke();}
     for(let i=floats.length-1;i>=0;i--){const p=floats[i];if(!paused){p.life-=dt;p.y-=22*dt;}if(p.life<=0){floats.splice(i,1);continue;}drawLabel(`${t(p.key)}${p.extra}`,p.x,p.y,'#ffe1a1',13);}
-    fx.draw(ctx); ctx.restore();
+    fx.draw(ctx);
+    // Threats and the centre hit marker stay above friendly explosions.
+    if(phase!=='menu'){for(const e of game.entities)if(!e.dead&&e.type==='torpedo'&&e.collision.group===C.ENEMY)drawEntity(e,time);}
+    if(phase==='play'){const h=game.hero.position;ctx.fillStyle='#f5ffff';ctx.strokeStyle='#123343';ctx.lineWidth=2;ctx.beginPath();ctx.arc(h.x,h.y,game.hero.collision.radius,0,Math.PI*2);ctx.fill();ctx.stroke();}
+    ctx.restore();
   }
   function sizeCanvas(){const rect=canvas.getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.round(rect.width*dpr);canvas.height=Math.round(rect.height*dpr);labelScale=C.W/Math.max(1,rect.width);}
   function frame(now){
@@ -408,7 +414,7 @@
       game.entities=game.entities.filter(e=>e.type==='coin');game.raised=[];game.invulnerable=1.5;paused=false;accumulator=0;banner('waveBanner',r.wave);updateHUD();
     };
     journey.onEnd=()=>{game.running=false;paused=false;phase='over';clearInput();showOverlay('end-menu');renderEnd();};
-    window.FuLamFleet={getState:()=>({phase,paused,hero:{x:game.hero.position.x,y:game.hero.position.y},threats:game.entities.filter(e=>!e.dead&&((e.type==='torpedo'&&e.collision.group===C.ENEMY)||e.type==='ship')).map(e=>({x:e.position.x,y:e.position.y,vx:e.type==='ship'?0:e.velocity.dx*e.velocity.speed,vy:e.type==='ship'?e.velocity.speed:e.velocity.dy*e.velocity.speed,r:e.collision.radius,type:e.type,elite:!!e.elite,hp:e.hp,kind:e.kind})),score:game.score,hp:game.hero.hp,maxHp:game.hero.maxHp,mode:game.mode,wave:game.wave,kills:game.kills,evolution:{...game.evolution},weaponKind:game.weaponKind,weapon:game.weapon,power:game.power,shield:game.shield,shots:game.shots,run:journey.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,phase:journey.run.phase,active:journey.run.active,total:journey.run.total,wave:journey.run.wave,weapon:journey.run.weapon,rate:journey.run.rate,trajectory:journey.run.trajectory,life:journey.run.life,protection:journey.run.protection,choiceTime:journey.run.choiceTime,reason:journey.run.reason}:null})};
+    window.FuLamFleet={getState:()=>({phase,paused,hero:{x:game.hero.position.x,y:game.hero.position.y,r:game.hero.collision.radius},threats:game.entities.filter(e=>!e.dead&&((e.type==='torpedo'&&e.collision.group===C.ENEMY)||e.type==='ship')).map(e=>({x:e.position.x,y:e.position.y,vx:e.type==='ship'?0:e.velocity.dx*e.velocity.speed,vy:e.type==='ship'?e.velocity.speed:e.velocity.dy*e.velocity.speed,r:e.collision.radius,type:e.type,elite:!!e.elite,hp:e.hp,kind:e.kind})),score:game.score,hp:game.hero.hp,maxHp:game.hero.maxHp,mode:game.mode,wave:game.wave,kills:game.kills,evolution:{...game.evolution},weaponKind:game.weaponKind,weapon:game.weapon,power:game.power,shield:game.shield,shots:game.shots,run:journey.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,phase:journey.run.phase,active:journey.run.active,total:journey.run.total,wave:journey.run.wave,weapon:journey.run.weapon,rate:journey.run.rate,trajectory:journey.run.trajectory,life:journey.run.life,protection:journey.run.protection,choiceTime:journey.run.choiceTime,reason:journey.run.reason}:null})};
   }
   if(journey)document.body.classList.add('fleet-menu');setLanguage(lang);sizeCanvas();requestAnimationFrame(frame);
 })();

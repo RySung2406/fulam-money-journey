@@ -29,7 +29,7 @@
    this.wave++;this.roundTime=0;this.choiceTime=0;this.phase='play';return true;
   }
   finish(reason='defeat'){if(this.phase==='over')return false;this.phase='over';this.reason=reason;return true;}
-  key(topic='',language=''){return [VERSION,this.game,this.scene,this.difficulty,topic,language].join(':');}
+  key(topic='',language=''){return [this.game==='knife'?VERSION:VERSION+'-combat2',this.game,this.scene,this.difficulty,topic,language].join(':');}
   record(score,extra={}){return{score:Math.max(0,Math.floor(Number(score)||0)),wave:this.wave,seconds:Math.round(this.active),reason:this.reason,...extra};}
  }
  function readBoard(storage,key){try{const a=JSON.parse(storage.getItem(key)||'[]');return Array.isArray(a)?a.filter(r=>r&&Number.isSafeInteger(r.score)&&r.score>=0&&Number.isInteger(r.wave)&&r.wave>0&&Number.isFinite(r.seconds)&&r.seconds>=0).slice(0,10):[];}catch{return[];}}
@@ -76,7 +76,7 @@
   sliceHearts(){return this.scene==='booth'?5:this.difficulty==='challenge'?3:6;}
   sliceMaxHearts(){return this.sliceHearts()+(this.run?.life||0);}
   survival(run=this.run){return survivalProfile(this.game,run||{},this.game==='knife'?this.sliceHearts():this.game==='fleet'?(this.scene==='booth'?88:this.difficulty==='challenge'?75:100):100);}
-  name(id){const tier=Math.max(0,id||0);return WEAPONS[this.game][Math.min(11,tier)][this.en()?1:0]+(tier>11?' +'+(tier-11):'');}
+  name(id){const tier=Math.max(0,id||0);if(this.scene==='booth'&&this.game!=='knife'){const names=this.game==='fishing'?[['普通子彈','Bullets'],['雙聯激光','Twin laser'],['穿透巨彈','Piercing shot'],['爆裂彈','Blast shot']]:[['普通子彈','Bullets'],['雙聯激光','Twin laser'],['炸彈','Bombs'],['小飛機炸彈','Plane bombs']];return names[Math.min(3,tier)][this.en()?1:0];}return WEAPONS[this.game][Math.min(11,tier)][this.en()?1:0]+(tier>11?' +'+(tier-11):'');}
   stageScene(wave=this.run?.wave||1){return sceneInfo(this.game,wave);}
   applyScene(){if(!this.host||!this.run)return;const s=this.stageScene();this.host.dataset.scene=String(s.index);this.host.style.setProperty('--stage-color',s.color);this.host.style.setProperty('--stage-bg',`url('../arcade/scenes/${this.game}-${s.index}.svg')`);}
   best(){try{const r=this.run||new Run(this.game,this.scene,this.difficulty);return readBoard(localStorage,r.key(this.topic||'',this.recordLanguage||''))[0]?.score||0;}catch{return 0;}}
@@ -93,12 +93,12 @@
    const rows=this.game==='fishing'?[
     ['↗',this.text('長按瞄準，持續射擊','Hold and aim to keep firing'),this.text('手指／滑鼠拖曳 · ← → 瞄準，Space 射擊','Drag with finger / mouse · ← → aim, Space fires')],
     ['↑',this.text('武器自動升級','Weapon upgrades automatically'),this.text('每階段炮台升一階，再揀彈道或速度。彈道數量會留在之後每一種武器。','Each stage levels the cannon, then choose spread or speed. Extra shots stay on every later weapon.')],
-    ['W–Y',this.text('四種道具','Four skills'),this.text('W 冰、E 連射、T 炸彈、Y 誘餌。另一手可同時按技能。','W freeze, E rapid, T bomb, Y lure. Use a second finger for skills.')],
-    ['⚡',this.text('捕魚補能源；零能源結算','Catches refill energy; zero ends the run'),this.text('已解鎖道具可用畫面按鈕；冷卻秒數就在旁邊。','Tap an unlocked skill on screen; its cooldown is shown.')]
+    ['Q–R',this.text('四種道具','Four skills'),this.text('Q/1 冰、W/2 連射、E/3 炸彈、R/4 誘餌。第 1–4 回合依序解鎖。','Q/1 freeze, W/2 rapid, E/3 bomb, R/4 lure. Unlocks in rounds 1–4.')],
+    ['⚡',this.text('捕魚補能源；零能源結算','Catches refill energy; zero ends the run'),this.text('鯊魚與鯨魚在第 3 回合破甲；第 4 回合爆裂彈可傷害周圍魚群。','Shark and whale armour breaks in R3. R4 blast shots also hit nearby fish.')]
    ]:this.game==='fleet'?[
-    ['↗',this.text('拖曳移動，自動向前射擊','Drag to move; fire automatically'),this.text('手指／滑鼠拖曳 · WASD 或方向鍵移動','Drag with finger / mouse · WASD or arrow keys')],
+    ['↗',this.text('拖曳移動，自動向前射擊','Drag to move; fire automatically'),this.text('手指／滑鼠拖曳 · WASD 或方向鍵移動；機心白點是受傷範圍','Drag / WASD / arrows · The white centre is your hit area')],
     ['↑',this.text('飛機自動升級','The jet upgrades automatically'),this.text('每階段飛機升一階，再揀僚機、彈道或速度。','Each stage upgrades the jet, then choose a wingman, spread or speed.')],
-    ['Q',this.text('開盾保命，留意儲備金','Shield up; keep a cash reserve'),this.text('按護盾或 Q；可一指移動、另一指開盾','Tap Shield or Q · Move and shield with two fingers')],
+    ['Q',this.text('開盾保命，留意儲備金','Shield up; keep a cash reserve'),this.text('敵機亮線後開火；子彈不追蹤。可一指移動、另一指按 Q 開盾。','Lines warn before shots; bullets do not home. Move and press Q with a second finger.')],
     ['1–3',this.text('再揀僚機、彈道或速度','Then choose a wingman, spread or speed'),this.text('唔使入機庫。飛機已經自動升級，畫面俾你揀僚機、彈道或速度。P 暫停。','No hangar. The jet is already upgraded; choose a wingman, spread or speed. P pauses.')]
    ]:[
     ['01',this.text('先看題目，再切正確錢袋','Read first, then slice correct bags'),this.text('每關 25 個選項，出過不再重複。','25 choices per stage. Each one appears only once.')],
@@ -141,7 +141,7 @@
    const fromName=this.name(r.grantedFrom??Math.max(0,r.weapon-1)),toName=this.name(r.weapon);
    const grant=this.game==='knife'?this.text(`刀刃已升級：${fromName} → ${toName}`,`Blade upgraded: ${fromName} → ${toName}`):this.game==='fleet'?this.text(`飛機已升級：${fromName} → ${toName}`,`Jet upgraded: ${fromName} → ${toName}`):this.text(`武器已升級：${fromName} → ${toName}`,`Weapon upgraded: ${fromName} → ${toName}`);
    const o=document.createElement('div');o.className='journey-overlay';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label',this.text('選擇進化','Choose an evolution'));this.overlay=o;
-   o.innerHTML=`<div class="journey-card journey-choice-card"><span class="journey-kicker">ROUND ${r.wave} → ${r.wave+1}</span><h2>${this.game==='knife'?this.text('刀刃已升級，再揀減速或加1心。','Blade upgraded. Choose slow-down or +1 heart.'):this.game==='fleet'?this.text('飛機已升級，再揀僚機、彈道或速度。','Jet upgraded. Choose a wingman, spread or speed.'):this.text('武器已升級，再揀彈道或速度。','Weapon upgraded. Choose spread or speed.')}</h2><p class="journey-granted">${esc(grant)}</p><p class="journey-scene-note"><b>${esc(s.name[this.en()?1:0])}</b> · ${esc(s.lesson[this.en()?1:0])}</p><div class="journey-upgrades" data-count="${cards.length}">${cards.map(([kind,zh,en,copy],i)=>`<button data-upgrade="${kind}"><b>${i+1} · ${this.text(zh,en)}</b><small>${esc(copy)}</small></button>`).join('')}</div><p class="journey-count"></p><p class="journey-next">${this.game==='knife'?esc(this.nextHint?.()||''):this.text('下一回合：敵人血量、速度及密度上升；第 3 回合起有精英與 Boss；每回合補給 12 點。','Next round: tougher, faster, denser enemies. Elites and bosses from round 3; recover 12 each round.')}</p></div>`;
+   o.innerHTML=`<div class="journey-card journey-choice-card"><span class="journey-kicker">ROUND ${r.wave} → ${r.wave+1}</span><h2>${this.game==='knife'?this.text('刀刃已升級，再揀減速或加1心。','Blade upgraded. Choose slow-down or +1 heart.'):this.game==='fleet'?this.text('飛機已升級，再揀僚機、彈道或速度。','Jet upgraded. Choose a wingman, spread or speed.'):this.text('武器已升級，再揀彈道或速度。','Weapon upgraded. Choose spread or speed.')}</h2><p class="journey-granted">${esc(grant)}</p><p class="journey-scene-note"><b>${esc(s.name[this.en()?1:0])}</b> · ${esc(s.lesson[this.en()?1:0])}</p><div class="journey-upgrades" data-count="${cards.length}">${cards.map(([kind,zh,en,copy],i)=>`<button data-upgrade="${kind}"><b>${i+1} · ${this.text(zh,en)}</b><small>${esc(copy)}</small></button>`).join('')}</div><p class="journey-count"></p><p class="journey-next">${this.game==='knife'?esc(this.nextHint?.()||''):this.game==='fishing'?this.text('每回合補給 12 能源；第 3 回合 Boss 破甲，第 4 回合爆裂彈。','Recover 12 energy each round. Boss armour breaks in R3; blast shots arrive in R4.'):this.text('下一回合：敵人血量、速度及密度上升；第 3 回合起有精英與 Boss；每回合補給 12 點。','Next round: tougher, faster, denser enemies. Elites and bosses from round 3; recover 12 each round.')}</p></div>`;
    this.host.classList.add('journey-choosing');this.host.append(o);o.querySelectorAll('[data-upgrade]').forEach(b=>b.onclick=()=>this.pick(b.dataset.upgrade));
    o.addEventListener('keydown',e=>{const b=[...o.querySelectorAll('button')];if(/^[1-5]$/.test(e.key)&&b[Number(e.key)-1]){e.preventDefault();e.stopPropagation();b[Number(e.key)-1].click();}if(e.key==='Tab'){if(e.shiftKey&&document.activeElement===b[0]){e.preventDefault();b.at(-1).focus();}else if(!e.shiftKey&&document.activeElement===b.at(-1)){e.preventDefault();b[0].focus();}}});o.querySelector('[data-upgrade]')?.focus({preventScroll:true});
   }

@@ -61,9 +61,9 @@
       mode, random: rng(seed), time: 0, wave: 1, waveKills: 0,
       goal: 8, kills: 0, score: 0, cash: 35, income: 0, dividend: 0, combo: 0, comboTime: 0,
       weapon: 1, escort: 0, reserve: 0, shield: 0, shieldCooldown: 0, invulnerable: 1.5,
-      fireTime: 0.1, escortTime: 0.5, shots: 0, spawnTime: 0.45, bossSpawned: false,
+      fireTime: 0.1, escortTime: 0.5, shots: 0, spawnTime: 0.45, bossSpawned: false, nextVolleyAt: 0,
       entities: [], raised: [], events: [], running: true, lastReason: null,
-      hero: createEntity('player', { position: new Position(W / 2, H - 100, -Math.PI / 2), velocity: new Velocity(230), collision: new Collision(true, true, 13, FRIEND), hp: MODE_RULES[mode].armour, maxHp: MODE_RULES[mode].armour })
+      hero: createEntity('player', { position: new Position(W / 2, H - 100, -Math.PI / 2), velocity: new Velocity(230), collision: new Collision(true, true, arcade ? 8 : 13, FRIEND), hp: MODE_RULES[mode].armour, maxHp: MODE_RULES[mode].armour })
     };
     return state;
   }
@@ -81,11 +81,11 @@
     const threat=s.arcade&&root.FuLamJourney?root.FuLamJourney.threatProfile(s.wave):null;
     const growth = threat?threat.health:1+(s.wave-1)*.14;
     const elite=!!(threat?.elite&&kind!=='boss'&&++s.spawnCount%4===0);
-    const hp = Math.round(spec.hp * growth * MODE_RULES[s.mode].enemy * (s.mode==='booth'?1.7:1) * (elite?1.6:1) * (threat&&kind==='boss'?2+s.wave*.15:1));
+    const hp = Math.round(spec.hp * growth * MODE_RULES[s.mode].enemy * (s.mode==='booth'?(s.arcade?1.2:1.7):1) * (elite?1.6:1) * (threat&&kind==='boss'?(s.wave<=4?1.35:2+s.wave*.15):1));
     const x = kind === 'boss' ? W / 2 : 38 + r() * (W - 76);
     const entity = createEntity('ship', {
       kind, elite, position: new Position(x, -65, Math.PI / 2), velocity: new Velocity(spec.speed * MODE_RULES[s.mode].enemy*(threat?.speed||1)),
-      collision: new Collision(true, true, spec.radius, ENEMY), strategy: new Strategy(kind, spec.attack / Math.min(2, 1 + s.wave * 0.035) / (s.mode==='booth'?1.45:1)),
+      collision: new Collision(true, true, spec.radius, ENEMY), strategy: new Strategy(kind, s.arcade ? Math.max(kind==='boss'?2.3:2.7,spec.attack/(1+Math.min(6,s.wave-1)*.035)) : spec.attack / Math.min(2, 1 + s.wave * 0.035) / (s.mode==='booth'?1.45:1)),
       hp, maxHp: hp, value: spec.value, age: 0, phase: r() * TAU, originX: x, flash: 0
     });
     s.raised.push(entity); return entity;
@@ -140,7 +140,7 @@
     const level = s.weapon;
     if(s.arcade&&root.FuLamJourney){
       const p=root.FuLamJourney.weaponProfile('fleet',s.evolution);s.hero.position.r=-Math.PI/2;
-      const booth=s.mode==='booth',form=!booth?null:p.tier>=4?'plane':p.tier===3?'bomb':p.tier===2?'laser':'bullet',reach=booth?1.8:1,hurt=booth?.5:1;
+      const booth=s.mode==='booth',form=!booth?null:p.tier>=4?'plane':p.tier===3?'bomb':p.tier===2?'laser':'bullet',reach=booth?1.8:1,hurt=booth?.8:1;
       const traj=Math.max(0,s.evolution.trajectory||0);
       const fan=(base,step)=>{const count=Math.min(7,base+traj);return Array.from({length:count},(_,i)=>count<=1?0:(i-(count-1)/2)*(count===2?step:.1));};
       const forms={bullet:{style:'shell',spread:fan(1,.1),radius:3.6,color:'#ffe39b',blast:0,pierce:0,speed:p.speed},laser:{style:'beam',count:Math.min(7,2+traj),radius:2.8,color:'#8cf4ff',blast:0,pierce:24,speed:0},bomb:{style:'bomb',spread:fan(1,.12),radius:6.2,color:'#ffb07a',blast:18,pierce:0,speed:480},plane:{style:'missile',spread:fan(1,.1),radius:4.6,color:'#ffd27a',blast:24,pierce:0,speed:640}};
@@ -175,7 +175,26 @@
       fireTorpedo(s, p, a, FRIEND, { damage: 11 + s.escort * 3, speed: 340, radius: 4, homing: 2.2, style: 'escort' });
     });
   }
-  function enemyFire(s, entity) {
+  // Arcade volleys lock their angle before the visible wind-up. A small
+  // hitbox, fixed paths and bounded density leave useful dodge corridors.
+  function hostileLimit(s) { return 24 + Math.min(4,s.wave)*6; }
+  function canAimAtHero(s, e) {
+    return e.position.y>15 && e.position.y<s.hero.position.y-65 && !inRange(e.position,s.hero.position,160);
+  }
+  function prepareVolley(s,e) {
+    if(!canAimAtHero(s,e)||s.time<s.nextVolleyAt)return false;
+    const occupied=[...s.entities,...s.raised].filter(b=>!b.dead&&b.type==='torpedo'&&b.collision.group===ENEMY).length;
+    const reserved=s.entities.reduce((n,ship)=>n+(ship.attack?.angles.length||0),0);
+    const a=Math.atan2(s.hero.position.y-e.position.y,s.hero.position.x-e.position.x);
+    let offsets=e.kind==='inflation'||e.elite?[-.32,0,.32]:[0];
+    if(e.kind==='boss')offsets=e.hp<e.maxHp*.5?[-1.12,-.8,-.48,-.16,.16,.48,.8,1.12]:[-.9,-.54,-.18,.18,.54,.9];
+    if(occupied+reserved+offsets.length>hostileLimit(s))return false;
+    const windup=e.kind==='boss'?.95:.7;
+    e.attack={angles:offsets.map(off=>a+off),remaining:windup,duration:windup};
+    s.nextVolleyAt=s.time+.22;
+    return true;
+  }
+  function enemyFire(s, entity, lockedAngles=null) {
     const p = entity.position, h = s.hero.position;
     const a = Math.atan2(h.y - p.y, h.x - p.x);
     const threat = MODE_RULES[s.mode].bullet * Math.min(1.7, 1 + s.wave * 0.025)*(s.arcade&&root.FuLamJourney?root.FuLamJourney.threatProfile(s.wave).bullet:1);
@@ -191,9 +210,10 @@
       else if(entity.elite)angles=[a-.3,a-.14,a,a+.14,a+.3];
       else angles=[a-.22,a,a+.22];
     }
+    if(lockedAngles)angles=lockedAngles;
     for (const angle of angles) fireTorpedo(s, p, angle, ENEMY, { damage: entity.kind === 'boss' ? 20 : entity.kind === 'debt' ? 18 : 12,
-      speed: (entity.kind === 'debt' ? 90 : 113) * threat, radius: entity.kind === 'debt' ? 6 : 4.8,
-      homing: entity.kind === 'debt' ? 0.36 : 0, style: entity.kind === 'debt' ? 'debt' : 'hostile' });
+      speed: s.arcade?Math.min(145,(entity.kind==='debt'?90:104)*threat):(entity.kind === 'debt' ? 90 : 113) * threat, radius: entity.kind === 'debt' ? 6 : 4.8,
+      homing: !s.arcade&&entity.kind === 'debt' ? 0.36 : 0, style: entity.kind === 'debt' ? 'debt' : 'hostile' });
   }
   function destroy(s, entity) {
     if (entity.dead) return;
@@ -275,8 +295,8 @@
     s.spawnTime -= dt;
     if (s.spawnTime <= 0) {
       const spawnBase=Math.max(0.42, 1.5 - s.wave * 0.1);
-      s.spawnTime += (s.mode==='booth'?spawnBase*0.55:spawnBase) / MODE_RULES[s.mode].enemy / (s.arcade&&root.FuLamJourney?root.FuLamJourney.threatProfile(s.wave).density:1);
-      if (ships.length < (s.mode==='booth'?Math.min(22, 8 + s.wave * 3):Math.min(14, 4 + s.wave * 2))) {
+      s.spawnTime += s.arcade?Math.max(.78,1.45-(s.wave-1)*.12)/MODE_RULES[s.mode].enemy:(s.mode==='booth'?spawnBase*0.55:spawnBase)/MODE_RULES[s.mode].enemy;
+      if (ships.length < (s.arcade?Math.min(10,4+s.wave):s.mode==='booth'?Math.min(22, 8 + s.wave * 3):Math.min(14, 4 + s.wave * 2))) {
         const types = s.wave === 1 ? ['fee', 'fee', 'scam'] : s.wave === 2 ? ['fee', 'scam', 'inflation'] : ['fee', 'scam', 'inflation', 'debt'];
         spawnEnemy(s, types[Math.floor(s.random() * types.length)]);
       }
@@ -292,7 +312,13 @@
         if (e.kind === 'boss') { e.position.y = Math.min(110, e.position.y); e.position.x = W / 2 + Math.sin(e.age * 0.55) * 125; }
         e.echo = { ...e.position };
         e.strategy.remainingBeforeAttack -= dt;
-        if (e.position.y > 15 && e.position.y < H - 70 && e.strategy.remainingBeforeAttack <= 0) {
+        if(s.arcade){
+          if(e.attack){
+            e.attack.remaining-=dt;
+            if(!canAimAtHero(s,e)){e.attack=null;e.strategy.remainingBeforeAttack=.8;}
+            else if(e.attack.remaining<=0){enemyFire(s,e,e.attack.angles);e.attack=null;e.strategy.remainingBeforeAttack=e.strategy.nextAttack;}
+          }else if(e.strategy.remainingBeforeAttack<=0&&prepareVolley(s,e))e.strategy.remainingBeforeAttack=e.strategy.nextAttack;
+        }else if (e.position.y > 15 && e.position.y < H - 70 && e.strategy.remainingBeforeAttack <= 0) {
           e.strategy.remainingBeforeAttack = e.strategy.nextAttack; enemyFire(s, e);
         }
         if (testCircleCollision(e, s.hero)) damageHero(s, e.kind === 'boss' ? 30 : 18, e.kind);
@@ -319,7 +345,7 @@
           const start=bullet.ray?bullet.ray.start:bullet.previous,end=bullet.ray?bullet.ray.end:bullet.position;
           if (segmentCircleHit(start, end, ship.position, bullet.collision.radius + ship.collision.radius)) {
             ship.hp -= bullet.damage; ship.flash = 0.1; bullet.hit.add(ship);
-            if(bullet.blast||bullet.chain){let arcs=bullet.chain;for(const other of ships){if(other===ship||other.dead)continue;const distance=Math.sqrt(distanceSquare(ship.position,other.position));if(distance<bullet.blast||(arcs>0&&distance<150)){if(distance>=bullet.blast)arcs--;other.hp-=bullet.damage*.25;other.flash=.1;if(other.hp<=0)destroy(s,other);else emit(s,'impact',{x:other.position.x,y:other.position.y});}}emit(s,'impact',{x:ship.position.x,y:ship.position.y});bullet.blast=bullet.chain=0;}
+            if(bullet.blast||bullet.chain){if(bullet.blast)emit(s,'blast',{x:ship.position.x,y:ship.position.y,radius:bullet.blast});let arcs=bullet.chain;for(const other of ships){if(other===ship||other.dead)continue;const distance=Math.sqrt(distanceSquare(ship.position,other.position));if(distance<bullet.blast||(arcs>0&&distance<150)){if(distance>=bullet.blast)arcs--;other.hp-=bullet.damage*.25;other.flash=.1;if(other.hp<=0)destroy(s,other);else emit(s,'impact',{x:other.position.x,y:other.position.y});}}emit(s,'impact',{x:ship.position.x,y:ship.position.y});bullet.blast=bullet.chain=0;}
             if (ship.hp <= 0) destroy(s, ship);
             else emit(s, 'impact', { x: ship.position.x, y: ship.position.y });
             if (bullet.pierce <= 0) { bullet.dead = true; break; }

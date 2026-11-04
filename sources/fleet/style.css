@@ -83,3 +83,5 @@
 @media(max-height:500px) and (orientation:landscape){.fleet-menu .topbar{display:flex;min-height:50px;padding:3px 12px}.fleet-menu .brief,.fleet-menu .site-footer{display:none}.fleet-menu .layout{padding:6px;max-width:1000px}.fleet-menu .sea{height:calc(100svh - 66px);min-height:0}.fleet-menu .overlay-card{max-width:850px;display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;align-items:center;text-align:left}.fleet-menu #journey-settings{grid-column:2;grid-row:1/4}.fleet-menu #menu>h2{grid-column:1;grid-row:1;font-size:25px;line-height:1.25}.fleet-menu #menu>#start{grid-column:1;grid-row:2}.fleet-menu #menu>p,.fleet-menu .badge-mark{display:none}.fleet-menu .journey-settings{margin:0}.fleet-menu .overlay{padding:8px 14px}}
 
 #swap-weapon{white-space:pre-line;line-height:1.25;font-size:11px;min-height:44px}
+/* A landscape guide leaves the isolated sea; keep it above the shield/footer. */
+.fleet-playing .sea:has(>.journey-guide){z-index:150}
