@@ -335,8 +335,10 @@
 .programme-side h2 { margin:0; font-size:clamp(16px,1.7vw,22px); line-height:1.35; }
 .programme-side h2 span { font-weight:650; }
 .programme-split .programme-source { display:inline-flex; margin-top:6px; min-height:44px; padding-bottom:0; font-size:14px; font-weight:550; }
-.programme-site { display:flex; flex-direction:column; align-items:center; justify-self:center; min-width:0; text-align:center; }
-.programme-site .brand-name { font-size:clamp(18px,2vw,24px); }
+.programme-site { display:flex; flex-direction:row; align-items:center; justify-self:center; gap:10px; min-width:0; max-width:100%; text-align:left; }
+.programme-site .brand-mark { width:42px; height:42px; flex-shrink:0; }
+.programme-site .brand-mark svg { width:26px; height:26px; }
+.programme-site .brand-name { font-size:clamp(18px,2vw,24px); text-align:left; }
 .programme-site .brand-name small { font-size:11px; letter-spacing:.08em; margin-top:4px; }
 .programme-credit { margin:0; justify-self:end; max-width:16em; text-align:right; font-size:clamp(14px,1.45vw,17px); line-height:1.45; color:var(--muted); }
 .public-home .site-footer { margin-top:12px; background:#fff; }
@@ -354,7 +356,10 @@
  .programme-side h2 { font-size:13px; text-wrap:wrap; }
  .programme-side h2 span { display:block; }
  .programme-split .programme-source { margin-top:2px; min-height:36px; font-size:12px; }
- .programme-site .brand-name { font-size:14px; }
+ .programme-site { gap:6px; }
+ .programme-site .brand-mark { width:28px; height:28px; }
+ .programme-site .brand-mark svg { width:18px; height:18px; }
+ .programme-site .brand-name { font-size:13px; }
  .programme-site .brand-name small { display:none; }
  .programme-credit { max-width:none; font-size:12px; }
  .programme-credit .credit-team { display:block; }
