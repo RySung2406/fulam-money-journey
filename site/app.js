@@ -35,7 +35,7 @@ function renderCheckIns(state = checkIns.state) {
     rewardBar.setAttribute('aria-valuetext', `已完成 ${completed} 天，抽獎門檻為 ${rewardTarget} 天`);
   }
   $('check-in-status').textContent = loading ? '正在載入…' : state.phase === 'error' ? '暫未能載入' : nextDay ? `第 ${nextDay} 日已開放` : completed ? '打卡已記錄' : '暫未開放';
-  $('check-in-description').textContent = '11 月 8–28 日，每天 06:00–23:59（香港時間）；過去已開放的日子可補做。題目與題解在 WhatsApp，紀錄保存在這裡。';
+  $('check-in-description').textContent = '11 月 8–28 日，每天早上 6 時開放新一天；已開放的日子可隨時補做（香港時間）。題目與題解在 WhatsApp，紀錄保存在這裡。';
   $('check-in-progress').textContent = loading ? '正在讀取你的紀錄…' : state.phase === 'error' ? '請重新載入紀錄' : `已完成 ${completed} / 21 天`;
   $('check-in-calendar').setAttribute('aria-label', `21 天打卡${loading ? '，正在載入' : unavailable ? '，暫未能載入紀錄' : `，已完成 ${completed} 天`}`);
   for (const cell of $('check-in-calendar').querySelectorAll('[data-check-in-day]')) {
@@ -63,6 +63,8 @@ function renderCheckIns(state = checkIns.state) {
 $('student-confirmation').addEventListener('change', (event) => checkIns.setStudentConfirmed(event.target.checked));
 $('check-in-button').addEventListener('click', () => { if (!busy && view === 'member') void checkIns.submit(); });
 $('check-in-retry').addEventListener('click', () => { if (!busy && view === 'member') void checkIns.refresh(); });
+// Refresh availability for members who keep the page open across 06:00.
+setInterval(() => { if (view === 'member' && !busy && !document.hidden && checkIns.state.phase === 'ready') void checkIns.refresh(); }, 60000);
 
 const translatedMessages = new Map([
   ['Enter your HKU email ending in @connect.hku.hk, @graduate.hku.hk or @hku.hk.', '請輸入 HKU 學生、校友或教職員電郵（@connect.hku.hk、@graduate.hku.hk、@hku.hk）。'],
