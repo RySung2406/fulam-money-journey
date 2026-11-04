@@ -24,7 +24,7 @@ function fixture() {
     auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
     global: { fetch: async (input, init = {}) => {
       const url = new URL(typeof input === 'string' ? input : input.url);
-      if (url.pathname === '/rest/v1/check_in_days') {
+      if (url.pathname === '/rest/v1/rpc/get_check_in_schedule') {
         db.reads.push({ table: 'days', select: url.searchParams.get('select') });
         return db.onDays ? db.onDays() : response(days);
       }

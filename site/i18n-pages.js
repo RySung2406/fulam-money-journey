@@ -1,5 +1,16 @@
 /* Traditional Chinese originals and English translations for account, hub and questionnaire pages. */
 window.FuLamI18n.register({
+ '挑戰最高分':'Aim for the top score',
+ '累計完成至少 17 / 21 天打卡（達 80%）及後測問卷，方可參加抽獎。':'Complete at least 17 of 21 check-ins (80%) and the post-survey to enter the draw.',
+ '11 月 28 日通知中獎同學，獎品於 Booth 02 領取。':'Winners will be notified on 28 November; collect prizes at Booth 02.',
+ '兩個 Booth 共用獎品；三位最高分者可領取禮券。':'Both booths share the prizes; the three highest scorers may collect vouchers.',
+ '三位最高分者可領取禮券':'The three highest scorers may collect vouchers',
+ '以下獎品由兩個 Booth 共用，於 Booth 02 領取。':'These prizes are shared by both booths and collected at Booth 02.',
+ 'Booth 02 派發 Booth 及打卡獎品；時間和地點稍後公布。':'Booth 02 distributes booth and check-in prizes; date and location will follow.',
+ 'HKU 學生 · 11 月 8 日開始':'HKU students · starts 8 November',
+ '完成至少 17 / 21 天打卡及後測問卷，即可參加抽獎。':'Complete at least 17 of 21 check-ins and the post-survey to enter the draw.',
+ '11 月 8–28 日，每天 06:00–23:59（香港時間）；過去已開放的日子可補做。題目與題解在 WhatsApp，紀錄保存在這裡。':'8–28 November, 06:00–23:59 Hong Kong time daily. Earlier days can be made up. Questions and explanations are on WhatsApp; your records are saved here.',
+
  '兩個 Booth 共用獎品':'Prizes shared by both booths','最高分者有獎，以下獎品由兩個 Booth 共用。':'Top scorers win prizes from the selection shared by both booths.','Starbucks 禮券':'Starbucks voucher','惠康 $50 禮券':'Wellcome $50 voucher','活動時間、地點及獎品領取安排稍後公布。':'Dates, locations and prize collection details will be announced later.',
  '查看完整獎品圖（另開分頁）':'View full prize image (opens a new tab)','5000mAh 磁吸流動電源':'5000mAh magnetic power bank','輕盈完美蜜粉 #20 · 30克':'Loose powder #20 · 30g','磁吸無線音箱':'Magnetic wireless speaker','Momax 1-Power Q.Pass 5000mAh 磁吸流動電源':'Momax 1-Power Q.Pass 5000mAh magnetic power bank','CHANEL 輕盈完美蜜粉 #20 30克':'CHANEL loose powder #20 30g','Momax 1-Vibe Go 磁吸無線音箱':'Momax 1-Vibe Go magnetic wireless speaker','抽獎及領取安排稍後公布。':'Draw and collection arrangements will be announced later.','查看抽獎獎品 ↗':'View draw prizes ↗',
  '參加 Booth':'Join a booth','兩個 Booth，等你來挑戰。每個 Booth 的最高分者有獎！':'Take on two campus booths. The top scorer at each booth wins a prize!','最高分者有獎':'Top scorer wins a prize','最高分獎品':'Top-score prize','時間':'Date & time','地點':'Location','活動時間、地點、獎品及領取安排稍後公布。':'Dates, locations, prizes and collection details will be announced later.','下一頁：參加 Booth':'Next: join a booth','← 返回每日打卡':'← Back to daily check-in','兩個 Booth，最高分者有獎。詳情稍後公布。':'Two booths, with a prize for each top scorer. Details will follow.','參加 Booth ↗':'Join a booth ↗',
@@ -34,7 +45,7 @@ window.FuLamI18n.register({
 window.FuLamI18n.registerPatterns([
  [/^第 (\d+) 日，正在載入$/, 'Day $1, loading'],[/^獎品 (\d+)$/, 'Prize $1'],
  [/^第 (\d+) 日打卡成功，紀錄已保存。$/, 'Day $1 check-in complete and saved.'],
- [/^已達抽獎門檻 · (\d+) \/ 21 天$/, 'Prize draw target reached · $1 / 21 days'],
+ [/^已達打卡門檻 · (\d+) \/ 21 天（仍須完成後測）$/, 'Check-in target reached · $1 / 21 days (post-survey still required)'],
  [/^已完成 (\d+) \/ (\d+) 天 · 還差 (\d+) 天$/, '$1 / $2 days completed · $3 to go'],
  [/^已完成 (\d+) 天，抽獎門檻為 (\d+) 天$/, '$1 days completed; prize draw target is $2 days'],
  [/^第 (\d+) 日已開放$/, 'Day $1 is open'],[/^已完成 (\d+) \/ 21 天$/, '$1 / 21 days completed'],
@@ -45,4 +56,14 @@ window.FuLamI18n.registerPatterns([
 
 window.FuLamI18n.registerPatterns([[/^獎品 (\d+)$/, 'Prize $1'], [/^第 (\d+) 日，正在載入$/, 'Day $1, loading']]);
 window.FuLamI18n.register({
+ '累計完成至少 17 / 21 天打卡（達 80%）及後測問卷，方可參加抽獎。':'Complete at least 17 of 21 check-ins (80%) and the post-survey to enter the draw.',
+ '11 月 28 日通知中獎同學，獎品於 Booth 02 領取。':'Winners will be notified on 28 November; collect prizes at Booth 02.',
+ '兩個 Booth 共用獎品；三位最高分者可領取禮券。':'Both booths share the prizes; the three highest scorers may collect vouchers.',
+ '三位最高分者可領取禮券':'The three highest scorers may collect vouchers',
+ '以下獎品由兩個 Booth 共用，於 Booth 02 領取。':'These prizes are shared by both booths and collected at Booth 02.',
+ 'Booth 02 派發 Booth 及打卡獎品；時間和地點稍後公布。':'Booth 02 distributes booth and check-in prizes; date and location will follow.',
+ 'HKU 學生 · 11 月 8 日開始':'HKU students · starts 8 November',
+ '完成至少 17 / 21 天打卡及後測問卷，即可參加抽獎。':'Complete at least 17 of 21 check-ins and the post-survey to enter the draw.',
+ '11 月 8–28 日，每天 06:00–23:59（香港時間）；過去已開放的日子可補做。題目與題解在 WhatsApp，紀錄保存在這裡。':'8–28 November, 06:00–23:59 Hong Kong time daily. Earlier days can be made up. Questions and explanations are on WhatsApp; your records are saved here.',
+
  '兩個 Booth 共用獎品':'Prizes shared by both booths','最高分者有獎，以下獎品由兩個 Booth 共用。':'Top scorers win prizes from the selection shared by both booths.','Starbucks 禮券':'Starbucks voucher','惠康 $50 禮券':'Wellcome $50 voucher','活動時間、地點及獎品領取安排稍後公布。':'Dates, locations and prize collection details will be announced later.', '暫時未能載入打卡紀錄，請重試。':'Could not load check-in records. Please try again.','了解街訪':'Explore street interviews','了解理財講解':'Explore money explainers','了解AI 劇場':'Explore AI stories','了解人物訪談':'Explore interviews'});
