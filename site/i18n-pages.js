@@ -1,5 +1,10 @@
 /* Traditional Chinese originals and English translations for account, hub and questionnaire pages. */
 window.FuLamI18n.register({
+ 'Booth 01 設有遊戲，三位高分同學可獲禮券；Booth 02 負責派發獎品。':'Play games at Booth 01. Three high scorers can receive vouchers; collect prizes at Booth 02.',
+ '遊戲挑戰':'Game challenge', '派發獎品':'Prize collection',
+ 'Booth 遊戲高分者獎品':'Booth game prizes for high scorers',
+ 'Booth 01 遊戲的三位高分同學可獲禮券，於 Booth 02 領取。':'Three high scorers in the Booth 01 games can receive vouchers at Booth 02.',
+
  '挑戰最高分':'Aim for the top score',
  '累計完成至少 17 / 21 天打卡（達 80%）及後測問卷，方可參加抽獎。':'Complete at least 17 of 21 check-ins (80%) and the post-survey to enter the draw.',
  '11 月 28 日通知中獎同學，獎品於 Booth 02 領取。':'Winners will be notified on 28 November; collect prizes at Booth 02.',
