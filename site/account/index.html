@@ -10,16 +10,16 @@
   <title>My Journey · 富臨錢進號</title>
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../theme.css?v=20261103-mobile">
-  <link rel="stylesheet" href="../account.css?v=20261103-mobile">
+  <link rel="stylesheet" href="../account.css?v=20261104-booth">
   <link rel="stylesheet" href="../i18n.css?v=20261103-mobile">
   <script src="../i18n.js" defer></script>
   <script src="../i18n-home.js" defer></script>
-  <script src="../i18n-pages.js" defer></script>
+  <script src="../i18n-pages.js?v=20261104-booth" defer></script>
   <script src="../config.js" defer>
 </script>
   <script src="../community-links.js" defer>
 </script>
-  <script src="../app.bundle.js" defer>
+  <script src="../app.bundle.js?v=20261104-booth" defer>
 </script>
 </head>
 <body class="account-page" data-auth-view="email">
@@ -150,6 +150,7 @@
         <li><button id="survey-step-label" class="onboarding-step-button" type="button" aria-current="step" aria-controls="survey-step"><span class="onboarding-step-number" aria-hidden="true">01</span><span>填寫問卷<small>SURVEY</small></span></button></li>
         <li><button id="community-step-label" class="onboarding-step-button" type="button" aria-controls="community-step"><span class="onboarding-step-number" aria-hidden="true">02</span><span>加入社群<small>COMMUNITY</small></span></button></li>
         <li><button id="dashboard-step-label" class="onboarding-step-button" type="button" aria-controls="dashboard-step"><span class="onboarding-step-number" aria-hidden="true">03</span><span>每日打卡<small>CHECK-IN</small></span></button></li>
+        <li><button id="booth-step-label" class="onboarding-step-button" type="button" aria-controls="booth-step"><span class="onboarding-step-number" aria-hidden="true">04</span><span>參加 Booth<small>BOOTH</small></span></button></li>
       </ol>
 
       <section id="survey-step" class="onboarding-card" aria-labelledby="survey-title">
@@ -203,7 +204,6 @@
       <section id="dashboard-step" class="member-dashboard" aria-labelledby="dashboard-title" hidden>
         <nav class="dashboard-nav" aria-label="活動總覽">
           <a href="#daily-check-in">打卡</a>
-<a href="#member-booth">Booth</a>
 <a href="#member-rewards">獎勵</a>
         </nav>
         <section id="daily-check-in" class="check-in-panel" aria-labelledby="dashboard-title">
@@ -249,14 +249,6 @@
           <p id="check-in-message" class="check-in-message" role="status" aria-live="polite" hidden></p>
           <button id="check-in-retry" class="account-text-button check-in-retry" type="button" hidden>重新載入</button>
         </section>
-        <div class="dashboard-cards">
-          <section id="member-booth" class="dashboard-card">
-<span class="account-eyebrow">HKU ONLY</span>
-<h2>校園 Booth</h2>
-<strong class="dashboard-empty">即將公布</strong>
-<p>時間、地點及名額稍後公布。</p>
-</section>
-        </div>
         <section id="member-rewards" class="rewards-panel" aria-labelledby="rewards-title">
           <div class="rewards-heading">
             <div>
@@ -284,8 +276,41 @@
         </section>
         <div class="dashboard-footer-links">
 <a data-community-invite hidden target="_blank" rel="noopener noreferrer">前往 WhatsApp 社群 ↗</a>
-<button id="onboarding-review" class="account-text-button" type="button">返回問卷</button>
+<button id="dashboard-booth" class="account-text-button" type="button">下一頁：參加 Booth <span aria-hidden="true">→</span></button>
 </div>
+      </section>
+
+      <section id="booth-step" class="member-booth-page" aria-labelledby="booth-title" hidden>
+        <header class="booth-page-heading">
+          <span class="account-eyebrow">STEP 04 · CAMPUS BOOTHS</span>
+          <h2 id="booth-title" tabindex="-1">參加 Booth</h2>
+          <p>兩個 Booth，等你來挑戰。每個 Booth 的最高分者有獎！</p>
+        </header>
+        <div class="booth-event-grid">
+          <article class="booth-event-card" aria-labelledby="booth-one-title">
+            <div class="booth-event-top"><h3 id="booth-one-title">Booth 01</h3><span class="booth-event-status">即將公布</span></div>
+            <p class="booth-event-award">最高分者有獎</p>
+            <dl class="booth-event-details"><div><dt>時間</dt><dd>待公布</dd></div><div><dt>地點</dt><dd>待公布</dd></div></dl>
+            <div class="booth-prize-slot">
+              <span class="booth-prize-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M9 21h30v7H9zM12 28h24v13H12zM24 21v20M24 21c-5 0-10-2-10-6a4 4 0 0 1 4-4c4 0 6 6 6 10Zm0 0c5 0 10-2 10-6a4 4 0 0 0-4-4c-4 0-6 6-6 10Z"/></svg></span>
+              <div><span>最高分獎品</span><strong>待公布</strong></div>
+            </div>
+          </article>
+          <article class="booth-event-card" aria-labelledby="booth-two-title">
+            <div class="booth-event-top"><h3 id="booth-two-title">Booth 02</h3><span class="booth-event-status">即將公布</span></div>
+            <p class="booth-event-award">最高分者有獎</p>
+            <dl class="booth-event-details"><div><dt>時間</dt><dd>待公布</dd></div><div><dt>地點</dt><dd>待公布</dd></div></dl>
+            <div class="booth-prize-slot">
+              <span class="booth-prize-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M9 21h30v7H9zM12 28h24v13H12zM24 21v20M24 21c-5 0-10-2-10-6a4 4 0 0 1 4-4c4 0 6 6 6 10Zm0 0c5 0 10-2 10-6a4 4 0 0 0-4-4c-4 0-6 6-6 10Z"/></svg></span>
+              <div><span>最高分獎品</span><strong>待公布</strong></div>
+            </div>
+          </article>
+        </div>
+        <p class="booth-page-note">活動時間、地點、獎品及領取安排稍後公布。</p>
+        <div class="dashboard-footer-links">
+          <button id="booth-back" class="account-text-button" type="button">← 返回每日打卡</button>
+          <a data-community-invite hidden target="_blank" rel="noopener noreferrer">前往 WhatsApp 社群 ↗</a>
+        </div>
       </section>
 
       <div class="onboarding-account">

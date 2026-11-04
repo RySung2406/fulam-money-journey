@@ -13,6 +13,7 @@ let view = 'email';
 let transition = 0;
 let accountUserId;
 let initializing = true;
+const journeySteps = ['survey', 'community', 'dashboard', 'booth'];
 const checkIns = createCheckInController({ getClient: () => client, onChange: renderCheckIns });
 
 function renderCheckIns(state = checkIns.state) {
@@ -91,7 +92,7 @@ function showView(next, focus = true) {
   if (focus) $(next === 'email' ? 'email' : next === 'otp' ? 'otp' : 'member-title').focus();
 }
 function showOnboardingStep(step, focus = true) {
-  const steps = ['survey', 'community', 'dashboard'];
+  const steps = journeySteps;
   const current = steps.includes(step) ? step : 'survey';
   for (const name of steps) {
     $(`${name}-step`).hidden = name !== current;
@@ -99,19 +100,23 @@ function showOnboardingStep(step, focus = true) {
   }
   $(`${current}-step-label`).setAttribute('aria-current', 'step');
   $('member-screen').classList.toggle('show-dashboard', current === 'dashboard');
-  $('member-title').textContent = current === 'dashboard' ? '你的 21 天理財旅程。' : '開始你的 21 天旅程。';
-  if (focus) $({ survey: 'survey-title', community: 'community-card-title', dashboard: 'dashboard-title' }[current]).focus();
+  $('member-screen').classList.toggle('show-booth', current === 'booth');
+  $('member-title').textContent = current === 'dashboard' || current === 'booth' ? '你的 21 天理財旅程。' : '開始你的 21 天旅程。';
+  if (focus) $({ survey: 'survey-title', community: 'community-card-title', dashboard: 'dashboard-title', booth: 'booth-title' }[current]).focus();
 }
 function savedJourneyStep() {
+  const linkedStep = window.location.hash.slice(1);
+  if (journeySteps.includes(linkedStep)) return linkedStep;
   try { return localStorage.getItem(`fulam.journey.view.${accountUserId}`) || 'survey'; }
   catch { return 'survey'; }
 }
 function navigateJourney(step) {
-  if (busy || view !== 'member' || !accountUserId) return;
+  if (busy || view !== 'member' || !accountUserId || !journeySteps.includes(step)) return;
   // This stores navigation only, never proof of Forms submission or community membership.
   try { localStorage.setItem(`fulam.journey.view.${accountUserId}`, step); }
   catch { /* The journey remains usable when browser storage is unavailable. */ }
   showOnboardingStep(step);
+  window.history.replaceState(null, '', `#${step}`);
 }
 $('survey-continue').addEventListener('click', () => {
   navigateJourney('community');
@@ -119,11 +124,13 @@ $('survey-continue').addEventListener('click', () => {
 $('survey-back').addEventListener('click', () => {
   navigateJourney('survey');
 });
-for (const step of ['survey', 'community', 'dashboard']) {
+for (const step of journeySteps) {
   $(`${step}-step-label`).addEventListener('click', () => navigateJourney(step));
 }
 $('community-continue').addEventListener('click', () => navigateJourney('dashboard'));
-$('onboarding-review').addEventListener('click', () => navigateJourney('survey'));
+$('dashboard-booth').addEventListener('click', () => navigateJourney('booth'));
+$('booth-back').addEventListener('click', () => navigateJourney('dashboard'));
+window.addEventListener('hashchange', () => navigateJourney(window.location.hash.slice(1)));
 function clearMessages() { ['email-error', 'otp-error', 'member-error', 'resend-status'].forEach((id) => message(id)); }
 function remainingSeconds() { return Math.max(0, Math.ceil((cooldownUntil - Date.now()) / 1000)); }
 function updateButtons() {

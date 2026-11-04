@@ -1,5 +1,6 @@
 /* Traditional Chinese originals and English translations for account, hub and questionnaire pages. */
 window.FuLamI18n.register({
+ '參加 Booth':'Join a booth','兩個 Booth，等你來挑戰。每個 Booth 的最高分者有獎！':'Take on two campus booths. The top scorer at each booth wins a prize!','最高分者有獎':'Top scorer wins a prize','最高分獎品':'Top-score prize','時間':'Date & time','地點':'Location','活動時間、地點、獎品及領取安排稍後公布。':'Dates, locations, prizes and collection details will be announced later.','下一頁：參加 Booth':'Next: join a booth','← 返回每日打卡':'← Back to daily check-in','兩個 Booth，最高分者有獎。詳情稍後公布。':'Two booths, with a prize for each top scorer. Details will follow.','參加 Booth ↗':'Join a booth ↗',
  '登入 FuLam 21 天理財計劃：填寫問卷、加入 WhatsApp 社群，查看打卡、Booth 與抽獎禮物。':'Join the FuLam 21-day money journey: complete the survey, join the WhatsApp community and view check-ins, booth and prize details.',
  '富臨錢進號：由遊戲、街訪、理財講解與 AI 影片出發，讓大學生練習更好的理財判斷。':'FuLam Money Journey helps university students build money skills through games, interviews, explainers and AI videos.',
  'My Journey · 富臨錢進號':'My Journey · FuLam Money Journey', '活動與社群 · 富臨錢進號':'Activities and community · FuLam Money Journey', '理財問卷 · 富臨錢進號':'Money survey · FuLam Money Journey',
