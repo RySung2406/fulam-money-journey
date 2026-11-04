@@ -35,6 +35,9 @@
 .journey-guide .journey-card{display:flex;flex-direction:column;overflow:hidden}.journey-guide .journey-guide-grid{min-height:0;overflow:auto;overscroll-behavior:contain}.journey-guide .journey-kicker,.journey-guide h2,.journey-guide-rule,.journey-guide-actions{flex-shrink:0}.journey-guide-actions{padding-top:3px}
 .journey-guide h2,.journey-guide-context,.journey-guide-lead{flex-shrink:0}
 .journey-guide-question{flex-shrink:0;margin:0 0 12px!important;padding:12px 14px;background:#fff1cd;color:#173d35;font-size:22px!important;line-height:1.4;font-weight:800;border-left:4px solid #d5ac65;border-radius:6px}
+.journey-guide h2.journey-guide-topic{font-size:42px!important;line-height:1.28!important;margin:12px 0 16px!important;color:#fff6d8}
+@media(max-width:500px){.journey-guide h2.journey-guide-topic{font-size:32px!important}}
+@media(max-height:500px) and (orientation:landscape){.journey-guide h2.journey-guide-topic{font-size:28px!important;margin:6px 0 10px!important}}
 
 .journey-scene-note{padding:8px 10px!important;background:#dce8dc;border-radius:8px;color:#183c32!important;font-size:12px!important;line-height:1.5!important}
 .journey-upgrades small{overflow-wrap:anywhere}.journey-next{font-size:16px!important;line-height:1.5!important}

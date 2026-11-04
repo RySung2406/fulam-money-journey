@@ -219,7 +219,7 @@ function renderGame() {
   $('#finish-session').classList.add('journey-exit');$('#finish-session').textContent=journey.text('退出','Exit');$('#finish-session').disabled=false;$('#finish-session').onclick=()=>phase==='ready'?home():finishSession(false);
   $('#ready-overlay').remove();showQuestionGate(beginStream,home);
   const blade=document.createElement('span');blade.id='knife-level';blade.className='journey-loadout';$('.arena-footer').append(blade);
-  const focus=document.createElement('button');focus.id='knife-focus';focus.className='journey-swap';focus.textContent=journey.text('慢時 0%','Focus 0%');$('.arena-footer').append(focus);focus.onclick=()=>{if(phase==='playing'&&!paused&&focusCharge>=100){focusCharge=0;focusTime=2.5+.6*journey.run.focus;playSound('start');}};
+  const focus=document.createElement('button');focus.id='knife-focus';focus.className='journey-swap';focus.textContent=journey.text('全屏緩慢 0%','Full-screen slow 0%');$('.arena-footer').append(focus);focus.onclick=()=>{if(phase==='playing'&&!paused&&focusCharge>=100){focusCharge=0;focusTime=2.5+.6*journey.run.focus;playSound('start');}};
  }
 
  updateSound();
@@ -380,7 +380,7 @@ function updateHUD() {
  $('#missed-count').textContent = `${session.missed} missed`;
  $('#run-goal').textContent = playKind === 'sprint' ? `${session.correct} / ${E.GAME_RULES.sprintTarget} CORRECT` : 'NO TIME LIMIT';
  $('#run-clock').textContent = timeLabel(playKind === 'sprint' ? E.sprintTimeMs(elapsed, session.wrong) : Math.ceil(elapsed * 1000));
- if(journey?.run){$('#run-goal').textContent='♥ '+hearts+'/'+journey.sliceMaxHearts()+' · '+journey.text('護心 ','Guard ')+guardCharges;$('#run-clock').hidden=journey.scene==='booth';$('.round-number').textContent=journey.scene==='booth'?journey.text('第 '+journey.run.wave+'/'+window.FuLamJourney.KNIFE_STAGES+' 關 · '+roundResolved+'/'+window.FuLamJourney.KNIFE_OPTIONS,'Stage '+journey.run.wave+'/'+window.FuLamJourney.KNIFE_STAGES+' · '+roundResolved+'/'+window.FuLamJourney.KNIFE_OPTIONS):journey.text('第 '+journey.run.wave+' 關 · '+roundResolved+'/20','Stage '+journey.run.wave+' · '+roundResolved+'/20');if($('#knife-level'))$('#knife-level').textContent=journey.name(journey.run.weapon)+' Lv.'+(journey.run.weapon+1)+' · +'+(journey.run.weapon*25)+'%';if($('#knife-focus')){$('#knife-focus').disabled=paused||focusCharge<100;$('#knife-focus').textContent=journey.text('慢時 ','Focus ')+Math.floor(focusCharge)+'% · Q';}}
+ if(journey?.run){$('#run-goal').textContent='♥ '+hearts+'/'+journey.sliceMaxHearts()+' · '+journey.text('護心 ','Guard ')+guardCharges;$('#run-clock').hidden=journey.scene==='booth';$('.round-number').textContent=journey.scene==='booth'?journey.text('第 '+journey.run.wave+'/'+window.FuLamJourney.KNIFE_STAGES+' 關 · '+roundResolved+'/'+window.FuLamJourney.KNIFE_OPTIONS,'Stage '+journey.run.wave+'/'+window.FuLamJourney.KNIFE_STAGES+' · '+roundResolved+'/'+window.FuLamJourney.KNIFE_OPTIONS):journey.text('第 '+journey.run.wave+' 關 · '+roundResolved+'/20','Stage '+journey.run.wave+' · '+roundResolved+'/20');if($('#knife-level'))$('#knife-level').textContent=journey.name(journey.run.weapon)+' Lv.'+(journey.run.weapon+1)+' · +'+(journey.run.weapon*25)+'%';if($('#knife-focus')){$('#knife-focus').disabled=paused||focusCharge<100;$('#knife-focus').textContent=journey.text('全屏緩慢 ','Full-screen slow ')+Math.floor(focusCharge)+'% · Q';}}
  $('#run-clock').title = playKind === 'sprint' ? `Includes ${session.wrong * E.GAME_RULES.wrongPenaltySeconds} seconds of wrong-slice penalties` : 'Time played';
 }
 function cutTarget(target) {
