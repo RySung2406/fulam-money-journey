@@ -52,6 +52,11 @@
 .journey-choice-card [data-upgrade=life]{background:#d9ecde;border-color:#82bca1}
 .journey-choice-card [data-upgrade=protection],.journey-choice-card [data-upgrade=guard]{background:#e5dff1;border-color:#b6a1cf}
 .journey-choice-card .journey-upgrades[data-count="4"] button{grid-column:span 3}
+.journey-choice-card .journey-upgrades[data-count="2"]{grid-template-columns:1fr 1fr}
+.journey-choice-card .journey-upgrades[data-count="2"] button{grid-column:auto;min-height:128px}
+.journey-choice-card .journey-upgrades[data-count="3"]{grid-template-columns:repeat(3,minmax(0,1fr))}
+.journey-choice-card .journey-upgrades[data-count="3"] button{grid-column:auto}
+.journey-granted{margin:8px 0 0;padding:12px 14px;border-radius:10px;background:#214b3b;color:#fff4cb;font-size:18px;line-height:1.45}
 .journey-choice-card .journey-upgrades small{font-size:13px;line-height:1.45}
 @media(max-width:600px){
  .journey-card.journey-choice-card{padding:16px}
