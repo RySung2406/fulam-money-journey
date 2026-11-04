@@ -25,7 +25,7 @@
     weapon: 'Compound cannon', escort: 'Diversify escorts', reserve: 'Reserve system', repair: 'Repair capital', repairHint: 'Restore 35 armour immediately',
     income: 'RESERVE INCOME', incomeHint: 'Cash earns game income every 15 seconds. Upgrade reserves to increase income and coin pickup range.',
     enemyTag: 'KNOW THE THREAT', fee: 'Impulse spending', feeHint: 'Light raider', inflation: 'Inflation', inflationHint: 'Fan-shaped fire', scam: 'Investment scam', scamHint: 'Fast zigzag', debt: 'High-interest debt', debtHint: 'Homing torpedoes',
-    label_fee: 'Spending', label_inflation: 'Inflation', label_scam: 'Scam', label_debt: 'Debt',
+    label_fee: 'Spending', label_inflation: 'Inflation', label_scam: 'Scam', label_debt: 'Debt', label_trap: 'Money trap', label_myth: 'Money myth',
     metaphor: 'Money concepts become aircraft abilities. Coins, income and armour are fictional game values.', credits: 'Open-source credits & licence', creditNote: 'Combat core adapted from',
     changes: 'Adds endless waves, finance-themed upgrades, new aircraft art, touch controls and bilingual UI. Original music and font assets are not used.',
     wave: 'SECTOR', combo: 'COMBO', max: 'MAX', full: 'FULL', ready: 'coins · ready', active: 'Shield active', cooldown: 'Ready in', seconds: 's', coins: 'coins',
@@ -41,7 +41,7 @@
   };
   const ZH = {
     soundOn: '音效：開', wave: '空域', combo: '連擊', max: '滿級', full: '已滿', ready: '幣 · 就緒', active: '護盾生效中', cooldown: '冷卻', seconds: '秒', coins: '幣',
-    label_fee: '衝動消費', label_inflation: '通脹', label_scam: '投資騙局', label_debt: '高息債務',
+    label_fee: '衝動消費', label_inflation: '通脹', label_scam: '投資騙局', label_debt: '高息債務', label_trap: '理財陷阱', label_myth: '理財誤解',
     weapons: ['追蹤火炮', '雙管追蹤炮', '三路散射炮', '貫穿射線炮', '重型能量球'],
     escorts: ['增加一架追蹤僚機', '增加第二架僚機', '僚機射速提升', '雙架高速僚機'],
     reserves: ['護盾更長 · 拾幣更遠', '收益提升 · 護盾更省', '護盾與儲備全面提升', '儲備系統已滿級'],
@@ -209,7 +209,7 @@
     const boss = s.entities.find(e => e.kind === 'boss' && !e.dead); $('boss-bar').hidden = !boss || phase !== 'play';
     if (boss) $('boss-hp').style.width = `${Math.max(0, boss.hp / boss.maxHp * 100)}%`;
   }
-  const COLORS = { player: '#a6d5ce', fee: '#eaa694', inflation: '#d9bc85', scam: '#f99664', debt: '#b6a2cc', boss: '#e7a08b', escort: '#9bc8cd' };
+  const COLORS = { player: '#a6d5ce', fee: '#eaa694', inflation: '#d9bc85', scam: '#f99664', debt: '#b6a2cc', boss: '#e7a08b', trap: '#e4bd73', myth: '#a9b8ed', escort: '#9bc8cd' };
   function path(points, fill, stroke = null) {
     ctx.beginPath(); points.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath();
     if (fill) { ctx.fillStyle = fill; ctx.fill(); } if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 1; ctx.stroke(); }
@@ -228,6 +228,8 @@
     if(kind==='player'&&level>=1){ctx.fillStyle=level>=2?'#8cf4ff':'#d7fff6';ctx.fillRect(-30,4,9,16);ctx.fillRect(21,4,9,16);}
     if(kind==='player'&&level>=2){ctx.strokeStyle='#8cf4ff';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-4,-30);ctx.lineTo(0,-48);ctx.lineTo(4,-30);ctx.stroke();ctx.fillStyle='#e8fdff';ctx.fillRect(-1.5,-46,3,16);}
     if(kind==='player'&&level>=3){path([[-31,6],[-46,16],[-44,24],[-30,16]],'#6faca8','#d7fff6');path([[31,6],[46,16],[44,24],[30,16]],'#6faca8','#d7fff6');}
+    if(kind==='trap'){path([[-30,5],[-42,17],[-30,24],[-14,11]],'#b68444','#ffe1a6');path([[30,5],[42,17],[30,24],[14,11]],'#b68444','#ffe1a6');}
+    if(kind==='myth'){path([[-22,-2],[-38,8],[-30,14],[-14,7]],'#697fb1','#d8eaff');path([[22,-2],[38,8],[30,14],[14,7]],'#697fb1','#d8eaff');ctx.fillStyle='#e9edff';ctx.fillRect(-2,-17,4,9);}
     if(kind==='boss'){path([[-44,9],[-10,-11],[10,-11],[44,9],[42,27],[15,18],[-15,18],[-42,27]],'#d39582','#ffe2a8');path([[0,-35],[9,8],[0,26],[-9,8]],fill);}
     ctx.restore();
   }
@@ -259,7 +261,7 @@
   function drawEntity(e, time) {
     const p = e.position;
     if (e.type === 'ship') {
-      const scale = e.kind === 'boss' ? 2.3 : e.kind === 'debt' ? 1.3 : e.kind === 'inflation' ? 1.1 : e.kind === 'scam' ? .8 : .87;
+      const scale = e.kind === 'boss' ? 2.3 : e.kind === 'debt' ? 1.3 : e.kind === 'inflation' ? 1.1 : e.kind === 'scam' ? .8 : e.kind==='trap'?1:e.kind==='myth'?.9:.87;
       ship(p.x,p.y,Math.PI/2,scale,e.kind,time,e.flash);if(e.elite){ctx.strokeStyle='#ffb37e';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,scale*29,0,Math.PI*2);ctx.stroke();}if(!game.arcade&&e.kind==='boss'&&e.strategy.remainingBeforeAttack<.65){ctx.strokeStyle='#ffdb9c';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,55+Math.sin(time*14)*3,0,Math.PI*2);ctx.stroke();}
       if(e.attack){ctx.save();ctx.strokeStyle='#ffcf99';ctx.globalAlpha=.4+.4*(1-e.attack.remaining/e.attack.duration);ctx.lineWidth=2;ctx.setLineDash([5,7]);for(const a of e.attack.angles){ctx.beginPath();ctx.moveTo(p.x+Math.cos(a)*24,p.y+Math.sin(a)*24);ctx.lineTo(p.x+Math.cos(a)*(e.kind==='boss'?135:78),p.y+Math.sin(a)*(e.kind==='boss'?135:78));ctx.stroke();}ctx.setLineDash([]);ctx.beginPath();ctx.arc(p.x,p.y,scale*24,0,Math.PI*2);ctx.stroke();ctx.restore();}
       if (e.hp < e.maxHp) { const w=e.kind==='boss'?80:35; ctx.fillStyle='#09242f';ctx.fillRect(p.x-w/2,p.y-scale*35,w,3);ctx.fillStyle=COLORS[e.kind];ctx.fillRect(p.x-w/2,p.y-scale*35,w*Math.max(0,e.hp/e.maxHp),3); }
