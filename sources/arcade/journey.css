@@ -47,6 +47,44 @@
 
 .journey-live.journey-choosing{z-index:150}
 
+/* One wide, score-first result; usable inside fullscreen and short landscapes. */
+.scene.showing-result,.sea.showing-result{z-index:250}
+.showing-result>.overlay{position:fixed!important;inset:0!important;z-index:220;display:flex;align-items:center;justify-content:center;padding:16px;background:#061c29eb;overflow:auto}
+.showing-result .card,.showing-result #end-menu{width:min(860px,100%);max-width:860px;max-height:calc(100dvh - 32px);overflow:auto;padding:26px 30px;border:1px solid #8fb4a3;border-radius:20px;background:#123b3c;text-align:left;box-sizing:border-box}
+.showing-result .modal-language{display:none}
+.showing-result .result-heading{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.showing-result .result-heading h2{font-size:28px;line-height:1.25;margin:6px 0;color:#fff2cc}
+.showing-result .result-score,.showing-result .end-score strong{font:800 58px/1.1 ui-monospace,monospace;color:#ffe2a1;margin:0;letter-spacing:-2px}
+.showing-result .end-score{margin:0;text-align:right}.showing-result .end-score>span{display:none}
+.showing-result .result-meta,.showing-result #end-stats{font-size:13px;line-height:1.5;margin:10px 0;color:#b8d9cd}
+.showing-result #end-tip{margin:0;padding:0;border:0;background:none}
+.journey-scoreboard{border:0;padding:0;margin:16px 0;color:#e9f4e8}
+.scoreboard-main{display:grid;grid-template-columns:1fr 1.5fr;gap:24px;align-items:center}
+.result-rank{display:flex;flex-direction:column;gap:6px}.result-rank>span,.result-board>b{font-size:12px;letter-spacing:.08em;color:#b6d8ce}
+.result-rank>strong{font:800 54px/1.1 ui-monospace,monospace;color:#ffe2a1}.result-rank>small{font-size:11px}
+.journey-scoreboard .score-list{list-style:none;margin:8px 0 0;padding:0}
+.journey-scoreboard .score-list li{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;padding:7px 10px;border:0;border-radius:7px;font-size:13px}
+.score-list li:nth-child(odd){background:#ffffff07}.score-list li.this-run{background:#e5d09322;box-shadow:inset 2px 0 #e5d093}
+.score-list strong{font:700 17px ui-monospace,monospace}.score-list small{margin:0;font-size:10px;color:#b9ddcf}
+.journey-scoreboard .result-lesson{font-size:14px!important;line-height:1.65;margin:18px 0 0!important;padding:12px 14px;background:#ffffff08;border-left:2px solid #ceb57a;border-radius:5px}
+.showing-result .result-actions,.showing-result .end-actions{display:flex;gap:12px;margin-top:18px}
+.showing-result .primary{flex:1;min-height:46px;width:auto;margin:0!important}.showing-result .journey-exit{min-width:100px}.showing-result #share-status:empty{display:none}
+@media(max-width:500px){.showing-result>.overlay{padding:8px}.showing-result .card,.showing-result #end-menu{padding:18px 16px;max-height:calc(100dvh - 16px);border-radius:14px}.showing-result .result-heading{gap:10px}.showing-result .result-heading h2{font-size:21px}.showing-result .result-score,.showing-result .end-score strong{font-size:40px}.scoreboard-main{grid-template-columns:1fr 1.4fr;gap:14px}.result-rank>strong{font-size:40px}.result-rank>small{font-size:10px}.journey-scoreboard .result-lesson{font-size:13px!important;padding:10px}.journey-scoreboard .score-list li{padding:6px;gap:5px;grid-template-columns:18px 1fr auto}.score-list strong{font-size:15px}.result-board>b{font-size:10px}.showing-result .result-meta,.showing-result #end-stats{font-size:12px}}
+@media(max-height:500px) and (orientation:landscape){
+ .showing-result>.overlay{padding:6px}
+ .showing-result .card,.showing-result #end-menu{display:grid;grid-template-columns:minmax(150px,.75fr) minmax(0,1.25fr);gap:0 20px;align-items:start;padding:14px 20px;max-height:calc(100dvh - 12px)}
+ .showing-result .result-heading{grid-column:1;grid-row:1;display:block}.showing-result .result-heading h2{font-size:22px}
+ .showing-result .result-score,.showing-result .end-score strong{font-size:38px}.showing-result .end-score{text-align:left}
+ .showing-result .result-meta,.showing-result #end-stats{grid-column:1;grid-row:2;margin:6px 0;font-size:12px}
+ .showing-result .card>.journey-scoreboard,.showing-result #end-tip{grid-column:2;grid-row:1/4}
+ .showing-result .journey-scoreboard{margin:0}.scoreboard-main{grid-template-columns:minmax(70px,.65fr) minmax(0,1.35fr);gap:12px}
+ .result-rank>strong{font-size:32px}.result-rank>small{font-size:10px}.result-board>b{font-size:10px}
+ .journey-scoreboard .score-list li{padding:4px 6px;gap:4px;grid-template-columns:18px 1fr auto}.score-list strong{font-size:15px}
+ .journey-scoreboard .result-lesson{margin-top:8px!important;padding:8px 10px;font-size:12px!important;line-height:1.5}
+ .showing-result .result-actions,.showing-result .end-actions{grid-column:1;grid-row:3;flex-direction:column;gap:6px;margin-top:10px}
+ .showing-result .result-actions button,.showing-result .end-actions button{min-height:40px;width:100%;font-size:13px}
+}
+
 /* Keep attack and survival choices together, with distinct support colours. */
 .journey-card.journey-choice-card{max-width:900px}
 .journey-choice-card .journey-upgrades{grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}

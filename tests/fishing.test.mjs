@@ -84,7 +84,7 @@ test('Shipped fishing fire supports all twelve evolution stages and preserves tr
 const near=(a,b,tol=.0001)=>assert(Math.abs(a-b)<tol,`${a} != ${b}`);
 const clone = value => JSON.parse(JSON.stringify(value));
 
-test('Booth fishing stages are bullets, a full-screen laser, a piercing shot, then a modest blast',()=>{
+test('Booth fishing stages are bullets, a full-screen laser, a piercing shot, then a wide blast',()=>{
  const g=harness();g.click('start');g.installEvolution();
  const aim=weapon=>{
   g.run(`journey={run:{weapon:${weapon},rate:0,trajectory:0,wave:${weapon+1},phase:'play',scene:'booth'},text:zh=>zh,name:()=>'n'};bullets=[];beams=[];fish=[];angle=-Math.PI/2;fire()`);
@@ -103,7 +103,7 @@ test('Booth fishing stages are bullets, a full-screen laser, a piercing shot, th
  assert(pierce.bullets[0].pierce>=8&&pierce.bullets[0].r>=14&&pierce.bullets[0].blast===0);
  const boom=aim(3);
  assert.equal(boom.cannon.name,'爆裂彈');assert.equal(boom.bullets.length,1);
- assert(boom.bullets[0].blast>0&&boom.bullets[0].blast<=40);
+ assert(boom.bullets[0].blast>=84&&boom.bullets[0].blast<=112);
  const kept=weapon=>{
   g.run(`journey={run:{weapon:${weapon},rate:0,trajectory:2,wave:1,phase:'play',scene:'booth'},text:zh=>zh,name:()=>'n'};bullets=[];beams=[];fish=[];angle=-Math.PI/2;fire()`);
   const cannon=g.run('currentCannon()');
@@ -241,7 +241,7 @@ for(const enabled of [true,false])test(`Manual settlement is the only finish and
 
 test('Keyboard shortcuts trigger the remaining skills',()=>{
   const g=harness();g.click('start');g.run('level=12;updateHud()');
-  for(const key of ['2','3','5','6'])g.emit('window','keydown',{key,repeat:false});
+  for(const key of ['1','2','3','4'])g.emit('window','keydown',{key,repeat:false});
   for(const id of ['freeze','rapid','bomb','lure'])assert(g.run(`${id}Cooldown`)>0,id+' responds to key');
   g.emit('window','keydown',{key:'q',repeat:false});g.emit('window','keydown',{key:'1',repeat:false});
   assert.equal(g.run('typeof useNet'),'undefined');
@@ -355,8 +355,47 @@ test('Low frame rates preserve swim speed and trajectory for all ten fish',()=>{
 
 test('Letter shortcuts trigger freeze, rapid fire, bomb and lure',()=>{
   const g=harness();g.click('start');g.run('level=12;updateHud()');
-  for(const key of ['w','e','t','y'])g.emit('window','keydown',{key,repeat:false});
+  for(const key of ['q','w','e','r'])g.emit('window','keydown',{key,repeat:false});
   for(const id of ['freeze','rapid','bomb','lure'])assert(g.run(`${id}Cooldown`)>0,id+' responds to its letter shortcut');
+});
+
+test('Shark and whale armour takes longer to defeat early, and both patrol within phone width',()=>{
+ const g=harness(390,600);g.click('start');g.installEvolution();
+ for(const type of ['shark','whale']){
+  const times=[];
+  for(let wave=1;wave<=4;wave++){
+   g.run(`journey={run:{random:()=>.5,wave:${wave},weapon:${wave-1},rate:0,trajectory:0,scene:'booth'},text:zh=>zh,name:()=>'QA'};fish=[];spawn('${type}',{x:195,y:250});`);
+   const p=g.run('currentCannon()');const initial=g.run('fish[0].hp');g.run('damage(fish[0],10)');
+   near(initial-g.run('fish[0].hp'),wave<3?5:10);
+   const multiplier=wave===2?1.3:1;
+   times.push(initial/(p.damage*multiplier/p.interval*(wave<3?.5:1)));
+   for(let i=0;i<1200;i++)g.run('moveFish(1/60)');
+   assert.equal(g.run('fish.length'),1);assert(g.run('fish[0].x>0&&fish[0].x<w'));
+  }
+  assert(times[0]>12&&times[1]>8,`${type} early: ${times}`);
+  assert(times[2]<times[1]&&times[3]<times[2],`${type} gets approachable: ${times}`);
+  assert(times[2]<10&&times[3]<9,`${type} late fights fit a round: ${times}`);
+ }
+});
+
+test('Every round schedules its named boss, never duplicates a live boss and replaces it after a catch',()=>{
+ const g=harness();g.click('start');g.installEvolution();
+ for(const wave of [1,2,3,4]){
+  g.run(`journey={run:{random:()=>.5,wave:${wave},weapon:${wave-1},scene:'booth'},text:zh=>zh,name:()=>'QA'};fish=[];spawnRoundBoss();`);
+  assert.equal(g.run('fish[0].type'),wave%2?'shark':'whale');
+  assert.equal(g.run('spawnRoundBoss()'),false);assert.equal(g.run('fish.length'),1);
+  g.run('fish[0].dead=true');assert.equal(g.run('spawnRoundBoss()'),true);
+ }
+});
+
+for(const width of [390,1000])test(`Round-four explosion damages nearby fish once and displays the actual radius at ${width}px`,()=>{
+ const g=harness(width,600);g.click('start');g.installEvolution();
+ g.run("journey={run:{random:()=>.5,wave:4,weapon:3,rate:0,trajectory:0,scene:'booth'},best:()=>0,text:zh=>zh,name:()=>'QA',step:()=>{}};fish=[];bullets=[];rings=[];hudClock=100;spawnClock=100;nextBossAt=Infinity;angle=-Math.PI/2;aim={x:w/2,y:250};");
+ g.run("for(const dx of [0,70,190]){spawn('coin',{x:w/2+dx,y:250,speed:0});const f=fish.at(-1);f.hp=f.maxHp=1000;f.phase=0;}fire()");
+ const damage=g.run('bullets[0].damage');g.advance(.55);
+ const hp=g.run('fish.map(f=>f.hp)');near(hp[0],1000-damage);near(hp[1],1000-damage*.6);near(hp[2],1000);
+ const blast=g.run('rings.find(r=>r.blast)');assert(blast);assert.equal(blast.end,g.run('currentCannon().blast'));
+ g.advance(.2);near(g.run('fish[1].hp'),hp[1]);
 });
 
 // Rendering, sound output, and touch interaction are additionally checked in-browser.

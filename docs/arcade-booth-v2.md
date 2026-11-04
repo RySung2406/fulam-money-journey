@@ -1,5 +1,8 @@
 # FuLam arcade and Booth — v6 survival choices and taller welcome
 
+Latest Catch/Wings controls and balance: [four-round combat update](combat-balance-2026-11-04.md).
+The historical rules below are superseded where that update and the later four-round notes differ.
+
 Requested by Ryan on 2026-11-04. Updated after Ryan’s feedback on cumulative weapon upgrades, enemy pressure, clearer Slice abilities and meaningful round scenes. Three high-score games share two public difficulties (Standard and Challenge) and a separate Booth preset. `/booth/` links to each activity. `/fleet/` remains compatible with existing links and now hosts Wealth Wings, an aircraft shooter.
 
 ## Rules and storage

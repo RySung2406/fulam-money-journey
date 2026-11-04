@@ -72,6 +72,7 @@ kbd{font:700 11px/1.2 ui-monospace,monospace;border:1px solid #a6cfcf66;border-r
 .language-switch,.modal-language{border:1px solid #9be8cf77;background:#0d343b;color:#e7f8e7;border-radius:9px;padding:7px 11px;font-size:12px;font-weight:700;min-height:36px;white-space:nowrap}.modal-language{display:block;margin:0 0 8px auto;min-height:32px}.card{position:relative}@media(max-width:750px){.language-switch{padding:5px 7px;font-size:11px}.modal-language{min-height:28px;padding:4px 8px;margin-bottom:4px}}
 
 .game-language{display:none;pointer-events:auto}@media(max-height:600px) and (orientation:landscape){.game-language{display:inline-block}}
+.ability kbd{width:auto;min-width:32px;padding:2px 4px;font-size:11px}
 /* COMPACT_STYLE */
 </style>
 </head>
@@ -81,7 +82,7 @@ kbd{font:700 11px/1.2 ui-monospace,monospace;border:1px solid #a6cfcf66;border-r
 <div class="heading"><div><small>CATCH A LITTLE FORTUNE</small><h1>捕財達人</h1></div><span class="tag"><i></i>投資海洋・無限挑戰</span></div>
 <div class="play-console">
 <main class="scene" id="scene">
-<canvas id="game" tabindex="0" aria-label="捕財遊戲畫面。按住滑鼠或手指連射；鍵盤左右方向瞄準，空白鍵發射，W 冰凍，E 狂熱連射，T 深海炸彈，Y 黃金誘餌，U 升級，P 暫停。"></canvas>
+<canvas id="game" tabindex="0" aria-label="捕財遊戲畫面。按住滑鼠或手指連射；鍵盤左右方向瞄準，空白鍵發射，Q 冰凍，W 狂熱連射，E 深海炸彈，R 黃金誘餌，U 升級，P 暫停。"></canvas>
 <div class="freeze-veil" id="freezeVeil"></div>
 <div class="hud"><div><div class="score-label">本局捕財</div><div class="score-value" id="score">0</div><div class="score-sub">可用金幣 <span id="wallet">0</span> · 捕獲 <span id="caught">0</span></div></div><div class="hud-right"><button type="button" id="languageGame" class="language-switch game-language" aria-label="Switch to English">English</button><button class="icon-btn game-tool" id="soundGame" aria-label="開關音效"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m11 5-6 4H2v6h3l6 4Z M16 8a6 6 0 0 1 0 8"/></svg></button><button class="icon-btn game-tool" id="screenGame" aria-label="全螢幕"><!-- ICON:maximize --></button><div class="timer" id="timerBox"><b id="timer">∞</b><small>無限暢玩</small></div><button class="icon-btn hud-pause" id="pause" aria-label="暫停遊戲，鍵盤 P" title="暫停 · P" disabled><svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" stroke-width="3"/></svg><kbd aria-hidden="true">P</kbd></button></div></div>
 <div class="combo" id="combo"><b id="comboNum">3 COMBO</b><small id="comboSub">連捕加成 ×1.1</small></div><div class="event" id="event" role="status"></div>
@@ -94,15 +95,15 @@ kbd{font:700 11px/1.2 ui-monospace,monospace;border:1px solid #a6cfcf66;border-r
     <button class="upgrade" id="upgrade" type="button" aria-label="升級炮台，鍵盤 U" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 11 7-7 7 7M5 18l7-7 7 7"/></svg><span><b><span id="upgradeTitle">升級炮台</span> <kbd aria-hidden="true">U</kbd></b><small id="upgradePrice">80 金幣 → Lv.2</small></span></button>
   </div>
   <div class="abilities" role="group" aria-label="捕財道具">
-<button class="ability ability-freeze" id="freeze" type="button" disabled aria-label="冰凍技能，鍵盤 W 或 2" aria-describedby="freezeCount"><span class="ability-symbol"><!-- ICON:snowflake --><kbd aria-hidden="true">W</kbd></span><span>冰凍</span><small id="freezeCount">慢速 5 秒</small></button>
-<button class="ability ability-rapid" id="rapid" type="button" disabled aria-label="狂熱連射技能，鍵盤 E 或 3" aria-describedby="rapidCount"><span class="ability-symbol"><!-- ICON:zap --><kbd aria-hidden="true">E</kbd></span><span>狂熱連射</span><small id="rapidCount">Lv.3 解鎖</small></button>
-<button class="ability ability-bomb" id="bomb" type="button" disabled aria-label="深海炸彈技能，鍵盤 T 或 5" aria-describedby="bombCount"><span class="ability-symbol"><!-- ICON:bomb --><kbd aria-hidden="true">T</kbd></span><span>深海炸彈</span><small id="bombCount">Lv.7 解鎖</small></button>
-<button class="ability ability-lure" id="lure" type="button" disabled aria-label="黃金誘餌技能，鍵盤 Y 或 6" aria-describedby="lureCount"><span class="ability-symbol"><!-- ICON:fish --><kbd aria-hidden="true">Y</kbd></span><span>黃金誘餌</span><small id="lureCount">Lv.9 解鎖</small></button>
+<button class="ability ability-freeze" id="freeze" type="button" disabled aria-label="冰凍技能，鍵盤 Q 或 1" aria-describedby="freezeCount"><span class="ability-symbol"><!-- ICON:snowflake --><kbd aria-hidden="true">Q/1</kbd></span><span>冰凍</span><small id="freezeCount">慢速 5 秒</small></button>
+<button class="ability ability-rapid" id="rapid" type="button" disabled aria-label="狂熱連射技能，鍵盤 W 或 2" aria-describedby="rapidCount"><span class="ability-symbol"><!-- ICON:zap --><kbd aria-hidden="true">W/2</kbd></span><span>狂熱連射</span><small id="rapidCount">Lv.3 解鎖</small></button>
+<button class="ability ability-bomb" id="bomb" type="button" disabled aria-label="深海炸彈技能，鍵盤 E 或 3" aria-describedby="bombCount"><span class="ability-symbol"><!-- ICON:bomb --><kbd aria-hidden="true">E/3</kbd></span><span>深海炸彈</span><small id="bombCount">Lv.7 解鎖</small></button>
+<button class="ability ability-lure" id="lure" type="button" disabled aria-label="黃金誘餌技能，鍵盤 R 或 4" aria-describedby="lureCount"><span class="ability-symbol"><!-- ICON:fish --><kbd aria-hidden="true">R/4</kbd></span><span>黃金誘餌</span><small id="lureCount">Lv.9 解鎖</small></button>
   </div>
 </section>
 </div>
 
-<footer class="footer"><div class="keys"><a class="back-link" href="../#play">← 返回遊戲區</a><span class="key"><span class="desktop-hint">長按滑鼠</span><span class="touch-hint">長按畫面</span> · 連續發射</span><span class="desktop-hint">W E T Y 道具 · U 升級 · P 暫停</span><span class="touch-hint">捕財 · 連擊 · 升級</span></div><div>純遊戲積分 <span aria-hidden="true">·</span> <button id="credits">製作與授權</button></div></footer>
+<footer class="footer"><div class="keys"><a class="back-link" href="../#play">← 返回遊戲區</a><span class="key"><span class="desktop-hint">長按滑鼠</span><span class="touch-hint">長按畫面</span> · 連續發射</span><span class="desktop-hint">Q W E R / 1–4 道具 · U 升級 · P 暫停</span><span class="touch-hint">捕財 · 連擊 · 升級</span></div><div>純遊戲積分 <span aria-hidden="true">·</span> <button id="credits">製作與授權</button></div></footer>
 </div><div class="toast" id="toast" role="status"></div><div class="sr-only" id="live" aria-live="polite"></div>
 <!--ART-->
 <!--FORMATIONS-->

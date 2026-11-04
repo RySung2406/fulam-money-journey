@@ -7,6 +7,18 @@ const shared=fs.readFileSync(new URL('../sources/arcade/journey.js',import.meta.
 vm.runInContext(shared,context);
 vm.runInContext(fs.readFileSync(new URL('../sources/fleet/core.js',import.meta.url),'utf8'),context);
 const {Run,readBoard,saveBoard}=context.FuLamJourney,C=context.FleetCore;
+test('Combat results show score ranking and three short lessons without duplicate QR/share panels',()=>{
+ for(const game of ['fishing','fleet'])for(const lang of ['zh-Hant','en']){
+  const ui=new context.FuLamJourney.UI(game,()=>lang);
+  const html=ui.combatResult({rank:2,saved:true,board:[{score:300,wave:4},{score:200,wave:4},{score:100,wave:3}]});
+  assert(html.includes('#2'));assert.equal((html.match(/aria-current="true"/g)||[]).length,1);
+  assert(!html.includes('journey-qr'));assert(!html.includes('<details>'));
+  const lesson=html.match(/class="result-lesson">([^<]+)/)[1];assert.equal((lesson.match(lang==='en'?/\./g:/。/g)||[]).length,3);
+  const outside=ui.combatResult({rank:11,saved:false,board:[]});assert(outside.includes('<strong>10+</strong>'));assert(!outside.includes('#11'));
+ }
+ assert(new Run('fleet','booth').key().includes('combat3'));
+ assert(!new Run('knife','booth').key().includes('combat3'));
+});
 const tick=(r,seconds,playing=true)=>{for(let i=0;i<Math.round(seconds*60);i++)r.tick(1/60,playing);};
 test('Each stage grants a weapon, then one other upgrade, and a new player starts fresh',()=>{
  for(const game of ['fleet','fishing','knife']){
@@ -24,14 +36,14 @@ test('Aircraft armour upgrades change the real cap and repair amount without los
  for(const [mode,base] of [['standard',100],['booth',88],['storm',75]]){
   const s=C.createState({arcade:true,mode,seed:1});s.hero.hp=20;
   C.applyRoundUpgrade(s,{weapon:3,rate:2,trajectory:1,life:1,protection:0},'life');
-  assert.equal(s.hero.maxHp,base+20);assert.equal(s.hero.hp,67);assert.equal(s.evolution.weapon,3);
+  assert.equal(s.hero.maxHp,base+20);assert.equal(s.hero.hp,mode==='booth'?75:67);assert.equal(s.evolution.weapon,3);
   s.hero.hp=s.hero.maxHp-1;s.cash=100;C.buy(s,'repair');assert.equal(s.hero.hp,s.hero.maxHp);
  }
 });
 test('Protection reduces actual enemy projectile damage and extends shield within a bounded duration',()=>{
  const lost=[];
  for(const protection of [0,1,5]){
-  const s=C.createState({arcade:true,mode:'booth',seed:1});s.evolution.protection=protection;s.invulnerable=0;s.spawnTime=s.fireTime=100;
+  const s=C.createState({arcade:true,mode:'booth',seed:1});s.evolution.protection=protection;s.wave=4;s.invulnerable=0;s.spawnTime=s.fireTime=100;
   C.fireTorpedo(s,{x:s.hero.position.x,y:s.hero.position.y},0,C.ENEMY,{damage:20,speed:0});C.maintainWorld(s);C.tick(s,.016);
   lost.push(88-s.hero.hp);
   assert(Math.abs((88-s.hero.hp)-20/(1+.15*protection))<1e-9);
@@ -54,7 +66,7 @@ test('Enemy pressure rises after upgrades; bosses remain multi-second fights eve
   const s=C.createState({arcade:true,mode:'booth',seed:1});s.wave=wave;
   const boss=C.spawnEnemy(s,'boss'),p=context.FuLamJourney.weaponProfile('fleet',{weapon:wave-1});
   const idealSeconds=boss.maxHp/(p.damage*1.3/p.interval);
-  assert(idealSeconds>=9,`wave ${wave}: ${idealSeconds}s`);assert(boss.maxHp>previous);previous=boss.maxHp;
+  assert(idealSeconds>=(wave<=4?6:9),`wave ${wave}: ${idealSeconds}s`);assert(boss.maxHp>previous);previous=boss.maxHp;
   const enemies=Array.from({length:8},()=>C.spawnEnemy(s,'fee'));assert(enemies.some(e=>e.elite));assert(enemies.find(e=>e.elite).maxHp>enemies.find(e=>!e.elite).maxHp);
  }
 });
@@ -130,7 +142,7 @@ test('A Booth jet becomes a laser once it upgrades, while a public jet keeps the
  assert(upgraded.every(e=>e.ray.end.y<0&&e.ray.start.y>C.H*.5&&span(e)>C.H*.7));
  assert(Math.abs(upgraded[0].position.r-upgraded[1].position.r)<.02);
  assert(Math.abs(upgraded[0].ray.start.x-upgraded[1].ray.start.x)>12);
- const early=fire('booth',0);assert.equal(early.length,1);assert(early.every(e=>e.style==='shell'&&e.blast===0&&!e.ray&&e.damage<10));
+ const early=fire('booth',0);assert.equal(early.length,1);assert(early.every(e=>e.style==='shell'&&e.blast===0&&!e.ray&&e.damage>=12&&e.damage<=13));
  const pub=fire('standard',1);assert(pub.length>=1);assert(pub.every(e=>e.style==='shell'));
  const bomb=fire('booth',2);assert.equal(bomb.length,1);assert(bomb.every(e=>e.style==='bomb'&&e.blast>0&&e.blast<=22&&!e.ray));
  const plane=fire('booth',3);assert.equal(plane.length,1);assert(plane.every(e=>e.style==='missile'&&e.blast>0&&e.blast<=28));
@@ -149,24 +161,33 @@ test('Paid aircraft upgrades add real damage without spending score',()=>{
  assert(C.buy(s,'weapon'));assert.equal(s.power,1.18);assert.equal(s.paidPower,.18);assert.equal(s.score,1234);
  for(let i=0;i<4;i++)C.tick(s,.05);assert(s.entities.filter(e=>e.type==='torpedo').every(e=>Math.abs(e.damage-16*1.18)<1e-9));
 });
-test('Aircraft boss second phase emits a wider, bounded pattern',()=>{
- for(const [health,count] of [[1,7],[.4,11]]){const s=C.createState({arcade:true,seed:1});s.spawnTime=100;s.fireTime=100;const boss=C.spawnEnemy(s,'boss');C.maintainWorld(s);boss.position.y=100;boss.hp=boss.maxHp*health;boss.strategy.remainingBeforeAttack=0;C.tick(s,.016);assert.equal(s.entities.filter(e=>e.type==='torpedo'&&e.collision.group===C.ENEMY).length,count);}
+test('Aircraft boss warns first, then fires a wider second phase with a centre gap',()=>{
+ for(const [health,count] of [[1,6],[.4,8]]){
+  const s=C.createState({arcade:true,seed:1});s.spawnTime=100;s.fireTime=100;
+  const boss=C.spawnEnemy(s,'boss');C.maintainWorld(s);boss.position.y=100;boss.hp=boss.maxHp*health;boss.strategy.remainingBeforeAttack=0;
+  C.tick(s,1/60);assert(boss.attack);assert.equal(s.entities.filter(e=>e.type==='torpedo').length,0);
+  const angles=[...boss.attack.angles];
+  for(let i=0;i<58;i++)C.tick(s,1/60);
+  const bullets=s.entities.filter(e=>e.type==='torpedo'&&e.collision.group===C.ENEMY);
+  assert.equal(bullets.length,count);assert.deepEqual(Array.from(bullets,e=>e.position.r),angles);
+  assert(2*160*Math.sin((angles[count/2]-angles[count/2-1])/2)>s.hero.collision.radius*2+9.6+16);
+ }
 });
-test('Booth aircraft armour, enemies, bullets and spawn interval stay between the public difficulties',()=>{
- const between=(a,b,c)=>assert(a<b&&b<c,`${a} < ${b} < ${c}`);
+test('Aircraft difficulty keeps paced spawns and caps projectile speed, including late waves',()=>{
  for(const wave of [1,3,6,12])for(const kind of Object.keys(C.SPECS)){
   const rows=['standard','booth','storm'].map(mode=>{
    const s=C.createState({arcade:true,mode,seed:7});s.wave=wave;s.bossSpawned=true;s.spawnTime=0;s.fireTime=100;
    const enemy=C.spawnEnemy(s,kind);C.maintainWorld(s);enemy.position.y=100;enemy.strategy.remainingBeforeAttack=0;
-   C.tick(s,.016);
+   C.tick(s,1/60);const interval=s.spawnTime;s.spawnTime=100;assert(enemy.attack);
+   for(let i=0;i<58;i++)C.tick(s,1/60);
    const bullet=s.entities.find(e=>e.type==='torpedo'&&e.collision.group===C.ENEMY);
-   assert(bullet,`${mode} ${kind} fired`);
-   return {armour:s.hero.maxHp,hp:enemy.maxHp,speed:enemy.velocity.speed,bullet:bullet.velocity.speed,interval:s.spawnTime};
+   assert(bullet,`${mode} ${kind} fired after warning`);assert.equal(bullet.homing,0);assert(bullet.velocity.speed<=145);
+   return {armour:s.hero.maxHp,hp:enemy.maxHp,speed:enemy.velocity.speed,bullet:bullet.velocity.speed,interval};
   });
-  between(rows[2].armour,rows[1].armour,rows[0].armour);
-  between(rows[0].hp,rows[2].hp,rows[1].hp);
-  for(const key of ['speed','bullet'])between(...rows.map(r=>r[key]));
-  between(rows[1].interval,rows[2].interval,rows[0].interval);
+  assert(rows[2].armour<rows[1].armour&&rows[1].armour<rows[0].armour);
+  assert(rows[0].hp<rows[1].hp);assert(rows[0].speed<rows[1].speed&&rows[1].speed<rows[2].speed);
+  assert(rows[0].bullet<=rows[1].bullet&&rows[1].bullet<=rows[2].bullet);
+  assert(rows[2].interval<rows[1].interval&&rows[1].interval<rows[0].interval);
  }
 });
 test('Published shared files exactly match the authored runtime',()=>{
