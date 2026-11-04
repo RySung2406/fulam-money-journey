@@ -24,5 +24,11 @@ test('round 2 and 4 strengthen enemy armour, spawn faster and round 4 has a boss
 test('round two lasers do less damage than the prior balance',()=>{
  const s=C.createState({arcade:true,mode:'booth',seed:1});s.wave=2;s.evolution.weapon=1;s.spawnTime=100;s.fireTime=0;C.tick(s,.05);
  const beams=s.entities.filter(e=>e.type==='torpedo'&&e.ray);assert(beams.length>0);
- const profile=ctx.FuLamJourney.weaponProfile('fleet',s.evolution);assert(beams.every(e=>Math.abs(e.damage-profile.damage*.8*.72*.8)<1e-8));
+ const profile=ctx.FuLamJourney.weaponProfile('fleet',s.evolution);assert(beams.every(e=>Math.abs(e.damage-profile.damage*.8*.72*.65)<1e-8));
+});
+
+test('round two increases spawn rate by 15 percent and introduces rumour aircraft',()=>{
+ const s=C.createState({arcade:true,mode:'booth',seed:3});s.wave=2;s.fireTime=100;s.spawnTime=0;C.tick(s,.05);
+ const expected=Math.max(.72,1.25-.12)*.88/1.15/1.12-.05;assert(Math.abs(s.spawnTime-expected)<1e-8);
+ const kinds=[];for(let i=0;i<30;i++){s.entities=[];s.raised=[];s.spawnTime=0;C.tick(s,.05);kinds.push(...s.entities.filter(e=>e.type==='ship').map(e=>e.kind));}assert(kinds.includes('rumor'));
 });

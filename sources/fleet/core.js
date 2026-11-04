@@ -47,6 +47,7 @@
     debt: { hp: 82, radius: 23, speed: 25, value: 26, attack: 3.3 },
     trap: { hp: 46, radius: 18, speed: 38, value: 20, attack: 3.4 },
     myth: { hp: 38, radius: 16, speed: 53, value: 18, attack: 3.1 },
+    rumor: { hp: 28, radius: 14, speed: 48, value: 16, attack: 3.6 },
     boss: { hp: 470, radius: 43, speed: 28, value: 130, attack: 1.7 }
   };
   const MAX = { weapon: 5, escort: 3, reserve: 3 };
@@ -59,7 +60,7 @@
   function createState({ seed = Date.now(), mode = 'standard', arcade = false } = {}) {
     mode = Object.hasOwn(MODE_RULES, mode) ? mode : 'standard';
     const state = {
-      arcade, evolution:{weapon:0,rate:0,trajectory:0,life:0,protection:0}, weaponKind: 0, power: 1, paidPower: 0, spawnCount:0,
+      arcade, evolution:{weapon:0,rate:0,trajectory:0,life:0,protection:0}, weaponKind: 0, power: 1, paidPower: 0, spawnCount:0, roundTwoSpawns:0,
       mode, random: rng(seed), time: 0, wave: 1, waveKills: 0,
       goal: 8, kills: 0, score: 0, cash: 35, income: 0, dividend: 0, combo: 0, comboTime: 0,
       weapon: 1, escort: 0, reserve: 0, shield: 0, shieldCooldown: 0, invulnerable: 1.5,
@@ -146,7 +147,7 @@
       const traj=Math.max(0,s.evolution.trajectory||0);
       const fan=(base,step)=>{const count=Math.min(7,base+traj);return Array.from({length:count},(_,i)=>count<=1?0:(i-(count-1)/2)*(count===2?step:.1));};
       const forms={bullet:{style:'shell',spread:fan(1,.1),radius:3.6,color:'#ffe39b',blast:0,pierce:0,speed:p.speed},laser:{style:'beam',count:Math.min(7,2+traj),radius:2.8,color:'#8cf4ff',blast:0,pierce:24,speed:0},bomb:{style:'bomb',spread:fan(1,.12),radius:6.2,color:'#ffb07a',blast:18,pierce:0,speed:480},plane:{style:'missile',spread:fan(1,.1),radius:4.6,color:'#ffd27a',blast:24,pierce:0,speed:640}};
-      if(form){const spec=forms[form];if(form==='laser'){const n=spec.count,gap=18;for(let i=0;i<n;i++){const from={x:s.hero.position.x+(i-(n-1)/2)*gap,y:s.hero.position.y-26},aim=-Math.PI/2;fireTorpedo(s,from,aim,FRIEND,{damage:p.damage*(1+s.paidPower)*hurt*.72*.8,speed:0,radius:spec.radius,homing:0,pierce:spec.pierce,style:spec.style,color:spec.color,blast:0,chain:0,ray:screenRay(from.x,from.y,aim)});}}else for(const off of spec.spread){const aim=-Math.PI/2+off,from={x:s.hero.position.x,y:s.hero.position.y-26};fireTorpedo(s,from,aim,FRIEND,{damage:p.damage*(1+s.paidPower)*hurt*.72*(off===0?1:.75),speed:spec.speed,radius:spec.radius,homing:0,pierce:spec.pierce,style:spec.style,color:spec.color,blast:spec.blast,chain:0,ray:null});}}
+      if(form){const spec=forms[form];if(form==='laser'){const n=spec.count,gap=18;for(let i=0;i<n;i++){const from={x:s.hero.position.x+(i-(n-1)/2)*gap,y:s.hero.position.y-26},aim=-Math.PI/2;fireTorpedo(s,from,aim,FRIEND,{damage:p.damage*(1+s.paidPower)*hurt*.72*.65,speed:0,radius:spec.radius,homing:0,pierce:spec.pierce,style:spec.style,color:spec.color,blast:0,chain:0,ray:screenRay(from.x,from.y,aim)});}}else for(const off of spec.spread){const aim=-Math.PI/2+off,from={x:s.hero.position.x,y:s.hero.position.y-26};fireTorpedo(s,from,aim,FRIEND,{damage:p.damage*(1+s.paidPower)*hurt*.72*(off===0?1:.75),speed:spec.speed,radius:spec.radius,homing:0,pierce:spec.pierce,style:spec.style,color:spec.color,blast:spec.blast,chain:0,ray:null});}}
       else {const style=p.kind==='orb'?'orb':p.kind==='beam'?'beam':p.kind==='missile'?'missile':p.kind==='arc'?'arc':'shell';for(const off of p.spread)fireTorpedo(s,{x:s.hero.position.x,y:s.hero.position.y-26},-Math.PI/2+off,FRIEND,{damage:p.damage*(1+s.paidPower)*.72*(p.count===2?.65:off!==0?.55:1),speed:p.speed,radius:(p.kind==='orb'?7:p.kind==='missile'?8:3.5)*reach,homing:p.homing,pierce:p.pierce,style,color:p.color,blast:(p.blast||(booth?42:0))*reach,chain:p.chain});}
       s.shots++;emit(s,'fire');return;
     }
@@ -302,10 +303,11 @@
     s.spawnTime -= dt;
     if (s.spawnTime <= 0) {
       const spawnBase=Math.max(0.42, 1.5 - s.wave * 0.1);
-      s.spawnTime += s.arcade?Math.max(.72,1.25-(s.wave-1)*.12)*(s.wave===2||s.wave===4?.88:1)/MODE_RULES[s.mode].enemy:(s.mode==='booth'?spawnBase*0.55:spawnBase)/MODE_RULES[s.mode].enemy;
+      s.spawnTime += s.arcade?Math.max(.72,1.25-(s.wave-1)*.12)*(s.wave===2?.88/1.15:s.wave===4?.88:1)/MODE_RULES[s.mode].enemy:(s.mode==='booth'?spawnBase*0.55:spawnBase)/MODE_RULES[s.mode].enemy;
       if (ships.length < (s.arcade?Math.min(12,4+s.wave+(s.wave===2||s.wave===4?2:0)):s.mode==='booth'?Math.min(22, 8 + s.wave * 3):Math.min(14, 4 + s.wave * 2))) {
         const types = s.wave === 1 ? ['fee', 'fee', 'scam'] : s.wave === 2 ? ['fee', 'scam', 'inflation', 'trap', 'myth'] : ['fee', 'scam', 'inflation', 'debt', 'trap', 'myth'];
-        spawnEnemy(s, types[Math.floor(s.random() * types.length)]);
+        const selected=types[Math.floor(s.random() * types.length)];
+        spawnEnemy(s, s.arcade&&s.wave===2&&++s.roundTwoSpawns%6===0?'rumor':selected);
       }
     }
     for (const e of s.entities) {
