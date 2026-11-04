@@ -51,7 +51,7 @@
   const COSTS = { weapon: [0, 45, 85, 145, 220], escort: [65, 120, 190], reserve: [50, 90, 140] };
   const MODE_RULES = {
     standard: { armour: 100, enemy: 1, bullet: 1 },
-    booth: { armour: 88, enemy: 1.1, bullet: 1.08 },
+    booth: { armour: 88, enemy: 1.12, bullet: 1.12 },
     storm: { armour: 75, enemy: 1.2, bullet: 1.16 }
   };
   function createState({ seed = Date.now(), mode = 'standard', arcade = false } = {}) {

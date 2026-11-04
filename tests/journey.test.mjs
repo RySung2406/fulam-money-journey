@@ -67,7 +67,7 @@ test('Every Booth game forces intermediate difficulty and a reproducible seed; p
   assert.deepEqual(Array.from({length:30},()=>a.random()),Array.from({length:30},()=>b.random()));
   assert.equal(new Run(game,'web','challenge').difficulty,'challenge');
   assert.equal(new Run(game,'web','intermediate').difficulty,'standard');
-  assert.notEqual(a.key(),a.key().replace('booth-v6','booth-v5'));
+  assert.notEqual(a.key(),a.key().replace('booth-v7','booth-v6'));
  }
 });
 test('Thirty active seconds opens one choice and freezes the active play clock',()=>{
@@ -86,7 +86,9 @@ test('A paused public run cannot advance rounds or time out, even after an hour'
  const r=new Run('knife');r.tick(3600,false);assert.equal(r.phase,'play');assert.equal(r.active,0);assert.equal(r.wave,1);
 });
 test('Booth wall time expires through pause and upgrade, exactly once',()=>{
- for(const inChoice of [false,true]){const r=new Run('fleet','booth');if(inChoice)tick(r,30.1);r.tick(180-r.total,false);assert.equal(r.phase,'over');assert.equal(r.reason,'time');assert.equal(r.total,180);assert.equal(r.finish('defeat'),false);assert.equal(r.reason,'time');assert.equal(r.tick(10),null);assert(!r.choose('weapon'));}
+ for(const inChoice of [false,true]){const r=new Run('fleet','booth');if(inChoice)tick(r,48.1);r.tick(180-r.total,false);assert.equal(r.phase,'over');assert.equal(r.reason,'time');assert.equal(r.total,180);assert.equal(r.finish('defeat'),false);assert.equal(r.reason,'time');assert.equal(r.tick(10),null);assert(!r.choose('weapon'));}
+ const paced=new Run('fleet','booth');tick(paced,30);assert.equal(paced.phase,'play');tick(paced,18.1);assert.equal(paced.phase,'choice');
+ const slice=new Run('knife','booth');tick(slice,30);assert.equal(slice.phase,'play');tick(slice,18.1);assert.equal(slice.phase,'choice');
 });
 test('Public challenges continue beyond six rounds with bounded choice history',()=>{
  const r=new Run('fleet','web','challenge');for(let i=0;i<110;i++){tick(r,30.1);assert(r.choose('weapon'));}assert.equal(r.wave,111);assert.equal(r.phase,'play');assert.equal(r.choices.length,100);

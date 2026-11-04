@@ -131,14 +131,14 @@ modal.addEventListener('close', () => {
  }
 });
 function about() {
- if(journey){showModal(journey.text('逐關挑戰，練習理財判斷。','Stage by stage, practise money decisions.'),'<p>'+journey.text('每關 20 個選項，由理財工具開始，依次練習投資、保險、借貸與查證。完成一關後選擇刀具強化，繼續挑戰最高分。','Each stage has 20 choices. Start with money tools, then investing, insurance, borrowing and checking claims. Choose an upgrade after each stage and chase your best score.')+'</p><p>'+journey.text('自由遊玩有標準及挑戰兩個難度；Booth 固定標準，最多 180 秒。紀錄只存在本機，遊戲分數不是前後測成績。','Free play has Standard and Challenge difficulties. Booth uses Standard rules for up to 180 seconds. Scores stay on this device and are not assessment results.')+'</p><a href="./OPEN_SOURCE.md">'+journey.text('開源來源與授權','Open-source credits')+'</a>','<button class="primary" id="close-modal">'+journey.text('知道了','Got it')+'</button>');$('#close-modal').onclick=closeModal;return;}
+ if(journey){showModal(journey.text('逐關挑戰，練習理財判斷。','Stage by stage, practise money decisions.'),'<p>'+journey.text('每關 20 個選項，由理財工具開始，依次練習投資、保險、借貸與查證。完成一關後選擇刀具強化，繼續挑戰最高分。','Each stage has 20 choices. Start with money tools, then investing, insurance, borrowing and checking claims. Choose an upgrade after each stage and chase your best score.')+'</p><p>'+journey.text('自由遊玩有標準及挑戰。Booth 節奏較快，最多 180 秒。紀錄只存在本機，遊戲分數不是前後測成績。','Free play has Standard and Challenge. Booth uses a quicker pace for up to 180 seconds. Scores stay on this device and are not assessment results.')+'</p><a href="./OPEN_SOURCE.md">'+journey.text('開源來源與授權','Open-source credits')+'</a>','<button class="primary" id="close-modal">'+journey.text('知道了','Got it')+'</button>');$('#close-modal').onclick=closeModal;return;}
 
  showModal('Every slice is a choice.', `<p>FuLam One Slice is The Money Journey’s finance arcade. Choose a topic and slice its correct money bags in a continuous stream.</p><p>Practice has no time limit. The sprint finishes after ${E.GAME_RULES.sprintTarget} correct slices, with ${E.GAME_RULES.wrongPenaltySeconds} seconds added for each wrong slice. Repeated bags count as new chances to answer.</p><p>No account is needed. Completed sprint bests stay on this device, separately for each topic and difficulty. There is no online leaderboard in this game.</p><p>Optional explanations and official resources are available after you finish. Your score reflects gameplay, not overall financial ability.</p><p><a href="./OPEN_SOURCE.md" target="_blank" rel="noopener noreferrer">Open-source credits and licences ↗</a></p>`, '<button class="primary" id="close-modal">Got it</button>');
  $('#close-modal').onclick = closeModal;
 }
 $('#about-button').onclick = about;
 function rules() {
- if(journey){showModal(journey.text('切對、連擊、升級','Slice, combo, upgrade'),'<p>'+journey.text('切正確選項得分，切錯扣心；累積漏切亦扣心。每關 20 個選項，完成後選擇刀刃加分、慢時延長或護心防錯。標準 5 心，挑戰 3 心。Booth 中等難度 4 心，速度介於標準與挑戰之間；180 秒含暫停及升級。','Correct choices score; wrong cuts and repeated misses cost hearts. Finish 20 choices per stage, then choose blade score, longer Focus or mistake guard. Standard: 5 hearts. Challenge: 3. Booth uses 4 hearts and an intermediate pace, for 180s including pauses and upgrades.')+'</p>','<button class="primary" id="close-modal">'+journey.text('知道了','Got it')+'</button>');$('#close-modal').onclick=closeModal;return;}
+ if(journey){showModal(journey.text('切對、連擊、升級','Slice, combo, upgrade'),'<p>'+journey.text('切正確選項得分，切錯扣心；累積漏切亦扣心。每關 20 個選項，完成後選擇刀刃加分、慢時延長或護心防錯。標準 6 心，認真玩可以行完五個主題。Booth 5 心，節奏接近挑戰但容錯多啲，180 秒一場。挑戰 3 心，袋最快，唔一定人人過到關。','Correct choices score; wrong cuts and repeated misses cost hearts. Standard gives 6 hearts, so a careful run can finish all five topics. Booth gives 5 hearts at a pace close to Challenge, for 180 seconds. Challenge uses 3 hearts and the fastest bags; not everyone will finish.')+'</p>','<button class="primary" id="close-modal">'+journey.text('知道了','Got it')+'</button>');$('#close-modal').onclick=closeModal;return;}
 
  showModal('Read. Choose. Slice.', `<ol><li><strong>Pick a topic.</strong> Its question stays visible throughout your run.</li><li><strong>Swipe through correct bags.</strong> Hold your mouse button or use your finger. Let wrong choices fall.</li><li><strong>Keep going.</strong> Bags arrive continuously in a shuffled order, with varied timing and flight paths.</li><li><strong>Choose your finish.</strong> Practice lasts until you finish. Sprint ends at ${E.GAME_RULES.sprintTarget} correct cuts; every wrong cut adds ${E.GAME_RULES.wrongPenaltySeconds} seconds.</li></ol><div class="rule-points"><span>Correct +100</span><span>Wrong −150</span><span>Combo bonus</span></div><p>Keyboard: Tab to an active bag, then press Enter or Space. A missed correct bag breaks your combo. Review explanations after your run, whenever you want.</p>`, `<button class="primary" id="close-modal">Got it ${icon('slice')}</button>`);
  $('#close-modal').onclick = closeModal;
@@ -304,7 +304,7 @@ function spawnIfReady() {
  if (!arena || phase !== 'playing' || paused || elapsed < nextSpawnAt) return;
  const available = Math.max(0, liveCap() - targets.filter(target => !target.hit).length);
  if (!available) return;
- const count = Math.min(available, journey?Math.max(0,20-roundSpawned):Infinity, Math.max(1, E.spawnGroupSize(available, roundRandom)));if(!count)return;
+ const count = Math.min(available, journey&&journey.scene!=='booth'?Math.max(0,20-roundSpawned):Infinity, Math.max(1, E.spawnGroupSize(available, roundRandom)));if(!count)return;
  const launches = E.createLaunches(count, mode, roundRandom);
  lastGroup = [];
  for (let index = 0; index < count; index++) {
@@ -363,7 +363,7 @@ function loop(now) {
  journey?.step(!paused);if(phase!=='playing')return;
  const frameDelta = Math.max(0, now - lastTime) / 1000;
  advanceClock(now);
- if (!paused) { focusTime=Math.max(0,focusTime-Math.min(frameDelta,.1));positionTargets();if(journey&&hearts<=0){journey.run.finish('hearts');finishSession(false);return;} if(journey&&roundResolved>=20&&journey.run.phase==='play'){journey.completeRound();}spawnIfReady(); drawTrail(now, Math.min(frameDelta, .05)); updateHUD(); }
+ if (!paused) { focusTime=Math.max(0,focusTime-Math.min(frameDelta,.1));positionTargets();if(journey&&hearts<=0){journey.run.finish('hearts');finishSession(false);return;} if(journey&&journey.scene!=='booth'&&roundResolved>=20&&journey.run.phase==='play'){journey.completeRound();}spawnIfReady(); drawTrail(now, Math.min(frameDelta, .05)); updateHUD(); }
  raf = requestAnimationFrame(loop);
 }
 function updateHUD() {
@@ -375,7 +375,7 @@ function updateHUD() {
  $('#missed-count').textContent = `${session.missed} missed`;
  $('#run-goal').textContent = playKind === 'sprint' ? `${session.correct} / ${E.GAME_RULES.sprintTarget} CORRECT` : 'NO TIME LIMIT';
  $('#run-clock').textContent = timeLabel(playKind === 'sprint' ? E.sprintTimeMs(elapsed, session.wrong) : Math.ceil(elapsed * 1000));
- if(journey?.run){$('#run-goal').textContent='♥ '+hearts+'/'+journey.sliceMaxHearts()+' · '+journey.text('護心 ','Guard ')+guardCharges;$('#run-clock').hidden=false;$('#run-clock').textContent=journey.scene==='booth'?Math.ceil(Math.max(0,180-journey.run.total))+'s':Math.floor(journey.run.active)+'s';$('.round-number').textContent=journey.text('第 '+journey.run.wave+' 關 · '+roundResolved+'/20','Stage '+journey.run.wave+' · '+roundResolved+'/20');if($('#knife-level'))$('#knife-level').textContent=journey.name(journey.run.weapon)+' Lv.'+(journey.run.weapon+1)+' · +'+(journey.run.weapon*25)+'%';if($('#knife-focus')){$('#knife-focus').disabled=paused||focusCharge<100;$('#knife-focus').textContent=journey.text('慢時 ','Focus ')+Math.floor(focusCharge)+'% · Q';}}
+ if(journey?.run){$('#run-goal').textContent='♥ '+hearts+'/'+journey.sliceMaxHearts()+' · '+journey.text('護心 ','Guard ')+guardCharges;$('#run-clock').hidden=false;$('#run-clock').textContent=journey.scene==='booth'?Math.ceil(Math.max(0,180-journey.run.total))+'s':Math.floor(journey.run.active)+'s';$('.round-number').textContent=journey.scene==='booth'?journey.text('第 '+journey.run.wave+' 關','Stage '+journey.run.wave):journey.text('第 '+journey.run.wave+' 關 · '+roundResolved+'/20','Stage '+journey.run.wave+' · '+roundResolved+'/20');if($('#knife-level'))$('#knife-level').textContent=journey.name(journey.run.weapon)+' Lv.'+(journey.run.weapon+1)+' · +'+(journey.run.weapon*25)+'%';if($('#knife-focus')){$('#knife-focus').disabled=paused||focusCharge<100;$('#knife-focus').textContent=journey.text('慢時 ','Focus ')+Math.floor(focusCharge)+'% · Q';}}
  $('#run-clock').title = playKind === 'sprint' ? `Includes ${session.wrong * E.GAME_RULES.wrongPenaltySeconds} seconds of wrong-slice penalties` : 'Time played';
 }
 function cutTarget(target) {
@@ -533,7 +533,7 @@ if(journey){
   roundSpawned=0;roundResolved=0;const initial=QUESTIONS.findIndex(q=>q.id===startTopic);question=QUESTIONS[(initial+r.wave-1)%QUESTIONS.length];
   optionDeck=E.createOptionDeck(question.options,roundRandom);for(const option of question.options)if(!optionStats.has(option.id))optionStats.set(option.id,{option,shown:0,correct:0,wrong:0,missed:0,avoided:0});
   $('.question-bar h1').textContent=question.question;$('.question-context').textContent=question.context;$('.question-bar .eyebrow').textContent=question.eyebrow;$('.round-number').textContent='ROUND '+r.wave+' · '+question.chapter;
-  nextSpawnAt=elapsed+2;lastTime=performance.now();paused=false;arena?.classList.remove('is-paused');resizeArena();updateHUD();
+  nextSpawnAt=elapsed+4;lastTime=performance.now();paused=false;arena?.classList.remove('is-paused');resizeArena();updateHUD();
  };
  journey.onEnd=()=>finishSession(false);
 }
