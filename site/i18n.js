@@ -12,7 +12,7 @@
   else if(external&&node.data!==info.last){info.original=node.data}
   const next=translate(info.original);info.last=next;if(node.data!==next)node.data=next;
  }
- const translatedAttributes=['aria-label','aria-valuetext','placeholder','title','content'];
+ const translatedAttributes=['aria-label','aria-valuetext','placeholder','title','alt','content'];
  function attribute(el,name,external=false){
   if(el.closest('[data-no-i18n]')||!el.hasAttribute(name)||(name==='content'&&!el.matches('meta[name=description]')))return;
   let map=attrs.get(el);if(!map){map={};attrs.set(el,map)}
