@@ -752,21 +752,25 @@ from (http://code.google.com/p/pyqrnative):
     if(s.arcade&&kind==='weapon'){s.paidPower+=.18;s.power+=.18;}
     emit(s, 'upgrade', { kind }); return true;
   }
+  function placeHero(s, x, y) {
+    s.hero.position.x = clamp(x, 22, W - 22);
+    s.hero.position.y = clamp(y, 48, H - 27);
+  }
   function tick(s, dt, input = {}) {
     if (!s.running || dt <= 0) return;
     // Fixed-step physics is driven by the renderer; ignore unreasonable callers.
     dt = Math.min(dt, 0.05); s.time += dt;
     for (const key of ['shield', 'shieldCooldown', 'invulnerable', 'comboTime']) s[key] = Math.max(0, s[key] - dt);
     if (s.comboTime === 0) s.combo = 0;
-    const h = s.hero.position; let dx = input.x || 0, dy = input.y || 0;
+    const h = s.hero.position;
     if (input.target) {
-      const tx = input.target.x - h.x, ty = input.target.y - h.y, d = Math.hypot(tx, ty);
-      const travel = s.hero.velocity.speed * dt;
-      if (d > 2) { dx = tx / Math.max(d, travel); dy = ty / Math.max(d, travel); }
+      // A finger or cursor is the destination this step, so a fast drag does not leave the jet chasing behind.
+      placeHero(s, input.target.x, input.target.y);
+    } else {
+      const dx = input.x || 0, dy = input.y || 0, length = Math.max(1, Math.hypot(dx, dy));
+      h.x = clamp(h.x + dx / length * s.hero.velocity.speed * dt, 22, W - 22);
+      h.y = clamp(h.y + dy / length * s.hero.velocity.speed * dt, 48, H - 27);
     }
-    const length = Math.max(1, Math.hypot(dx, dy));
-    h.x = clamp(h.x + dx / length * s.hero.velocity.speed * dt, 22, W - 22);
-    h.y = clamp(h.y + dy / length * s.hero.velocity.speed * dt, 48, H - 27);
     s.hero.echo = { ...h };
     s.fireTime -= dt; if (s.fireTime <= 0) { s.fireTime += (s.arcade ? (root.FuLamJourney?root.FuLamJourney.weaponProfile('fleet',s.evolution).interval:(s.weaponKind===3?.65:s.weaponKind===2?.42:s.weaponKind===1?.32:.20)) : Math.max(0.17, 0.34 - s.weapon * 0.025)); weaponFire(s); }
     s.escortTime -= dt; if (s.escortTime <= 0) { s.escortTime += s.escort === 3 ? 0.32 : 0.7; escortFire(s); }
@@ -848,7 +852,7 @@ from (http://code.google.com/p/pyqrnative):
     if (previous && previous.score >= current.score) return previous;
     return { score: Math.floor(current.score), wave: current.wave, kills: current.kills, mode: current.mode, version: 1 };
   }
-  root.FleetCore = { W, H, FRIEND, ENEMY, SPECS, MAX, createState, applyRoundUpgrade, tick, buy, upgradeCost, activateShield, shieldCost, spawnEnemy,
+  root.FleetCore = { W, H, FRIEND, ENEMY, SPECS, MAX, createState, applyRoundUpgrade, tick, placeHero, buy, upgradeCost, activateShield, shieldCost, spawnEnemy,
     maintainWorld, fireTorpedo, testCircleCollision, segmentCircleHit, angleDifference2DVectors, bestRecord, Position, Velocity, Collision, Strategy, Ttl, createEntity };
 })(typeof globalThis !== 'undefined' ? globalThis : this);
 </script>
@@ -1604,11 +1608,12 @@ from (http://code.google.com/p/pyqrnative):
   });
   window.addEventListener('keyup',e=>{if(keyMap[e.code])pressed.delete(keyMap[e.code]);});
   const point=e=>{const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*C.W/r.width,y:(e.clientY-r.top)*C.H/r.height};};
-  canvas.addEventListener('pointerdown',e=>{if(phase!=='play'||paused||(e.pointerType==='mouse'&&e.button!==0))return;e.preventDefault();canvasPointers.press(e);pointerTarget=point(canvasPointers.current);canvas.setPointerCapture(e.pointerId);unlockAudio();});
-  canvas.addEventListener('pointermove',e=>{if(phase==='play'&&!paused&&canvasPointers.move(e))pointerTarget=point(e);});
+  function follow(p){pointerTarget=p;if(phase==='play'&&!paused)C.placeHero(game,p.x,p.y);}
+  canvas.addEventListener('pointerdown',e=>{if(phase!=='play'||paused||(e.pointerType==='mouse'&&e.button!==0))return;e.preventDefault();canvasPointers.press(e);follow(point(canvasPointers.current));canvas.setPointerCapture(e.pointerId);unlockAudio();});
+  canvas.addEventListener('pointermove',e=>{if(phase==='play'&&!paused&&canvasPointers.move(e))follow(point(e));});
   function release(e){
     if(!canvasPointers.release(e))return;
-    if(canvasPointers.current)pointerTarget=point(canvasPointers.current);
+    if(canvasPointers.current)follow(point(canvasPointers.current));
     else if(e.type!=='pointerup')pointerTarget=null; // An ordinary tap remains a destination.
   }
   for(const type of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(type,release);
