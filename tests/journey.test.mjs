@@ -89,9 +89,18 @@ test('A paused public run cannot advance rounds or time out, even after an hour'
  const r=new Run('knife');r.tick(3600,false);assert.equal(r.phase,'play');assert.equal(r.active,0);assert.equal(r.wave,1);
 });
 test('Booth wall time expires through pause and upgrade, exactly once',()=>{
- for(const inChoice of [false,true]){const r=new Run('fleet','booth');if(inChoice)tick(r,30.1);r.tick(120-r.total,false);assert.equal(r.phase,'over');assert.equal(r.reason,'time');assert.equal(r.total,120);assert.equal(r.finish('defeat'),false);assert.equal(r.reason,'time');assert.equal(r.tick(10),null);assert(!r.choose('weapon'));}
- const paced=new Run('fleet','booth');tick(paced,29);assert.equal(paced.phase,'play');tick(paced,1.2);assert.equal(paced.phase,'choice');
- const slice=new Run('knife','booth');tick(slice,120);assert.equal(slice.phase,'play');assert.equal(slice.reason,'');
+ const limit=context.FuLamJourney.LIMIT;
+ for(const inChoice of [false,true]){const r=new Run('fleet','booth');if(inChoice)tick(r,20.1);r.tick(limit-r.total,false);assert.equal(r.phase,'over');assert.equal(r.reason,'time');assert.equal(r.total,limit);assert.equal(r.finish('defeat'),false);assert.equal(r.reason,'time');assert.equal(r.tick(10),null);assert(!r.choose('weapon'));}
+ const paced=new Run('fleet','booth');tick(paced,19);assert.equal(paced.phase,'play');tick(paced,1.2);assert.equal(paced.phase,'choice');
+ const slice=new Run('knife','booth');tick(slice,limit);assert.equal(slice.phase,'play');assert.equal(slice.reason,'');
+});
+test('Booth plays four timed stages and the last one ends the run',()=>{
+ const r=new Run('fishing','booth');
+ assert.equal(JSON.stringify([...context.FuLamJourney.BOOTH_STAGE_TIME]),JSON.stringify([20,30,30,40]));
+ tick(r,20.05);assert.equal(r.phase,'choice');assert.equal(r.weapon,1);assert(r.choose('rate'));
+ tick(r,30.05);assert.equal(r.phase,'choice');assert.equal(r.weapon,2);assert(r.choose('trajectory'));
+ tick(r,30.05);assert.equal(r.phase,'choice');assert.equal(r.weapon,3);assert(r.choose('rate'));
+ assert.equal(r.wave,4);tick(r,39);assert.equal(r.phase,'play');tick(r,1.2);assert.equal(r.phase,'over');assert.equal(r.reason,'stages');
 });
 test('Public challenges continue beyond six rounds with bounded choice history',()=>{
  const r=new Run('fleet','web','challenge');for(let i=0;i<110;i++){tick(r,30.1);assert.equal(r.weapon,i+1);assert(r.choose('rate'));}assert.equal(r.weapon,110);assert.equal(r.wave,111);assert.equal(r.phase,'play');assert.equal(r.choices.length,100);
@@ -117,10 +126,10 @@ test('A Booth jet becomes a laser once it upgrades, while a public jet keeps the
  const span=e=>Math.hypot(e.ray.end.x-e.ray.start.x,e.ray.end.y-e.ray.start.y);
  assert(upgraded.every(e=>e.ray.end.y<0&&e.ray.start.y>C.H*.5&&span(e)>C.H*.7));
  const spread=Math.abs(upgraded[0].position.r-upgraded[1].position.r);assert(spread>.2&&spread<.5);
- const early=fire('booth',0);assert(early.length>=1);assert(early.every(e=>e.style==='shell'));
+ const early=fire('booth',0);assert.equal(early.length,1);assert(early.every(e=>e.style==='shell'&&e.blast===0&&!e.ray));
  const pub=fire('standard',1);assert(pub.length>=1);assert(pub.every(e=>e.style==='shell'));
- const fan=fire('booth',2);assert.equal(fan.length,3);assert(fan.every(e=>e.style==='shell'&&e.color==='#ffd27a'&&e.blast===0));
- const angles=fan.map(e=>e.position.r).sort((a,b)=>a-b);assert(angles[2]-angles[0]>.45);
+ const pierce=fire('booth',2);assert.equal(pierce.length,1);assert(pierce.every(e=>e.style==='orb'&&e.pierce>=8&&e.blast===0&&e.collision.radius>=8));
+ const boom=fire('booth',3);assert.equal(boom.length,1);assert(boom.every(e=>e.style==='shell'&&e.blast>0&&e.blast<=40));
 });
 test('Aircraft evolution changes actual projectiles, with increasing damage and retained fire-rate/trajectory upgrades',()=>{
  let previousDamage=0;

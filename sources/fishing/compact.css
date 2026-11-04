@@ -54,7 +54,7 @@
 .game-active .control-label,.game-active .effect-status{display:none}.game-active .cannon-progress{flex:1;min-width:0}
 .game-active .weapon-mode{margin:0;font-size:11px}.game-active .level{font-size:13px;letter-spacing:0}
 .game-active .upgrade{min-height:44px;max-width:none;min-width:120px;margin:0;padding:5px 9px;flex-shrink:0}.game-active .upgrade b{font-size:12px}.game-active .upgrade small{font-size:11px}
-.game-active .abilities{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.game-active .abilities{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .game-active .ability{min-height:56px;display:grid;grid-template-columns:27px 1fr;grid-template-rows:auto auto;gap:1px 7px;padding:6px 8px;align-content:center;text-align:left}
 .game-active .ability-symbol{grid-row:1/3;position:relative}.game-active .ability-symbol svg{width:23px;height:23px}
 .game-active .ability>span:not(.ability-symbol){font-size:12px;justify-self:start}.game-active .ability small{font-size:11px;justify-self:start;min-height:0;white-space:normal}

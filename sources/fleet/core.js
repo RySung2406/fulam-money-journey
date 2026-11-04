@@ -140,10 +140,10 @@
     const level = s.weapon;
     if(s.arcade&&root.FuLamJourney){
       const p=root.FuLamJourney.weaponProfile('fleet',s.evolution);s.hero.position.r=-Math.PI/2;
-      const booth=s.mode==='booth',form=booth&&p.tier>=3?'spread':booth&&p.tier===2?'laser':null,reach=booth?1.8:1;
-      const style=form==='laser'?'beam':form==='spread'?'shell':p.kind==='orb'?'orb':p.kind==='beam'?'beam':p.kind==='missile'?'missile':p.kind==='arc'?'arc':'shell';
-      const spread=form==='laser'?[-.16,.16]:form==='spread'?[-.28,0,.28]:p.spread;
-      for(const off of spread){const aim=-Math.PI/2+off,from={x:s.hero.position.x,y:s.hero.position.y-26};fireTorpedo(s,from,aim,FRIEND,{damage:p.damage*(1+s.paidPower)*(form?(off===0?1:.7):(p.count===2?.65:off!==0?.55:1)),speed:p.speed,radius:(form==='laser'?2.8:form==='spread'?3.6:(p.kind==='orb'?7:p.kind==='missile'?8:3.5))*(form?1:reach),homing:form?0:p.homing,pierce:form==='laser'?24:p.pierce,style,color:form==='laser'?'#8cf4ff':form==='spread'?'#ffd27a':p.color,blast:form?0:(p.blast||(booth?42:0))*reach,chain:form?0:p.chain,ray:form==='laser'?screenRay(from.x,from.y,aim):null});}
+      const booth=s.mode==='booth',form=!booth?null:p.tier>=4?'blast':p.tier===3?'pierce':p.tier===2?'laser':'bullet',reach=booth?1.8:1;
+      const forms={bullet:{style:'shell',spread:[0],radius:3.6,color:'#ffe39b',blast:0,pierce:0,speed:p.speed},laser:{style:'beam',spread:[-.16,.16],radius:2.8,color:'#8cf4ff',blast:0,pierce:24,speed:0},pierce:{style:'orb',spread:[0],radius:9,color:'#d7b4ff',blast:0,pierce:8,speed:560},blast:{style:'shell',spread:[0],radius:4.2,color:'#ffb07a',blast:32,pierce:0,speed:680}};
+      if(form){const spec=forms[form];for(const off of spec.spread){const aim=-Math.PI/2+off,from={x:s.hero.position.x,y:s.hero.position.y-26};fireTorpedo(s,from,aim,FRIEND,{damage:p.damage*(1+s.paidPower)*(off===0?1:.7),speed:spec.speed,radius:spec.radius,homing:0,pierce:spec.pierce,style:spec.style,color:spec.color,blast:spec.blast,chain:0,ray:form==='laser'?screenRay(from.x,from.y,aim):null});}}
+      else {const style=p.kind==='orb'?'orb':p.kind==='beam'?'beam':p.kind==='missile'?'missile':p.kind==='arc'?'arc':'shell';for(const off of p.spread)fireTorpedo(s,{x:s.hero.position.x,y:s.hero.position.y-26},-Math.PI/2+off,FRIEND,{damage:p.damage*(1+s.paidPower)*(p.count===2?.65:off!==0?.55:1),speed:p.speed,radius:(p.kind==='orb'?7:p.kind==='missile'?8:3.5)*reach,homing:p.homing,pierce:p.pierce,style,color:p.color,blast:(p.blast||(booth?42:0))*reach,chain:p.chain});}
       s.shots++;emit(s,'fire');return;
     }
     if(s.arcade){

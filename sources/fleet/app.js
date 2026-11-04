@@ -160,7 +160,7 @@
     showOverlay('end-menu'); renderEnd(); updateHUD(); $('restart').focus({ preventScroll: true });
   }
   function renderEnd() {
-    put('end-label', journey?journey.text('本局戰績','RUN RECORD'):t(resultIsBest ? 'newBest' : 'endTag'));if(journey&&journey.run.reason==='exit')document.querySelector('[data-t="endTitle"]').textContent=journey.text('本局已結束','Run complete');else if(journey&&journey.run.reason==='time')document.querySelector('[data-t="endTitle"]').textContent=journey.text('Booth 挑戰完成！','Booth challenge complete!');else document.querySelector('[data-t="endTitle"]').innerHTML=t('endTitle'); put('end-score', game.score.toLocaleString('en'));
+    put('end-label', journey?journey.text('本局戰績','RUN RECORD'):t(resultIsBest ? 'newBest' : 'endTag'));if(journey&&journey.run.reason==='exit')document.querySelector('[data-t="endTitle"]').textContent=journey.text('本局已結束','Run complete');else if(journey&&(journey.run.reason==='time'||journey.run.reason==='stages'))document.querySelector('[data-t="endTitle"]').textContent=journey.text('Booth 挑戰完成！','Booth challenge complete!');else document.querySelector('[data-t="endTitle"]').innerHTML=t('endTitle'); put('end-score', game.score.toLocaleString('en'));
     put('end-stats', t('endStats')(game)); put('end-tip', t('tip'));if(journey)$('end-tip').innerHTML=journey.result(game.score,{kills:game.kills},journey.run.reason||'defeat'); if (saveFailed) put('share-status', t('storageUnavailable'));
   }
   function chooseMode(value) {

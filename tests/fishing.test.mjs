@@ -84,24 +84,26 @@ test('Shipped fishing fire supports all twelve evolution stages and preserves tr
 const near=(a,b,tol=.0001)=>assert(Math.abs(a-b)<tol,`${a} != ${b}`);
 const clone = value => JSON.parse(JSON.stringify(value));
 
-test('Booth fishing stage two is a full-screen thin twin laser and stage three is a three-way spread',()=>{
+test('Booth fishing stages are bullets, a full-screen laser, a piercing shot, then a modest blast',()=>{
  const g=harness();g.click('start');g.installEvolution();
  const aim=weapon=>{
   g.run(`journey={run:{weapon:${weapon},rate:0,trajectory:0,wave:${weapon+1},phase:'play',scene:'booth'},text:zh=>zh,name:()=>'n'};bullets=[];beams=[];fish=[];angle=-Math.PI/2;fire()`);
   return {cannon:g.run('currentCannon()'),bullets:g.run('bullets'),beams:g.run('beams')};
  };
+ const open=aim(0);
+ assert.equal(open.cannon.name,'普通子彈');assert.equal(open.beams.length,0);assert.equal(open.bullets.length,1);assert.equal(open.bullets[0].blast,0);
  const laser=aim(1);
  assert.equal(laser.cannon.kind,'beam');assert.equal(laser.cannon.name,'雙聯激光');
  assert.equal(laser.beams.length,2);assert.equal(laser.bullets.length,0);
  assert(laser.beams.every(b=>b.width<=8&&b.color==='#8cf4ff'));
  const reach=Math.hypot(laser.beams[0].ex-laser.beams[0].x,laser.beams[0].ey-laser.beams[0].y);
  assert(reach>600&&Math.min(laser.beams[0].y,laser.beams[0].ey)<0,`laser reach ${reach}`);
- const fan=aim(2);
- assert.equal(fan.cannon.kind,'spread');assert.equal(fan.cannon.name,'三路散射');
- assert.equal(fan.beams.length,0);assert.equal(fan.bullets.length,3);
- assert(fan.bullets.every(b=>b.color==='#ffd27a'));
- const open=aim(0);
- assert.equal(open.beams.length,0);assert.equal(open.bullets.length,1);assert.notEqual(open.cannon.kind,'beam');
+ const pierce=aim(2);
+ assert.equal(pierce.cannon.name,'穿透巨彈');assert.equal(pierce.beams.length,0);assert.equal(pierce.bullets.length,1);
+ assert(pierce.bullets[0].pierce>=8&&pierce.bullets[0].r>=14&&pierce.bullets[0].blast===0);
+ const boom=aim(3);
+ assert.equal(boom.cannon.name,'爆裂彈');assert.equal(boom.bullets.length,1);
+ assert(boom.bullets[0].blast>0&&boom.bullets[0].blast<=40);
 });
 test('Fishing protection lowers actual idle drain, and catches respect expanded energy capacity',()=>{
  const losses=[];
@@ -121,9 +123,9 @@ test('A secondary touch casts a skill while the first finger keeps firing',()=>{
   const g=harness();g.click('start');
   g.pointer('pointerdown',300,200,{pointerType:'touch',pointerId:11});g.advance(.3);
   const before=g.state().shots;
-  g.pointer('pointerdown',700,650,{pointerType:'touch',pointerId:22},'net');
-  assert(g.state().netCooldown>0);near(g.run('aim.x'),300);
-  g.pointer('pointerup',700,650,{pointerType:'touch',pointerId:22},'net');g.advance(.5);
+  g.pointer('pointerdown',700,650,{pointerType:'touch',pointerId:22},'freeze');
+  assert(g.state().freezeCooldown>0);near(g.run('aim.x'),300);
+  g.pointer('pointerup',700,650,{pointerType:'touch',pointerId:22},'freeze');g.advance(.5);
   assert(g.state().shots>before,'lifting the skill finger does not stop firing');
   g.pointer('pointerup',300,200,{pointerType:'touch',pointerId:11});
   const stopped=g.state().shots;g.advance(.5);assert.equal(g.state().shots,stopped);
@@ -155,7 +157,7 @@ test('Long session repeats bosses and caps active entities',()=>{
 });
 
 test('Pause and help freeze elapsed time, fish, effects and cooldowns',()=>{
-  const g=harness();g.click('start');g.run('level=9;updateHud()');g.click('freeze');g.click('rapid');g.click('net');g.advance(2,15);
+  const g=harness();g.click('start');g.run('level=9;updateHud()');g.click('freeze');g.click('rapid');g.advance(2,15);
   g.click('pause');const paused=JSON.stringify(g.state());g.advance(20,15);assert.equal(JSON.stringify(g.state()),paused);
   g.click('help');g.advance(20,15);g.click('helpClose');assert.equal(g.state().mode,'paused');assert.equal(JSON.stringify(g.state()),paused);
   g.click('resume');const before=g.state().round;g.advance(1,15);near(g.state().round,before+1);
@@ -185,12 +187,6 @@ test('All 12 cannon levels purchase once and increase usable firepower',()=>{
 test('Skill unlocks match progression and direct calls cannot bypass locks',()=>{
   const g=harness();g.click('start');const skills=[['rapid',3,'useRapid()'],['bomb',7,'useBomb()'],['lure',9,'useLure()']];
   for(const [id,unlock,call]of skills){g.run(`level=${unlock-1};updateHud()`);assert(g.el(id).disabled,id+' is locked');const before=JSON.stringify(g.state());g.run(call);assert.equal(JSON.stringify(g.state()),before,id+' rejects locked invocation');g.run(`level=${unlock};updateHud()`);assert(!g.el(id).disabled,id+' unlocks');}
-});
-
-test('Net captures within its area while distant fish survive',()=>{
-  const g=harness();g.click('start');g.run("fish=[];aim={x:250,y:250};spawn('coin',{x:250,y:250});spawn('coin',{x:800,y:250});");g.click('net');
-  assert.equal(g.state().caught,1);assert(g.run('fish.some(f=>!f.dead&&f.x===800)'));assert(g.el('net').disabled);
-  const before=g.state().score;g.run('useNet()');assert.equal(g.state().score,before);g.advance(17);assert(!g.el('net').disabled);
 });
 
 test('Freeze slows fish motion and expires without removing cooldown',()=>{
@@ -236,10 +232,12 @@ for(const enabled of [true,false])test(`Manual settlement is the only finish and
   g.click('credits');g.click('creditsClose');assert.equal(g.storage.get('fulam-catch-v1'),saved);assert.equal(g.writes(),writes);assert(g.el('overlay').innerHTML.includes('刷新個人最佳'));
 });
 
-test('Keyboard 1–6 trigger the six corresponding skills',()=>{
+test('Keyboard shortcuts trigger the remaining skills',()=>{
   const g=harness();g.click('start');g.run('level=12;updateHud()');
-  for(const key of ['1','2','3','5','6'])g.emit('window','keydown',{key,repeat:false});
-  for(const id of ['net','freeze','rapid','bomb','lure'])assert(g.run(`${id}Cooldown`)>0,id+' responds to key');
+  for(const key of ['2','3','5','6'])g.emit('window','keydown',{key,repeat:false});
+  for(const id of ['freeze','rapid','bomb','lure'])assert(g.run(`${id}Cooldown`)>0,id+' responds to key');
+  g.emit('window','keydown',{key:'q',repeat:false});g.emit('window','keydown',{key:'1',repeat:false});
+  assert.equal(g.run('typeof useNet'),'undefined');
 });
 
 test('Existing sound and best records survive the upgrade to endless mode',()=>{
@@ -348,10 +346,10 @@ test('Low frame rates preserve swim speed and trajectory for all ten fish',()=>{
   for(let i=0;i<fast.length;i++){assert.equal(slow[i].type,fast[i].type);near(slow[i].swimTime,fast[i].swimTime);near(slow[i].x,fast[i].x,.25);near(slow[i].y,fast[i].y,.25);}
 });
 
-test('QWERTY shortcuts trigger the same six skills as 1–6',()=>{
+test('Letter shortcuts trigger freeze, rapid fire, bomb and lure',()=>{
   const g=harness();g.click('start');g.run('level=12;updateHud()');
-  for(const key of ['q','w','e','t','y'])g.emit('window','keydown',{key,repeat:false});
-  for(const id of ['net','freeze','rapid','bomb','lure'])assert(g.run(`${id}Cooldown`)>0,id+' responds to its letter shortcut');
+  for(const key of ['w','e','t','y'])g.emit('window','keydown',{key,repeat:false});
+  for(const id of ['freeze','rapid','bomb','lure'])assert(g.run(`${id}Cooldown`)>0,id+' responds to its letter shortcut');
 });
 
 // Rendering, sound output, and touch interaction are additionally checked in-browser.
