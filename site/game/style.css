@@ -334,3 +334,11 @@ body.immersive-game{overflow:hidden;overscroll-behavior:none;height:100dvh}
 .immersive-game .arena-footer{grid-template-columns:auto 1fr 1fr}
 
 body.immersive-game .game-wrap .arena-footer>#knife-level{grid-column:auto;min-width:0}
+
+/* Readable bags and two upgrade choices per row. */
+.immersive-game .choice-target .bag-svg{width:150px;height:158px;left:5px}
+@media(max-width:650px){.immersive-game .choice-target .bag-svg{width:138px;height:145px;left:5px}}
+@media(max-width:350px){.immersive-game .choice-target .bag-svg{width:132px;height:139px;left:4px}}
+@media(max-height:500px) and (orientation:landscape){.immersive-game .choice-target .bag-svg{width:94px;height:99px;left:27px}}
+.game-wrap .journey-choice-card .journey-upgrades,.game-wrap .journey-choice-card .journey-upgrades[data-count="2"],.game-wrap .journey-choice-card .journey-upgrades[data-count="3"]{grid-template-columns:repeat(2,minmax(0,1fr))}
+.game-wrap .journey-choice-card .journey-upgrades button,.game-wrap .journey-choice-card .journey-upgrades [data-upgrade=protection],.game-wrap .journey-choice-card .journey-upgrades [data-upgrade=life]{grid-column:span 1!important}

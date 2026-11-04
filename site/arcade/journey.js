@@ -29,7 +29,7 @@
    this.wave++;this.roundTime=0;this.choiceTime=0;this.phase='play';return true;
   }
   finish(reason='defeat'){if(this.phase==='over')return false;this.phase='over';this.reason=reason;return true;}
-  key(topic='',language=''){return [this.game==='knife'?VERSION:VERSION+'-combat3',this.game,this.scene,this.difficulty,topic,language].join(':');}
+  key(topic='',language=''){return [this.game==='knife'?VERSION+'-slow2':VERSION+'-combat3',this.game,this.scene,this.difficulty,topic,language].join(':');}
   record(score,extra={}){return{score:Math.max(0,Math.floor(Number(score)||0)),wave:this.wave,seconds:Math.round(this.active),reason:this.reason,...extra};}
  }
  function readBoard(storage,key){try{const a=JSON.parse(storage.getItem(key)||'[]');return Array.isArray(a)?a.filter(r=>r&&Number.isSafeInteger(r.score)&&r.score>=0&&Number.isInteger(r.wave)&&r.wave>0&&Number.isFinite(r.seconds)&&r.seconds>=0).slice(0,10):[];}catch{return[];}}
