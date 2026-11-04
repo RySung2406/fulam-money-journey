@@ -1,5 +1,6 @@
 /* Traditional Chinese originals and English translations for account, hub and questionnaire pages. */
 window.FuLamI18n.register({
+ '兩個 Booth 共用獎品':'Prizes shared by both booths','最高分者有獎，以下獎品由兩個 Booth 共用。':'Top scorers win prizes from the selection shared by both booths.','Starbucks 禮券':'Starbucks voucher','惠康 $50 禮券':'Wellcome $50 voucher','活動時間、地點及獎品領取安排稍後公布。':'Dates, locations and prize collection details will be announced later.',
  '查看完整獎品圖（另開分頁）':'View full prize image (opens a new tab)','5000mAh 磁吸流動電源':'5000mAh magnetic power bank','輕盈完美蜜粉 #20 · 30克':'Loose powder #20 · 30g','磁吸無線音箱':'Magnetic wireless speaker','Momax 1-Power Q.Pass 5000mAh 磁吸流動電源':'Momax 1-Power Q.Pass 5000mAh magnetic power bank','CHANEL 輕盈完美蜜粉 #20 30克':'CHANEL loose powder #20 30g','Momax 1-Vibe Go 磁吸無線音箱':'Momax 1-Vibe Go magnetic wireless speaker','抽獎及領取安排稍後公布。':'Draw and collection arrangements will be announced later.','查看抽獎獎品 ↗':'View draw prizes ↗',
  '參加 Booth':'Join a booth','兩個 Booth，等你來挑戰。每個 Booth 的最高分者有獎！':'Take on two campus booths. The top scorer at each booth wins a prize!','最高分者有獎':'Top scorer wins a prize','最高分獎品':'Top-score prize','時間':'Date & time','地點':'Location','活動時間、地點、獎品及領取安排稍後公布。':'Dates, locations, prizes and collection details will be announced later.','下一頁：參加 Booth':'Next: join a booth','← 返回每日打卡':'← Back to daily check-in','兩個 Booth，最高分者有獎。詳情稍後公布。':'Two booths, with a prize for each top scorer. Details will follow.','參加 Booth ↗':'Join a booth ↗',
  '登入 FuLam 21 天理財計劃：填寫問卷、加入 WhatsApp 社群，查看打卡、Booth 與抽獎禮物。':'Join the FuLam 21-day money journey: complete the survey, join the WhatsApp community and view check-ins, booth and prize details.',
@@ -43,4 +44,5 @@ window.FuLamI18n.registerPatterns([
 ]);
 
 window.FuLamI18n.registerPatterns([[/^獎品 (\d+)$/, 'Prize $1'], [/^第 (\d+) 日，正在載入$/, 'Day $1, loading']]);
-window.FuLamI18n.register({'暫時未能載入打卡紀錄，請重試。':'Could not load check-in records. Please try again.','了解街訪':'Explore street interviews','了解理財講解':'Explore money explainers','了解AI 劇場':'Explore AI stories','了解人物訪談':'Explore interviews'});
+window.FuLamI18n.register({
+ '兩個 Booth 共用獎品':'Prizes shared by both booths','最高分者有獎，以下獎品由兩個 Booth 共用。':'Top scorers win prizes from the selection shared by both booths.','Starbucks 禮券':'Starbucks voucher','惠康 $50 禮券':'Wellcome $50 voucher','活動時間、地點及獎品領取安排稍後公布。':'Dates, locations and prize collection details will be announced later.', '暫時未能載入打卡紀錄，請重試。':'Could not load check-in records. Please try again.','了解街訪':'Explore street interviews','了解理財講解':'Explore money explainers','了解AI 劇場':'Explore AI stories','了解人物訪談':'Explore interviews'});
