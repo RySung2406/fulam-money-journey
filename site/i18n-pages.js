@@ -1,5 +1,6 @@
 /* Traditional Chinese originals and English translations for account, hub and questionnaire pages. */
 window.FuLamI18n.register({
+ '11 月 8–28 日，每天早上 6 時開放新一天；已開放的日子可隨時補做（香港時間）。題目與題解在 WhatsApp，紀錄保存在這裡。':'8–28 November: a new day opens at 6am Hong Kong time. Earlier days remain available for make-up at any time. Questions and explanations are on WhatsApp; records are saved here.',
  'Booth 01 設有遊戲，三位高分同學可獲禮券；Booth 02 負責派發獎品。':'Play games at Booth 01. Three high scorers can receive vouchers; collect prizes at Booth 02.',
  '遊戲挑戰':'Game challenge', '派發獎品':'Prize collection',
  'Booth 遊戲高分者獎品':'Booth game prizes for high scorers',
