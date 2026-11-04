@@ -277,12 +277,17 @@ function targetPosition(plan, progress, metrics) {
  return E.arcadePosition(plan, progress, arenaWidth, flightFloor + 85,
   metrics.width, visualHeight, Math.max(24, apexCeiling));
 }
+function stageFlight(plan) {
+ if (!journey || (journey.run?.wave || 1) < 2) return plan;
+ return {...plan, duration: plan.duration * 1.3, depth: plan.depth * .4};
+}
 function chooseLaunch(initial, metrics) {
+ initial = stageFlight(initial);
  const others = targets.filter(target => !target.hit);
  if (!others.length) return initial;
  let best = initial, bestSeparation = -1;
  for (let attempt = 0; attempt < 24; attempt++) {
-  const plan = attempt ? {...E.createLaunches(1, mode, roundRandom)[0], delay: initial.delay} : initial;
+  const plan = attempt ? stageFlight({...E.createLaunches(1, mode, roundRandom)[0], delay: initial.delay}) : initial;
   let separation = Infinity;
   for (const progress of [.2, .3, .4, .5, .6, .7, .8]) {
    const future = elapsed + plan.delay + plan.duration * progress;
@@ -327,7 +332,9 @@ function spawnIfReady() {
   // Keep the handler on this short-lived node, not the run's shared AbortSignal.
   el.onclick = event => { if (event.detail === 0) cutTarget(target); };
  }
- nextSpawnAt = elapsed + E.nextSpawnDelay(mode, roundRandom)/(journey?.run?Math.min(1.8,1+(journey.run.wave-1)*.07):1);
+ const wave = journey?.run?.wave || 1;
+ const gap = E.nextSpawnDelay(mode, roundRandom);
+ nextSpawnAt = elapsed + (journey && wave >= 2 ? gap * 1.25 : gap / (journey?.run ? Math.min(1.8, 1 + (wave - 1) * .07) : 1));
 }
 function positionTargets() {
  if (!arena) return;
