@@ -217,7 +217,7 @@ function renderGame() {
   $('.small-note').textContent=journey.text('切錯扣心；漏切正確選項會斷連擊，累積漏切亦會扣心。每回合先看清新題目。','Wrong cuts cost a heart. Missed correct choices break combos; repeated misses cost a heart. Read each new round’s question.');
   $('.ready-card p').textContent=journey.text('先閱讀上方題目。切正確選項，讓錯誤選項落下。'+hearts+' 顆心；每關 20 個選項後選擇刀具強化。','Read the question above. Slice correct choices and leave wrong ones. '+hearts+' hearts; choose a blade upgrade after each 20-choice stage.');
   $('#finish-session').classList.add('journey-exit');$('#finish-session').textContent=journey.text('退出','Exit');$('#finish-session').disabled=false;$('#finish-session').onclick=()=>phase==='ready'?home():finishSession(false);
-  $('#ready-overlay').remove();journey.guide($('.game-wrap'),beginStream,home,window.FuLamSliceLanguage?.translate(q.question)||q.question);
+  $('#ready-overlay').remove();showQuestionGate(beginStream,home);
   const blade=document.createElement('span');blade.id='knife-level';blade.className='journey-loadout';$('.arena-footer').append(blade);
   const focus=document.createElement('button');focus.id='knife-focus';focus.className='journey-swap';focus.textContent=journey.text('慢時 0%','Focus 0%');$('.arena-footer').append(focus);focus.onclick=()=>{if(phase==='playing'&&!paused&&focusCharge>=100){focusCharge=0;focusTime=2.5+.6*journey.run.focus;playSound('start');}};
  }
@@ -243,6 +243,10 @@ function resizeArena() {
  }
 }
 window.addEventListener('resize', resizeArena);
+function showQuestionGate(onStart,onBack){
+ const tr=window.FuLamSliceLanguage?.translate||(value=>value);
+ journey.guide($('.game-wrap'),onStart,onBack,tr(question.question),tr(question.context));
+}
 function beginStream() {
  if (phase !== 'ready') return;
  if(journey){journey.start($('.game-wrap'),startTopic);$('.game-wrap').classList.add('journey-live');optionDeck=E.createOptionDeck(question.options,roundRandom);}
@@ -533,7 +537,8 @@ if(journey){
   roundSpawned=0;roundResolved=0;const initial=QUESTIONS.findIndex(q=>q.id===startTopic);question=QUESTIONS[(initial+r.wave-1)%QUESTIONS.length];
   optionDeck=E.createOptionDeck(question.options,roundRandom);for(const option of question.options)if(!optionStats.has(option.id))optionStats.set(option.id,{option,shown:0,correct:0,wrong:0,missed:0,avoided:0});
   $('.question-bar h1').textContent=question.question;$('.question-context').textContent=question.context;$('.question-bar .eyebrow').textContent=question.eyebrow;$('.round-number').textContent='ROUND '+r.wave+' · '+question.chapter;
-  nextSpawnAt=elapsed+4;lastTime=performance.now();paused=false;arena?.classList.remove('is-paused');resizeArena();updateHUD();
+  paused=true;arena?.classList.add('is-paused');resizeArena();updateHUD();
+  showQuestionGate(()=>{paused=false;lastTime=performance.now();nextSpawnAt=elapsed+.3;arena?.classList.remove('is-paused');updateHUD();},()=>finishSession(false));
  };
  journey.onEnd=()=>finishSession(false);
 }

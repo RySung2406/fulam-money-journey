@@ -136,11 +136,11 @@ test('Long session repeats bosses and caps active entities',()=>{
 });
 
 test('Pause and help freeze elapsed time, fish, effects and cooldowns',()=>{
-  const g=harness();g.click('start');g.run('level=9;updateHud()');g.click('freeze');g.click('rapid');g.click('double');g.click('net');g.advance(2,15);
+  const g=harness();g.click('start');g.run('level=9;updateHud()');g.click('freeze');g.click('rapid');g.click('net');g.advance(2,15);
   g.click('pause');const paused=JSON.stringify(g.state());g.advance(20,15);assert.equal(JSON.stringify(g.state()),paused);
   g.click('help');g.advance(20,15);g.click('helpClose');assert.equal(g.state().mode,'paused');assert.equal(JSON.stringify(g.state()),paused);
   g.click('resume');const before=g.state().round;g.advance(1,15);near(g.state().round,before+1);
-  assert(g.run('freezeTime')>0);assert(g.run('rapidTime')>0);assert(g.run('doubleTime')>0);
+  assert(g.run('freezeTime')>0);assert(g.run('rapidTime')>0);
 });
 
 test('All 12 cannon levels purchase once and increase usable firepower',()=>{
@@ -164,7 +164,7 @@ test('All 12 cannon levels purchase once and increase usable firepower',()=>{
 });
 
 test('Skill unlocks match progression and direct calls cannot bypass locks',()=>{
-  const g=harness();g.click('start');const skills=[['rapid',3,'useRapid()'],['double',5,'useDouble()'],['bomb',7,'useBomb()'],['lure',9,'useLure()']];
+  const g=harness();g.click('start');const skills=[['rapid',3,'useRapid()'],['bomb',7,'useBomb()'],['lure',9,'useLure()']];
   for(const [id,unlock,call]of skills){g.run(`level=${unlock-1};updateHud()`);assert(g.el(id).disabled,id+' is locked');const before=JSON.stringify(g.state());g.run(call);assert.equal(JSON.stringify(g.state()),before,id+' rejects locked invocation');g.run(`level=${unlock};updateHud()`);assert(!g.el(id).disabled,id+' unlocks');}
 });
 
@@ -185,12 +185,6 @@ test('Rapid skill increases shots during the buff and stops after expiry',()=>{
   const g=harness();g.click('start');g.run('level=3;fish=[];spawnClock=999;nextBossAt=999;updateHud()');g.pointer('pointerdown',500,200);g.advance(2);g.pointer('pointerup',500,200);const base=g.state().shots;
   g.click('rapid');g.pointer('pointerdown',500,200);g.advance(2);g.pointer('pointerup',500,200);assert(g.state().shots-base>base*1.3);
   g.advance(10);near(g.run('rapidTime'),0);assert(g.run('rapidCooldown')>0);
-});
-
-test('Double coins affects capture income without charging total score on upgrades',()=>{
-  const g=harness();g.click('start');g.run('level=5;fish=[];updateHud()');g.click('double');g.run("spawn('coin',{x:300,y:250});capture(fish[0]);updateHud()");
-  assert.equal(g.state().score,20);assert.equal(g.state().wallet,20);assert.equal(g.state().caught,1);
-  g.advance(10);near(g.run('doubleTime'),0);g.run("fish=[];spawn('coin',{x:300,y:250});capture(fish[0]);updateHud()");assert.equal(g.state().score,30);
 });
 
 test('Bomb damages fish and lure creates additional fish once per cooldown',()=>{
@@ -225,8 +219,8 @@ for(const enabled of [true,false])test(`Manual settlement is the only finish and
 
 test('Keyboard 1–6 trigger the six corresponding skills',()=>{
   const g=harness();g.click('start');g.run('level=12;updateHud()');
-  for(const key of ['1','2','3','4','5','6'])g.emit('window','keydown',{key,repeat:false});
-  for(const id of ['net','freeze','rapid','double','bomb','lure'])assert(g.run(`${id}Cooldown`)>0,id+' responds to key');
+  for(const key of ['1','2','3','5','6'])g.emit('window','keydown',{key,repeat:false});
+  for(const id of ['net','freeze','rapid','bomb','lure'])assert(g.run(`${id}Cooldown`)>0,id+' responds to key');
 });
 
 test('Existing sound and best records survive the upgrade to endless mode',()=>{
@@ -337,8 +331,8 @@ test('Low frame rates preserve swim speed and trajectory for all ten fish',()=>{
 
 test('QWERTY shortcuts trigger the same six skills as 1–6',()=>{
   const g=harness();g.click('start');g.run('level=12;updateHud()');
-  for(const key of ['q','w','e','r','t','y'])g.emit('window','keydown',{key,repeat:false});
-  for(const id of ['net','freeze','rapid','double','bomb','lure'])assert(g.run(`${id}Cooldown`)>0,id+' responds to its letter shortcut');
+  for(const key of ['q','w','e','t','y'])g.emit('window','keydown',{key,repeat:false});
+  for(const id of ['net','freeze','rapid','bomb','lure'])assert(g.run(`${id}Cooldown`)>0,id+' responds to its letter shortcut');
 });
 
 // Rendering, sound output, and touch interaction are additionally checked in-browser.
