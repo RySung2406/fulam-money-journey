@@ -15,6 +15,32 @@ let accountUserId;
 let initializing = true;
 const journeySteps = ['survey', 'community', 'dashboard', 'booth'];
 const checkIns = createCheckInController({ getClient: () => client, onChange: renderCheckIns });
+// A fresh Turnstile token is required for each email request, including resends.
+const captcha = { api: null, tokens: { email: '', otp: '' }, ids: {}, failed: false };
+function renderCaptcha(kind) {
+  if (!captcha.api || !['email', 'otp'].includes(kind) || captcha.ids[kind] !== undefined) return;
+  try {
+    captcha.ids[kind] = captcha.api.render($(`captcha-${kind}`), {
+      sitekey: config.turnstileSiteKey,
+      callback: token => { captcha.tokens[kind] = token; $(`captcha-${kind}-status`).textContent = ''; updateButtons(); },
+      'expired-callback': () => { captcha.tokens[kind] = ''; $(`captcha-${kind}-status`).textContent = '請完成安全驗證。'; updateButtons(); },
+      'error-callback': () => { captcha.tokens[kind] = ''; $(`captcha-${kind}-status`).textContent = '安全驗證未能載入，請重新整理頁面再試。'; updateButtons(); }
+    });
+  } catch { captcha.failed = true; $(`captcha-${kind}-status`).textContent = '安全驗證未能載入，請重新整理頁面再試。'; }
+}
+function resetCaptcha(kind) {
+  captcha.tokens[kind] = '';
+  if (captcha.api && captcha.ids[kind] !== undefined) captcha.api.reset(captcha.ids[kind]);
+}
+function loadCaptcha() {
+  if (!config.turnstileSiteKey) { captcha.failed = true; $('captcha-email-status').textContent = '安全驗證未能載入，請重新整理頁面再試。'; return; }
+  const script = document.createElement('script');
+  script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+  script.onload = () => { captcha.api = window.turnstile; renderCaptcha(view); updateButtons(); };
+  script.onerror = () => { captcha.failed = true; for (const kind of ['email', 'otp']) $(`captcha-${kind}-status`).textContent = '安全驗證未能載入，請重新整理頁面再試。'; updateButtons(); };
+  document.head.appendChild(script);
+}
+
 
 function renderCheckIns(state = checkIns.state) {
   const loading = state.phase === 'idle' || state.phase === 'loading';
@@ -91,6 +117,7 @@ function showView(next, focus = true) {
   view = next;
   document.body.dataset.authView = next;
   for (const name of ['email', 'otp', 'member']) $(`${name}-screen`).hidden = name !== next;
+  renderCaptcha(next);
   if (focus) $(next === 'email' ? 'email' : next === 'otp' ? 'otp' : 'member-title').focus();
 }
 function showOnboardingStep(step, focus = true) {
@@ -137,11 +164,11 @@ function clearMessages() { ['email-error', 'otp-error', 'member-error', 'resend-
 function remainingSeconds() { return Math.max(0, Math.ceil((cooldownUntil - Date.now()) / 1000)); }
 function updateButtons() {
   const seconds = remainingSeconds();
-  $('send-button').disabled = busy || !client || seconds > 0;
+  $('send-button').disabled = busy || !client || seconds > 0 || !captcha.tokens.email;
   $('send-button').querySelector('span').textContent = initializing ? '正在連接…' : busy && view === 'email' ? '正在發送…' : seconds > 0 && view === 'email' ? `請等候 ${seconds} 秒` : '發送驗證碼';
   $('verify-button').disabled = busy || !client;
   $('verify-button').querySelector('span').textContent = busy && view === 'otp' ? '正在驗證…' : '驗證並登入';
-  $('resend-button').disabled = busy || !client || seconds > 0;
+  $('resend-button').disabled = busy || !client || seconds > 0 || !captcha.tokens.otp;
   $('resend-button').textContent = seconds > 0 ? `${seconds} 秒後可重發` : '重新發送';
   $('back-button').disabled = busy;
   $('email').readOnly = busy;
@@ -160,9 +187,11 @@ function startCooldown() {
   }, 1000);
   updateButtons();
 }
-async function requestCode(email) {
-  const { error } = await client.auth.signInWithOtp({ email, options: { shouldCreateUser: true } });
-  if (error) throw error;
+async function requestCode(email, kind) {
+  const token = captcha.tokens[kind];
+  if (!token) throw new Error('captcha_required');
+  try { const { error } = await client.auth.signInWithOtp({ email, options: { shouldCreateUser: true, captchaToken: token } }); if (error) throw error; }
+  finally { resetCaptcha(kind); }
 }
 
 $('email').addEventListener('input', () => {
@@ -183,9 +212,10 @@ $('email-form').addEventListener('submit', async (event) => {
   catch (error) { $('email').setAttribute('aria-invalid', 'true'); message('email-error', error.message); $('email').focus(); return; }
   if (!client) { message('email-error', 'Sign-in is not available yet. Please try again later.'); return; }
   if (remainingSeconds()) { message('email-error', '請稍候，再要求另一個驗證碼。'); return; }
+  if (!captcha.tokens.email) { message('email-error', '請完成安全驗證。'); return; }
   busy = true; updateButtons();
   try {
-    await requestCode(email);
+    await requestCode(email, 'email');
     pendingEmail = email;
     $('sent-email').textContent = email;
     $('email').value = email;
@@ -205,10 +235,10 @@ $('back-button').addEventListener('click', () => {
   updateButtons();
 });
 $('resend-button').addEventListener('click', async () => {
-  if (busy || !client || !pendingEmail || remainingSeconds()) return;
+  if (busy || !client || !pendingEmail || remainingSeconds() || !captcha.tokens.otp) return;
   clearMessages(); busy = true; updateButtons();
   try {
-    await requestCode(pendingEmail);
+    await requestCode(pendingEmail, 'otp');
     startCooldown();
     message('resend-status', '新驗證碼已發送，請使用最新電郵內的驗證碼。');
   } catch (error) { message('otp-error', friendlyAuthError(error)); }
@@ -339,3 +369,5 @@ async function init() {
 }
 init();
 
+
+loadCaptcha();
