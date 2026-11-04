@@ -22,7 +22,7 @@ export function createCheckInController({ getClient, onChange }) {
     try {
       const client = getClient();
       const [daysResult, recordsResult] = await Promise.all([
-        client.from('check_in_days').select('day_number,is_open').order('day_number'),
+        client.rpc('get_check_in_schedule'),
         client.from('check_ins').select('day_number,checked_in_at,student_confirmed').eq('user_id', currentUser).order('day_number')
       ]);
       if (attempt !== generation) return;
