@@ -212,14 +212,20 @@ function emitBeam(cannon,a,amount=cannon.damage){
  for(const f of fish)if(visibleFish(f)&&segmentFish(x,y,ex,ey,f,width*.5)!==null){hits++;damage(f,amount)}
  shots++;
 }
+function boothSpread(base,trajectory,openStep,packedStep){
+ const extra=Math.max(0,trajectory|0),count=Math.min(7,base+extra);
+ if(count<=1)return [0];
+ const gap=extra?(packedStep??.08):(openStep??.11);
+ return Array.from({length:count},(_,i)=>(i-(count-1)/2)*gap);
+}
 function currentCannon(){
  if(!journey?.run)return cannons[level-1];
  const p=window.FuLamJourney.weaponProfile('fishing',journey.run);
- const booth=journey.run.scene==='booth';
- if(booth&&p.tier===1)return {...p,name:journey.text('普通子彈','Bullets'),label:journey.text('普通子彈','Bullets'),kind:'bullet',spread:[0],count:1,radius:4.2,reach:1,pierce:1,blast:0,speed:p.speed,color:'#ffe39b'};
- if(booth&&p.tier===2)return {...p,name:journey.text('雙聯激光','Twin laser'),label:journey.text('雙聯激光','Twin laser'),kind:'beam',spread:[-.16,.16],count:2,beamWidth:8,pierce:p.pierce+1,blast:0,speed:p.speed,color:'#8cf4ff'};
- if(booth&&p.tier===3)return {...p,name:journey.text('穿透巨彈','Piercing shot'),label:journey.text('穿透巨彈','Piercing shot'),kind:'orb',spread:[0],count:1,radius:16,reach:1,pierce:8,blast:0,speed:620,color:'#d7b4ff'};
- if(booth&&p.tier>=4)return {...p,name:journey.text('爆裂彈','Blast shot'),label:journey.text('爆裂彈','Blast shot'),kind:'bullet',spread:[0],count:1,radius:5,reach:1,pierce:1,blast:32,speed:680,color:'#ffb07a'};
+ const booth=journey.run.scene==='booth',shots=journey.run.trajectory||0;
+ if(booth&&p.tier===1){const spread=boothSpread(1,shots,.1,.09);return {...p,name:journey.text('普通子彈','Bullets'),label:journey.text('普通子彈','Bullets'),kind:'bullet',spread,count:spread.length,radius:4.2,reach:1,pierce:1,blast:0,speed:p.speed,color:'#ffe39b'};}
+ if(booth&&p.tier===2){const spread=boothSpread(2,shots,.16,.08);return {...p,name:journey.text('雙聯激光','Twin laser'),label:journey.text('雙聯激光','Twin laser'),kind:'beam',spread,count:spread.length,beamWidth:8,pierce:p.pierce+1,blast:0,speed:p.speed,color:'#8cf4ff'};}
+ if(booth&&p.tier===3){const spread=boothSpread(1,shots,.1,.09);return {...p,name:journey.text('穿透巨彈','Piercing shot'),label:journey.text('穿透巨彈','Piercing shot'),kind:'orb',spread,count:spread.length,radius:16,reach:1,pierce:8,blast:0,speed:620,color:'#d7b4ff'};}
+ if(booth&&p.tier>=4){const spread=boothSpread(1,shots,.1,.09);return {...p,name:journey.text('爆裂彈','Blast shot'),label:journey.text('爆裂彈','Blast shot'),kind:'bullet',spread,count:spread.length,radius:5,reach:1,pierce:1,blast:32,speed:680,color:'#ffb07a'};}
  const wide=booth?1.8:1;
  return {...p,name:journey.name(journey.run.weapon),label:journey.name(journey.run.weapon),kind:p.kind,beamWidth:8+p.stage,pierce:p.pierce+1,blast:(p.blast||0)*wide,speed:p.speed,color:p.color};
 }

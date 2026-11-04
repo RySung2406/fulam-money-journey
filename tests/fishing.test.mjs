@@ -104,6 +104,13 @@ test('Booth fishing stages are bullets, a full-screen laser, a piercing shot, th
  const boom=aim(3);
  assert.equal(boom.cannon.name,'爆裂彈');assert.equal(boom.bullets.length,1);
  assert(boom.bullets[0].blast>0&&boom.bullets[0].blast<=40);
+ const kept=weapon=>{
+  g.run(`journey={run:{weapon:${weapon},rate:0,trajectory:2,wave:1,phase:'play',scene:'booth'},text:zh=>zh,name:()=>'n'};bullets=[];beams=[];fish=[];angle=-Math.PI/2;fire()`);
+  const cannon=g.run('currentCannon()');
+  return {cannon,shots:cannon.kind==='beam'?g.run('beams').length:g.run('bullets').length};
+ };
+ for(const weapon of [0,2,3]){const shot=kept(weapon);assert.equal(shot.cannon.spread.length,3);assert.equal(shot.shots,3);}
+ const lasers=kept(1);assert.equal(lasers.cannon.spread.length,4);assert.equal(lasers.shots,4);assert(lasers.cannon.beamWidth<=8);
 });
 test('Fishing protection lowers actual idle drain, and catches respect expanded energy capacity',()=>{
  const losses=[];

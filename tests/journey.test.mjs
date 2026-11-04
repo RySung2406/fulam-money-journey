@@ -11,12 +11,13 @@ const tick=(r,seconds,playing=true)=>{for(let i=0;i<Math.round(seconds*60);i++)r
 test('Each stage grants a weapon, then one other upgrade, and a new player starts fresh',()=>{
  for(const game of ['fleet','fishing','knife']){
   const r=new Run(game,'booth');
-  const picks=game==='knife'?['focus','guard','life']:['trajectory','rate','trajectory'];
-  for(const kind of picks){r.completeRound();assert.equal(r.choose('weapon'),false);assert(r.choose(kind));}
+  const picks=game==='knife'?['focus','life','focus']:game==='fleet'?['escort','trajectory','rate']:['trajectory','rate','trajectory'];
+  for(const kind of picks){r.completeRound();assert.equal(r.choose('weapon'),false);assert.equal(r.choose('guard'),false);assert(r.choose(kind));}
   assert.equal(r.weapon,3);assert.equal(r.wave,4);
-  if(game==='knife'){assert.equal(r.focus,1);assert.equal(r.guard,1);assert.equal(r.life,1);}
-  else{assert.equal(r.trajectory,2);assert.equal(r.rate,1);}
-  const fresh=new Run(game,'booth');assert.equal(fresh.weapon,0);assert.equal(fresh.life,0);assert.equal(fresh.protection,0);assert.equal(fresh.guard,0);assert.equal(fresh.rate,0);assert.equal(fresh.trajectory,0);
+  if(game==='knife'){assert.equal(r.focus,2);assert.equal(r.guard,0);assert.equal(r.life,1);}
+  else if(game==='fleet'){assert.equal(r.escort,1);assert.equal(r.trajectory,1);assert.equal(r.rate,1);}
+  else{assert.equal(r.trajectory,2);assert.equal(r.rate,1);assert.equal(r.choose('escort'),false);}
+  const fresh=new Run(game,'booth');assert.equal(fresh.weapon,0);assert.equal(fresh.life,0);assert.equal(fresh.protection,0);assert.equal(fresh.guard,0);assert.equal(fresh.rate,0);assert.equal(fresh.trajectory,0);assert.equal(fresh.escort,0);
  }
 });
 test('Aircraft armour upgrades change the real cap and repair amount without losing firepower',()=>{
@@ -92,15 +93,17 @@ test('Booth wall time expires through pause and upgrade, exactly once',()=>{
  const limit=context.FuLamJourney.LIMIT;
  for(const inChoice of [false,true]){const r=new Run('fleet','booth');if(inChoice)tick(r,20.1);r.tick(limit-r.total,false);assert.equal(r.phase,'over');assert.equal(r.reason,'time');assert.equal(r.total,limit);assert.equal(r.finish('defeat'),false);assert.equal(r.reason,'time');assert.equal(r.tick(10),null);assert(!r.choose('weapon'));}
  const paced=new Run('fleet','booth');tick(paced,19);assert.equal(paced.phase,'play');tick(paced,1.2);assert.equal(paced.phase,'choice');
- const slice=new Run('knife','booth');tick(slice,limit);assert.equal(slice.phase,'play');assert.equal(slice.reason,'');
+ const slice=new Run('knife','booth');tick(slice,119);assert.equal(slice.phase,'play');tick(slice,1.2);assert.equal(slice.phase,'over');assert.equal(slice.reason,'time');assert.equal(slice.total,limit);
 });
-test('Booth plays four timed stages and the last one ends the run',()=>{
+test('Booth plays four stages inside two minutes and the last one fills the remaining time',()=>{
  const r=new Run('fishing','booth');
- assert.equal(JSON.stringify([...context.FuLamJourney.BOOTH_STAGE_TIME]),JSON.stringify([20,30,30,40]));
+ assert.equal(context.FuLamJourney.LIMIT,120);
+ assert.equal(JSON.stringify([...context.FuLamJourney.BOOTH_STAGE_TIME]),JSON.stringify([20,20,20]));
  tick(r,20.05);assert.equal(r.phase,'choice');assert.equal(r.weapon,1);assert(r.choose('rate'));
- tick(r,30.05);assert.equal(r.phase,'choice');assert.equal(r.weapon,2);assert(r.choose('trajectory'));
- tick(r,30.05);assert.equal(r.phase,'choice');assert.equal(r.weapon,3);assert(r.choose('rate'));
- assert.equal(r.wave,4);tick(r,39);assert.equal(r.phase,'play');tick(r,1.2);assert.equal(r.phase,'over');assert.equal(r.reason,'stages');
+ tick(r,20.05);assert.equal(r.phase,'choice');assert.equal(r.weapon,2);assert(r.choose('trajectory'));
+ tick(r,20.05);assert.equal(r.phase,'choice');assert.equal(r.weapon,3);assert(r.choose('rate'));
+ assert.equal(r.wave,4);assert.equal(r.phase,'play');assert(r.total<120);
+ tick(r,120-r.total-.3);assert.equal(r.phase,'play');tick(r,.6);assert.equal(r.phase,'over');assert.equal(r.reason,'time');assert.equal(r.total,120);
 });
 test('Public challenges continue beyond six rounds with bounded choice history',()=>{
  const r=new Run('fleet','web','challenge');for(let i=0;i<110;i++){tick(r,30.1);assert.equal(r.weapon,i+1);assert(r.choose('rate'));}assert.equal(r.weapon,110);assert.equal(r.wave,111);assert.equal(r.phase,'play');assert.equal(r.choices.length,100);
@@ -121,15 +124,18 @@ test('Blocked storage and malformed records do not crash results',()=>{
  assert.equal(readBoard({getItem:()=>JSON.stringify([{score:'<script>',wave:1,seconds:1},{score:1,wave:-1,seconds:2},{score:7,wave:2,seconds:2}])},'x').length,1);
 });
 test('A Booth jet becomes a laser once it upgrades, while a public jet keeps the early shell',()=>{
- const fire=(mode,weapon)=>{const s=C.createState({arcade:true,mode,seed:1});s.evolution.weapon=weapon;s.spawnTime=100;s.fireTime=.01;C.tick(s,.05);return s.entities.filter(e=>e.type==='torpedo'&&e.collision.group===C.FRIEND);};
+ const fire=(mode,weapon,trajectory=0)=>{const s=C.createState({arcade:true,mode,seed:1});s.evolution.weapon=weapon;s.evolution.trajectory=trajectory;s.spawnTime=100;s.fireTime=.01;C.tick(s,.05);return s.entities.filter(e=>e.type==='torpedo'&&e.collision.group===C.FRIEND);};
  const upgraded=fire('booth',1);assert.equal(upgraded.length,2);assert(upgraded.every(e=>e.style==='beam'&&e.color==='#8cf4ff'&&e.blast===0&&e.collision.radius<=3.2&&e.ray));
  const span=e=>Math.hypot(e.ray.end.x-e.ray.start.x,e.ray.end.y-e.ray.start.y);
  assert(upgraded.every(e=>e.ray.end.y<0&&e.ray.start.y>C.H*.5&&span(e)>C.H*.7));
- const spread=Math.abs(upgraded[0].position.r-upgraded[1].position.r);assert(spread>.2&&spread<.5);
- const early=fire('booth',0);assert.equal(early.length,1);assert(early.every(e=>e.style==='shell'&&e.blast===0&&!e.ray));
+ assert(Math.abs(upgraded[0].position.r-upgraded[1].position.r)<.02);
+ assert(Math.abs(upgraded[0].ray.start.x-upgraded[1].ray.start.x)>12);
+ const early=fire('booth',0);assert.equal(early.length,1);assert(early.every(e=>e.style==='shell'&&e.blast===0&&!e.ray&&e.damage<10));
  const pub=fire('standard',1);assert(pub.length>=1);assert(pub.every(e=>e.style==='shell'));
- const pierce=fire('booth',2);assert.equal(pierce.length,1);assert(pierce.every(e=>e.style==='orb'&&e.pierce>=8&&e.blast===0&&e.collision.radius>=8));
- const boom=fire('booth',3);assert.equal(boom.length,1);assert(boom.every(e=>e.style==='shell'&&e.blast>0&&e.blast<=40));
+ const bomb=fire('booth',2);assert.equal(bomb.length,1);assert(bomb.every(e=>e.style==='bomb'&&e.blast>0&&e.blast<=22&&!e.ray));
+ const plane=fire('booth',3);assert.equal(plane.length,1);assert(plane.every(e=>e.style==='missile'&&e.blast>0&&e.blast<=28));
+ const wide=fire('booth',1,2);assert.equal(wide.length,4);assert(wide.every(e=>e.style==='beam'&&e.ray));
+ assert(new Set(wide.map(e=>e.ray.start.x.toFixed(2))).size===4);
 });
 test('Aircraft evolution changes actual projectiles, with increasing damage and retained fire-rate/trajectory upgrades',()=>{
  let previousDamage=0;
@@ -158,8 +164,9 @@ test('Booth aircraft armour, enemies, bullets and spawn interval stay between th
    return {armour:s.hero.maxHp,hp:enemy.maxHp,speed:enemy.velocity.speed,bullet:bullet.velocity.speed,interval:s.spawnTime};
   });
   between(rows[2].armour,rows[1].armour,rows[0].armour);
-  for(const key of ['hp','speed','bullet'])between(...rows.map(r=>r[key]));
-  between(rows[2].interval,rows[1].interval,rows[0].interval);
+  between(rows[0].hp,rows[2].hp,rows[1].hp);
+  for(const key of ['speed','bullet'])between(...rows.map(r=>r[key]));
+  between(rows[1].interval,rows[2].interval,rows[0].interval);
  }
 });
 test('Published shared files exactly match the authored runtime',()=>{
@@ -171,5 +178,5 @@ test('Slice stages wait for their choice pool, not thirty seconds; completing tw
  const r=new Run('knife');tick(r,60);assert.equal(r.phase,'play');assert.equal(r.wave,1);
  assert(r.completeRound());assert(!r.completeRound());assert.equal(r.phase,'choice');assert.equal(r.choiceTime,12);
  assert.equal(r.weapon,1);assert.equal(r.choose('weapon'),false);assert(r.choose('focus'));assert.equal(r.wave,2);assert.equal(r.weapon,1);assert.equal(r.roundTime,0);
- const booth=new Run('knife','booth');booth.tick(180);assert.equal(booth.phase,'play');assert.equal(booth.reason,'');assert(booth.completeRound());
+ const booth=new Run('knife','booth');booth.tick(30);assert.equal(booth.phase,'play');assert.equal(booth.reason,'');assert(booth.completeRound());booth.tick(120);assert.equal(booth.phase,'over');assert.equal(booth.reason,'time');
 });

@@ -10,7 +10,7 @@
   'Beta · The Money Journey · FuLam':'測試版 · 富臨錢進號','FINANCE MEETS ARCADE':'理財 × 遊戲',
   'Everyday choices. Lifelong skills.':'每天的選擇，一生受用的能力。','About the game':'關於遊戲',
   'For general financial education only; not investment advice. Investments can rise or fall in value and you may lose your capital. Past performance does not guarantee future returns.':'本遊戲只作一般理財教育用途，並非投資建議。投資價格可升可跌，可能損失本金；過往表現不保證未來回報。',
-  'THE MONEY CHOICE CHALLENGE':'理財選擇挑戰','One topic.':'選定主題，','Keep ':'持續','slicing.':'切錢袋。',
+  'THE MONEY CHOICE CHALLENGE':'理財選擇挑戰','One topic.':'選定主題，','Keep ':'持續','slicing.':'切錢袋。','Question: ':'題目: ',
   'A continuous stream of money choices.':'理財選項源源不絕。','Read the question. Find your rhythm.':'看清題目，找到節奏。','How long can you keep a combo?':'你能保持連擊多久？',
   'Game difficulty':'遊戲難度','Easy':'簡單','Medium':'中等','Hard':'困難','A gentle warm-up':'輕鬆熱身','Find your rhythm':'找到節奏','Test your reflexes':'挑戰反應',
   'Play mode':'遊戲模式','Endless practice':'無限練習','No time limit · finish when you want':'不限時間 · 隨時結束','20-correct sprint':'20 個正確答案競速','Beat your time · +3s per wrong slice':'挑戰最快時間 · 錯切加 3 秒',

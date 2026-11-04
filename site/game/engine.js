@@ -52,7 +52,7 @@
   }
   const DIFFICULTIES={
     easy:{label:'Easy',description:'A gentle warm-up',min:4.8,max:6.2,spread:.55,spin:14,pauseMin:.7,pauseMax:1.5},
-    medium:{label:'Medium',description:'Find your rhythm',min:3.15,max:3.9,spread:.4,spin:20,pauseMin:.45,pauseMax:1.03},
+    medium:{label:'Medium',description:'Find your rhythm',min:3.5,max:3.9/0.9,spread:.4,spin:20,pauseMin:.45,pauseMax:1.03},
     hard:{label:'Hard',description:'Test your reflexes',min:3,max:3.8,spread:.3,spin:26,pauseMin:.4,pauseMax:1}
   };
   // Vary group sizes without losing or repeating any question options.

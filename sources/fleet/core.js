@@ -81,11 +81,11 @@
     const threat=s.arcade&&root.FuLamJourney?root.FuLamJourney.threatProfile(s.wave):null;
     const growth = threat?threat.health:1+(s.wave-1)*.14;
     const elite=!!(threat?.elite&&kind!=='boss'&&++s.spawnCount%4===0);
-    const hp = Math.round(spec.hp * growth * MODE_RULES[s.mode].enemy * (elite?1.6:1) * (threat&&kind==='boss'?2+s.wave*.15:1));
+    const hp = Math.round(spec.hp * growth * MODE_RULES[s.mode].enemy * (s.mode==='booth'?1.7:1) * (elite?1.6:1) * (threat&&kind==='boss'?2+s.wave*.15:1));
     const x = kind === 'boss' ? W / 2 : 38 + r() * (W - 76);
     const entity = createEntity('ship', {
       kind, elite, position: new Position(x, -65, Math.PI / 2), velocity: new Velocity(spec.speed * MODE_RULES[s.mode].enemy*(threat?.speed||1)),
-      collision: new Collision(true, true, spec.radius, ENEMY), strategy: new Strategy(kind, spec.attack / Math.min(2, 1 + s.wave * 0.035)),
+      collision: new Collision(true, true, spec.radius, ENEMY), strategy: new Strategy(kind, spec.attack / Math.min(2, 1 + s.wave * 0.035) / (s.mode==='booth'?1.45:1)),
       hp, maxHp: hp, value: spec.value, age: 0, phase: r() * TAU, originX: x, flash: 0
     });
     s.raised.push(entity); return entity;
@@ -140,9 +140,11 @@
     const level = s.weapon;
     if(s.arcade&&root.FuLamJourney){
       const p=root.FuLamJourney.weaponProfile('fleet',s.evolution);s.hero.position.r=-Math.PI/2;
-      const booth=s.mode==='booth',form=!booth?null:p.tier>=4?'blast':p.tier===3?'pierce':p.tier===2?'laser':'bullet',reach=booth?1.8:1;
-      const forms={bullet:{style:'shell',spread:[0],radius:3.6,color:'#ffe39b',blast:0,pierce:0,speed:p.speed},laser:{style:'beam',spread:[-.16,.16],radius:2.8,color:'#8cf4ff',blast:0,pierce:24,speed:0},pierce:{style:'orb',spread:[0],radius:9,color:'#d7b4ff',blast:0,pierce:8,speed:560},blast:{style:'shell',spread:[0],radius:4.2,color:'#ffb07a',blast:32,pierce:0,speed:680}};
-      if(form){const spec=forms[form];for(const off of spec.spread){const aim=-Math.PI/2+off,from={x:s.hero.position.x,y:s.hero.position.y-26};fireTorpedo(s,from,aim,FRIEND,{damage:p.damage*(1+s.paidPower)*(off===0?1:.7),speed:spec.speed,radius:spec.radius,homing:0,pierce:spec.pierce,style:spec.style,color:spec.color,blast:spec.blast,chain:0,ray:form==='laser'?screenRay(from.x,from.y,aim):null});}}
+      const booth=s.mode==='booth',form=!booth?null:p.tier>=4?'plane':p.tier===3?'bomb':p.tier===2?'laser':'bullet',reach=booth?1.8:1,hurt=booth?.5:1;
+      const traj=Math.max(0,s.evolution.trajectory||0);
+      const fan=(base,step)=>{const count=Math.min(7,base+traj);return Array.from({length:count},(_,i)=>count<=1?0:(i-(count-1)/2)*(count===2?step:.1));};
+      const forms={bullet:{style:'shell',spread:fan(1,.1),radius:3.6,color:'#ffe39b',blast:0,pierce:0,speed:p.speed},laser:{style:'beam',count:Math.min(7,2+traj),radius:2.8,color:'#8cf4ff',blast:0,pierce:24,speed:0},bomb:{style:'bomb',spread:fan(1,.12),radius:6.2,color:'#ffb07a',blast:18,pierce:0,speed:480},plane:{style:'missile',spread:fan(1,.1),radius:4.6,color:'#ffd27a',blast:24,pierce:0,speed:640}};
+      if(form){const spec=forms[form];if(form==='laser'){const n=spec.count,gap=18;for(let i=0;i<n;i++){const from={x:s.hero.position.x+(i-(n-1)/2)*gap,y:s.hero.position.y-26},aim=-Math.PI/2;fireTorpedo(s,from,aim,FRIEND,{damage:p.damage*(1+s.paidPower)*hurt,speed:0,radius:spec.radius,homing:0,pierce:spec.pierce,style:spec.style,color:spec.color,blast:0,chain:0,ray:screenRay(from.x,from.y,aim)});}}else for(const off of spec.spread){const aim=-Math.PI/2+off,from={x:s.hero.position.x,y:s.hero.position.y-26};fireTorpedo(s,from,aim,FRIEND,{damage:p.damage*(1+s.paidPower)*hurt*(off===0?1:.75),speed:spec.speed,radius:spec.radius,homing:0,pierce:spec.pierce,style:spec.style,color:spec.color,blast:spec.blast,chain:0,ray:null});}}
       else {const style=p.kind==='orb'?'orb':p.kind==='beam'?'beam':p.kind==='missile'?'missile':p.kind==='arc'?'arc':'shell';for(const off of p.spread)fireTorpedo(s,{x:s.hero.position.x,y:s.hero.position.y-26},-Math.PI/2+off,FRIEND,{damage:p.damage*(1+s.paidPower)*(p.count===2?.65:off!==0?.55:1),speed:p.speed,radius:(p.kind==='orb'?7:p.kind==='missile'?8:3.5)*reach,homing:p.homing,pierce:p.pierce,style,color:p.color,blast:(p.blast||(booth?42:0))*reach,chain:p.chain});}
       s.shots++;emit(s,'fire');return;
     }
@@ -184,6 +186,11 @@
       const second=entity.hp<entity.maxHp*.5, count=second?11:7;
       angles=Array.from({length:count},(_,i)=>a+Math.sin(entity.age*.6)*.25+(i-(count-1)/2)*(second?.23:.25));
     }
+    if(s.mode==='booth'&&entity.kind!=='boss'){
+      if(entity.kind==='inflation')angles=[a-.42,a-.2,a,a+.2,a+.42];
+      else if(entity.elite)angles=[a-.3,a-.14,a,a+.14,a+.3];
+      else angles=[a-.22,a,a+.22];
+    }
     for (const angle of angles) fireTorpedo(s, p, angle, ENEMY, { damage: entity.kind === 'boss' ? 20 : entity.kind === 'debt' ? 18 : 12,
       speed: (entity.kind === 'debt' ? 90 : 113) * threat, radius: entity.kind === 'debt' ? 6 : 4.8,
       homing: entity.kind === 'debt' ? 0.36 : 0, style: entity.kind === 'debt' ? 'debt' : 'hostile' });
@@ -200,7 +207,8 @@
     }
   }
   function applyRoundUpgrade(s, run, kind) {
-    s.evolution={weapon:run.weapon,rate:run.rate,trajectory:run.trajectory,life:run.life||0,protection:run.protection||0};
+    s.evolution={weapon:run.weapon,rate:run.rate,trajectory:run.trajectory,escort:run.escort||0,life:run.life||0,protection:run.protection||0};
+    s.escort=run.escort||0;
     const p=root.FuLamJourney.survivalProfile('fleet',s.evolution,MODE_RULES[s.mode].armour);
     s.hero.maxHp=p.max;s.hero.hp=Math.min(p.max,s.hero.hp+12+(kind==='life'?35:0));
   }
@@ -250,7 +258,7 @@
     }
     s.hero.echo = { ...h };
     s.fireTime -= dt; if (s.fireTime <= 0) { s.fireTime += (s.arcade ? (root.FuLamJourney?root.FuLamJourney.weaponProfile('fleet',s.evolution).interval:(s.weaponKind===3?.65:s.weaponKind===2?.42:s.weaponKind===1?.32:.20)) : Math.max(0.17, 0.34 - s.weapon * 0.025)); weaponFire(s); }
-    s.escortTime -= dt; if (s.escortTime <= 0) { s.escortTime += s.escort === 3 ? 0.32 : 0.7; escortFire(s); }
+    s.escortTime -= dt; if (s.escortTime <= 0) { s.escortTime += s.escort >= 3 ? 0.32 : 0.7; escortFire(s); }
     s.dividend += dt;
     if (s.dividend >= 15) {
       s.dividend -= 15;
@@ -266,8 +274,9 @@
     if (s.wave % (s.arcade ? 3 : 4) === 0 && !s.bossSpawned) { spawnEnemy(s, 'boss'); s.bossSpawned = true; emit(s, 'boss'); }
     s.spawnTime -= dt;
     if (s.spawnTime <= 0) {
-      s.spawnTime += Math.max(0.42, 1.5 - s.wave * 0.1) / MODE_RULES[s.mode].enemy / (s.arcade&&root.FuLamJourney?root.FuLamJourney.threatProfile(s.wave).density:1);
-      if (ships.length < Math.min(14, 4 + s.wave * 2)) {
+      const spawnBase=Math.max(0.42, 1.5 - s.wave * 0.1);
+      s.spawnTime += (s.mode==='booth'?spawnBase*0.55:spawnBase) / MODE_RULES[s.mode].enemy / (s.arcade&&root.FuLamJourney?root.FuLamJourney.threatProfile(s.wave).density:1);
+      if (ships.length < (s.mode==='booth'?Math.min(22, 8 + s.wave * 3):Math.min(14, 4 + s.wave * 2))) {
         const types = s.wave === 1 ? ['fee', 'fee', 'scam'] : s.wave === 2 ? ['fee', 'scam', 'inflation'] : ['fee', 'scam', 'inflation', 'debt'];
         spawnEnemy(s, types[Math.floor(s.random() * types.length)]);
       }
