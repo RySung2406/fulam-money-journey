@@ -342,3 +342,8 @@ body.immersive-game .game-wrap .arena-footer>#knife-level{grid-column:auto;min-w
 @media(max-height:500px) and (orientation:landscape){.immersive-game .choice-target .bag-svg{width:94px;height:99px;left:27px}}
 .game-wrap .journey-choice-card .journey-upgrades,.game-wrap .journey-choice-card .journey-upgrades[data-count="2"],.game-wrap .journey-choice-card .journey-upgrades[data-count="3"]{grid-template-columns:repeat(2,minmax(0,1fr))}
 .game-wrap .journey-choice-card .journey-upgrades button,.game-wrap .journey-choice-card .journey-upgrades [data-upgrade=protection],.game-wrap .journey-choice-card .journey-upgrades [data-upgrade=life]{grid-column:span 1!important}
+
+/* Slightly smaller bag art on touch-first phones; keep the answer text readable. */
+@media (hover:none) and (pointer:coarse) and (max-width:650px){.immersive-game .choice-target .bag-svg{width:124px;height:130px;left:12px}}
+@media (hover:none) and (pointer:coarse) and (max-width:350px){.immersive-game .choice-target .bag-svg{width:119px;height:125px;left:10px}}
+@media (hover:none) and (pointer:coarse) and (max-height:500px) and (orientation:landscape){.immersive-game .choice-target .bag-svg{width:85px;height:89px;left:31px}}

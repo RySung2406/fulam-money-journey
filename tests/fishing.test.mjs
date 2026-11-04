@@ -57,7 +57,7 @@ function harness(width = 1000, height = 600, options = {}) {
   }
   const el=id=>{if(!nodes.has(id))nodes.set(id,new Element(id,id==='game'?'CANVAS':'BUTTON'));return nodes.get(id);};
   doc={getElementById:id=>{accessedIds.add(id);return el(id);},body:new Element('body','BODY'),activeElement:null,hidden:false,addEventListener(k,v){(docHandlers[k]??=[]).push(v);}};
-  const sandbox={document:doc,devicePixelRatio:1,Math:math,console,UPSTREAM_LICENSE:'MIT QA fixture',ResizeObserver:class{constructor(cb){this.cb=cb;}observe(){}},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>{if(options.storageThrows)throw new Error('Storage blocked');storage.set(k,v);writes++;}},setTimeout:()=>1,clearTimeout:no,requestAnimationFrame:cb=>raf.push(cb),matchMedia:()=>({matches:false}),FuLamArt:{drawBackground:no,drawFish:no,drawCannon:no,drawCoin:no},addEventListener(k,v){(winHandlers[k]??=[]).push(v);}};
+  const sandbox={document:doc,devicePixelRatio:1,Math:math,console,UPSTREAM_LICENSE:'MIT QA fixture',ResizeObserver:class{constructor(cb){this.cb=cb;}observe(){}},localStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>{if(options.storageThrows)throw new Error('Storage blocked');storage.set(k,v);writes++;}},setTimeout:()=>1,clearTimeout:no,requestAnimationFrame:cb=>raf.push(cb),matchMedia:q=>({matches:q.includes('pointer: coarse')&&!!options.touch}),FuLamArt:{drawBackground:no,drawFish:no,drawCannon:no,drawCoin:no},addEventListener(k,v){(winHandlers[k]??=[]).push(v);}};
   sandbox.window=sandbox;vm.createContext(sandbox);
   vm.runInContext(arcade,sandbox);
   vm.runInContext(formations,sandbox);
@@ -399,3 +399,11 @@ for(const width of [390,1000])test(`Round-four explosion damages nearby fish onc
 });
 
 // Rendering, sound output, and touch interaction are additionally checked in-browser.
+
+test('touch-first fishing scales fish down and adds health while desktop stats remain unchanged',()=>{
+ for(const [width,height] of [[390,844],[844,390]]){
+  const desktop=harness(width,height),phone=harness(width,height,{touch:true});
+  for(const g of [desktop,phone])g.run("fish=[];spawn('whale',{x:200,y:200,speed:0});spawn('fund',{x:200,y:200,speed:0})");
+  for(let i=0;i<2;i++){const a=desktop.run(`fish[${i}]`),b=phone.run(`fish[${i}]`);near(b.size,a.size*.9);assert.equal(b.maxHp,Math.ceil(a.maxHp*1.1));}
+ }
+});

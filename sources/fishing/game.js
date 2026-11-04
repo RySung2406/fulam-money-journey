@@ -113,9 +113,11 @@ function origin(){return {x:w/2,y:h-55}}
 function swimBounds(size=38){
  const lo=Math.min(h*.4,96+size*.72+12),hi=Math.max(lo,h-105-size*.7-12);return [lo,hi];
 }
+// Apply the size and durability adjustment only to touch-first devices.
+function mobileFishing(){return matchMedia('(hover: none) and (pointer: coarse) and (max-width: 650px), (hover: none) and (pointer: coarse) and (max-height: 500px)').matches;}
 function fishSize(type){
  const boss=!!defs[type].boss,base=defs[type].size*(boss?1.3:1.55)*(w<600?.9:1);
- return Math.min(base,w*(boss?.26:.16),h*.20);
+ return Math.min(base,w*(boss?.26:.16),h*.20)*(mobileFishing()?.9:1);
 }
 function fishLimit(){return journey?(w<600?18:28):(w<600?30:42)}
 function mission(){
@@ -135,7 +137,8 @@ function spawn(type,opts={}){
  // cannon can catch up. Early armour is removed in round three.
  const growth=opts.demo?1:(journey?.run&&boss?1+Math.min(3,pressureTier())*.08+Math.max(0,pressureTier()-3)*.16:(journey?1:(boss?1+(level-1)*.65:1+Math.pow(level-1,1.3)*.18))*pressure().hp);
  const elite=!!(journey?.run&&journey.run.wave>=3&&!boss&&(fishSerial+1)%4===0);
- const hp=Math.max(1,Math.round(d.hp*(elite?1.6:1)*(journey?.run&&boss&&!opts.demo?2.5:1)*(opts.demo?1:modes[difficulty].hp)*growth));
+ const baseHp=Math.max(1,Math.round(d.hp*(elite?1.6:1)*(journey?.run&&boss&&!opts.demo?2.5:1)*(opts.demo?1:modes[difficulty].hp)*growth));
+ const hp=mobileFishing()&&!opts.demo?Math.ceil(baseHp*1.1):baseHp;
  const value=Math.round(d.value*(boss?1+Math.min(1.5,(level-1)*.10):1));
  const armored=!!(journey?.run&&boss&&!opts.demo&&journey.run.wave<3);
  const bossSpeed=journey?.run&&boss&&!opts.demo?(type==='shark'?36:26):d.speed;

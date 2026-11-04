@@ -25,7 +25,7 @@
     weapon: 'Compound cannon', escort: 'Diversify escorts', reserve: 'Reserve system', repair: 'Repair capital', repairHint: 'Restore 35 armour immediately',
     income: 'RESERVE INCOME', incomeHint: 'Cash earns game income every 15 seconds. Upgrade reserves to increase income and coin pickup range.',
     enemyTag: 'KNOW THE THREAT', fee: 'Impulse spending', feeHint: 'Light raider', inflation: 'Inflation', inflationHint: 'Fan-shaped fire', scam: 'Investment scam', scamHint: 'Fast zigzag', debt: 'High-interest debt', debtHint: 'Homing torpedoes',
-    label_fee: 'Spending', label_inflation: 'Inflation', label_scam: 'Scam', label_debt: 'Debt', label_trap: 'Money trap', label_myth: 'Money myth',
+    label_fee: 'Spending', label_inflation: 'Inflation', label_scam: 'Scam', label_debt: 'Debt', label_trap: 'Money trap', label_myth: 'Money myth', label_rumor: 'Rumour',
     metaphor: 'Money concepts become aircraft abilities. Coins, income and armour are fictional game values.', credits: 'Open-source credits & licence', creditNote: 'Combat core adapted from',
     changes: 'Adds endless waves, finance-themed upgrades, new aircraft art, touch controls and bilingual UI. Original music and font assets are not used.',
     wave: 'SECTOR', combo: 'COMBO', max: 'MAX', full: 'FULL', ready: 'coins · ready', active: 'Shield active', cooldown: 'Ready in', seconds: 's', coins: 'coins',
@@ -41,7 +41,7 @@
   };
   const ZH = {
     soundOn: '音效：開', wave: '空域', combo: '連擊', max: '滿級', full: '已滿', ready: '幣 · 就緒', active: '護盾生效中', cooldown: '冷卻', seconds: '秒', coins: '幣',
-    label_fee: '衝動消費', label_inflation: '通脹', label_scam: '投資騙局', label_debt: '高息債務', label_trap: '理財陷阱', label_myth: '理財誤解',
+    label_fee: '衝動消費', label_inflation: '通脹', label_scam: '投資騙局', label_debt: '高息債務', label_trap: '理財陷阱', label_myth: '理財誤解', label_rumor: '流言',
     weapons: ['追蹤火炮', '雙管追蹤炮', '三路散射炮', '貫穿射線炮', '重型能量球'],
     escorts: ['增加一架追蹤僚機', '增加第二架僚機', '僚機射速提升', '雙架高速僚機'],
     reserves: ['護盾更長 · 拾幣更遠', '收益提升 · 護盾更省', '護盾與儲備全面提升', '儲備系統已滿級'],
@@ -209,7 +209,7 @@
     const boss = s.entities.find(e => e.kind === 'boss' && !e.dead); $('boss-bar').hidden = !boss || phase !== 'play';
     if (boss) $('boss-hp').style.width = `${Math.max(0, boss.hp / boss.maxHp * 100)}%`;
   }
-  const COLORS = { player: '#a6d5ce', fee: '#eaa694', inflation: '#d9bc85', scam: '#f99664', debt: '#b6a2cc', boss: '#e7a08b', trap: '#e4bd73', myth: '#a9b8ed', escort: '#9bc8cd' };
+  const COLORS = { player: '#a6d5ce', fee: '#eaa694', inflation: '#d9bc85', scam: '#f99664', debt: '#b6a2cc', boss: '#e7a08b', trap: '#e4bd73', myth: '#a9b8ed', rumor: '#c6c791', escort: '#9bc8cd' };
   function path(points, fill, stroke = null) {
     ctx.beginPath(); points.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath();
     if (fill) { ctx.fillStyle = fill; ctx.fill(); } if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 1; ctx.stroke(); }
@@ -230,6 +230,7 @@
     if(kind==='player'&&level>=3){path([[-31,6],[-46,16],[-44,24],[-30,16]],'#6faca8','#d7fff6');path([[31,6],[46,16],[44,24],[30,16]],'#6faca8','#d7fff6');}
     if(kind==='trap'){path([[-30,5],[-42,17],[-30,24],[-14,11]],'#b68444','#ffe1a6');path([[30,5],[42,17],[30,24],[14,11]],'#b68444','#ffe1a6');}
     if(kind==='myth'){path([[-22,-2],[-38,8],[-30,14],[-14,7]],'#697fb1','#d8eaff');path([[22,-2],[38,8],[30,14],[14,7]],'#697fb1','#d8eaff');ctx.fillStyle='#e9edff';ctx.fillRect(-2,-17,4,9);}
+    if(kind==='rumor'){path([[-12,-4],[-34,7],[-25,19],[-11,7]],'#8b9872','#e8edc8');path([[12,-4],[34,7],[25,19],[11,7]],'#8b9872','#e8edc8');}
     if(kind==='boss'){path([[-44,9],[-10,-11],[10,-11],[44,9],[42,27],[15,18],[-15,18],[-42,27]],'#d39582','#ffe2a8');path([[0,-35],[9,8],[0,26],[-9,8]],fill);}
     ctx.restore();
   }
