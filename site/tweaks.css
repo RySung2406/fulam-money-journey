@@ -1,0 +1,20 @@
+/* 小改動改這個檔：字體、間距、位置。推上 main 就會上傳到網站。 */
+
+.content-social { margin: 0 0 22px; }
+
+.instagram-link { display: inline-flex; align-items: center; gap: 12px; min-height: 52px; font-size: 22px; line-height: 1.4; color: var(--muted); border-radius: 5px; transition: color .2s var(--ease); }
+.instagram-link strong { color: var(--ink); font-size: 22px; font-weight: 700; margin-left: 4px; }
+.instagram-link:hover { color: var(--ink); }
+.instagram-link:hover strong { text-decoration: underline; text-underline-offset: 4px; }
+.instagram-link .instagram-icon { width: 32px; height: 32px; flex-shrink: 0; }
+.instagram-link > .icon { width: 22px; height: 22px; flex-shrink: 0; }
+
+.public-home .desktop-nav { margin-left: auto; gap: 16px; font-size: 15px; }
+.public-home .desktop-nav a { white-space: nowrap; }
+
+@media (max-width: 760px) {
+  .instagram-link,
+  .instagram-link strong { font-size: 20px; }
+  .instagram-link .instagram-icon { width: 28px; height: 28px; }
+  .instagram-link > .icon { width: 20px; height: 20px; }
+}

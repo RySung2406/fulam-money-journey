@@ -1,0 +1,11 @@
+---
+description: 首頁小改動改哪個檔，以及怎樣上傳到 GitHub
+alwaysApply: true
+---
+
+首頁文字、三個分頁、Instagram 那一行：改 `site/index.html`。
+字體大小、間距、顏色、位置：改 `site/tweaks.css`。這個檔最後載入，會蓋過其他樣式。
+
+不要手改 `site/fishing/index.html` 或 `site/fleet/index.html`。它們由 `sources/` 組出來，部署時會被覆蓋。遊戲小改動改 `sources/` 裡面對應的檔。
+
+改完提交並推上 `main`。GitHub Pages 會自動上傳，不用自己改網址後面的 `?v=`。

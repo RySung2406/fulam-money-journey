@@ -30,6 +30,12 @@ jobs:
         run: npm run check && npm test
       - name: Bundle the current source
         run: npm run bundle
+      - name: Refresh cached stylesheets for this upload
+        run: |
+          sha="${GITHUB_SHA::7}"
+          find site -name '*.html' -print0 | xargs -0 sed -i -E \
+            -e "s/\\?v=auto/?v=${sha}/g" \
+            -e "s/\\?v=20[0-9]{6}-[A-Za-z0-9._-]+/?v=${sha}/g"
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
