@@ -545,14 +545,14 @@ to{opacity:1;transform:translateY(0)}
 .account-footer-disclaimer{flex-basis:100%;margin:0;line-height:1.7;letter-spacing:0}
 .account-footer-disclaimer small{display:block;margin-top:4px;font-size:10px;letter-spacing:.06em}
 
-/* A compact three-step journey with server-backed daily check-ins. */
-.onboarding-steps{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+/* Four journey pages, with check-ins and campus booths kept separate. */
+.onboarding-steps{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
 .onboarding-meta{font-size:16px}
 .onboarding-note,.onboarding-privacy{font-size:15px}
 .onboarding-dashboard-button{margin-top:26px}
-.onboarding.show-dashboard{max-width:1040px}
-.show-dashboard .onboarding-heading{margin-bottom:24px}
-.show-dashboard .onboarding-steps{max-width:680px;margin-inline:auto}
+.onboarding:is(.show-dashboard,.show-booth){max-width:1040px}
+:is(.show-dashboard,.show-booth) .onboarding-heading{margin-bottom:24px}
+:is(.show-dashboard,.show-booth) .onboarding-steps{max-width:900px;margin-inline:auto}
 .dashboard-nav{display:flex;gap:8px;flex-wrap:wrap;margin:30px 0 20px}
 .dashboard-nav a{min-height:46px;display:inline-flex;align-items:center;padding:9px 21px;border:1px solid var(--account-line);border-radius:30px;text-decoration:none;font-size:17px;background:#fffef9;transition:background-color .2s,border-color .2s}
 .dashboard-nav a:hover{background:#e8eddf;border-color:#9cad97}
@@ -688,7 +688,34 @@ to{opacity:1;transform:translateY(0)}
   .account-primary svg { flex-shrink:0; }
   .resend-row { flex-wrap:wrap; gap:4px 16px; }
   .onboarding-step-button { overflow-wrap:anywhere; line-height:1.4; }
-  .dashboard-nav { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+  .dashboard-nav { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
   .dashboard-nav a { justify-content:center; text-align:center; padding:10px 6px; font-size:14px; line-height:1.4; }
   .posttest-entry { flex-wrap:wrap; }
 }
+
+.booth-page-heading{margin:30px 0 24px}
+.booth-page-heading h2{font-size:clamp(28px,3.6vw,38px);font-weight:600;line-height:1.35;margin:8px 0 12px}
+.booth-page-heading p{margin:0;color:var(--account-muted);font-size:18px;line-height:1.7}
+.booth-event-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.booth-event-card{min-width:0;padding:28px;border:1px solid var(--account-line);border-radius:20px;background:#fffef9}
+.booth-event-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.booth-event-top h3{margin:0;font-size:26px;font-weight:600;line-height:1.35}
+.booth-event-status{padding:5px 12px;border-radius:20px;background:#eef1e7;color:#52634f;font-size:13px}
+.booth-event-award{margin:18px 0 24px;font-size:20px;font-weight:600;color:#214b3b}
+.booth-event-details{margin:0 0 24px;font-size:16px;color:var(--account-muted)}
+.booth-event-details>div{display:flex;gap:24px;margin-top:8px}.booth-event-details dt{min-width:42px}.booth-event-details dd{margin:0}
+.booth-prize-slot{display:flex;align-items:center;gap:16px;min-height:108px;padding:20px;border:1px solid #dce4d5;border-radius:14px;background:#f0f4e9}
+.booth-prize-icon{display:grid;place-items:center;flex:0 0 54px;width:54px;height:54px;border-radius:14px;background:#e1eada;color:#537558}
+.booth-prize-icon svg{width:34px;height:34px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.booth-prize-slot>div{min-width:0}.booth-prize-slot>div>span{display:block;font-size:14px;color:var(--account-muted)}
+.booth-prize-slot strong{display:block;margin-top:3px;font-size:19px;font-weight:600}
+.booth-event-card:nth-child(2) .booth-prize-slot{background:#faf2e5;border-color:#ecdfcc}.booth-event-card:nth-child(2) .booth-prize-icon{background:#f3e2c7;color:#906337}
+.booth-page-note{margin:18px 0 0;font-size:15px;color:var(--account-muted)}
+@media(prefers-reduced-motion:no-preference){.member-booth-page{animation:member-step-enter .35s cubic-bezier(.2,.7,.2,1) both}}
+@media(max-width:720px){
+ .onboarding-steps{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .onboarding-step-button{min-height:62px;padding:10px;gap:8px;flex-direction:row;text-align:left;justify-content:flex-start;overflow-wrap:normal}
+ .booth-event-grid{grid-template-columns:1fr;gap:16px}.booth-event-card{padding:24px}
+ .booth-page-heading{margin:24px 0 20px}.booth-page-heading p{font-size:17px}
+}
+@media(max-width:380px){.booth-event-card{padding:20px}.booth-prize-slot{padding:16px;gap:12px}.booth-event-top h3{font-size:24px}}
