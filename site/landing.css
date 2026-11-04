@@ -329,42 +329,36 @@
 .booth-label { display:flex; flex-wrap:wrap; gap:12px; align-items:center; font-size:14px; color:var(--muted); }
 .public-home .daily-feature > .icon { margin:25px 0 18px; width:32px; height:32px; }
 .public-home .daily-feature p { margin-bottom:18px; }
-/* Programme attribution belongs in a compact footer rail. */
+/* Programme, site name, and HKU credit sit on one row. */
+.programme-split { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); align-items:center; gap:12px 28px; }
+.programme-side { min-width:0; justify-self:start; text-align:left; }
+.programme-side h2 { margin:0; font-size:clamp(16px,1.7vw,22px); line-height:1.35; }
+.programme-side h2 span { font-weight:650; }
+.programme-split .programme-source { display:inline-flex; margin-top:6px; min-height:44px; padding-bottom:0; font-size:14px; font-weight:550; }
+.programme-site { display:flex; flex-direction:column; align-items:center; justify-self:center; min-width:0; text-align:center; }
+.programme-site .brand-name { font-size:clamp(18px,2vw,24px); }
+.programme-site .brand-name small { font-size:11px; letter-spacing:.08em; margin-top:4px; }
+.programme-credit { margin:0; justify-self:end; max-width:16em; text-align:right; font-size:clamp(14px,1.45vw,17px); line-height:1.45; color:var(--muted); }
 .public-home .site-footer { margin-top:12px; background:#fff; }
-.public-home .programme-support { display:grid; grid-template-columns:minmax(260px,1fr) auto; align-items:center; gap:40px; padding:32px 0 28px; border-top:0; border-bottom:1px solid var(--line); }
-.public-home .programme-title-row { display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 18px; }
-.public-home .programme-heading h2 { font-size:20px; margin:0; line-height:1.5; }
-.public-home .programme-heading p { font-size:15px; margin:0; }
-.public-home .programme-source { min-height:44px; margin:0; padding-bottom:0; border:0; font-size:14px; font-weight:550; }
+.public-home .programme-support { display:block; padding:28px 0 24px; border-top:0; border-bottom:1px solid var(--line); }
 .public-home .header-login { margin-left:18px; flex-shrink:0; display:inline-flex; align-items:center; min-height:40px; padding:8px 16px; border:1px solid var(--ink); border-radius:8px; font-weight:700; }
 .public-home .desktop-nav { margin-left:auto; }
 @media (max-width:1000px) {
   .public-home .header-login { margin-left:auto; }
 }
-.public-home .programme-source:hover { text-decoration:underline; text-underline-offset:4px; }
-.public-home .programme-logos { display:flex; flex-direction:row; justify-content:flex-end; align-items:flex-start; gap:32px; margin:0; padding:0; border:0; border-radius:0; background:transparent; }
-.public-home .programme-logo-group { width:auto; max-width:none; }
-.public-home .programme-logo-group h3 { font-size:13px; font-weight:500; margin:0 0 12px; }
-.public-home .programme-logo-row { gap:20px; min-height:60px; }
-.public-home .programme-logos .logo-sjs { width:64px; }
-.public-home .programme-logos .logo-ifec { width:104px; }
-.public-home .programme-logos .logo-hkex { width:152px; }
-.public-home .footer-top { padding-block:28px; }
-@media(max-width:900px) {
- .public-home .programme-support { grid-template-columns:1fr; gap:18px; }
- .public-home .programme-logos { justify-content:flex-start; }
-}
+.programme-split .programme-source:hover { text-decoration:underline; text-underline-offset:4px; }
+.public-home .footer-top { padding-block:28px; align-items:center; }
+.public-home .footer-tagline { margin-top:0; }
 @media(max-width:540px) {
- .public-home .programme-support { padding-block:28px; gap:16px; }
- .public-home .programme-title-row { flex-wrap:nowrap; align-items:center; gap:6px 12px; }
- .public-home .programme-heading h2 { font-size:15px; }
- .public-home .programme-heading p { font-size:13px; }
- .public-home .programme-source { font-size:13px; white-space:nowrap; }
- .public-home .programme-logos { gap:22px 24px; flex-wrap:wrap; }
- .public-home .programme-logo-row { gap:14px; min-height:48px; }
- .public-home .programme-logos .logo-sjs { width:48px; }
- .public-home .programme-logos .logo-ifec { width:86px; }
- .public-home .programme-logos .logo-hkex { width:124px; }
+ .programme-split { gap:8px 10px; }
+ .programme-side h2 { font-size:13px; text-wrap:wrap; }
+ .programme-side h2 span { display:block; }
+ .programme-split .programme-source { margin-top:2px; min-height:36px; font-size:12px; }
+ .programme-site .brand-name { font-size:14px; }
+ .programme-site .brand-name small { display:none; }
+ .programme-credit { max-width:none; font-size:12px; }
+ .programme-credit .credit-team { display:block; }
+ .public-home .programme-support { padding-block:22px 18px; }
  .hero-social { margin-top:14px; }
 }
 @media(max-width:1000px) {
