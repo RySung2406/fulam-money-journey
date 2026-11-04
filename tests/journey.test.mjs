@@ -113,9 +113,12 @@ test('Blocked storage and malformed records do not crash results',()=>{
 });
 test('A Booth jet becomes a laser once it upgrades, while a public jet keeps the early shell',()=>{
  const fire=(mode,weapon)=>{const s=C.createState({arcade:true,mode,seed:1});s.evolution.weapon=weapon;s.spawnTime=100;s.fireTime=.01;C.tick(s,.05);return s.entities.filter(e=>e.type==='torpedo'&&e.collision.group===C.FRIEND);};
- const upgraded=fire('booth',1);assert(upgraded.length>=1);assert(upgraded.every(e=>e.style==='beam'&&e.color==='#8cf4ff'));
+ const upgraded=fire('booth',1);assert.equal(upgraded.length,2);assert(upgraded.every(e=>e.style==='beam'&&e.color==='#8cf4ff'&&e.blast===0&&e.collision.radius<=3.2));
+ const spread=Math.abs(upgraded[0].position.r-upgraded[1].position.r);assert(spread>.2&&spread<.5);
  const early=fire('booth',0);assert(early.length>=1);assert(early.every(e=>e.style==='shell'));
  const pub=fire('standard',1);assert(pub.length>=1);assert(pub.every(e=>e.style==='shell'));
+ const fan=fire('booth',2);assert.equal(fan.length,3);assert(fan.every(e=>e.style==='shell'&&e.color==='#ffd27a'&&e.blast===0));
+ const angles=fan.map(e=>e.position.r).sort((a,b)=>a-b);assert(angles[2]-angles[0]>.45);
 });
 test('Aircraft evolution changes actual projectiles, with increasing damage and retained fire-rate/trajectory upgrades',()=>{
  let previousDamage=0;

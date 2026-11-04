@@ -130,9 +130,10 @@
     const level = s.weapon;
     if(s.arcade&&root.FuLamJourney){
       const p=root.FuLamJourney.weaponProfile('fleet',s.evolution);s.hero.position.r=-Math.PI/2;
-      const booth=s.mode==='booth',laser=booth&&(p.tier>=2||s.wave>=2),reach=booth?1.8:1;
-      const style=laser?'beam':p.kind==='orb'?'orb':p.kind==='beam'?'beam':p.kind==='missile'?'missile':p.kind==='arc'?'arc':'shell';
-      for(const off of p.spread)fireTorpedo(s,{x:s.hero.position.x,y:s.hero.position.y-26},-Math.PI/2+off,FRIEND,{damage:p.damage*(1+s.paidPower)*(p.count===2?.65:off!==0?.55:1),speed:p.speed,radius:(laser?5.5:p.kind==='orb'?7:p.kind==='missile'?8:3.5)*reach,homing:p.homing,pierce:p.pierce,style,color:laser?'#8cf4ff':p.color,blast:(laser?36:(p.blast||(booth?42:0)))*reach,chain:p.chain});
+      const booth=s.mode==='booth',form=booth&&p.tier>=3?'spread':booth&&p.tier===2?'laser':null,reach=booth?1.8:1;
+      const style=form==='laser'?'beam':form==='spread'?'shell':p.kind==='orb'?'orb':p.kind==='beam'?'beam':p.kind==='missile'?'missile':p.kind==='arc'?'arc':'shell';
+      const spread=form==='laser'?[-.16,.16]:form==='spread'?[-.28,0,.28]:p.spread;
+      for(const off of spread)fireTorpedo(s,{x:s.hero.position.x,y:s.hero.position.y-26},-Math.PI/2+off,FRIEND,{damage:p.damage*(1+s.paidPower)*(form?(off===0?1:.7):(p.count===2?.65:off!==0?.55:1)),speed:p.speed,radius:(form==='laser'?2.8:form==='spread'?3.6:(p.kind==='orb'?7:p.kind==='missile'?8:3.5))*(form?1:reach),homing:form?0:p.homing,pierce:p.pierce,style,color:form==='laser'?'#8cf4ff':form==='spread'?'#ffd27a':p.color,blast:form?0:(p.blast||(booth?42:0))*reach,chain:form?0:p.chain});
       s.shots++;emit(s,'fire');return;
     }
     if(s.arcade){

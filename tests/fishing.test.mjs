@@ -84,6 +84,25 @@ test('Shipped fishing fire supports all twelve evolution stages and preserves tr
 const near=(a,b,tol=.0001)=>assert(Math.abs(a-b)<tol,`${a} != ${b}`);
 const clone = value => JSON.parse(JSON.stringify(value));
 
+test('Booth fishing stage two is a short twin laser and stage three is a three-way spread',()=>{
+ const g=harness();g.click('start');g.installEvolution();
+ const aim=weapon=>{
+  g.run(`journey={run:{weapon:${weapon},rate:0,trajectory:0,wave:${weapon+1},phase:'play',scene:'booth'},text:zh=>zh,name:()=>'n'};bullets=[];beams=[];fish=[];angle=-Math.PI/2;fire()`);
+  return {cannon:g.run('currentCannon()'),bullets:g.run('bullets'),beams:g.run('beams')};
+ };
+ const laser=aim(1);
+ assert.equal(laser.cannon.kind,'beam');assert.equal(laser.cannon.name,'雙聯激光');
+ assert.equal(laser.beams.length,2);assert.equal(laser.bullets.length,0);
+ assert(laser.beams.every(b=>b.width<=8&&b.color==='#8cf4ff'));
+ const reach=Math.hypot(laser.beams[0].ex-laser.beams[0].x,laser.beams[0].ey-laser.beams[0].y);
+ assert(reach<600*.5,`laser reach ${reach}`);
+ const fan=aim(2);
+ assert.equal(fan.cannon.kind,'spread');assert.equal(fan.cannon.name,'三路散射');
+ assert.equal(fan.beams.length,0);assert.equal(fan.bullets.length,3);
+ assert(fan.bullets.every(b=>b.color==='#ffd27a'));
+ const open=aim(0);
+ assert.equal(open.beams.length,0);assert.equal(open.bullets.length,1);assert.notEqual(open.cannon.kind,'beam');
+});
 test('Fishing protection lowers actual idle drain, and catches respect expanded energy capacity',()=>{
  const losses=[];
  for(const protection of [0,1,3]){

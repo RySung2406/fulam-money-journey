@@ -664,9 +664,10 @@ from (http://code.google.com/p/pyqrnative):
     const level = s.weapon;
     if(s.arcade&&root.FuLamJourney){
       const p=root.FuLamJourney.weaponProfile('fleet',s.evolution);s.hero.position.r=-Math.PI/2;
-      const booth=s.mode==='booth',laser=booth&&(p.tier>=2||s.wave>=2),reach=booth?1.8:1;
-      const style=laser?'beam':p.kind==='orb'?'orb':p.kind==='beam'?'beam':p.kind==='missile'?'missile':p.kind==='arc'?'arc':'shell';
-      for(const off of p.spread)fireTorpedo(s,{x:s.hero.position.x,y:s.hero.position.y-26},-Math.PI/2+off,FRIEND,{damage:p.damage*(1+s.paidPower)*(p.count===2?.65:off!==0?.55:1),speed:p.speed,radius:(laser?5.5:p.kind==='orb'?7:p.kind==='missile'?8:3.5)*reach,homing:p.homing,pierce:p.pierce,style,color:laser?'#8cf4ff':p.color,blast:(laser?36:(p.blast||(booth?42:0)))*reach,chain:p.chain});
+      const booth=s.mode==='booth',form=booth&&p.tier>=3?'spread':booth&&p.tier===2?'laser':null,reach=booth?1.8:1;
+      const style=form==='laser'?'beam':form==='spread'?'shell':p.kind==='orb'?'orb':p.kind==='beam'?'beam':p.kind==='missile'?'missile':p.kind==='arc'?'arc':'shell';
+      const spread=form==='laser'?[-.16,.16]:form==='spread'?[-.28,0,.28]:p.spread;
+      for(const off of spread)fireTorpedo(s,{x:s.hero.position.x,y:s.hero.position.y-26},-Math.PI/2+off,FRIEND,{damage:p.damage*(1+s.paidPower)*(form?(off===0?1:.7):(p.count===2?.65:off!==0?.55:1)),speed:p.speed,radius:(form==='laser'?2.8:form==='spread'?3.6:(p.kind==='orb'?7:p.kind==='missile'?8:3.5))*(form?1:reach),homing:form?0:p.homing,pierce:p.pierce,style,color:form==='laser'?'#8cf4ff':form==='spread'?'#ffd27a':p.color,blast:form?0:(p.blast||(booth?42:0))*reach,chain:form?0:p.chain});
       s.shots++;emit(s,'fire');return;
     }
     if(s.arcade){
@@ -1519,10 +1520,10 @@ from (http://code.google.com/p/pyqrnative):
       if (e.hp < e.maxHp) { const w=e.kind==='boss'?80:35; ctx.fillStyle='#09242f';ctx.fillRect(p.x-w/2,p.y-scale*35,w,3);ctx.fillStyle=COLORS[e.kind];ctx.fillRect(p.x-w/2,p.y-scale*35,w*Math.max(0,e.hp/e.maxHp),3); }
       if (e.kind !== 'boss') drawLabel(t(`label_${e.kind}`),p.x,p.y+scale*34,COLORS[e.kind],13);
     } else if (e.type === 'torpedo') {
-      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r); const friendly=e.collision.group===C.FRIEND; if(friendly&&game.mode==='booth')ctx.scale(1.8,1.8);
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r); const friendly=e.collision.group===C.FRIEND; if(friendly&&game.mode==='booth'&&e.style!=='beam')ctx.scale(1.8,1.8);
       const color=friendly?(e.color||(e.style==='escort'?'#9df1de':'#ffe1a1')):e.style==='debt'?'#d5acf1':'#ff9b84';
       ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=e.style==='beam'?3:2;
-      if(e.style==='missile'){ctx.beginPath();ctx.moveTo(12,0);ctx.lineTo(-7,-4);ctx.lineTo(-4,0);ctx.lineTo(-7,4);ctx.closePath();ctx.fill();ctx.fillStyle='#fff5c9';ctx.fillRect(-12,-1,6,2);}else if(e.style==='arc'){ctx.beginPath();ctx.moveTo(-16,-4);ctx.lineTo(-5,4);ctx.lineTo(2,-4);ctx.lineTo(12,0);ctx.stroke();}else if(e.style==='beam'){ctx.lineWidth=friendly?6:3;ctx.globalAlpha=.35;ctx.beginPath();ctx.moveTo(-30,0);ctx.lineTo(friendly?34:12,0);ctx.stroke();ctx.globalAlpha=1;ctx.lineWidth=friendly?2.6:2;ctx.beginPath();ctx.moveTo(-10,0);ctx.lineTo(friendly?28:10,0);ctx.stroke();}else if (e.style==='orb') { ctx.fillStyle='#e9c87b25';ctx.beginPath();ctx.arc(0,0,16,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ffe1a1';ctx.beginPath();ctx.arc(0,0,8,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff7e4';ctx.beginPath();ctx.arc(2,-2,3,0,Math.PI*2);ctx.fill(); }
+      if(e.style==='missile'){ctx.beginPath();ctx.moveTo(12,0);ctx.lineTo(-7,-4);ctx.lineTo(-4,0);ctx.lineTo(-7,4);ctx.closePath();ctx.fill();ctx.fillStyle='#fff5c9';ctx.fillRect(-12,-1,6,2);}else if(e.style==='arc'){ctx.beginPath();ctx.moveTo(-16,-4);ctx.lineTo(-5,4);ctx.lineTo(2,-4);ctx.lineTo(12,0);ctx.stroke();}else if(e.style==='beam'){const slim=friendly&&game.mode==='booth';ctx.lineWidth=slim?2:(friendly?6:3);ctx.globalAlpha=.4;ctx.beginPath();ctx.moveTo(slim?-8:-30,0);ctx.lineTo(slim?16:(friendly?34:12),0);ctx.stroke();ctx.globalAlpha=1;ctx.lineWidth=slim?1.2:(friendly?2.6:2);ctx.beginPath();ctx.moveTo(slim?-2:-10,0);ctx.lineTo(slim?14:(friendly?28:10),0);ctx.stroke();}else if (e.style==='orb') { ctx.fillStyle='#e9c87b25';ctx.beginPath();ctx.arc(0,0,16,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ffe1a1';ctx.beginPath();ctx.arc(0,0,8,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff7e4';ctx.beginPath();ctx.arc(2,-2,3,0,Math.PI*2);ctx.fill(); }
       else { ctx.globalAlpha=.3;ctx.beginPath();ctx.moveTo(-17,0);ctx.lineTo(0,0);ctx.stroke();ctx.globalAlpha=1;ctx.beginPath();ctx.moveTo(-4,0);ctx.lineTo(friendly?7:3,0);ctx.stroke();if(!friendly){ctx.beginPath();ctx.arc(0,0,e.collision.radius,0,Math.PI*2);ctx.stroke();} }
       ctx.restore();
     } else if (e.type === 'coin') {
