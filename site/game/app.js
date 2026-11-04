@@ -278,8 +278,8 @@ function targetPosition(plan, progress, metrics) {
   metrics.width, visualHeight, Math.max(24, apexCeiling));
 }
 function stageFlight(plan) {
- if (!journey || (journey.run?.wave || 1) < 2) return plan;
- return {...plan, duration: plan.duration * 1.3, depth: plan.depth * .4};
+ const wave=journey?.run?.wave || 1;
+ return {...plan, duration: plan.duration * (journey ? 1.2 + Math.min(3,wave-1)*.18 : 1.25), depth: journey && wave >= 2 ? plan.depth * .4 : plan.depth};
 }
 function chooseLaunch(initial, metrics) {
  initial = stageFlight(initial);

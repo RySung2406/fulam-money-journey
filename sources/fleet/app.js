@@ -363,7 +363,7 @@
   });
   window.addEventListener('keyup',e=>{if(keyMap[e.code])pressed.delete(keyMap[e.code]);});
   const point=e=>{const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*C.W/r.width,y:(e.clientY-r.top)*C.H/r.height};};
-  function follow(p){pointerTarget=p;if(phase==='play'&&!paused)C.placeHero(game,p.x,p.y);}
+  function follow(p){pointerTarget=p;}
   canvas.addEventListener('pointerdown',e=>{if(phase!=='play'||paused||(e.pointerType==='mouse'&&e.button!==0))return;e.preventDefault();canvasPointers.press(e);follow(point(canvasPointers.current));canvas.setPointerCapture(e.pointerId);unlockAudio();});
   canvas.addEventListener('pointermove',e=>{if(phase==='play'&&!paused&&canvasPointers.move(e))follow(point(e));});
   function release(e){

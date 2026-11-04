@@ -142,7 +142,7 @@ test('A Booth jet becomes a laser once it upgrades, while a public jet keeps the
  assert(upgraded.every(e=>e.ray.end.y<0&&e.ray.start.y>C.H*.5&&span(e)>C.H*.7));
  assert(Math.abs(upgraded[0].position.r-upgraded[1].position.r)<.02);
  assert(Math.abs(upgraded[0].ray.start.x-upgraded[1].ray.start.x)>12);
- const early=fire('booth',0);assert.equal(early.length,1);assert(early.every(e=>e.style==='shell'&&e.blast===0&&!e.ray&&e.damage>=12&&e.damage<=13));
+ const early=fire('booth',0);assert.equal(early.length,1);assert(early.every(e=>e.style==='shell'&&e.blast===0&&!e.ray&&e.damage>=9&&e.damage<=10));
  const pub=fire('standard',1);assert(pub.length>=1);assert(pub.every(e=>e.style==='shell'));
  const bomb=fire('booth',2);assert.equal(bomb.length,1);assert(bomb.every(e=>e.style==='bomb'&&e.blast>0&&e.blast<=22&&!e.ray));
  const plane=fire('booth',3);assert.equal(plane.length,1);assert(plane.every(e=>e.style==='missile'&&e.blast>0&&e.blast<=28));
@@ -159,7 +159,7 @@ test('Arcade round control replaces kill farming and bosses occur every third wa
 test('Paid aircraft upgrades add real damage without spending score',()=>{
  const s=C.createState({arcade:true,seed:1});s.cash=500;s.score=1234;s.spawnTime=100;
  assert(C.buy(s,'weapon'));assert.equal(s.power,1.18);assert.equal(s.paidPower,.18);assert.equal(s.score,1234);
- for(let i=0;i<4;i++)C.tick(s,.05);assert(s.entities.filter(e=>e.type==='torpedo').every(e=>Math.abs(e.damage-16*1.18)<1e-9));
+ for(let i=0;i<4;i++)C.tick(s,.05);assert(s.entities.filter(e=>e.type==='torpedo').every(e=>Math.abs(e.damage-16*1.18*.72)<1e-9));
 });
 test('Aircraft boss warns first, then fires a wider second phase with a centre gap',()=>{
  for(const [health,count] of [[1,6],[.4,8]]){

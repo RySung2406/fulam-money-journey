@@ -51,15 +51,14 @@ test('Shield blocks hostile fire; one hit cannot repeatedly drain the hull', () 
   C.activateShield(s);add();C.tick(s,1/60);assert.equal(s.hero.hp,100);
   s.shield=0;s.invulnerable=0;add();C.tick(s,1/60);assert.equal(s.hero.hp,88);
 });
-test('A drag lands on the finger in one step, while keyboard movement stays paced', () => {
+test('Pointer movement is speed limited, reaches its destination and never overshoots', () => {
   const s=C.createState({seed:1});s.spawnTime=100;s.fireTime=100;
-  C.tick(s,1/60,{target:{x:80,y:200}});
-  assert.equal(s.hero.position.x,80);assert.equal(s.hero.position.y,200);
-  C.tick(s,1/60,{target:{x:0,y:0}});
-  assert.equal(s.hero.position.x,22);assert.equal(s.hero.position.y,48);
-  const paced=s.hero.position.x;
-  C.tick(s,1/60,{x:1,y:0});
-  assert(Math.abs(s.hero.position.x-(paced+230/60))<1e-6);
+  const start={...s.hero.position}, target={x:80,y:200};
+  C.tick(s,1/60,{target});
+  assert(Math.abs(Math.hypot(s.hero.position.x-start.x,s.hero.position.y-start.y)-230/60)<1e-6);
+  assert.notEqual(s.hero.position.x,target.x);
+  steps(s,3,{target});assert(Math.abs(s.hero.position.x-target.x)<1e-6);assert(Math.abs(s.hero.position.y-target.y)<1e-6);
+  C.tick(s,1/60,{x:1});assert(Math.abs(s.hero.position.x-(target.x+230/60))<1e-6);
 });
 test('Both routes stay inside the same playfield for keyboard and touch movement', () => {
   for(const mode of ['standard','storm']){
