@@ -90,13 +90,23 @@
     });
     s.raised.push(entity); return entity;
   }
-  function fireTorpedo(s, position, angle, group, { damage = 12, speed = 340, radius = 4, homing = 0, pierce = 0, style = 'shell', color = '', blast = 0, chain = 0 } = {}) {
+  function screenRay(x, y, angle) {
+    const dx = Math.cos(angle), dy = Math.sin(angle);
+    const edges = [];
+    if (dx > 1e-4) edges.push((W + 40 - x) / dx);
+    if (dx < -1e-4) edges.push((-40 - x) / dx);
+    if (dy > 1e-4) edges.push((H + 40 - y) / dy);
+    if (dy < -1e-4) edges.push((-40 - y) / dy);
+    const reach = edges.filter(t => t > 1).reduce((a, t) => Math.min(a, t), Math.hypot(W, H) * 1.25);
+    return { start: { x, y }, end: { x: x + dx * reach, y: y + dy * reach } };
+  }
+  function fireTorpedo(s, position, angle, group, { damage = 12, speed = 340, radius = 4, homing = 0, pierce = 0, style = 'shell', color = '', blast = 0, chain = 0, ray = null } = {}) {
     if (s.entities.length + s.raised.length > 310) return null;
     const entity = createEntity('torpedo', {
       position: new Position(position.x, position.y, angle), previous: { x: position.x, y: position.y },
-      velocity: new Velocity(speed, Math.cos(angle), Math.sin(angle)),
+      velocity: new Velocity(ray ? 0 : speed, Math.cos(angle), Math.sin(angle)),
       collision: new Collision(true, true, radius, group), strategy: new Strategy(homing ? 'cruise' : 'straight'),
-      ttl: new Ttl(group === FRIEND ? 2.8 : 6), damage, homing, pierce, style, color, blast, chain, hit: new Set(), grazed: false
+      ttl: new Ttl(ray ? 0.18 : group === FRIEND ? 2.8 : 6), damage, homing, pierce, style, color, blast, chain, ray, hit: new Set(), grazed: false
     });
     s.raised.push(entity); return entity;
   }
@@ -133,7 +143,7 @@
       const booth=s.mode==='booth',form=booth&&p.tier>=3?'spread':booth&&p.tier===2?'laser':null,reach=booth?1.8:1;
       const style=form==='laser'?'beam':form==='spread'?'shell':p.kind==='orb'?'orb':p.kind==='beam'?'beam':p.kind==='missile'?'missile':p.kind==='arc'?'arc':'shell';
       const spread=form==='laser'?[-.16,.16]:form==='spread'?[-.28,0,.28]:p.spread;
-      for(const off of spread)fireTorpedo(s,{x:s.hero.position.x,y:s.hero.position.y-26},-Math.PI/2+off,FRIEND,{damage:p.damage*(1+s.paidPower)*(form?(off===0?1:.7):(p.count===2?.65:off!==0?.55:1)),speed:p.speed,radius:(form==='laser'?2.8:form==='spread'?3.6:(p.kind==='orb'?7:p.kind==='missile'?8:3.5))*(form?1:reach),homing:form?0:p.homing,pierce:p.pierce,style,color:form==='laser'?'#8cf4ff':form==='spread'?'#ffd27a':p.color,blast:form?0:(p.blast||(booth?42:0))*reach,chain:form?0:p.chain});
+      for(const off of spread){const aim=-Math.PI/2+off,from={x:s.hero.position.x,y:s.hero.position.y-26};fireTorpedo(s,from,aim,FRIEND,{damage:p.damage*(1+s.paidPower)*(form?(off===0?1:.7):(p.count===2?.65:off!==0?.55:1)),speed:p.speed,radius:(form==='laser'?2.8:form==='spread'?3.6:(p.kind==='orb'?7:p.kind==='missile'?8:3.5))*(form?1:reach),homing:form?0:p.homing,pierce:form==='laser'?24:p.pierce,style,color:form==='laser'?'#8cf4ff':form==='spread'?'#ffd27a':p.color,blast:form?0:(p.blast||(booth?42:0))*reach,chain:form?0:p.chain,ray:form==='laser'?screenRay(from.x,from.y,aim):null});}
       s.shots++;emit(s,'fire');return;
     }
     if(s.arcade){
@@ -297,7 +307,8 @@
       if (bullet.collision.group === FRIEND) {
         for (const ship of ships) {
           if (ship.dead || bullet.hit.has(ship)) continue;
-          if (segmentCircleHit(bullet.previous, bullet.position, ship.position, bullet.collision.radius + ship.collision.radius)) {
+          const start=bullet.ray?bullet.ray.start:bullet.previous,end=bullet.ray?bullet.ray.end:bullet.position;
+          if (segmentCircleHit(start, end, ship.position, bullet.collision.radius + ship.collision.radius)) {
             ship.hp -= bullet.damage; ship.flash = 0.1; bullet.hit.add(ship);
             if(bullet.blast||bullet.chain){let arcs=bullet.chain;for(const other of ships){if(other===ship||other.dead)continue;const distance=Math.sqrt(distanceSquare(ship.position,other.position));if(distance<bullet.blast||(arcs>0&&distance<150)){if(distance>=bullet.blast)arcs--;other.hp-=bullet.damage*.25;other.flash=.1;if(other.hp<=0)destroy(s,other);else emit(s,'impact',{x:other.position.x,y:other.position.y});}}emit(s,'impact',{x:ship.position.x,y:ship.position.y});bullet.blast=bullet.chain=0;}
             if (ship.hp <= 0) destroy(s, ship);

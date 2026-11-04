@@ -208,7 +208,7 @@ function segmentFish(x1,y1,x2,y2,f,radius=0){
  return Math.hypot(ax+dx*t,ay+dy*t)<=1?t:null;
 }
 function emitBeam(cannon,a,amount=cannon.damage){
- const o=origin(),length=cannon.beamReach==null?Math.hypot(w,h)*1.25:h*cannon.beamReach,x=o.x+Math.cos(a)*48,y=o.y+Math.sin(a)*48,ex=x+Math.cos(a)*length,ey=y+Math.sin(a)*length;
+ const o=origin(),length=Math.hypot(w,h)*1.25,x=o.x+Math.cos(a)*48,y=o.y+Math.sin(a)*48,ex=x+Math.cos(a)*length,ey=y+Math.sin(a)*length;
  const width=cannon.beamWidth||12;
  beams.push({x,y,ex,ey,width,life:.19,max:.19,color:cannon.color||(level>=9?'#c7a5ff':'#8fece5')});if(beams.length>12)beams.shift();
  for(const f of fish)if(visibleFish(f)&&segmentFish(x,y,ex,ey,f,width*.5)!==null){hits++;damage(f,amount)}
@@ -218,7 +218,7 @@ function currentCannon(){
  if(!journey?.run)return cannons[level-1];
  const p=window.FuLamJourney.weaponProfile('fishing',journey.run);
  const booth=journey.run.scene==='booth';
- if(booth&&p.tier===2)return {...p,name:journey.text('雙聯激光','Twin laser'),label:journey.text('雙聯激光','Twin laser'),kind:'beam',spread:[-.16,.16],count:2,beamWidth:8,beamReach:.42,pierce:p.pierce+1,blast:0,speed:p.speed,color:'#8cf4ff'};
+ if(booth&&p.tier===2)return {...p,name:journey.text('雙聯激光','Twin laser'),label:journey.text('雙聯激光','Twin laser'),kind:'beam',spread:[-.16,.16],count:2,beamWidth:8,pierce:p.pierce+1,blast:0,speed:p.speed,color:'#8cf4ff'};
  if(booth&&p.tier>=3)return {...p,name:journey.text('三路散射','Three-way spread'),label:journey.text('三路散射','Three-way spread'),kind:'spread',spread:[-.28,0,.28],count:3,pierce:p.pierce+1,blast:0,speed:p.speed,color:'#ffd27a'};
  const wide=booth?1.8:1;
  return {...p,name:journey.name(journey.run.weapon),label:journey.name(journey.run.weapon),kind:p.kind,beamWidth:8+p.stage,pierce:p.pierce+1,blast:(p.blast||0)*wide,speed:p.speed,color:p.color};
