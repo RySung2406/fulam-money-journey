@@ -70,7 +70,7 @@ test('Every Booth game forces intermediate difficulty and a reproducible seed; p
   assert.deepEqual(Array.from({length:30},()=>a.random()),Array.from({length:30},()=>b.random()));
   assert.equal(new Run(game,'web','challenge').difficulty,'challenge');
   assert.equal(new Run(game,'web','intermediate').difficulty,'standard');
-  assert.notEqual(a.key(),a.key().replace('booth-v8','booth-v7'));
+  assert.notEqual(a.key(),a.key().replace('booth-v9','booth-v8'));
  }
 });
 test('Thirty active seconds opens one choice and freezes the active play clock',()=>{
@@ -89,9 +89,9 @@ test('A paused public run cannot advance rounds or time out, even after an hour'
  const r=new Run('knife');r.tick(3600,false);assert.equal(r.phase,'play');assert.equal(r.active,0);assert.equal(r.wave,1);
 });
 test('Booth wall time expires through pause and upgrade, exactly once',()=>{
- for(const inChoice of [false,true]){const r=new Run('fleet','booth');if(inChoice)tick(r,48.1);r.tick(180-r.total,false);assert.equal(r.phase,'over');assert.equal(r.reason,'time');assert.equal(r.total,180);assert.equal(r.finish('defeat'),false);assert.equal(r.reason,'time');assert.equal(r.tick(10),null);assert(!r.choose('weapon'));}
- const paced=new Run('fleet','booth');tick(paced,30);assert.equal(paced.phase,'play');tick(paced,18.1);assert.equal(paced.phase,'choice');
- const slice=new Run('knife','booth');tick(slice,30);assert.equal(slice.phase,'play');tick(slice,18.1);assert.equal(slice.phase,'choice');
+ for(const inChoice of [false,true]){const r=new Run('fleet','booth');if(inChoice)tick(r,30.1);r.tick(120-r.total,false);assert.equal(r.phase,'over');assert.equal(r.reason,'time');assert.equal(r.total,120);assert.equal(r.finish('defeat'),false);assert.equal(r.reason,'time');assert.equal(r.tick(10),null);assert(!r.choose('weapon'));}
+ const paced=new Run('fleet','booth');tick(paced,29);assert.equal(paced.phase,'play');tick(paced,1.2);assert.equal(paced.phase,'choice');
+ const slice=new Run('knife','booth');tick(slice,120);assert.equal(slice.phase,'play');assert.equal(slice.reason,'');
 });
 test('Public challenges continue beyond six rounds with bounded choice history',()=>{
  const r=new Run('fleet','web','challenge');for(let i=0;i<110;i++){tick(r,30.1);assert.equal(r.weapon,i+1);assert(r.choose('rate'));}assert.equal(r.weapon,110);assert.equal(r.wave,111);assert.equal(r.phase,'play');assert.equal(r.choices.length,100);
@@ -157,5 +157,5 @@ test('Slice stages wait for their choice pool, not thirty seconds; completing tw
  const r=new Run('knife');tick(r,60);assert.equal(r.phase,'play');assert.equal(r.wave,1);
  assert(r.completeRound());assert(!r.completeRound());assert.equal(r.phase,'choice');assert.equal(r.choiceTime,12);
  assert.equal(r.weapon,1);assert.equal(r.choose('weapon'),false);assert(r.choose('focus'));assert.equal(r.wave,2);assert.equal(r.weapon,1);assert.equal(r.roundTime,0);
- const booth=new Run('knife','booth');booth.tick(180);assert.equal(booth.reason,'time');assert(!booth.completeRound());
+ const booth=new Run('knife','booth');booth.tick(180);assert.equal(booth.phase,'play');assert.equal(booth.reason,'');assert(booth.completeRound());
 });

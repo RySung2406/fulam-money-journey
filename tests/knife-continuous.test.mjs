@@ -38,6 +38,14 @@ test('continuous decks exhaust all choices before reshuffling, without recent re
   }
 });
 
+test('a one-pass deck shows every choice once and then stops', () => {
+  const options = questions[0].options;
+  const deck = E.createOptionDeck(options, seeded(11), true);
+  const order = Array.from({ length: options.length + 3 }, () => deck.next());
+  assert.equal(order.filter(Boolean).length, options.length);
+  assert.equal(new Set(order.filter(Boolean).map(option => option.id)).size, options.length);
+  assert.equal(order.at(-1), null);
+});
 test('answer order can be reproduced for QA and changes with a different seed', () => {
   const options = questions[0].options;
   const draw = seed => {

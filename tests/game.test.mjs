@@ -20,14 +20,14 @@ test('scoring rewards combos once per choice and penalises wrong slices', () => 
   assert.equal(session.bestCombo, 2);
   assert.equal(E.recordHit(session, 'next-round', good).delta, 100);
 });
-test('five ordered stages each have 20 unique, balanced and legible choices', () => {
+test('five ordered stages each have 25 unique, legible choices', () => {
   assert.deepEqual(questions.map(q => q.id), ['tools', 'investment', 'insurance', 'borrowing', 'scams']);
   for (const q of questions) {
-    assert.equal(q.options.length, 20, q.id + ' answer bank');
-    assert.equal(new Set(q.options.map(o => o.id)).size, 20, q.id + ' unique IDs');
-    assert.equal(new Set(q.options.map(o => o.text.toLowerCase())).size, 20, q.id + ' unique labels');
-    assert.equal(q.options.filter(o => o.good === true).length, 10, q.id + ' correct choices');
-    assert.equal(q.options.filter(o => o.good === false).length, 10, q.id + ' plausible decoys');
+    assert.equal(q.options.length, 25, q.id + ' answer bank');
+    assert.equal(new Set(q.options.map(o => o.id)).size, 25, q.id + ' unique IDs');
+    assert.equal(new Set(q.options.map(o => o.text.toLowerCase())).size, 25, q.id + ' unique labels');
+    assert.equal(q.options.filter(o => o.good === true).length, 13, q.id + ' correct choices');
+    assert.equal(q.options.filter(o => o.good === false).length, 12, q.id + ' plausible decoys');
     for (const o of q.options) {
       assert.ok(o.text.trim().length > 0 && o.text.length <= 23, q.id + ': ' + o.text);
     }
@@ -97,7 +97,7 @@ test('game access stays closed on server errors or missing profiles', async () =
   await assert.rejects(verifyGameAccess(fakeClient(user, null).client), /profile-not-ready/);
 });
 
-test('Chinese and English stage pools contain the same twenty answer identities and verdicts',()=>{
+test('Chinese and English stage pools contain the same answer identities and verdicts',()=>{
  const zh=JSON.parse(JSON.stringify(context.window.QUESTIONS_ZH));
  questions.forEach((q,i)=>assert.deepEqual(q.options.map(o=>[o.id,o.good]),zh[i].options.map(o=>[o.id,o.good])));
 });

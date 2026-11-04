@@ -1732,7 +1732,7 @@ window.QUESTIONS_ZH = window.QUESTIONS.map(q => {
 });
 })();
 
-// Twenty choices per stage: ten correct and ten decoys, in both languages.
+// Twenty-five choices per stage: thirteen correct and twelve decoys, in both languages.
 for (const bank of [window.QUESTIONS, window.QUESTIONS_ZH]) {
- for (const q of bank) q.options=q.options.filter((_,i)=>i<10||(i>=15&&i<25));
+ for (const q of bank) q.options=q.options.filter((_,i)=>i<13||(i>=15&&i<27));
 }

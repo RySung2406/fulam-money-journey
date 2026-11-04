@@ -1,7 +1,7 @@
 /* FuLam arcade progression v7. Original code; scores are local, not verified online records. */
 (function(root){
  'use strict';
- const VERSION='booth-v8', LIMIT=180, ROUND=30, BOOTH_ROUND=48, CHOICE=12;
+ const VERSION='booth-v9', LIMIT=120, ROUND=30, BOOTH_ROUND=30, CHOICE=12, KNIFE_STAGES=3, KNIFE_OPTIONS=25;
  const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function random(seed){return()=>{let t=seed+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;};}
@@ -13,12 +13,12 @@
   tick(dt,playing=true){
    if(this.phase==='over'||!Number.isFinite(dt)||dt<=0)return null;
    this.total+=dt;
-   if(this.scene==='booth'&&this.total>=LIMIT){this.total=LIMIT;this.finish('time');return 'over';}
+   const knifeBooth=this.scene==='booth'&&this.game==='knife';
+   if(this.scene==='booth'&&!knifeBooth&&this.total>=LIMIT){this.total=LIMIT;this.finish('time');return 'over';}
    if(this.phase==='choice'){this.choiceTime=Math.max(0,this.choiceTime-dt);return this.choiceTime===0?'auto':null;}
    if(!playing)return null;
    const step=Math.min(dt,.1);this.active+=step;this.roundTime+=step;
-   const limit=this.roundLimit();
-   if((this.game!=='knife'||this.scene==='booth')&&this.roundTime>=limit){this.roundTime=limit;this.completeRound();return 'choice';}
+   if(this.game!=='knife'&&this.roundTime>=this.roundLimit()){this.roundTime=this.roundLimit();this.completeRound();return 'choice';}
    return null;
   }
   roundLimit(){return this.scene==='booth'?BOOTH_ROUND:ROUND;}
@@ -71,7 +71,7 @@
  }
 
  class UI {
-  constructor(game,language){this.game=game;this.language=language;this.scene=new URLSearchParams(location.search).get('mode')==='booth'?'booth':'web';this.difficulty=this.scene==='booth'?'intermediate':'standard';this.run=null;this.overlay=null;this.saved=false;this.onChoice=()=>{};this.onEnd=()=>{};this.onIntermission=()=>{};}
+  constructor(game,language){this.game=game;this.language=language;this.scene=game==='knife'||new URLSearchParams(location.search).get('mode')==='booth'?'booth':'web';this.difficulty=this.scene==='booth'?'intermediate':'standard';this.run=null;this.overlay=null;this.saved=false;this.onChoice=()=>{};this.onEnd=()=>{};this.onIntermission=()=>{};}
   en(){return this.language()==='en';}
   text(zh,en){return this.en()?en:zh;}
   sliceHearts(){return this.scene==='booth'?5:this.difficulty==='challenge'?3:6;}
@@ -84,8 +84,9 @@
   settings(host,change=()=>{}){
    if(!host)return;
    const hints=this.game==='knife'?[this.text('6 顆心 · 穩陣過關','6 hearts · Room to finish'),this.text('3 顆心 · 更快拋袋','3 hearts · Faster bags')]:this.game==='fleet'?[this.text('100 護甲 · 循序加壓','100 armour · Steady pace'),this.text('75 護甲 · 高速彈幕','75 armour · Faster threats')]:[this.text('較慢魚群 · 輕鬆上手','Slower fish · Get started'),this.text('更快更強 · 能源壓力','Stronger fish · Energy pressure')];
-   host.innerHTML=`<div class="journey-settings"><p class="journey-setting-label">${this.text('自由遊玩 · 選擇難度','FREE PLAY · CHOOSE DIFFICULTY')}</p><div class="journey-options" role="group" aria-label="${this.text('頁遊難度','Free play difficulty')}"><button type="button" data-difficulty="standard"><b>${this.text('標準','Standard')}</b><small>${hints[0]}</small></button><button type="button" data-difficulty="challenge"><b>${this.text('挑戰','Challenge')}</b><small>${hints[1]}</small></button></div><button type="button" class="journey-booth" data-scene="booth"><span><b>Booth ${this.text('現場挑戰','Challenge')}</b><small>${this.text('中等難度 · 獨立本機榜','Intermediate · Separate local board')}</small></span><strong>180s</strong></button><p class="journey-rule" aria-live="polite"></p></div>`;
-   const update=()=>{host.querySelectorAll('[data-difficulty]').forEach(b=>b.setAttribute('aria-pressed',String(this.scene==='web'&&b.dataset.difficulty===this.difficulty)));host.querySelector('[data-scene]').setAttribute('aria-pressed',String(this.scene==='booth'));host.querySelector('.journey-rule').textContent=this.scene==='booth'?this.text('已選 Booth · 每階段自動升級 · 約 3 個階段 · 180 秒','Booth selected · Upgrades every stage · About 3 stages · 180s'):this.game==='knife'?this.text('每關刀刃自動升級 · 再揀慢時、護心或加心','Each stage upgrades the blade, then choose Focus, guard or hearts'):this.game==='fleet'?this.text('每階段飛機自動升級 · 再揀彈道或速度','Each stage upgrades the jet, then choose spread or speed'):this.text('每階段武器自動升級 · 再揀彈道或速度','Each stage upgrades the weapon, then choose spread or speed');change(this.difficulty,this.scene);};
+   if(this.game==='knife'){this.scene='booth';this.difficulty='intermediate';host.innerHTML=`<div class="journey-settings"><p class="journey-setting-label">${this.text('Booth · 三關','BOOTH · 3 STAGES')}</p><p class="journey-rule" aria-live="polite">${this.text('每關 25 個選項，出過不再重複。三關結束，不限兩分鐘。','25 choices per stage, shown once. Three stages, with no two-minute limit.')}</p></div>`;change('intermediate','booth');return;}
+   host.innerHTML=`<div class="journey-settings"><p class="journey-setting-label">${this.text('自由遊玩 · 選擇難度','FREE PLAY · CHOOSE DIFFICULTY')}</p><div class="journey-options" role="group" aria-label="${this.text('頁遊難度','Free play difficulty')}"><button type="button" data-difficulty="standard"><b>${this.text('標準','Standard')}</b><small>${hints[0]}</small></button><button type="button" data-difficulty="challenge"><b>${this.text('挑戰','Challenge')}</b><small>${hints[1]}</small></button></div><button type="button" class="journey-booth" data-scene="booth"><span><b>Booth ${this.text('現場挑戰','Challenge')}</b><small>${this.text('中等難度 · 獨立本機榜','Intermediate · Separate local board')}</small></span><strong>120s</strong></button><p class="journey-rule" aria-live="polite"></p></div>`;
+   const update=()=>{host.querySelectorAll('[data-difficulty]').forEach(b=>b.setAttribute('aria-pressed',String(this.scene==='web'&&b.dataset.difficulty===this.difficulty)));host.querySelector('[data-scene]').setAttribute('aria-pressed',String(this.scene==='booth'));host.querySelector('.journey-rule').textContent=this.scene==='booth'?this.text('已選 Booth · 120 秒 · 每階段 30 秒 · 武器自動升級','Booth selected · 120 seconds · 30 seconds a stage · Weapon upgrades automatically'):this.game==='fleet'?this.text('每階段飛機自動升級 · 再揀彈道或速度','Each stage upgrades the jet, then choose spread or speed'):this.text('每階段武器自動升級 · 再揀彈道或速度','Each stage upgrades the weapon, then choose spread or speed');change(this.difficulty,this.scene);};
    host.querySelector('[data-scene]').onclick=()=>{this.scene='booth';this.difficulty='intermediate';update();};
    host.querySelectorAll('[data-difficulty]').forEach(b=>b.onclick=()=>{this.scene='web';this.difficulty=b.dataset.difficulty;update();});update();
   }
@@ -103,7 +104,7 @@
     ['Q',this.text('開盾保命，留意儲備金','Shield up; keep a cash reserve'),this.text('按護盾或 Q；可一指移動、另一指開盾','Tap Shield or Q · Move and shield with two fingers')],
     ['1–2',this.text('再揀彈道或速度','Then choose spread or speed'),this.text('唔使入機庫。飛機已經自動升級，畫面只俾你揀彈道或速度。P 暫停。','No hangar. The jet is already upgraded; the screen only asks for spread or speed. P pauses.')]
    ]:[
-    ['01',this.text('先看題目，再切正確錢袋','Read first, then slice correct bags'),this.text('每關 20 個選項，分批出現；讓錯誤選項落下。','20 choices per stage, shown in small groups. Let wrong choices fall.')],
+    ['01',this.text('先看題目，再切正確錢袋','Read first, then slice correct bags'),this.text('每關 25 個選項，出過不再重複。','25 choices per stage. Each one appears only once.')],
     ['↗',this.text('手指／滑鼠劃過錢袋','Swipe with your finger or mouse'),this.text('鍵盤可用 Tab 選袋，再按 Enter 或 Space。','Keyboard: Tab to a bag, then Enter or Space.')],
     ['↑ / Q',this.text('刀刃自動升級','Blade upgrades automatically'),this.text('每關刀刃先升級，再揀慢時、護心或加心。切對充能，滿格按 Q 慢時。','Each stage upgrades the blade, then choose Focus, guard or hearts. Correct cuts charge Q.')],
     ['♥',this.text('錯切扣 1 心；漏切也有代價','Wrong cuts cost a heart; misses add up'),this.text(`${this.scene==='booth'?'Booth 中等':this.difficulty==='challenge'?'挑戰':'標準'} ${this.sliceHearts()} 心；每漏切 ${this.sliceHearts()} 個正確選項扣 1 心。`,`${this.scene==='booth'?'Booth intermediate':this.difficulty==='challenge'?'Challenge':'Standard'}: ${this.sliceHearts()} hearts; ${this.sliceHearts()} missed correct bags cost a heart.`)]
@@ -111,7 +112,7 @@
    const kicker=showQuestion?this.text(this.run?'下一關開始前':'開始前 · 先看題目',this.run?'BEFORE THIS STAGE':'READ THE QUESTION FIRST'):this.text('開始前 · 操作指引','BEFORE YOU PLAY');
    const heading=showQuestion?question:this.text('準備好，再開始。','Ready when you are.');
    const startLabel=showQuestion&&this.run?this.text('看完題目，開始','Start this stage'):this.text('知道了，開始！','Got it — start!');
-   o.innerHTML=`<div class="journey-card"><span class="journey-kicker">${kicker}</span><h2>${esc(heading)}</h2>${showQuestion&&context?`<p class="journey-guide-context">${esc(context)}</p>`:''}${showQuestion?`<p class="journey-guide-lead">${this.text('切中符合題目的錢袋，讓錯誤選項落下。','Slice the bags that fit the question. Let the wrong ones fall.')}</p>`:(question?`<p class="journey-guide-question">${esc(question)}</p>`:'')}<div class="journey-guide-grid">${rows.map(([key,title,copy])=>`<div><kbd>${esc(key)}</kbd><p><b>${esc(title)}</b><small>${esc(copy)}</small></p></div>`).join('')}</div><p class="journey-guide-rule">${this.scene==='booth'?this.text('Booth 節奏較快 · 三分鐘大約三個階段。武器自動升級，再揀其他進化。','Booth is quicker · About three stages in three minutes. The weapon upgrades automatically, then you choose another evolution.'):this.text('自由遊玩 · 沒有總時限，挑戰最高分。','Free play · No overall time limit. Chase your best score.')}</p><div class="journey-guide-actions"><button class="journey-exit" data-guide-back>${this.text('返回選單','Back')}</button><button class="journey-begin" data-guide-start>${startLabel}</button></div></div>`;
+   o.innerHTML=`<div class="journey-card"><span class="journey-kicker">${kicker}</span><h2>${esc(heading)}</h2>${showQuestion&&context?`<p class="journey-guide-context">${esc(context)}</p>`:''}${showQuestion?`<p class="journey-guide-lead">${this.text('切中符合題目的錢袋，讓錯誤選項落下。','Slice the bags that fit the question. Let the wrong ones fall.')}</p>`:(question?`<p class="journey-guide-question">${esc(question)}</p>`:'')}<div class="journey-guide-grid">${rows.map(([key,title,copy])=>`<div><kbd>${esc(key)}</kbd><p><b>${esc(title)}</b><small>${esc(copy)}</small></p></div>`).join('')}</div><p class="journey-guide-rule">${this.scene==='booth'?(this.game==='knife'?this.text('Booth 三關。每關 25 個選項，出過不再重複。','Booth is three stages. 25 choices each, with no repeats.'):this.text('Booth 兩分鐘，每階段 30 秒。武器自動升級，再揀彈道或速度。','Booth is two minutes, 30 seconds a stage. The weapon upgrades automatically, then choose spread or speed.')):this.text('自由遊玩 · 沒有總時限，挑戰最高分。','Free play · No overall time limit. Chase your best score.')}</p><div class="journey-guide-actions"><button class="journey-exit" data-guide-back>${this.text('返回選單','Back')}</button><button class="journey-begin" data-guide-start>${startLabel}</button></div></div>`;
    host.append(o);o.querySelector('[data-guide-start]').onclick=()=>{this.close();onStart();};o.querySelector('[data-guide-back]').onclick=()=>{this.close();onBack();};
    o.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();o.querySelector('[data-guide-back]').click();}if(e.key==='Tab'){const b=[...o.querySelectorAll('button')];if(e.shiftKey&&document.activeElement===b[0]){e.preventDefault();b.at(-1).focus();}else if(!e.shiftKey&&document.activeElement===b.at(-1)){e.preventDefault();b[0].focus();}}});o.querySelector('[data-guide-start]').focus({preventScroll:true});
   }
@@ -148,7 +149,7 @@
   }
   pick(kind){if(!this.run?.choose(kind))return;this.close();this.applyScene();this.onChoice(kind,this.run);this.host.querySelector('canvas')?.focus({preventScroll:true});this.update();}
   close(){this.overlay?.remove();this.overlay=null;this.host?.classList.remove('journey-choosing');}
-  update(){if(!this.status||!this.run)return;const r=this.run;this.status.textContent=`${r.scene==='booth'?'Booth':this.text(r.difficulty==='challenge'?'挑戰':'標準',r.difficulty==='challenge'?'Hard':'Standard')} · R${r.wave} ${this.stageScene().name[this.en()?1:0]} · ${r.scene==='booth'?Math.ceil(Math.max(0,LIMIT-r.total))+'s':Math.floor(r.active)+'s'}`;}
+  update(){if(!this.status||!this.run)return;const r=this.run;const clock=this.game==='knife'&&r.scene==='booth'?this.text(`第 ${r.wave}/${KNIFE_STAGES} 關`,`Stage ${r.wave}/${KNIFE_STAGES}`):r.scene==='booth'?Math.ceil(Math.max(0,LIMIT-r.total))+'s':Math.floor(r.active)+'s';this.status.textContent=`${r.scene==='booth'?'Booth':this.text(r.difficulty==='challenge'?'挑戰':'標準',r.difficulty==='challenge'?'Hard':'Standard')} · R${r.wave} ${this.stageScene().name[this.en()?1:0]} · ${clock}`;}
   result(score,extra={},reason='defeat'){
    if(!this.run)return '';this.run.finish(reason);this.close();if(this.status)this.status.hidden=true;
    if(!this.saved){let storage;try{storage=localStorage;}catch{}this.resultData=saveBoard(storage,this.run.key(this.topic,this.recordLanguage),this.run.record(score,extra));this.saved=true;}
@@ -157,5 +158,5 @@
    return `<section class="journey-result"><b>${r.reason==='time'?this.text('Booth 挑戰完成','Booth challenge complete'):this.text('本局紀錄','Run record')} · ${this.text('本機排名','Local rank')} #${data.rank}</b><p>${esc(lesson)}</p><small>${this.text('遊戲資源並非投資回報。','Game resources are not investment returns.')}</small><details><summary>${this.text('查看此模式本機前十名','Top 10 on this device')}</summary><ol>${data.board.map(x=>`<li>${x.score.toLocaleString('en')} · R${x.wave} · ${x.seconds}s</li>`).join('')}</ol></details>${!data.saved?'<p>'+this.text('此瀏覽器未能保存紀錄。','This browser could not save the result.')+'</p>':''}${r.scene==='booth'?`<div class="journey-qr"><img src="../arcade/${this.game}-qr.svg" width="128" height="128" alt="${this.text('自由遊玩 QR code','Free play QR code')}"><a href="?mode=web">${this.text('用自己手機掃碼，繼續自由遊玩','Scan to play on your own phone')}</a></div>`:''}<small>${this.text('本機紀錄，未經核實；不同模式及版本分榜。','Local, unverified records. Modes and versions have separate boards.')}</small></section>`;
   }
  }
- root.FuLamJourney={Run,UI,random,readBoard,saveBoard,VERSION,LIMIT,ROUND,BOOTH_ROUND,CHOICE,weaponProfile,survivalProfile,threatProfile,sceneInfo,drawScene};
+ root.FuLamJourney={Run,UI,random,readBoard,saveBoard,VERSION,LIMIT,ROUND,BOOTH_ROUND,CHOICE,KNIFE_STAGES,KNIFE_OPTIONS,weaponProfile,survivalProfile,threatProfile,sceneInfo,drawScene};
 })(typeof window==='undefined'?globalThis:window);

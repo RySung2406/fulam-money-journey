@@ -3,15 +3,16 @@
   const GAME_RULES=Object.freeze({version:'continuous-v1',sprintTarget:20,wrongPenaltySeconds:3});
   const shuffle = (list,random=Math.random) => { const a=[...list]; for(let i=a.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; };
   // A shuffled bag guarantees variety while independently randomising launch timing.
-  function createOptionDeck(options,random=Math.random){
+  function createOptionDeck(options,random=Math.random,once=false){
     if(!options.length)throw new Error('A topic needs answer options.');
-    let deck=[],recent=[];
+    let deck=[],recent=[],drawn=false;
     return {
       next(){
-        if(!deck.length)deck=shuffle(options,random);
+        if(!deck.length){if(once&&drawn)return null;deck=shuffle(options,random);drawn=true;}
         const eligible=deck.findIndex(option=>!recent.includes(option.id));
         const option=deck.splice(eligible<0?0:eligible,1)[0];
-        recent.push(option.id);if(recent.length>2)recent.shift();
+        if(!option)return null;
+        recent.push(option.id);if(!once&&recent.length>2)recent.shift();
         return option;
       },
       get remaining(){return deck.length;}

@@ -130,7 +130,7 @@ test('new bags arrive while earlier bags are still in flight',()=>{
 for(const fps of [60,15])test(`endless practice runs for five minutes at ${fps} fps without rounds or clock drift`,()=>{
   const game=harness({width:390});game.start();game.advance(300,fps);
   const state=game.state();assert.equal(state.phase,'playing');near(state.elapsed,300);
-  assert(state.spawned>100);assert.equal(state.reviewOptionCount,20);assert(state.timerCount<20);
+  assert(state.spawned>100);assert.equal(state.reviewOptionCount,25);assert(state.timerCount<20);
   game.click('#finish-session');assert.equal(game.state().phase,'results');assert.equal(game.rafCount(),0);
   assert.equal([...game.storage.keys()].filter(key=>key.includes('best-')).length,0,'practice never creates a sprint record');
 });
