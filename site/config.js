@@ -4,6 +4,7 @@ window.FULIN_CONFIG = Object.freeze({
   supabasePublishableKey: "sb_publishable_3bITNhSFQlua5Vzc0Mt47Q_dwaSv6B6",
   authReady: true,
   otpLength: 8,
+  turnstileSiteKey: "0x4AAAAAAFzsY4FjFao8xJ-T",
   // Participant community invite (not the internal team chat). Add a verified HTTPS chat.whatsapp.com link.
   whatsappCommunityUrl: "https://chat.whatsapp.com/HrA6jkRlXX9CLXdgJoMZGf"
 });

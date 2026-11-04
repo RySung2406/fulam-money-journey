@@ -6,20 +6,20 @@
   <meta name="theme-color" content="#F6F5EF">
   <meta name="description" content="登入 FuLam 21 天理財計劃：填寫問卷、加入 WhatsApp 社群，查看打卡、Booth 與抽獎禮物。">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://*.supabase.co https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src https://challenges.cloudflare.com">
   <title>My Journey · 富臨錢進號</title>
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../theme.css?v=20261103-mobile">
-  <link rel="stylesheet" href="../account.css?v=20261104-booth-one">
+  <link rel="stylesheet" href="../account.css?v=20261105-captcha">
   <link rel="stylesheet" href="../i18n.css?v=20261103-mobile">
   <script src="../i18n.js?v=20261104-booth-one" defer></script>
   <script src="../i18n-home.js" defer></script>
-  <script src="../i18n-pages.js?v=20261105-allhours" defer></script>
-  <script src="../config.js" defer>
+  <script src="../i18n-pages.js?v=20261105-captcha" defer></script>
+  <script src="../config.js?v=20261105-captcha" defer>
 </script>
   <script src="../community-links.js" defer>
 </script>
-  <script src="../app.bundle.js?v=20261105-allhours" defer>
+  <script src="../app.bundle.js?v=20261105-captcha" defer>
 </script>
 </head>
 <body class="account-page" data-auth-view="email">
@@ -91,6 +91,7 @@
             <p id="email-hint" class="field-hint">支援 @connect.hku.hk、@graduate.hku.hk 及 @hku.hk。</p>
             <p id="email-error" class="form-message error" role="alert" hidden>
 </p>
+            <div id="captcha-email" class="captcha-box" aria-label="防機械人驗證"></div><p id="captcha-email-status" class="field-hint" role="status">正在載入安全驗證…</p>
             <button class="account-primary" id="send-button" type="submit" disabled>
 <span>發送驗證碼</span>
 <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -121,6 +122,7 @@
 </svg>
 </button>
           </form>
+          <div id="captcha-otp" class="captcha-box" aria-label="重新發送的防機械人驗證"></div><p id="captcha-otp-status" class="field-hint" role="status">正在載入安全驗證…</p>
           <div class="resend-row">
 <span>未收到？也看看垃圾郵件匣。</span>
 <button id="resend-button" class="account-text-button" type="button" disabled>重新發送</button>
