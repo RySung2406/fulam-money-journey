@@ -1,8 +1,8 @@
 import { normalizeSchoolEmail, normalizeOtp, isVerifiedSchoolUser, configurationIsReady, friendlyAuthError, sessionMustBeCleared } from './auth-rules.js';
 import { persistentAuthOptions } from './auth-session.js';
 import { createCheckInController } from './check-in.js';
-import { CHECK_IN_DAYS, questionIsOpen, answerVisible } from './check-in-content.js';
-import { checkInAction, renderQuestion, renderPublishedAnswer } from './check-in-screen.js';
+import { CHECK_IN_DAYS, answerVisible } from './check-in-content.js';
+import { checkInAction, renderQuestion, renderPublishedAnswer, selectableCheckInDay } from './check-in-screen.js';
 
 const $ = (id) => document.getElementById(id);
 const config = window.FULIN_CONFIG || {};
@@ -48,8 +48,8 @@ function loadCaptcha() {
 
 
 function questionAction(state, saving) {
-  const nextDay = state.days.find(day => day.is_open && questionIsOpen(day.day_number) && !state.records.some(row => row.day_number === day.day_number))?.day_number;
-  const reviewDay = [...state.days].reverse().find(day => day.is_open && questionIsOpen(day.day_number) && state.records.some(row => row.day_number === day.day_number))?.day_number;
+  const nextDay = state.days.find(day => selectableCheckInDay(day.day_number, state.days) && !state.records.some(row => row.day_number === day.day_number))?.day_number;
+  const reviewDay = [...state.days].reverse().find(day => selectableCheckInDay(day.day_number, state.days) && state.records.some(row => row.day_number === day.day_number))?.day_number;
   const openDay = questionOpen ? storyDay : 0;
   const record = state.records.find(row => row.day_number === openDay);
   return checkInAction({
@@ -77,7 +77,7 @@ function renderCheckIns(state = checkIns.state) {
     rewardBar.setAttribute('aria-valuetext', `已完成 ${completed} 天，抽獎門檻為 ${rewardTarget} 天`);
   }
   $('check-in-status').textContent = loading ? '正在載入…' : state.phase === 'error' ? '暫未能載入' : nextDay ? `第 ${nextDay} 日已開放` : completed ? '打卡已記錄' : '暫未開放';
-  $('check-in-description').textContent = '第 1 日和第 2 日已經開放。第 3 至 21 日在對應日期早上 6 時開放，直至 11 月 28 日；已開放的日子可隨時補做（香港時間）。按「開始打卡」進入當日題目，選擇答案後提交。第 1 日答案只向已完成的同學公布。';
+  $('check-in-description').textContent = '第 1 日和第 2 日已經開放。第 3 至 21 日在對應日期早上 6 時開放，直至 11 月 28 日；已開放的日子可隨時補做（香港時間）。點選日曆上已開放的日子，或按「開始打卡」，即可進入該日題目並選擇答案。第 1 日答案只向已完成的同學公布。';
   $('check-in-progress').textContent = loading ? '正在讀取你的紀錄…' : state.phase === 'error' ? '請重新載入紀錄' : `已完成 ${completed} / 21 天`;
   $('check-in-calendar').setAttribute('aria-label', `21 天打卡${loading ? '，正在載入' : unavailable ? '，暫未能載入紀錄' : `，已完成 ${completed} 天`}`);
   for (const cell of $('check-in-calendar').querySelectorAll('[data-check-in-day]')) {
@@ -87,7 +87,10 @@ function renderCheckIns(state = checkIns.state) {
     const label = record ? '已完成' : loading ? '載入中' : unavailable ? '未載入' : isOpen ? '可打卡' : '未開放';
     cell.dataset.state = record ? 'completed' : isOpen ? 'open' : 'locked';
     cell.querySelector('small').textContent = label;
-    cell.setAttribute('aria-label', `第 ${day} 日：${label}`);
+    const opener = cell.querySelector('[data-open-day]');
+    const selectable = selectableCheckInDay(day, state.days) && !loading && !unavailable;
+    opener.disabled = !selectable;
+    opener.setAttribute('aria-label', `第 ${day} 日：${label}`);
   }
   let action = questionAction(state, saving);
   if (questionOpen && !action.showQuestion) { questionOpen = false; action = questionAction(state, saving); }
@@ -134,6 +137,17 @@ function renderPublished(state) {
 }
 function handleQuestionClick(event) {
   if (busy || view !== 'member') return;
+  const opener = event.target.closest('[data-open-day]');
+  if (opener && !opener.disabled) {
+    const day = Number(opener.dataset.openDay);
+    if (selectableCheckInDay(day, checkIns.state.days)) {
+      questionOpen = true;
+      storyDay = day;
+      renderCheckIns();
+      $('check-in-story')?.querySelector('h3')?.focus();
+    }
+    return;
+  }
   const back = event.target.closest('[data-check-in-back]');
   const option = event.target.closest('[data-choice]');
   if (back) { questionOpen = false; renderCheckIns(); return; }
