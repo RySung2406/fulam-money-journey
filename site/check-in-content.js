@@ -1048,3 +1048,11 @@ export function questionIsOpen(dayNumber, now = new Date()) {
 export function answerIsOpen(dayNumber, now = new Date()) {
   return wallClock(now) >= answerOpensAt(dayNumber);
 }
+
+// Day 1 is published now, and only to someone who already submitted an answer.
+// Later days stay hidden until 06:00 Hong Kong time the morning after that day.
+export function answerVisible(dayNumber, completed, now = new Date()) {
+  if (!completed) return false;
+  if (dayNumber === 1) return true;
+  return answerIsOpen(dayNumber, now);
+}

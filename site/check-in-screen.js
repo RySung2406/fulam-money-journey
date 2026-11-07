@@ -89,3 +89,20 @@ export function renderQuestion(container, { day, en, choice, locked, revealed, s
   if (savedChoice) reveal.splice(1, 0, node('p', '', en ? `Your choice: ${savedChoice}` : `你的選擇：${savedChoice}`));
   container.append(...reveal);
 }
+
+export function renderPublishedAnswer(container, { day, en, savedChoice }) {
+  container.replaceChildren();
+  container.classList.add('check-in-reveal');
+  const answerText = en ? day.opts.find(option => option.k === day.letter).en : day.nick;
+  const source = node('p', '');
+  source.append(document.createTextNode(en ? 'Source: ' : '歷史依據：'), link(day.srcUrl, en ? day.srcEn : day.srcZh));
+  container.append(
+    node('p', 'check-in-label', en ? `Day ${day.n} revealed` : `第 ${day.n} 日揭曉`),
+    node('h3', '', en ? day.titleEn : day.titleZh),
+    node('p', '', en ? `Your choice: ${savedChoice}` : `你的選擇：${savedChoice}`),
+    node('p', 'check-in-answer', en ? `Correct choice: ${day.letter}. ${answerText}` : `正確選項：${day.letter} ${answerText}`),
+    node('p', '', en ? day.expEn : day.expZh),
+    source,
+    node('p', 'check-in-take', en ? day.takeEn : day.takeZh)
+  );
+}

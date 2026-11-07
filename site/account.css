@@ -575,7 +575,10 @@ to{opacity:1;transform:translateY(0)}
 .check-in-option b{flex:0 0 1.2em}
 .check-in-story a{color:#f4c99a}
 .check-in-tip,.check-in-take,.check-in-waiting{padding:12px 14px;border-radius:10px;background:rgba(255,254,249,.08)}
+.check-in-published{display:grid;gap:14px;margin:0 0 22px}
+.check-in-reveal{padding:16px 16px 4px;border:1px solid rgba(237,181,121,.5);border-radius:14px;background:rgba(255,254,249,.06)}
 .check-in-panel[data-question] > #check-in-description,
+.check-in-panel[data-question] > #check-in-published,
 .check-in-panel[data-question] > .check-in-calendar{display:none}
 .check-in-calendar{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:12px}
 .check-in-calendar li{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:84px;padding:12px 4px;border:1px solid #597965;border-radius:12px;background:#2b5542}

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CHECK_IN_DAYS, questionIsOpen, answerIsOpen } from '../site/check-in-content.js';
+import { CHECK_IN_DAYS, questionIsOpen, answerIsOpen, answerVisible } from '../site/check-in-content.js';
 
 const at = (iso) => new Date(iso);
 
@@ -24,4 +24,13 @@ test('day 1 question is open on the morning of 8 November and its answer waits u
   assert.equal(questionIsOpen(3, at('2026-11-09T22:00:00Z')), true);
   assert.equal(answerIsOpen(21, at('2026-11-28T16:00:00Z')), false);
   assert.equal(answerIsOpen(21, at('2026-11-28T22:00:00Z')), true);
+});
+
+test('day 1 answer is visible now only after that person submits', () => {
+  const morning = at('2026-11-07T21:09:00Z');
+  assert.equal(answerVisible(1, false, morning), false);
+  assert.equal(answerVisible(1, true, morning), true);
+  assert.equal(answerVisible(2, true, morning), false);
+  assert.equal(answerVisible(2, false, at('2026-11-09T22:00:00Z')), false);
+  assert.equal(answerVisible(2, true, at('2026-11-09T22:00:00Z')), true);
 });
