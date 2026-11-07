@@ -1,6 +1,7 @@
 import { normalizeSchoolEmail, normalizeOtp, isVerifiedSchoolUser, configurationIsReady, friendlyAuthError, sessionMustBeCleared } from './auth-rules.js';
 import { persistentAuthOptions } from './auth-session.js';
 import { createCheckInController } from './check-in.js';
+import { CHECK_IN_DAYS, questionIsOpen, answerIsOpen } from './check-in-content.js';
 
 const $ = (id) => document.getElementById(id);
 const config = window.FULIN_CONFIG || {};
@@ -15,6 +16,7 @@ let accountUserId;
 let initializing = true;
 const journeySteps = ['survey', 'community', 'dashboard', 'booth'];
 const checkIns = createCheckInController({ getClient: () => client, onChange: renderCheckIns });
+let storyDay = 0;
 // A fresh Turnstile token is required for each email request, including resends.
 const captcha = { api: null, tokens: { email: '', otp: '' }, ids: {}, failed: false };
 function renderCaptcha(kind) {
@@ -42,7 +44,77 @@ function loadCaptcha() {
 }
 
 
+function storyNode(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text != null) node.textContent = text;
+  return node;
+}
+function externalLink(href, text) {
+  const link = storyNode('a', '', text);
+  link.href = href;
+  link.target = '_blank';
+  link.rel = 'noopener noreferrer';
+  return link;
+}
+function renderStory(state) {
+  const story = $('check-in-story');
+  const en = window.FuLamI18n?.getLanguage?.() === 'en';
+  const now = new Date();
+  const nextDay = state.days.find(day => day.is_open && !state.records.some(row => row.day_number === day.day_number))?.day_number;
+  const visible = CHECK_IN_DAYS.filter(day => questionIsOpen(day.n, now));
+  if (!visible.some(day => day.n === storyDay)) storyDay = nextDay && questionIsOpen(nextDay, now) ? nextDay : (visible.at(-1)?.n || 0);
+  const day = CHECK_IN_DAYS.find(item => item.n === storyDay);
+  story.replaceChildren();
+  if (!day) { story.hidden = true; return; }
+  story.hidden = false;
+  const revealed = answerIsOpen(day.n, now);
+  const answered = state.records.some(row => row.day_number === day.n);
+  story.append(
+    storyNode('p', 'check-in-label', en ? 'Today’s question' : '當日題目'),
+    storyNode('p', 'check-in-kicker', en ? `Day ${day.n} · ${day.placeEn} · ${day.year}` : `第 ${day.n} 日 · ${day.placeZh} · ${day.year}`),
+    storyNode('h3', '', en ? day.titleEn : day.titleZh),
+    storyNode('p', '', en ? `Concept · ${day.conceptEn}` : `概念 · ${day.conceptZh}`),
+    storyNode('p', '', en ? day.bgEn : day.bgZh),
+    storyNode('p', 'check-in-question', en ? day.qEn : day.qZh)
+  );
+  const options = storyNode('ol', 'check-in-options');
+  for (const option of day.opts) {
+    const item = storyNode('li', revealed && option.k === day.letter ? 'is-answer' : '');
+    item.append(storyNode('b', '', option.k), document.createTextNode(en ? ` ${option.en}` : ` ${option.zh}`));
+    options.append(item);
+  }
+  const learn = storyNode('p', '');
+  learn.append(document.createTextNode(en ? 'Learning material: ' : '學習資料：'), externalLink(en ? day.ifecEnUrl : day.ifecZhUrl, en ? day.ifecEn : day.ifecZh));
+  story.append(options, storyNode('p', 'check-in-tip', en ? day.tipEn : day.tipZh), learn);
+  const note = en ? day.noteEn : day.noteZh;
+  if (note) story.append(storyNode('p', 'check-in-note', note));
+  story.append(storyNode('p', 'check-in-label', en ? 'Reveal tomorrow' : '翌日揭曉'));
+  if (!revealed) {
+    story.append(storyNode('p', 'check-in-waiting', answered
+      ? (en
+        ? 'Your answer has been submitted. The correct answer and historical explanation will be revealed tomorrow. The aim is not only to guess correctly, but to understand real events through financial concepts.'
+        : '答案已提交！正確答案及歷史解說將於翌日公布。今天的目標不只是猜中，而是學會用金融概念理解真實事件。')
+      : (en
+        ? 'The correct answer and historical explanation will be published at 6:00am Hong Kong time tomorrow.'
+        : '正確答案及歷史解說將於翌日早上 6 時公布。')));
+    return;
+  }
+  const answerText = en ? day.opts.find(option => option.k === day.letter).en : day.nick;
+  const source = storyNode('p', '');
+  source.append(document.createTextNode(en ? 'Source: ' : '歷史依據：'), externalLink(day.srcUrl, en ? day.srcEn : day.srcZh));
+  story.append(
+    storyNode('p', 'check-in-answer', en ? `Correct choice: ${day.letter}. ${answerText}` : `正確選項：${day.letter} ${answerText}`),
+    storyNode('p', '', en ? day.expEn : day.expZh),
+    source,
+    storyNode('p', 'check-in-take', en ? day.takeEn : day.takeZh)
+  );
+}
 function renderCheckIns(state = checkIns.state) {
+  const now = new Date();
+  const visibleStory = CHECK_IN_DAYS.filter(day => questionIsOpen(day.n, now));
+  const upcoming = state.days.find(day => day.is_open && !state.records.some(row => row.day_number === day.day_number))?.day_number;
+  if (!visibleStory.some(day => day.n === storyDay)) storyDay = upcoming && questionIsOpen(upcoming, now) ? upcoming : (visibleStory.at(-1)?.n || 0);
   const loading = state.phase === 'idle' || state.phase === 'loading';
   const unavailable = state.phase === 'error' && state.days.length === 0;
   const saving = state.phase === 'submitting';
@@ -61,7 +133,7 @@ function renderCheckIns(state = checkIns.state) {
     rewardBar.setAttribute('aria-valuetext', `已完成 ${completed} 天，抽獎門檻為 ${rewardTarget} 天`);
   }
   $('check-in-status').textContent = loading ? '正在載入…' : state.phase === 'error' ? '暫未能載入' : nextDay ? `第 ${nextDay} 日已開放` : completed ? '打卡已記錄' : '暫未開放';
-  $('check-in-description').textContent = '第 1 日已經開放。第 2 至 21 日在對應日期早上 6 時開放，直至 11 月 28 日；已開放的日子可隨時補做（香港時間）。題目與題解在 WhatsApp，紀錄保存在這裡。';
+  $('check-in-description').textContent = '第 1 日已經開放。第 2 至 21 日在對應日期早上 6 時開放，直至 11 月 28 日；已開放的日子可隨時補做（香港時間）。當日題目在下方，正確答案於翌日公布。';
   $('check-in-progress').textContent = loading ? '正在讀取你的紀錄…' : state.phase === 'error' ? '請重新載入紀錄' : `已完成 ${completed} / 21 天`;
   $('check-in-calendar').setAttribute('aria-label', `21 天打卡${loading ? '，正在載入' : unavailable ? '，暫未能載入紀錄' : `，已完成 ${completed} 天`}`);
   for (const cell of $('check-in-calendar').querySelectorAll('[data-check-in-day]')) {
@@ -70,6 +142,8 @@ function renderCheckIns(state = checkIns.state) {
     const isOpen = openDays.some(row => row.day_number === day);
     const label = record ? '已完成' : loading ? '載入中' : unavailable ? '未載入' : isOpen ? '可打卡' : '未開放';
     cell.dataset.state = record ? 'completed' : isOpen ? 'open' : 'locked';
+    if (storyDay === day) cell.dataset.selected = 'true';
+    else delete cell.dataset.selected;
     cell.querySelector('small').textContent = label;
     cell.setAttribute('aria-label', `第 ${day} 日：${label}`);
   }
@@ -82,8 +156,17 @@ function renderCheckIns(state = checkIns.state) {
   $('check-in-message').classList.toggle('error', state.isError);
   $('check-in-retry').hidden = !state.isError;
   $('check-in-retry').disabled = busy || loading || saving;
+  renderStory(state);
 }
+$('check-in-calendar').addEventListener('click', (event) => {
+  const cell = event.target.closest('[data-check-in-day]');
+  const day = Number(cell?.dataset.checkInDay);
+  if (!questionIsOpen(day)) return;
+  storyDay = day;
+  renderCheckIns();
+});
 $('check-in-button').addEventListener('click', () => { if (!busy && view === 'member') void checkIns.submit(); });
+document.addEventListener('fulam-language-change', () => renderCheckIns());
 $('check-in-retry').addEventListener('click', () => { if (!busy && view === 'member') void checkIns.refresh(); });
 // Refresh availability for members who keep the page open across 06:00.
 setInterval(() => { if (view === 'member' && !busy && !document.hidden && checkIns.state.phase === 'ready') void checkIns.refresh(); }, 60000);
