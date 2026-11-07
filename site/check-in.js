@@ -11,8 +11,9 @@ export function createCheckInController({ getClient, onChange }) {
     return state.days.find(day => day.is_open && !state.records.some(record => record.day_number === day.day_number))?.day_number;
   }
   function validDay(day) { return Number.isInteger(day) && day >= 1 && day <= 21; }
+  function validChoice(value) { return value == null || value === 'A' || value === 'B' || value === 'C'; }
   function validRecord(row) {
-    return row && validDay(row.day_number) && row.student_confirmed === true && Number.isFinite(Date.parse(row.checked_in_at));
+    return row && validDay(row.day_number) && row.student_confirmed === true && Number.isFinite(Date.parse(row.checked_in_at)) && validChoice(row.choice);
   }
   async function refresh() {
     if (!userId || ['loading', 'submitting'].includes(state.phase)) return;
@@ -23,7 +24,7 @@ export function createCheckInController({ getClient, onChange }) {
       const client = getClient();
       const [daysResult, recordsResult] = await Promise.all([
         client.rpc('get_check_in_schedule'),
-        client.from('check_ins').select('day_number,checked_in_at,student_confirmed').eq('user_id', currentUser).order('day_number')
+        client.from('check_ins').select('day_number,checked_in_at,student_confirmed,choice').eq('user_id', currentUser).order('day_number')
       ]);
       if (attempt !== generation) return;
       if (daysResult.error || recordsResult.error) throw daysResult.error || recordsResult.error;
@@ -38,14 +39,15 @@ export function createCheckInController({ getClient, onChange }) {
       emit({ phase: 'error', message: '暫時未能載入打卡紀錄，請重試。', isError: true });
     }
   }
-  async function submit() {
-    const day = nextDay();
-    if (!userId || state.phase !== 'ready' || !day) return;
+  async function submit(day, choice) {
+    const open = state.days.some(item => item.day_number === day && item.is_open);
+    const record = state.records.find(item => item.day_number === day);
+    if (!userId || state.phase !== 'ready' || !open || (record && record.choice != null) || (choice !== 'A' && choice !== 'B' && choice !== 'C')) return;
     const attempt = generation;
     emit({ phase: 'submitting', message: '', isError: false });
     try {
       const { data, error } = await getClient().rpc('submit_check_in', {
-        p_day_number: day, p_student_confirmed: true
+        p_day_number: day, p_student_confirmed: true, p_choice: choice
       });
       if (attempt !== generation) return;
       if (error) throw error;
@@ -53,10 +55,12 @@ export function createCheckInController({ getClient, onChange }) {
         throw new Error('unconfirmed-check-in');
       }
       emit({ phase: 'ready', records: [...state.records.filter(row => row.day_number !== day), data[0]],
-        message: `第 ${day} 日打卡成功，紀錄已保存。` });
+        message: '答案已提交！正確答案及歷史解說將於翌日公布。今天的目標不只是猜中，而是學會用金融概念理解真實事件。' });
     } catch (error) {
       if (attempt !== generation) return;
-      if (error?.message === 'check_in_day_closed' || error?.message === 'check_in_day_invalid') {
+      if (error?.message === 'check_in_choice_invalid') {
+        emit({ phase: 'ready', message: '請先選擇一個答案。', isError: true });
+      } else if (error?.message === 'check_in_day_closed' || error?.message === 'check_in_day_invalid') {
         emit({ phase: 'ready', days: state.days.map(row => row.day_number === day ? { ...row, is_open: false } : row),
           message: '這一天暫未開放打卡。', isError: true });
       } else if (error?.message === 'check_in_auth_required' || error?.code === 'PGRST301' || error?.code === 'PGRST303') {
