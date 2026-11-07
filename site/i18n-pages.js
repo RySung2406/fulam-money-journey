@@ -2,7 +2,7 @@
 window.FuLamI18n.register({
  '防機械人驗證':'Bot verification','重新發送的防機械人驗證':'Bot verification for resending','正在載入安全驗證…':'Loading security check…','請完成安全驗證。':'Please complete the security check.','安全驗證未能載入，請重新整理頁面再試。':'Security check could not load. Please refresh the page and try again.',
 
- '11 月 8–28 日，每天早上 6 時開放新一天；已開放的日子可隨時補做（香港時間）。題目與題解在 WhatsApp，紀錄保存在這裡。':'8–28 November: a new day opens at 6am Hong Kong time. Earlier days remain available for make-up at any time. Questions and explanations are on WhatsApp; records are saved here.',
+ '第 1 日已經開放。第 2 至 21 日在對應日期早上 6 時開放，直至 11 月 28 日；已開放的日子可隨時補做（香港時間）。題目與題解在 WhatsApp，紀錄保存在這裡。':'Day 1 is open. Days 2 to 21 each open at 6:00am Hong Kong time on their own date, through 28 November. Open days stay available for make-up. Questions and explanations are on WhatsApp; records are saved here.',
  'Booth 01 設有遊戲，三位高分同學可獲禮券；Booth 02 負責派發獎品。':'Play games at Booth 01. Three high scorers can receive vouchers; collect prizes at Booth 02.',
  '遊戲挑戰':'Game challenge', '派發獎品':'Prize collection',
  'Booth 遊戲高分者獎品':'Booth game prizes for high scorers',
