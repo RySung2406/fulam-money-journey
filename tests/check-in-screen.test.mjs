@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { checkInAction } from '../site/check-in-screen.js';
+import { checkInAction, selectableCheckInDay } from '../site/check-in-screen.js';
 
 const ready = { phase: 'ready', busy: false, saving: false };
 
@@ -25,4 +25,18 @@ test('the question stays behind Start check-in until an answer is chosen', () =>
   const saved = checkInAction({ questionOpen: true, nextDay: 0, reviewDay: 1, draftChoice: 'B', savedChoice: 'B', ...ready });
   assert.equal(saved.action, 'close');
   assert.equal(saved.showQuestion, true);
+});
+
+test('day 2 can be chosen while day 1 is still unfinished', () => {
+  const days = [
+    { day_number: 1, is_open: true },
+    { day_number: 2, is_open: true },
+    { day_number: 3, is_open: false }
+  ];
+  assert.equal(selectableCheckInDay(2, days), true);
+  assert.equal(selectableCheckInDay(3, days), false);
+  const opened = checkInAction({ questionOpen: true, nextDay: 0, reviewDay: 2, draftChoice: '', savedChoice: '', ...ready });
+  assert.equal(opened.showQuestion, true);
+  assert.equal(opened.day, 2);
+  assert.equal(opened.label, '請先選擇答案');
 });
