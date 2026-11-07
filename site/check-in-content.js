@@ -1034,7 +1034,7 @@ function programmeStamp(dayOffset, hour) {
 }
 
 export function questionOpensAt(dayNumber) {
-  return dayNumber === 1 ? programmeStamp(0, 0) : programmeStamp(dayNumber - 1, 6);
+  return dayNumber <= 2 ? programmeStamp(0, 0) : programmeStamp(dayNumber - 1, 6);
 }
 
 export function answerOpensAt(dayNumber) {

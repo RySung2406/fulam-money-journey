@@ -77,7 +77,7 @@ function renderCheckIns(state = checkIns.state) {
     rewardBar.setAttribute('aria-valuetext', `已完成 ${completed} 天，抽獎門檻為 ${rewardTarget} 天`);
   }
   $('check-in-status').textContent = loading ? '正在載入…' : state.phase === 'error' ? '暫未能載入' : nextDay ? `第 ${nextDay} 日已開放` : completed ? '打卡已記錄' : '暫未開放';
-  $('check-in-description').textContent = '第 1 日已經開放。第 2 至 21 日在對應日期早上 6 時開放，直至 11 月 28 日；已開放的日子可隨時補做（香港時間）。按「開始打卡」進入當日題目，選擇答案後提交。正確答案於翌日公布。';
+  $('check-in-description').textContent = '第 1 日和第 2 日已經開放。第 3 至 21 日在對應日期早上 6 時開放，直至 11 月 28 日；已開放的日子可隨時補做（香港時間）。按「開始打卡」進入當日題目，選擇答案後提交。正確答案於翌日公布。';
   $('check-in-progress').textContent = loading ? '正在讀取你的紀錄…' : state.phase === 'error' ? '請重新載入紀錄' : `已完成 ${completed} / 21 天`;
   $('check-in-calendar').setAttribute('aria-label', `21 天打卡${loading ? '，正在載入' : unavailable ? '，暫未能載入紀錄' : `，已完成 ${completed} 天`}`);
   for (const cell of $('check-in-calendar').querySelectorAll('[data-check-in-day]')) {
