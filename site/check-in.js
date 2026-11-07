@@ -4,7 +4,7 @@ export function createCheckInController({ getClient, onChange }) {
   let userId;
   let state = emptyState();
   function emptyState() {
-    return { phase: 'idle', days: [], records: [], studentConfirmed: false, message: '', isError: false };
+    return { phase: 'idle', days: [], records: [], message: '', isError: false };
   }
   function emit(patch) { state = { ...state, ...patch }; onChange(state); }
   function nextDay() {
@@ -40,7 +40,7 @@ export function createCheckInController({ getClient, onChange }) {
   }
   async function submit() {
     const day = nextDay();
-    if (!userId || state.phase !== 'ready' || !state.studentConfirmed || !day) return;
+    if (!userId || state.phase !== 'ready' || !day) return;
     const attempt = generation;
     emit({ phase: 'submitting', message: '', isError: false });
     try {
@@ -68,10 +68,6 @@ export function createCheckInController({ getClient, onChange }) {
   }
   return {
     get state() { return state; }, nextDay, refresh, submit,
-    setStudentConfirmed(value) {
-      if (state.phase === 'submitting') return;
-      emit({ studentConfirmed: value === true });
-    },
     setUser(id) {
       generation += 1;
       userId = id;

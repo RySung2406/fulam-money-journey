@@ -75,18 +75,14 @@ function renderCheckIns(state = checkIns.state) {
   }
   const button = $('check-in-button');
   button.textContent = saving ? '正在保存…' : loading ? '正在載入…' : state.phase === 'error' ? '暫未能打卡' : nextDay ? `第 ${nextDay} 日打卡` : completed ? '已完成打卡 ✓' : '尚未開放打卡';
-  button.disabled = busy || state.phase !== 'ready' || !nextDay || !state.studentConfirmed;
+  button.disabled = busy || state.phase !== 'ready' || !nextDay;
   button.setAttribute('aria-busy', String(saving));
-  $('check-in-eligibility').hidden = !nextDay || loading || state.phase === 'error';
-  $('student-confirmation').checked = state.studentConfirmed;
-  $('student-confirmation').disabled = busy || saving || loading;
   $('check-in-message').textContent = state.message;
   $('check-in-message').hidden = !state.message;
   $('check-in-message').classList.toggle('error', state.isError);
   $('check-in-retry').hidden = !state.isError;
   $('check-in-retry').disabled = busy || loading || saving;
 }
-$('student-confirmation').addEventListener('change', (event) => checkIns.setStudentConfirmed(event.target.checked));
 $('check-in-button').addEventListener('click', () => { if (!busy && view === 'member') void checkIns.submit(); });
 $('check-in-retry').addEventListener('click', () => { if (!busy && view === 'member') void checkIns.refresh(); });
 // Refresh availability for members who keep the page open across 06:00.

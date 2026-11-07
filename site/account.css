@@ -577,8 +577,6 @@ to{opacity:1;transform:translateY(0)}
 .check-in-calendar li[data-state=completed]{background:#edf1e7;border-color:#edf1e7}
 .check-in-calendar li[data-state=completed]>span,.check-in-calendar li[data-state=completed]>small{color:#214b3b}
 .check-in-calendar li[data-state=completed]::after{content:"✓";position:absolute;right:5px;top:1px;color:#214b3b;font-size:13px;font-weight:700}
-.check-in-eligibility{display:flex;align-items:center;gap:12px;min-height:48px;margin-top:22px;font-size:17px;cursor:pointer}
-.account-page .check-in-eligibility input{width:22px;height:22px;flex:0 0 22px;margin:0;padding:0;accent-color:#edb579;box-shadow:none}
 .check-in-panel>.check-in-message{font-size:16px;line-height:1.75;margin:18px 0 0;padding:12px 16px;background:#315c47;border:1px solid #78977f;border-radius:10px;color:#fffef9}
 .check-in-panel>.check-in-message:is(.error,[data-state=error]){color:#ffdec2;border-color:#c99870;background:#4b4e36}
 .check-in-retry{color:#fff1dd;font-size:16px;text-decoration:underline;text-underline-offset:4px;margin-top:6px}
