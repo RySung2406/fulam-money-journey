@@ -6,7 +6,7 @@ import { createCheckInController } from '../site/check-in.js';
 const userA = '11111111-1111-4111-8111-111111111111';
 const userB = '22222222-2222-4222-8222-222222222222';
 const days = Array.from({ length: 21 }, (_, index) => ({ day_number: index + 1, is_open: index === 0 }));
-const savedRow = { day_number: 1, checked_in_at: '2026-10-30T08:03:00Z', student_confirmed: true };
+const savedRow = { day_number: 1, checked_in_at: '2026-10-30T08:03:00Z', student_confirmed: true, choice: 'B' };
 const response = (data, status = 200) => new Response(JSON.stringify(data), {
   status, headers: { 'Content-Type': 'application/json' }
 });
@@ -53,20 +53,23 @@ test('check-in stays closed before load and a signed-in member can submit the op
   const { db, controller } = fixture();
   const gate = deferred();
   db.onDays = () => gate.promise;
-  await controller.submit();
+  await controller.submit(1, 'B');
   const loading = controller.setUser(userA);
   assert.equal(controller.state.phase, 'loading');
-  await controller.submit();
+  await controller.submit(1, 'B');
   assert.equal(db.submits.length, 0);
   gate.resolve(response(days));
   await loading;
   assert.equal(controller.nextDay(), 1);
   assert.equal(controller.state.days.filter(day => day.is_open).length, 1);
   assert.deepEqual(db.reads.find(read => read.table === 'records'), {
-    table: 'records', owner: `eq.${userA}`, select: 'day_number,checked_in_at,student_confirmed'
+    table: 'records', owner: `eq.${userA}`, select: 'day_number,checked_in_at,student_confirmed,choice'
   });
-  await controller.submit();
-  assert.deepEqual(db.submits, [{ owner: userA, parameters: { p_day_number: 1, p_student_confirmed: true } }]);
+  await controller.submit(1);
+  await controller.submit(1, 'D');
+  assert.equal(db.submits.length, 0);
+  await controller.submit(1, 'B');
+  assert.deepEqual(db.submits, [{ owner: userA, parameters: { p_day_number: 1, p_student_confirmed: true, p_choice: 'B' } }]);
   assert.deepEqual(controller.state.records, [savedRow]);
 });
 
@@ -76,9 +79,9 @@ test('a double click submits once, waits for the server, and reload restores the
   const gate = deferred();
   const reached = deferred();
   db.onSubmit = async () => { reached.resolve(); return gate.promise; };
-  const pending = controller.submit();
+  const pending = controller.submit(1, 'B');
   await reached.promise;
-  await controller.submit();
+  await controller.submit(1, 'B');
   assert.equal(controller.state.phase, 'submitting');
   assert.deepEqual(controller.state.records, []);
   assert.equal(db.submits.length, 1);
@@ -87,7 +90,7 @@ test('a double click submits once, waits for the server, and reload restores the
   await pending;
   assert.equal(controller.state.phase, 'ready');
   assert.equal(controller.nextDay(), undefined);
-  await controller.submit();
+  await controller.submit(1, 'B');
   assert.equal(db.submits.length, 1);
   const reopened = newController();
   await reopened.setUser(userA);
@@ -100,7 +103,7 @@ test('load failures and incomplete schedules fail closed, and refresh can recove
     const { db, controller } = fixture();
     db.onDays = () => invalid;
     await controller.setUser(userA);
-    await controller.submit();
+    await controller.submit(1, 'B');
     assert.equal(controller.state.phase, 'error');
     assert.equal(db.submits.length, 0);
     assert.deepEqual(controller.state.records, []);
@@ -118,12 +121,12 @@ test('a lost success response can be retried without trusting or duplicating the
     db.records.set(owner, [savedRow]);
     return response({ message: 'response interrupted' }, 503);
   };
-  await controller.submit();
+  await controller.submit(1, 'B');
   assert.deepEqual(controller.state.records, []);
   assert.equal(controller.state.isError, true);
   assert.equal(controller.state.phase, 'ready');
   db.onSubmit = null;
-  await controller.submit();
+  await controller.submit(1, 'B');
   assert.deepEqual(controller.state.records, [savedRow]);
   assert.equal(db.records.get(userA).length, 1);
   assert.equal(controller.state.isError, false);
@@ -135,8 +138,8 @@ test('server-side closing and expired access disable subsequent submissions', as
     const { db, controller } = fixture();
     await controller.setUser(userA);
     db.onSubmit = () => response({ message, code: 'P0001' }, 400);
-    await controller.submit();
-    await controller.submit();
+    await controller.submit(1, 'B');
+    await controller.submit(1, 'B');
     assert.equal(db.submits.length, 1);
     assert.deepEqual(controller.state.records, []);
     assert.equal(controller.state.isError, true);
@@ -172,7 +175,7 @@ test('late submission success or failure cannot alter a signed-out or different 
       const gate = deferred();
       const reached = deferred();
       db.onSubmit = () => { reached.resolve(); return gate.promise; };
-      const oldSubmit = controller.submit();
+      const oldSubmit = controller.submit(1, 'B');
       await reached.promise;
       await controller.setUser(nextUser);
       gate.resolve(response(result, Array.isArray(result) ? 200 : 400));
@@ -186,11 +189,11 @@ test('late submission success or failure cannot alter a signed-out or different 
 });
 
 test('empty, wrong-day, or invalid RPC results never claim completion', async () => {
-  for (const data of [[], [{ ...savedRow, day_number: 2 }], [{ ...savedRow, checked_in_at: 'invalid' }]]) {
+  for (const data of [[], [{ ...savedRow, day_number: 2 }], [{ ...savedRow, checked_in_at: 'invalid' }], [{ ...savedRow, choice: 'D' }]]) {
     const { db, controller } = fixture();
     await controller.setUser(userA);
     db.onSubmit = () => response(data);
-    await controller.submit();
+    await controller.submit(1, 'B');
     assert.deepEqual(controller.state.records, []);
     assert.equal(controller.state.isError, true);
     assert.equal(controller.nextDay(), 1);
