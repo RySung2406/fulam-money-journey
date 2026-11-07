@@ -17,9 +17,11 @@ test('day 1 question is open on the morning of 8 November and its answer waits u
   const morning = at('2026-11-07T21:09:00Z');
   assert.equal(questionIsOpen(1, morning), true);
   assert.equal(answerIsOpen(1, morning), false);
-  assert.equal(questionIsOpen(2, morning), false);
+  assert.equal(questionIsOpen(2, morning), true);
+  assert.equal(questionIsOpen(3, morning), false);
   assert.equal(answerIsOpen(1, at('2026-11-08T22:00:00Z')), true);
   assert.equal(questionIsOpen(2, at('2026-11-08T22:00:00Z')), true);
+  assert.equal(questionIsOpen(3, at('2026-11-09T22:00:00Z')), true);
   assert.equal(answerIsOpen(21, at('2026-11-28T16:00:00Z')), false);
   assert.equal(answerIsOpen(21, at('2026-11-28T22:00:00Z')), true);
 });
