@@ -49,7 +49,7 @@ function fixture() {
   return { db, snapshots, newController, controller: newController() };
 }
 
-test('check-in stays closed before load and requires an explicit student confirmation', async () => {
+test('check-in stays closed before load and a signed-in member can submit the open day', async () => {
   const { db, controller } = fixture();
   const gate = deferred();
   db.onDays = () => gate.promise;
@@ -62,13 +62,9 @@ test('check-in stays closed before load and requires an explicit student confirm
   await loading;
   assert.equal(controller.nextDay(), 1);
   assert.equal(controller.state.days.filter(day => day.is_open).length, 1);
-  assert.equal(controller.state.studentConfirmed, false);
-  await controller.submit();
-  assert.equal(db.submits.length, 0);
   assert.deepEqual(db.reads.find(read => read.table === 'records'), {
     table: 'records', owner: `eq.${userA}`, select: 'day_number,checked_in_at,student_confirmed'
   });
-  controller.setStudentConfirmed(true);
   await controller.submit();
   assert.deepEqual(db.submits, [{ owner: userA, parameters: { p_day_number: 1, p_student_confirmed: true } }]);
   assert.deepEqual(controller.state.records, [savedRow]);
@@ -77,7 +73,6 @@ test('check-in stays closed before load and requires an explicit student confirm
 test('a double click submits once, waits for the server, and reload restores the saved record', async () => {
   const { db, controller, newController } = fixture();
   await controller.setUser(userA);
-  controller.setStudentConfirmed(true);
   const gate = deferred();
   const reached = deferred();
   db.onSubmit = async () => { reached.resolve(); return gate.promise; };
@@ -105,7 +100,6 @@ test('load failures and incomplete schedules fail closed, and refresh can recove
     const { db, controller } = fixture();
     db.onDays = () => invalid;
     await controller.setUser(userA);
-    controller.setStudentConfirmed(true);
     await controller.submit();
     assert.equal(controller.state.phase, 'error');
     assert.equal(db.submits.length, 0);
@@ -120,7 +114,6 @@ test('load failures and incomplete schedules fail closed, and refresh can recove
 test('a lost success response can be retried without trusting or duplicating the first attempt', async () => {
   const { db, controller } = fixture();
   await controller.setUser(userA);
-  controller.setStudentConfirmed(true);
   db.onSubmit = (_parameters, owner) => {
     db.records.set(owner, [savedRow]);
     return response({ message: 'response interrupted' }, 503);
@@ -141,7 +134,6 @@ test('server-side closing and expired access disable subsequent submissions', as
   for (const message of ['check_in_day_closed', 'check_in_auth_required']) {
     const { db, controller } = fixture();
     await controller.setUser(userA);
-    controller.setStudentConfirmed(true);
     db.onSubmit = () => response({ message, code: 'P0001' }, 400);
     await controller.submit();
     await controller.submit();
@@ -168,7 +160,6 @@ test('late reads cannot repopulate a signed-out or different account', async () 
     gate.resolve(response([savedRow]));
     await oldLoad;
     assert.deepEqual(controller.state.records, []);
-    assert.equal(controller.state.studentConfirmed, false);
     assert.equal(controller.state.phase, nextUser ? 'ready' : 'idle');
   }
 });
@@ -178,7 +169,6 @@ test('late submission success or failure cannot alter a signed-out or different 
     for (const result of [[savedRow], { message: 'check_in_auth_required' }]) {
       const { db, controller } = fixture();
       await controller.setUser(userA);
-      controller.setStudentConfirmed(true);
       const gate = deferred();
       const reached = deferred();
       db.onSubmit = () => { reached.resolve(); return gate.promise; };
@@ -199,7 +189,6 @@ test('empty, wrong-day, or invalid RPC results never claim completion', async ()
   for (const data of [[], [{ ...savedRow, day_number: 2 }], [{ ...savedRow, checked_in_at: 'invalid' }]]) {
     const { db, controller } = fixture();
     await controller.setUser(userA);
-    controller.setStudentConfirmed(true);
     db.onSubmit = () => response(data);
     await controller.submit();
     assert.deepEqual(controller.state.records, []);
