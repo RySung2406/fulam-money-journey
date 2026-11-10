@@ -181,7 +181,7 @@ test('Aircraft difficulty keeps paced spawns and caps projectile speed, includin
    C.tick(s,1/60);const interval=s.spawnTime;s.spawnTime=100;assert(enemy.attack);
    for(let i=0;i<58;i++)C.tick(s,1/60);
    const bullet=s.entities.find(e=>e.type==='torpedo'&&e.collision.group===C.ENEMY);
-   assert(bullet,`${mode} ${kind} fired after warning`);assert.equal(bullet.homing,0);assert(bullet.velocity.speed<=145);
+   assert(bullet,`${mode} ${kind} fired after warning`);assert.equal(bullet.homing,kind==='debt'?1.15:0);assert(bullet.velocity.speed<=145);
    return {armour:s.hero.maxHp,hp:enemy.maxHp,speed:enemy.velocity.speed,bullet:bullet.velocity.speed,interval};
   });
   assert(rows[2].armour<rows[1].armour&&rows[1].armour<rows[0].armour);

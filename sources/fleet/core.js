@@ -48,7 +48,8 @@
     trap: { hp: 46, radius: 18, speed: 38, value: 20, attack: 3.4 },
     myth: { hp: 38, radius: 16, speed: 53, value: 18, attack: 3.1 },
     rumor: { hp: 28, radius: 14, speed: 48, value: 16, attack: 3.6 },
-    boss: { hp: 470, radius: 43, speed: 28, value: 130, attack: 1.7 }
+    boss: { hp: 470, radius: 43, speed: 28, value: 130, attack: 1.7 },
+    overlord: { hp: 980, radius: 52, speed: 24, value: 420, attack: 1.45 }
   };
   const MAX = { weapon: 5, escort: 3, reserve: 3 };
   const COSTS = { weapon: [0, 45, 85, 145, 220], escort: [65, 120, 190], reserve: [50, 90, 140] };
@@ -65,6 +66,7 @@
       goal: 8, kills: 0, score: 0, cash: 35, income: 0, dividend: 0, combo: 0, comboTime: 0,
       weapon: 1, escort: 0, reserve: 0, shield: 0, shieldCooldown: 0, invulnerable: 1.5,
       fireTime: 0.1, escortTime: 0.5, shots: 0, spawnTime: 0.45, bossSpawned: false, nextVolleyAt: 0,
+      ultimate: false, ultimateBossSpawned: false,
       entities: [], raised: [], events: [], running: true, lastReason: null,
       hero: createEntity('player', { position: new Position(W / 2, H - 100, -Math.PI / 2), velocity: new Velocity(230), collision: new Collision(true, true, arcade ? 8 : 13, FRIEND), hp: MODE_RULES[mode].armour, maxHp: MODE_RULES[mode].armour })
     };
@@ -79,16 +81,17 @@
     s.entities = s.entities.filter(e => !e.dead);
     s.entities.push(...s.raised); s.raised.length = 0;
   }
+  function isBossKind(kind){return kind==='boss'||kind==='overlord';}
   function spawnEnemy(s, kind) {
     const r = s.random, spec = SPECS[kind];
     const threat=s.arcade&&root.FuLamJourney?root.FuLamJourney.threatProfile(s.wave):null;
     const growth = threat?threat.health:1+(s.wave-1)*.14;
-    const elite=!!(threat?.elite&&kind!=='boss'&&++s.spawnCount%4===0);
-    const hp = Math.round(spec.hp * growth * MODE_RULES[s.mode].enemy * (s.mode==='booth'?(s.arcade?1.2:1.7):1) * (elite?1.6:1) * (s.arcade && (s.wave===2 || s.wave===4) ? 1.18 : 1) * (threat&&kind==='boss'?(s.wave<=4?1.35:2+s.wave*.15):1));
-    const x = kind === 'boss' ? W / 2 : 38 + r() * (W - 76);
+    const elite=!!(threat?.elite&&!isBossKind(kind)&&++s.spawnCount%4===0);
+    const hp = Math.round(spec.hp * growth * MODE_RULES[s.mode].enemy * (s.mode==='booth'?(s.arcade?1.2:1.7):1) * (elite?1.6:1) * (s.arcade?(s.wave===2?1.34:s.wave===4?1.18:1):1) * (threat&&isBossKind(kind)?(kind==='overlord'?1.15:(s.wave<=4?1.35:2+s.wave*.15)):1));
+    const x = isBossKind(kind) ? W / 2 : 38 + r() * (W - 76);
     const entity = createEntity('ship', {
       kind, elite, position: new Position(x, -65, Math.PI / 2), velocity: new Velocity(spec.speed * MODE_RULES[s.mode].enemy*(threat?.speed||1)),
-      collision: new Collision(true, true, spec.radius, ENEMY), strategy: new Strategy(kind, s.arcade ? Math.max(kind==='boss'?2.3:2.7,spec.attack/(1+Math.min(6,s.wave-1)*.035)) : spec.attack / Math.min(2, 1 + s.wave * 0.035) / (s.mode==='booth'?1.45:1)),
+      collision: new Collision(true, true, spec.radius, ENEMY), strategy: new Strategy(kind, s.arcade ? Math.max(isBossKind(kind)?2.1:2.7,spec.attack/(1+Math.min(6,s.wave-1)*.035)) : spec.attack / Math.min(2, 1 + s.wave * 0.035) / (s.mode==='booth'?1.45:1)),
       hp, maxHp: hp, value: spec.value, age: 0, phase: r() * TAU, originX: x, flash: 0
     });
     s.raised.push(entity); return entity;
@@ -113,12 +116,24 @@
     });
     s.raised.push(entity); return entity;
   }
+  // Seekers stop chasing once they slip below the player jet and keep their
+  // last heading instead of looping back for a second pass.
+  function aboveJet(s, e) {
+    return e && e.position && e.position.y < s.hero.position.y - 10;
+  }
+  function pastHero(s, entity) {
+    return entity.position.y > s.hero.position.y - 8;
+  }
   function refreshStrategy(s, entity) {
     const strategy = entity.strategy;
     if (!entity.homing) return;
-    if (strategy.target && (strategy.target.dead || !strategy.target.online)) { strategy.target = null; strategy.type = 'cruise'; }
+    const friendly = entity.collision.group === FRIEND;
+    if (strategy.target && (strategy.target.dead || !strategy.target.online || (friendly && !aboveJet(s, strategy.target)) || (!friendly && pastHero(s, entity)))) {
+      strategy.target = null; strategy.type = 'cruise';
+    }
     if (strategy.type === 'cruise') {
-      const targets = entity.collision.group === FRIEND ? getEnemiesSortedByDistance(s, entity) : [s.hero];
+      if (!friendly && pastHero(s, entity)) return;
+      const targets = friendly ? getEnemiesSortedByDistance(s, entity).filter(e => aboveJet(s, e)) : [s.hero];
       const found = targets.find(e => inRange(entity.position, e.position, 430) && Math.abs(angleDifference2DVectors({ x: entity.velocity.dx, y: entity.velocity.dy }, { x: e.position.x - entity.position.x, y: e.position.y - entity.position.y })) < Math.PI / 2);
       if (found) { strategy.target = found; strategy.type = 'lockon'; }
     }
@@ -126,6 +141,10 @@
   function applyStrategy(s, entity, dt) {
     const target = entity.strategy.target;
     if (!entity.homing || !target) return;
+    const friendly = entity.collision.group === FRIEND;
+    if ((friendly && !aboveJet(s, target)) || (!friendly && pastHero(s, entity))) {
+      entity.strategy.target = null; entity.strategy.type = 'cruise'; return;
+    }
     const delta = angleDifference2DVectors({ x: entity.velocity.dx, y: entity.velocity.dy }, { x: target.position.x - entity.position.x, y: target.position.y - entity.position.y });
     const turn = clamp(delta, -entity.homing * dt, entity.homing * dt);
     entity.position.r += turn;
@@ -146,8 +165,8 @@
       const booth=s.mode==='booth',form=!booth?null:p.tier>=4?'plane':p.tier===3?'bomb':p.tier===2?'laser':'bullet',reach=booth?1.8:1,hurt=booth?.8:1;
       const traj=Math.max(0,s.evolution.trajectory||0);
       const fan=(base,step)=>{const count=Math.min(7,base+traj);return Array.from({length:count},(_,i)=>count<=1?0:(i-(count-1)/2)*(count===2?step:.1));};
-      const forms={bullet:{style:'shell',spread:fan(1,.1),radius:3.6,color:'#ffe39b',blast:0,pierce:0,speed:p.speed},laser:{style:'beam',count:Math.min(7,2+traj),radius:2.8,color:'#8cf4ff',blast:0,pierce:24,speed:0},bomb:{style:'bomb',spread:fan(1,.12),radius:6.2,color:'#ffb07a',blast:18,pierce:0,speed:480},plane:{style:'missile',spread:fan(1,.1),radius:4.6,color:'#ffd27a',blast:24,pierce:0,speed:640}};
-      if(form){const spec=forms[form];if(form==='laser'){const n=spec.count,gap=18;for(let i=0;i<n;i++){const from={x:s.hero.position.x+(i-(n-1)/2)*gap,y:s.hero.position.y-26},aim=-Math.PI/2;fireTorpedo(s,from,aim,FRIEND,{damage:p.damage*(1+s.paidPower)*hurt*.72*.65,speed:0,radius:spec.radius,homing:0,pierce:spec.pierce,style:spec.style,color:spec.color,blast:0,chain:0,ray:screenRay(from.x,from.y,aim)});}}else for(const off of spec.spread){const aim=-Math.PI/2+off,from={x:s.hero.position.x,y:s.hero.position.y-26};fireTorpedo(s,from,aim,FRIEND,{damage:p.damage*(1+s.paidPower)*hurt*.72*(off===0?1:.75),speed:spec.speed,radius:spec.radius,homing:0,pierce:spec.pierce,style:spec.style,color:spec.color,blast:spec.blast,chain:0,ray:null});}}
+      const forms={bullet:{style:'shell',spread:fan(1,.1),radius:3.6,color:'#ffe39b',blast:0,pierce:0,speed:p.speed,homing:0},laser:{style:'beam',count:Math.min(7,2+traj),radius:2.8,color:'#8cf4ff',blast:0,pierce:24,speed:0,homing:0},bomb:{style:'bomb',spread:fan(1,.12),radius:6.2,color:'#ffb07a',blast:18,pierce:0,speed:480,homing:0},plane:{style:'missile',spread:fan(1,.1),radius:4.6,color:'#ffd27a',blast:24,pierce:4,speed:640,homing:0}};
+      if(form){const spec=forms[form];if(form==='laser'){const n=spec.count,gap=18;for(let i=0;i<n;i++){const from={x:s.hero.position.x+(i-(n-1)/2)*gap,y:s.hero.position.y-26},aim=-Math.PI/2;fireTorpedo(s,from,aim,FRIEND,{damage:p.damage*(1+s.paidPower)*hurt*.72*.65,speed:0,radius:spec.radius,homing:0,pierce:spec.pierce,style:spec.style,color:spec.color,blast:0,chain:0,ray:screenRay(from.x,from.y,aim)});}}else for(const off of spec.spread){const aim=-Math.PI/2+off,from={x:s.hero.position.x,y:s.hero.position.y-26};fireTorpedo(s,from,aim,FRIEND,{damage:p.damage*(1+s.paidPower)*hurt*.72*(off===0?1:.75)*(s.ultimate&&form==='plane'?1.2:1),speed:spec.speed*(s.ultimate?1.12:1),radius:spec.radius,homing:spec.homing||0,pierce:spec.pierce,style:spec.style,color:spec.color,blast:spec.blast*(s.ultimate?1.25:1),chain:0,ray:null});}}
       else {const style=p.kind==='orb'?'orb':p.kind==='beam'?'beam':p.kind==='missile'?'missile':p.kind==='arc'?'arc':'shell';for(const off of p.spread)fireTorpedo(s,{x:s.hero.position.x,y:s.hero.position.y-26},-Math.PI/2+off,FRIEND,{damage:p.damage*(1+s.paidPower)*.72*(p.count===2?.65:off!==0?.55:1),speed:p.speed,radius:(p.kind==='orb'?7:p.kind==='missile'?8:3.5)*reach,homing:p.homing,pierce:p.pierce,style,color:p.color,blast:(p.blast||(booth?42:0))*reach,chain:p.chain});}
       s.shots++;emit(s,'fire');return;
     }
@@ -170,13 +189,21 @@
   function escortFire(s) {
     if (!s.escort) return;
     const sides = s.escort === 1 ? [-1] : [-1, 1];
-    const targets = getEnemiesSortedByDistance(s, s.hero).filter(e => e.position.y > 0);
+    const targets = getEnemiesSortedByDistance(s, s.hero).filter(e => aboveJet(s, e));
     sides.forEach((side, index) => {
       const p = { x: clamp(s.hero.position.x + side * 32, 12, W - 12), y: s.hero.position.y + 18 };
       const t = targets[index % Math.max(1, targets.length)];
       const a = t ? Math.atan2(t.position.y - p.y, t.position.x - p.x) : -Math.PI / 2;
       fireTorpedo(s, p, a, FRIEND, { damage: 11 + s.escort * 3, speed: 340, radius: 4, homing: 2.2, style: 'escort' });
     });
+  }
+  function spawnUltimateBoss(s) {
+    if (s.ultimateBossSpawned || s.entities.some(e => !e.dead && e.type === 'ship' && (e.kind === 'overlord' || e.kind === 'boss'))) return false;
+    spawnEnemy(s, 'overlord');
+    s.ultimateBossSpawned = true;
+    s.bossSpawned = true;
+    emit(s, 'ultimate');
+    return true;
   }
   // Arcade volleys lock their angle before the visible wind-up. A small
   // hitbox, fixed paths and bounded density leave useful dodge corridors.
@@ -192,9 +219,9 @@
     let offsets=e.kind==='inflation'||e.elite?[-.32,0,.32]:e.kind==='scam'?[-.24,.24]:e.kind==='debt'?[-.42,0,.42]:[0];
     if(e.kind==='trap') offsets=e.age%6<3?[-.48,0,.48]:[-.32,.32];
     if(e.kind==='myth') offsets=e.age%6<3?[-.38,-.12,.12,.38]:[-.24,.24];
-    if(e.kind==='boss')offsets=e.hp<e.maxHp*.5?[-1.12,-.8,-.48,-.16,.16,.48,.8,1.12]:[-.9,-.54,-.18,.18,.54,.9];
+    if(isBossKind(e.kind))offsets=e.hp<e.maxHp*.5?[-1.12,-.8,-.48,-.16,.16,.48,.8,1.12]:[-.9,-.54,-.18,.18,.54,.9];
     if(occupied+reserved+offsets.length>hostileLimit(s))return false;
-    const windup=e.kind==='boss'?.95:.7;
+    const windup=isBossKind(e.kind)?.95:.7;
     e.attack={angles:offsets.map(off=>a+off),remaining:windup,duration:windup};
     s.nextVolleyAt=s.time+.22;
     return true;
@@ -205,30 +232,33 @@
     const threat = MODE_RULES[s.mode].bullet * Math.min(1.7, 1 + s.wave * 0.025)*(s.arcade&&root.FuLamJourney?root.FuLamJourney.threatProfile(s.wave).bullet:1);
     let angles = entity.elite?[a-.16,a,a+.16]:[a];
     if (entity.kind === 'inflation') angles = [a - 0.28, a, a + 0.28];
-    if (entity.kind === 'boss') angles = Array.from({ length: 9 }, (_, i) => a + (i - 4) * 0.21);
-    if(s.arcade&&entity.kind==='boss'){
-      const second=entity.hp<entity.maxHp*.5, count=second?11:7;
+    if (isBossKind(entity.kind)) angles = Array.from({ length: entity.kind==='overlord'?11:9 }, (_, i) => a + (i - (entity.kind==='overlord'?5:4)) * (entity.kind==='overlord'?.19:.21));
+    if(s.arcade&&isBossKind(entity.kind)){
+      const second=entity.hp<entity.maxHp*.5, count=entity.kind==='overlord'?(second?13:9):(second?11:7);
       angles=Array.from({length:count},(_,i)=>a+Math.sin(entity.age*.6)*.25+(i-(count-1)/2)*(second?.23:.25));
     }
-    if(s.mode==='booth'&&entity.kind!=='boss'){
+    if(s.mode==='booth'&&!isBossKind(entity.kind)){
       if(entity.kind==='inflation')angles=[a-.42,a-.2,a,a+.2,a+.42];
       else if(entity.elite)angles=[a-.3,a-.14,a,a+.14,a+.3];
       else angles=[a-.22,a,a+.22];
     }
     if(lockedAngles)angles=lockedAngles;
-    for (const angle of angles) fireTorpedo(s, p, angle, ENEMY, { damage: entity.kind === 'boss' ? 20 : entity.kind === 'debt' ? 18 : 12,
+    // Only high-interest debt ships fire seekers; other enemies keep fixed volleys.
+    const seek=entity.kind==='debt'?(s.arcade?(s.ultimate?1.35:1.15):0.36):0;
+    for (const angle of angles) fireTorpedo(s, p, angle, ENEMY, { damage: isBossKind(entity.kind) ? (entity.kind==='overlord'?24:20) : entity.kind === 'debt' ? 18 : 12,
       speed: s.arcade?Math.min(145,(entity.kind==='debt'?90:104)*threat):(entity.kind === 'debt' ? 90 : 113) * threat, radius: entity.kind === 'debt' ? 6 : 4.8,
-      homing: !s.arcade&&entity.kind === 'debt' ? 0.36 : 0, style: entity.kind === 'debt' ? 'debt' : 'hostile' });
+      homing: seek, style: entity.kind === 'debt' ? 'debt' : 'hostile' });
   }
   function destroy(s, entity) {
     if (entity.dead) return;
     entity.dead = true; s.kills++; s.waveKills++; s.combo = Math.min(25, s.combo + 1); s.comboTime = 4;
     s.score += Math.round(entity.value * 10 * (1 + Math.floor(s.combo / 5) * 0.25));
     emit(s, 'sink', { x: entity.position.x, y: entity.position.y, kind: entity.kind });
-    const parts = entity.kind === 'boss' ? 8 : 2;
+    const loot = Math.round(entity.value * (entity.kind==='overlord'?2.4:entity.kind==='boss'?1.8:entity.kind==='debt'?1.45:entity.kind==='inflation'||entity.kind==='trap'?1.2:1));
+    const parts = entity.kind==='overlord'?18:entity.kind==='boss'?12:entity.kind==='debt'?6:entity.kind==='inflation'||entity.kind==='trap'?4:2;
     for (let i = 0; i < parts; i++) {
-      const value = Math.floor(entity.value / parts) + (i < entity.value % parts ? 1 : 0);
-      s.raised.push(createEntity('coin', { position: new Position(clamp(entity.position.x + (s.random() - 0.5) * 35, 12, W - 12), clamp(entity.position.y + (s.random() - 0.5) * 25, 10, H - 20)), value, ttl: new Ttl(11), collision: new Collision(false, false, 6, FRIEND) }));
+      const value = Math.max(1, Math.floor(loot / parts) + (i < loot % parts ? 1 : 0));
+      s.raised.push(createEntity('coin', { position: new Position(clamp(entity.position.x + (s.random() - 0.5) * (isBossKind(entity.kind)?55:35), 12, W - 12), clamp(entity.position.y + (s.random() - 0.5) * (isBossKind(entity.kind)?40:25), 10, H - 20)), value, ttl: new Ttl(11), collision: new Collision(false, false, 6, FRIEND) }));
     }
   }
   function applyRoundUpgrade(s, run, kind) {
@@ -285,8 +315,10 @@
       h.y = clamp(h.y + dy / length * s.hero.velocity.speed * dt, 48, H - 27);
     }
     s.hero.echo = { ...h };
-    s.fireTime -= dt; if (s.fireTime <= 0) { s.fireTime += (s.arcade ? (root.FuLamJourney?root.FuLamJourney.weaponProfile('fleet',s.evolution).interval:(s.weaponKind===3?.65:s.weaponKind===2?.42:s.weaponKind===1?.32:.20)) : Math.max(0.17, 0.34 - s.weapon * 0.025)); weaponFire(s); }
-    s.escortTime -= dt; if (s.escortTime <= 0) { s.escortTime += s.escort >= 3 ? 0.32 : 0.7; escortFire(s); }
+    const fireBase = s.arcade ? (root.FuLamJourney?root.FuLamJourney.weaponProfile('fleet',s.evolution).interval:(s.weaponKind===3?.65:s.weaponKind===2?.42:s.weaponKind===1?.32:.20)) : Math.max(0.17, 0.34 - s.weapon * 0.025);
+    s.fireTime -= dt; if (s.fireTime <= 0) { s.fireTime += fireBase / (s.ultimate ? 2.25 : 1); weaponFire(s); }
+    s.escortTime -= dt; if (s.escortTime <= 0) { s.escortTime += (s.escort >= 3 ? 0.32 : 0.7) / (s.ultimate ? 1.5 : 1); escortFire(s); }
+    if (s.ultimate && !s.ultimateBossSpawned) spawnUltimateBoss(s);
     s.dividend += dt;
     if (s.dividend >= 15) {
       s.dividend -= 15;
@@ -295,19 +327,22 @@
       if (amount > 0) emit(s, 'dividend', { amount });
     }
     const ships = s.entities.filter(e => e.type === 'ship' && !e.dead);
-    if (!s.arcade && s.waveKills >= s.goal && !ships.some(e => e.kind === 'boss')) {
+    if (!s.arcade && s.waveKills >= s.goal && !ships.some(e => isBossKind(e.kind))) {
       s.wave++; s.waveKills = 0; s.goal = 7 + s.wave * 2; s.bossSpawned = false;
       emit(s, 'wave', { wave: s.wave });
     }
-    if ((s.arcade ? (s.wave===3 || s.wave===4 || (s.wave>4 && s.wave%3===0)) : s.wave%4===0) && !s.bossSpawned) { spawnEnemy(s, 'boss'); s.bossSpawned = true; emit(s, 'boss'); }
+    if ((s.arcade ? (s.wave===3 || s.wave===4 || (s.wave>4 && s.wave%3===0)) : s.wave%4===0) && !s.bossSpawned && !s.ultimate) { spawnEnemy(s, 'boss'); s.bossSpawned = true; emit(s, 'boss'); }
     s.spawnTime -= dt;
     if (s.spawnTime <= 0) {
       const spawnBase=Math.max(0.42, 1.5 - s.wave * 0.1);
-      s.spawnTime += s.arcade?Math.max(.72,1.25-(s.wave-1)*.12)*(s.wave===2?.88/1.15:s.wave===4?.88:1)/MODE_RULES[s.mode].enemy:(s.mode==='booth'?spawnBase*0.55:spawnBase)/MODE_RULES[s.mode].enemy;
-      if (ships.length < (s.arcade?Math.min(12,4+s.wave+(s.wave===2||s.wave===4?2:0)):s.mode==='booth'?Math.min(22, 8 + s.wave * 3):Math.min(14, 4 + s.wave * 2))) {
-        const types = s.wave === 1 ? ['fee', 'fee', 'scam'] : s.wave === 2 ? ['fee', 'scam', 'inflation', 'trap', 'myth'] : ['fee', 'scam', 'inflation', 'debt', 'trap', 'myth'];
+      s.spawnTime += (s.arcade?Math.max(.58,1.25-(s.wave-1)*.12)*(s.wave===1?.72:s.wave===2?.62:s.wave===4?1.375:1)/MODE_RULES[s.mode].enemy:(s.mode==='booth'?spawnBase*0.55:spawnBase)/MODE_RULES[s.mode].enemy)/(s.ultimate?2.35:1);
+      const cap=s.arcade?Math.min(s.ultimate?18:14,Math.round((4+s.wave+(s.wave<=2?3:s.wave===4?2:0)+(s.ultimate?6:0))*(s.wave===4?.64:1))):s.mode==='booth'?Math.min(22, 8 + s.wave * 3):Math.min(14, 4 + s.wave * 2);
+      if (ships.length < cap) {
+        const types = s.wave === 1 ? ['fee', 'fee', 'scam', 'debt'] : s.wave === 2 ? ['fee', 'scam', 'inflation', 'trap', 'myth', 'debt'] : ['fee', 'scam', 'inflation', 'debt', 'trap', 'myth'];
         const selected=types[Math.floor(s.random() * types.length)];
         spawnEnemy(s, s.arcade&&s.wave===2&&++s.roundTwoSpawns%6===0?'rumor':selected);
+        if(s.arcade&&s.wave<=2&&ships.length+1<cap&&s.random()<(s.wave===1?.28:.36)) spawnEnemy(s, types[Math.floor(s.random()*types.length)]);
+        if(s.ultimate && ships.length+1 < cap && s.random()<.55) spawnEnemy(s, types[Math.floor(s.random()*types.length)]);
       }
     }
     for (const e of s.entities) {
@@ -318,7 +353,7 @@
         e.position.y += e.velocity.speed * dt;
         const sway = e.kind === 'scam' ? 65 : e.kind==='myth'?48:e.kind==='trap'?32:22;
         e.position.x = clamp(e.originX + Math.sin(e.age * (e.kind === 'scam' ? 2 : 0.8) + e.phase) * sway, 26, W - 26);
-        if (e.kind === 'boss') { e.position.y = Math.min(110, e.position.y); e.position.x = W / 2 + Math.sin(e.age * 0.55) * 125; }
+        if (isBossKind(e.kind)) { e.position.y = Math.min(e.kind==='overlord'?128:110, e.position.y); e.position.x = W / 2 + Math.sin(e.age * (e.kind==='overlord'?.42:.55)) * (e.kind==='overlord'?150:125); }
         e.echo = { ...e.position };
         e.strategy.remainingBeforeAttack -= dt;
         if(s.arcade){
@@ -330,7 +365,7 @@
         }else if (e.position.y > 15 && e.position.y < H - 70 && e.strategy.remainingBeforeAttack <= 0) {
           e.strategy.remainingBeforeAttack = e.strategy.nextAttack; enemyFire(s, e);
         }
-        if (testCircleCollision(e, s.hero)) damageHero(s, e.kind === 'boss' ? 30 : 18, e.kind);
+        if (testCircleCollision(e, s.hero)) damageHero(s, isBossKind(e.kind) ? (e.kind==='overlord'?34:30) : 18, e.kind);
         if (e.position.y > H + 70) e.dead = true;
       } else if (e.type === 'torpedo') {
         e.previous = { ...e.position }; refreshStrategy(s, e); applyStrategy(s, e, dt); applyVelocityToPosition(e, dt);
@@ -374,6 +409,6 @@
     if (previous && previous.score >= current.score) return previous;
     return { score: Math.floor(current.score), wave: current.wave, kills: current.kills, mode: current.mode, version: 1 };
   }
-  root.FleetCore = { W, H, FRIEND, ENEMY, SPECS, MAX, createState, applyRoundUpgrade, tick, placeHero, buy, upgradeCost, activateShield, shieldCost, spawnEnemy,
+  root.FleetCore = { W, H, FRIEND, ENEMY, SPECS, MAX, createState, applyRoundUpgrade, tick, placeHero, buy, upgradeCost, activateShield, shieldCost, spawnEnemy, spawnUltimateBoss, isBossKind,
     maintainWorld, fireTorpedo, testCircleCollision, segmentCircleHit, angleDifference2DVectors, bestRecord, Position, Velocity, Collision, Strategy, Ttl, createEntity };
 })(typeof globalThis !== 'undefined' ? globalThis : this);
