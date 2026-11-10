@@ -106,8 +106,8 @@
 .onboarding-card .community-pending{font-size:16px;line-height:1.8;margin:22px 0 0;padding:16px;background:#f8eddb;border-radius:10px}
 .onboarding-social{margin-top:25px;padding-top:22px;border-top:1px solid var(--account-line)}
 .onboarding-social-label{display:block;margin-bottom:10px;font-size:15px;font-weight:600;color:var(--account-ink)}
-.onboarding-instagram{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:54px;padding:13px 20px;border:1px solid #b7c7b7;border-radius:10px;color:var(--account-ink);font-size:16px;font-weight:600;text-decoration:none;transition:background-color .2s}
-.onboarding-instagram:hover{background:#eef1e8}
+.onboarding-instagram{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:54px;padding:13px 20px;border:1px solid #9bb09a;border-radius:10px;background:#e8efe4;color:var(--account-ink);font-size:16px;font-weight:600;text-decoration:none;transition:background-color .2s,border-color .2s}
+.onboarding-instagram:hover{background:#dce7d7;border-color:#7f977e}
 .onboarding-back{margin-top:20px}
 .onboarding-account{display:flex;align-items:flex-start;justify-content:space-between;gap:12px 24px;flex-wrap:wrap;font-size:14px;padding:16px 4px 0}
 .onboarding-account details{flex:1;min-width:0}
