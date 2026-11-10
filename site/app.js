@@ -1,7 +1,7 @@
 import { normalizeSchoolEmail, normalizeOtp, isVerifiedSchoolUser, configurationIsReady, friendlyAuthError, sessionMustBeCleared } from './auth-rules.js';
 import { persistentAuthOptions } from './auth-session.js';
 import { createCheckInController } from './check-in.js';
-import { CHECK_IN_DAYS, answerVisible } from './check-in-content.js';
+import { CHECK_IN_DAYS } from './check-in-content.js';
 import { checkInAction, renderQuestion, renderPublishedAnswer, selectableCheckInDay } from './check-in-screen.js';
 
 const $ = (id) => document.getElementById(id);
@@ -112,26 +112,28 @@ function renderCheckIns(state = checkIns.state) {
   const day = CHECK_IN_DAYS.find(item => item.n === action.day);
   const record = state.records.find(row => row.day_number === action.day);
   const savedChoice = record?.choice || '';
+  const reveal = (state.reveals || []).find(item => item.day_number === action.day);
   renderQuestion(story, {
     day, en: window.FuLamI18n?.getLanguage?.() === 'en',
     choice: savedChoice || draftChoices.get(action.day) || '',
     locked: Boolean(savedChoice),
-    revealed: answerVisible(action.day, savedChoice === 'A' || savedChoice === 'B' || savedChoice === 'C'), submitted: Boolean(record), savedChoice
+    revealed: Boolean(reveal), reveal, submitted: Boolean(record), savedChoice
   });
 }
 function renderPublished(state) {
   const box = $('check-in-published');
   const en = window.FuLamI18n?.getLanguage?.() === 'en';
+  const reveals = state.reveals || [];
   const published = CHECK_IN_DAYS.filter(day => {
     const record = state.records.find(row => row.day_number === day.n);
-    return answerVisible(day.n, record?.choice === 'A' || record?.choice === 'B' || record?.choice === 'C');
+    return record && reveals.some(item => item.day_number === day.n);
   });
   box.replaceChildren();
   box.hidden = published.length === 0;
   for (const day of published) {
     const record = state.records.find(row => row.day_number === day.n);
     const section = document.createElement('section');
-    renderPublishedAnswer(section, { day, en, savedChoice: record.choice });
+    renderPublishedAnswer(section, { day, en, savedChoice: record.choice, reveal: reveals.find(item => item.day_number === day.n) });
     box.append(section);
   }
 }
@@ -179,6 +181,7 @@ setInterval(() => { if (view === 'member' && !busy && !document.hidden && checkI
 const translatedMessages = new Map([
   ['Enter your HKU email ending in @connect.hku.hk, @graduate.hku.hk or @hku.hk.', '請輸入 HKU 學生、校友或教職員電郵（@connect.hku.hk、@graduate.hku.hk、@hku.hk）。'],
   ['Enter your full HKU Connect email, such as yourname@connect.hku.hk.', '請輸入完整的 HKU Connect 電郵，例如 yourname@connect.hku.hk。'],
+  ['Please complete the security check.', '請完成安全驗證。'],
   ['Too many code requests. Please try again later.', '驗證碼要求過於頻繁，請稍後再試。'],
   ['The code is incorrect or expired. Try again or request a new code.', '驗證碼不正確或已過期。請檢查最新電郵，或重新索取驗證碼。'],
   ['We could not send your code. Try again later or contact the activity team.', '暫時未能發送驗證碼，請稍後再試或聯絡活動團隊。'],

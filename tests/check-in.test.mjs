@@ -19,7 +19,7 @@ const deferred = () => {
 // The actual Supabase SDK runs against a synthetic transport. No request leaves
 // the process, and there are no real accounts, access tokens or OTP messages.
 function fixture() {
-  const db = { activeUser: userA, records: new Map(), reads: [], submits: [], onDays: null, onRecords: null, onSubmit: null };
+  const db = { activeUser: userA, records: new Map(), reads: [], submits: [], revealReads: [], reveals: [], onDays: null, onRecords: null, onSubmit: null, onReveals: null };
   const client = createClient('https://check-in-test.supabase.co', 'sb_publishable_test_only_key_123456789', {
     auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
     global: { fetch: async (input, init = {}) => {
@@ -32,6 +32,10 @@ function fixture() {
         const owner = url.searchParams.get('user_id');
         db.reads.push({ table: 'records', owner, select: url.searchParams.get('select') });
         return db.onRecords ? db.onRecords(owner) : response(db.records.get(owner?.slice(3)) || []);
+      }
+      if (url.pathname === '/rest/v1/rpc/get_check_in_reveals') {
+        db.revealReads.push(url.pathname);
+        return db.onReveals ? db.onReveals() : response(db.reveals || []);
       }
       if (url.pathname === '/rest/v1/rpc/submit_check_in') {
         const parameters = JSON.parse(init.body);
@@ -186,6 +190,24 @@ test('late submission success or failure cannot alter a signed-out or different 
       assert.equal(controller.state.phase, nextUser ? 'ready' : 'idle');
     }
   }
+});
+
+test('explanations come from the server, and an invalid reveal fails closed', async () => {
+  const reveal = {
+    day_number: 1, letter: 'B', nick: 'short', exp_zh: '解釋', exp_en: 'why',
+    src_zh: '來源', src_en: 'source', src_url: 'https://example.com/a', take_zh: '重點', take_en: 'take'
+  };
+  const saved = fixture();
+  saved.db.reveals = [reveal];
+  await saved.controller.setUser(userA);
+  assert.deepEqual(saved.controller.state.reveals, [reveal]);
+  assert.equal(saved.db.revealReads.length, 1);
+  const invalid = fixture();
+  invalid.db.onReveals = () => response([{ ...reveal, letter: 'D' }]);
+  await invalid.controller.setUser(userA);
+  assert.equal(invalid.controller.state.phase, 'error');
+  assert.deepEqual(invalid.controller.state.reveals, []);
+  assert.deepEqual(invalid.controller.state.records, []);
 });
 
 test('empty, wrong-day, or invalid RPC results never claim completion', async () => {

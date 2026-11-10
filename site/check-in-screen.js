@@ -35,7 +35,7 @@ function link(href, text) {
   return element;
 }
 
-export function renderQuestion(container, { day, en, choice, locked, revealed, submitted, savedChoice }) {
+export function renderQuestion(container, { day, en, choice, locked, revealed, reveal, submitted, savedChoice }) {
   container.replaceChildren();
   if (!day) { container.hidden = true; return; }
   container.hidden = false;
@@ -62,7 +62,7 @@ export function renderQuestion(container, { day, en, choice, locked, revealed, s
     button.setAttribute('aria-checked', String(choice === option.k));
     button.disabled = locked;
     button.append(node('b', '', option.k), document.createTextNode(en ? ` ${option.en}` : ` ${option.zh}`));
-    if (revealed && option.k === day.letter) button.classList.add('is-answer');
+    if (revealed && reveal && option.k === reveal.letter) button.classList.add('is-answer');
     options.append(button);
   }
   const learn = node('p', '');
@@ -70,7 +70,7 @@ export function renderQuestion(container, { day, en, choice, locked, revealed, s
   container.append(options, node('p', 'check-in-tip', en ? day.tipEn : day.tipZh), learn);
   const note = en ? day.noteEn : day.noteZh;
   if (note) container.append(node('p', 'check-in-note', note));
-  if (!revealed) {
+  if (!revealed || !reveal) {
     container.append(node('p', 'check-in-waiting', submitted
       ? (en
         ? 'Your answer has been submitted. The correct answer and historical explanation will be revealed tomorrow. The aim is not only to guess correctly, but to understand real events through financial concepts.'
@@ -80,33 +80,35 @@ export function renderQuestion(container, { day, en, choice, locked, revealed, s
         : '選擇一個答案，然後提交。正確答案於翌日早上 6 時公布。')));
     return;
   }
-  const answerText = en ? day.opts.find(option => option.k === day.letter).en : day.nick;
+  const matched = day.opts.find(option => option.k === reveal.letter);
+  const answerText = en ? (matched ? matched.en : '') : reveal.nick;
   const source = node('p', '');
-  source.append(document.createTextNode(en ? 'Source: ' : '歷史依據：'), link(day.srcUrl, en ? day.srcEn : day.srcZh));
-  const reveal = [
+  source.append(document.createTextNode(en ? 'Source: ' : '歷史依據：'), link(reveal.src_url, en ? reveal.src_en : reveal.src_zh));
+  const revealedCopy = [
     node('p', 'check-in-label', en ? 'What happened' : '翌日揭曉'),
-    node('p', 'check-in-answer', en ? `Correct choice: ${day.letter}. ${answerText}` : `正確選項：${day.letter} ${answerText}`),
-    node('p', '', en ? day.expEn : day.expZh),
+    node('p', 'check-in-answer', en ? `Correct choice: ${reveal.letter}. ${answerText}` : `正確選項：${reveal.letter} ${answerText}`),
+    node('p', '', en ? reveal.exp_en : reveal.exp_zh),
     source,
-    node('p', 'check-in-take', en ? day.takeEn : day.takeZh)
+    node('p', 'check-in-take', en ? reveal.take_en : reveal.take_zh)
   ];
-  if (savedChoice) reveal.splice(1, 0, node('p', '', en ? `Your choice: ${savedChoice}` : `你的選擇：${savedChoice}`));
-  container.append(...reveal);
+  if (savedChoice) revealedCopy.splice(1, 0, node('p', '', en ? `Your choice: ${savedChoice}` : `你的選擇：${savedChoice}`));
+  container.append(...revealedCopy);
 }
 
-export function renderPublishedAnswer(container, { day, en, savedChoice }) {
+export function renderPublishedAnswer(container, { day, en, savedChoice, reveal }) {
   container.replaceChildren();
   container.classList.add('check-in-reveal');
-  const answerText = en ? day.opts.find(option => option.k === day.letter).en : day.nick;
+  const matched = day.opts.find(option => option.k === reveal.letter);
+  const answerText = en ? (matched ? matched.en : '') : reveal.nick;
   const source = node('p', '');
-  source.append(document.createTextNode(en ? 'Source: ' : '歷史依據：'), link(day.srcUrl, en ? day.srcEn : day.srcZh));
+  source.append(document.createTextNode(en ? 'Source: ' : '歷史依據：'), link(reveal.src_url, en ? reveal.src_en : reveal.src_zh));
   container.append(
     node('p', 'check-in-label', en ? `Day ${day.n} revealed` : `第 ${day.n} 日揭曉`),
     node('h3', '', en ? day.titleEn : day.titleZh),
     node('p', '', en ? `Your choice: ${savedChoice}` : `你的選擇：${savedChoice}`),
-    node('p', 'check-in-answer', en ? `Correct choice: ${day.letter}. ${answerText}` : `正確選項：${day.letter} ${answerText}`),
-    node('p', '', en ? day.expEn : day.expZh),
+    node('p', 'check-in-answer', en ? `Correct choice: ${reveal.letter}. ${answerText}` : `正確選項：${reveal.letter} ${answerText}`),
+    node('p', '', en ? reveal.exp_en : reveal.exp_zh),
     source,
-    node('p', 'check-in-take', en ? day.takeEn : day.takeZh)
+    node('p', 'check-in-take', en ? reveal.take_en : reveal.take_zh)
   );
 }

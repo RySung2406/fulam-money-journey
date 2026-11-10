@@ -45,6 +45,7 @@ export function sessionMustBeCleared(error) {
 
 export function friendlyAuthError(error) {
   const code = error?.code || '';
+  if (code === 'captcha_failed') return 'Please complete the security check.';
   if (['over_email_send_rate_limit', 'over_request_rate_limit'].includes(code) || error?.status === 429) return 'Too many code requests. Please try again later.';
   if (['otp_expired', 'invalid_credentials', 'otp_disabled'].includes(code)) return 'The code is incorrect or expired. Try again or request a new code.';
   if (code === 'email_address_not_authorized' || code === 'unexpected_failure') return 'We could not send your code. Try again later or contact the activity team.';
