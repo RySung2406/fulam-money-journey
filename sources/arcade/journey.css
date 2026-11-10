@@ -99,6 +99,11 @@
 .journey-choice-card .journey-upgrades[data-count="3"] button{grid-column:auto}
 .journey-granted{margin:8px 0 0;padding:12px 14px;border-radius:10px;background:#214b3b;color:#fff4cb;font-size:18px;line-height:1.45}
 .journey-choice-card .journey-upgrades small{font-size:13px;line-height:1.45}
+.journey-quiz-card .journey-quiz-q{margin:10px 0 8px;font-size:17px;line-height:1.45}
+.journey-quiz-card .journey-quiz-choices{grid-template-columns:1fr 1fr;gap:8px}
+.journey-quiz-card .journey-quiz-choices button{grid-column:auto;min-height:72px;text-align:left;justify-content:flex-start}
+.journey-quiz-card .journey-quiz-choices button.is-wrong{opacity:.55;border-color:#c07070;background:#f3dede}
+.journey-quiz-tip{margin:8px 0 0;padding:10px 12px;border-radius:8px;background:#fff6e8;border:1px solid #e2c48a;color:#4a3420;font-size:14px;line-height:1.45}
 @media(max-width:600px){
  .journey-card.journey-choice-card{padding:16px}
  .journey-choice-card .journey-upgrades{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
@@ -107,6 +112,8 @@
  .journey-choice-card .journey-upgrades b{font-size:14px}.journey-choice-card .journey-upgrades small{font-size:12px}
  .journey-choice-card h2{font-size:23px;margin:6px 0}.journey-choice-card .journey-scene-note{margin:8px 0}
  .journey-choice-card .journey-next{margin:8px 0 0;padding:7px 9px}.journey-choice-card .journey-count{margin:8px 0}
+ .journey-quiz-card .journey-quiz-q{font-size:15px}.journey-quiz-card .journey-quiz-choices{grid-template-columns:1fr;gap:6px}
+ .journey-quiz-card .journey-quiz-choices button{min-height:58px}
 }
 @media(max-height:500px) and (orientation:landscape){
  .journey-card.journey-choice-card{padding:12px}

@@ -26,4 +26,4 @@ Static SVG QR codes are generated locally using python-qrcode 8.2 (BSD-3-Clause 
 
 ## Round scenes (2026-11-04)
 
-The fifteen SVG chapter backgrounds in `scenes/` are original FuLam artwork authored for this project: harbour, reef/garden, storm/lighthouse, ruins/city/bridge and dawn/observatory. No external images, textures or fonts were copied into them. Existing Kenney and other asset licences above remain unchanged.
+The fifteen SVG chapter backgrounds in `scenes/` are original FuLam artwork authored for this project. The current set is a Christmas venue pass: festive harbour / snow bay / workshop, candy reef / lights islands / gift garden, blizzard / aurora / lantern lighthouse, gingerbread ruins / holiday city / candy bridge, and winter dawn / dawn clouds / star observatory. No external images, textures or fonts were copied into them. Existing Kenney and other asset licences above remain unchanged.

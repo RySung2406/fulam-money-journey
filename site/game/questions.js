@@ -2,9 +2,9 @@
 window.QUESTIONS = [
   {
     "id": "tools",
-    "chapter": "Financial tools",
-    "eyebrow": "01 / FINANCIAL TOOLS",
-    "question": "Which are financial products or money tools?",
+    "chapter": "Know the money tools",
+    "eyebrow": "01 / KNOW THE TOOLS",
+    "question": "Which of the following are financial products or money tools?",
     "context": "Slice financial products and planning tools. Leave everyday purchases and bills.",
     "takeaway": "Products and planning tools serve different jobs: saving, investing, protection and borrowing.",
     "action": "Pick one unfamiliar tool and find out what it does.",
@@ -216,214 +216,179 @@ window.QUESTIONS = [
   },
   {
     "id": "investment",
-    "chapter": "Before you invest",
-    "eyebrow": "02 / INVESTMENT & RISK",
-    "question": "Which are sensible checks before investing?",
-    "context": "Slice checks that help you understand the product and your needs. Leave risky shortcuts.",
-    "takeaway": "Understand the risks, costs and fit with your goals before committing money.",
-    "action": "Read one product factsheet and identify its risks, fees and exit terms.",
+    "chapter": "Investment vs other tools",
+    "eyebrow": "02 / INVESTMENT PRODUCTS",
+    "question": "Which are mainly investment products, rather than deposits, borrowing or pure protection tools?",
+    "context": "Slice investment products. Leave deposits, borrowing and pure protection tools.",
+    "takeaway": "Investment products can lose value. Deposits, loans and pure protection serve different jobs.",
+    "action": "Pick one investment product and one non-investment tool, then compare what each is for.",
     "sources": [
       {
-        "title": "IFEC · Building an investment portfolio",
-        "url": "https://www.ifec.org.hk/web/en/moneyessentials/financial-planning/building-an-investment-portfolio.page"
-      },
-      {
-        "title": "IFEC · Financial planning guide",
-        "url": "https://www.ifec.org.hk/web/common/pdf/publication/en/ifec-financial-planning-booklet-en.pdf"
+        "title": "IFEC · Investment products",
+        "url": "https://www.ifec.org.hk/web/en/investment/investment-products/index.page"
       },
       {
         "title": "IFEC · Understanding funds",
         "url": "https://www.ifec.org.hk/web/en/investment/investment-products/funds/index.page"
       },
       {
-        "title": "SFC · Public register",
-        "url": "https://www.sfc.hk/en/Regulatory-functions/Intermediaries/Licensing/Register-of-licensed-persons-and-registered-institutions"
+        "title": "IFEC · Bank accounts",
+        "url": "https://www.ifec.org.hk/web/en/financial-products/personal-banking/bank-accounts.page"
+      },
+      {
+        "title": "Insurance Authority · Insurance basics",
+        "url": "https://education.ia.org.hk/en/faq.html"
       }
     ],
     "options": [
       {
         "id": "investment-01",
-        "text": "Read risk warnings",
+        "text": "Stocks",
         "good": true,
-        "why": "Risk warnings explain ways an investment can lose value."
+        "why": "Shares are ownership stakes; their price can fall."
       },
       {
         "id": "investment-02",
-        "text": "Compare fees",
+        "text": "Government bonds",
         "good": true,
-        "why": "Charges reduce the return you keep."
+        "why": "Government bonds are debt investments with interest-rate and other risks."
       },
       {
         "id": "investment-03",
-        "text": "Check your goal",
+        "text": "Corporate bonds",
         "good": true,
-        "why": "The product should fit what the money is for."
+        "why": "Corporate bonds are company debt investments with credit and market risks."
       },
       {
         "id": "investment-04",
-        "text": "Check liquidity",
+        "text": "Equity funds",
         "good": true,
-        "why": "Check how easily you can sell or withdraw."
+        "why": "Equity funds invest mainly in stocks."
       },
       {
         "id": "investment-05",
-        "text": "Check time horizon",
+        "text": "Bond funds",
         "good": true,
-        "why": "Consider when you will need the money."
+        "why": "Bond funds invest mainly in bonds."
       },
       {
         "id": "investment-06",
-        "text": "Assess loss capacity",
+        "text": "Mixed-asset funds",
         "good": true,
-        "why": "Consider how much loss your finances can withstand."
+        "why": "Mixed-asset funds combine asset classes such as stocks and bonds."
       },
       {
         "id": "investment-07",
-        "text": "Check diversification",
+        "text": "Equity ETFs",
         "good": true,
-        "why": "Check whether your investments concentrate the same risks."
+        "why": "Equity ETFs track stock markets or equity baskets."
       },
       {
         "id": "investment-08",
-        "text": "Read product facts",
+        "text": "Bond ETFs",
         "good": true,
-        "why": "Product documents explain features, risks and charges."
+        "why": "Bond ETFs invest in bond markets."
       },
       {
         "id": "investment-09",
-        "text": "Check currency risk",
+        "text": "REITs",
         "good": true,
-        "why": "Exchange-rate changes can affect returns in your own currency."
+        "why": "REITs invest in property-related assets and can lose value."
       },
       {
         "id": "investment-10",
-        "text": "Understand returns",
+        "text": "Index funds",
         "good": true,
-        "why": "Understand where returns come from and what is uncertain."
+        "why": "Index funds track a market index as an investment product."
       },
       {
         "id": "investment-11",
-        "text": "Verify seller licence",
+        "text": "Gold ETFs",
         "good": true,
-        "why": "Check the relevant register and independently verify the seller."
+        "why": "Gold ETFs provide investment exposure to gold prices."
       },
       {
         "id": "investment-12",
-        "text": "Check exit terms",
+        "text": "Money market funds",
         "good": true,
-        "why": "Selling or withdrawing may involve restrictions and costs."
+        "why": "Money market funds are investment products, even when cash-like."
       },
       {
         "id": "investment-13",
-        "text": "Review your portfolio",
-        "good": true,
-        "why": "New investments change your overall mix of risks."
+        "text": "Time deposits",
+        "good": false,
+        "why": "A time deposit is a banking deposit product, not mainly an investment product here."
       },
       {
         "id": "investment-14",
-        "text": "Check emergency cash",
-        "good": true,
-        "why": "Consider the money needed for unexpected expenses."
+        "text": "Savings account",
+        "good": false,
+        "why": "A savings account is for depositing money, not mainly investing."
       },
       {
         "id": "investment-15",
-        "text": "Check complexity",
-        "good": true,
-        "why": "Understand how the product works before buying."
+        "text": "Current account",
+        "good": false,
+        "why": "A current account is for payments and everyday banking."
       },
       {
         "id": "investment-16",
-        "text": "Copy a viral tip",
+        "text": "Credit card",
         "good": false,
-        "why": "A popular tip does not establish suitability or accuracy."
+        "why": "A credit card is a borrowing product for payments."
       },
       {
         "id": "investment-17",
-        "text": "Chase last year's top",
+        "text": "Personal loan",
         "good": false,
-        "why": "Past performance does not guarantee future returns."
+        "why": "A personal loan is borrowed money to repay."
       },
       {
         "id": "investment-18",
-        "text": "Trust profit promises",
+        "text": "Student loan",
         "good": false,
-        "why": "Promises alone do not remove investment risks."
+        "why": "A student loan is borrowing for education costs."
       },
       {
         "id": "investment-19",
-        "text": "Bet all on one stock",
+        "text": "Residential mortgage",
         "good": false,
-        "why": "One stock concentrates company-specific risk."
+        "why": "A residential mortgage is a loan secured against a home."
       },
       {
         "id": "investment-20",
-        "text": "Ignore small fees",
+        "text": "Pure protection life insurance",
         "good": false,
-        "why": "Recurring charges can accumulate and reduce returns."
+        "why": "Pure protection life cover is mainly for protection, not investment."
       },
       {
         "id": "investment-21",
-        "text": "Assume loans add safety",
+        "text": "Medical insurance",
         "good": false,
-        "why": "Borrowing adds repayment obligations; it does not remove risk."
+        "why": "Medical insurance is mainly for healthcare protection."
       },
       {
         "id": "investment-22",
-        "text": "Follow a chat group",
+        "text": "Accident insurance",
         "good": false,
-        "why": "A chat group is not independent product verification."
+        "why": "Accident insurance is mainly for protection against accidents."
       },
       {
         "id": "investment-23",
-        "text": "Buy before reading",
+        "text": "Budget planner",
         "good": false,
-        "why": "Skipping documents leaves important terms unknown."
+        "why": "A budget planner is a planning tool, not an investment product."
       },
       {
         "id": "investment-24",
-        "text": "Pick by price alone",
+        "text": "Tuition bill",
         "good": false,
-        "why": "A low unit price does not establish good value."
-      },
-      {
-        "id": "investment-25",
-        "text": "Trust a screenshot",
-        "good": false,
-        "why": "Screenshots can be misleading or fabricated."
-      },
-      {
-        "id": "investment-26",
-        "text": "Assume fixed dividends",
-        "good": false,
-        "why": "Company dividends can change or stop."
-      },
-      {
-        "id": "investment-27",
-        "text": "Assume blue chips safe",
-        "good": false,
-        "why": "Large established companies can still lose value."
-      },
-      {
-        "id": "investment-28",
-        "text": "Ignore currency moves",
-        "good": false,
-        "why": "Currency changes can affect the return you receive."
-      },
-      {
-        "id": "investment-29",
-        "text": "Invest next week's rent",
-        "good": false,
-        "why": "Money needed soon may be unavailable or worth less."
-      },
-      {
-        "id": "investment-30",
-        "text": "Trust fame alone",
-        "good": false,
-        "why": "Fame does not establish expertise or suitability."
+        "why": "Tuition is an education expense, not an investment product."
       }
     ],
-    "menuDescription": "Cut useful checks. Dodge investing shortcuts."
+    "menuDescription": "Tell investment products apart from deposits, loans and pure cover."
   },
+
   {
     "id": "insurance",
     "chapter": "Understanding insurance",
@@ -1064,10 +1029,10 @@ window.QUESTIONS = [
 (function(){
 const translations = {
   "tools": [
-    "理財工具",
-    "理財工具",
-    "哪些是金融產品或理財工具？",
-    "切開金融產品及理財規劃工具，避開日常消費和帳單。",
+    "認識理財工具",
+    "認識理財工具",
+    "以下哪些屬於金融產品或理財工具？",
+    "切開金融產品及理財工具，避開日常消費和帳單。",
     "儲蓄、投資、保障和借貸各有不同的產品及規劃工具。",
     "選一個不熟悉的工具，了解它的用途。",
     "從日常消費中找出理財工具。",
@@ -1195,133 +1160,109 @@ const translations = {
     ]
   ],
   "investment": [
-    "投資之前",
-    "投資與風險",
-    "投資之前，哪些檢查較明智？",
-    "切開有助了解產品和自身需要的檢查，避開冒險捷徑。",
-    "投資前應了解風險、費用，以及產品是否配合目標。",
-    "閱讀一份產品資料概要，找出風險、費用及退出條款。",
-    "找出有用的投資檢查。",
+    "分辨投資與其他理財工具",
+    "投資產品",
+    "以下哪些主要屬於投資產品，而非存款、借貸或純保障工具？",
+    "切開投資產品；存款、借貸和純保障工具則讓它們落下。",
+    "投資產品價值可升可跌；存款、貸款和純保障各有不同用途。",
+    "選一個投資產品和一個非投資工具，比較它們的用途。",
+    "分辨投資產品與存款、貸款及純保障。",
     [
       [
-        "閱讀風險警告",
-        "風險警告說明投資可能如何損失價值。"
+        "股票",
+        "股票代表公司擁有權，價格可以下跌。"
       ],
       [
-        "比較費用",
-        "收費會減少實際取得的回報。"
+        "政府債券",
+        "政府債券屬債務投資，涉及利率等風險。"
       ],
       [
-        "檢視投資目標",
-        "產品應符合資金用途和目標。"
+        "公司債券",
+        "公司債券屬公司債務投資，涉及信貸及市場風險。"
       ],
       [
-        "檢查流動性",
-        "了解產品可否容易賣出或提取。"
+        "股票基金",
+        "股票基金主要投資股票。"
       ],
       [
-        "考慮投資年期",
-        "考慮何時需要動用資金。"
+        "債券基金",
+        "債券基金主要投資債券。"
       ],
       [
-        "評估承受虧損能力",
-        "考慮自己的財政狀況能承受多少損失。"
+        "混合資產基金",
+        "混合資產基金同時配置股票、債券等資產類別。"
       ],
       [
-        "檢查分散程度",
-        "檢查投資是否集中承受相同風險。"
+        "股票ETF",
+        "股票 ETF 追蹤股市或股票組合。"
       ],
       [
-        "閱讀產品資料",
-        "產品文件說明特點、風險及收費。"
+        "債券ETF",
+        "債券 ETF 投資債券市場。"
       ],
       [
-        "檢查貨幣風險",
-        "匯率變化會影響換算成本地貨幣的回報。"
+        "房地產投資信託",
+        "房地產投資信託投資物業相關資產，價值可跌。"
       ],
       [
-        "了解回報來源",
-        "了解回報從何而來，以及哪些部分不確定。"
+        "指數基金",
+        "指數基金以追蹤市場指數為投資產品。"
       ],
       [
-        "核實銷售者牌照",
-        "查閱有關名冊並獨立核實銷售者身份。"
+        "黃金ETF",
+        "黃金 ETF 提供黃金價格的投資敞口。"
       ],
       [
-        "查看退出條款",
-        "賣出或提取可能有費用及限制。"
+        "貨幣市場基金",
+        "貨幣市場基金屬投資產品，即使較近似現金。"
       ],
       [
-        "檢視整體組合",
-        "新投資會改變整體風險組合。"
+        "定期存款",
+        "定期存款屬銀行存款產品，在此不視為主要投資產品。"
       ],
       [
-        "檢查應急儲備",
-        "考慮應付突發開支所需的資金。"
+        "儲蓄戶口",
+        "儲蓄戶口用於存放資金，並非主要投資產品。"
       ],
       [
-        "了解產品複雜性",
-        "購買前應了解產品如何運作。"
+        "往來戶口",
+        "往來戶口用於日常付款及銀行服務。"
       ],
       [
-        "跟風熱門貼士",
-        "熱門貼士不代表資料準確或適合你。"
+        "信用卡",
+        "信用卡是付款用的借貸產品。"
       ],
       [
-        "追逐去年冠軍",
-        "過往表現不能保證未來回報。"
+        "私人貸款",
+        "私人貸款是需要償還的借款。"
       ],
       [
-        "相信獲利承諾",
-        "單靠承諾不能消除投資風險。"
+        "學生貸款",
+        "學生貸款是為教育開支的借款。"
       ],
       [
-        "全押一隻股票",
-        "集中持有一隻股票會增加個別公司風險。"
+        "住宅按揭",
+        "住宅按揭是以住宅作抵押的貸款。"
       ],
       [
-        "忽略細小收費",
-        "持續收費可以累積並減少回報。"
+        "純保障人壽保險",
+        "純保障人壽保險以保障為主，並非投資產品。"
       ],
       [
-        "以為借錢更安全",
-        "借款增加還款責任，不能消除投資風險。"
+        "醫療保險",
+        "醫療保險主要以醫療保障為目的。"
       ],
       [
-        "只跟聊天群投資",
-        "聊天群不能取代獨立核實產品。"
+        "意外保險",
+        "意外保險主要以意外保障為目的。"
       ],
       [
-        "未閱讀就買入",
-        "跳過文件會令重要條款不明。"
+        "預算規劃表",
+        "預算規劃表是規劃工具，不是投資產品。"
       ],
       [
-        "只看價格選擇",
-        "單位價格低不代表產品價值較佳。"
-      ],
-      [
-        "相信截圖",
-        "截圖可能失實或偽造。"
-      ],
-      [
-        "以為股息固定",
-        "公司派息可以改變或停止。"
-      ],
-      [
-        "以為藍籌必定安全",
-        "大型成熟公司股價仍可能下跌。"
-      ],
-      [
-        "忽略匯率變動",
-        "匯率變化會影響實際回報。"
-      ],
-      [
-        "投資下週租金",
-        "短期需要的錢可能無法及時取回或價值下跌。"
-      ],
-      [
-        "只因名氣而相信",
-        "名氣不能證明專業能力或產品適合你。"
+        "學費帳單",
+        "學費是教育開支，不是投資產品。"
       ]
     ]
   ],
@@ -1721,7 +1662,7 @@ const translations = {
 };
 const sourceTitles = {
  tools:['投委會 · 投資產品','投委會 · 銀行戶口','投委會 · 貸款基本知識','投委會 · 借貸清單及計算機','保監局 · 保險基本知識'],
- investment:['投委會 · 建立投資組合','投委會 · 理財規劃指南','投委會 · 認識基金','證監會 · 公開名冊'],
+ investment:['投委會 · 投資產品','投委會 · 認識基金','投委會 · 銀行戶口','保監局 · 保險基本知識'],
  insurance:['保監局 · 購買保險須知','保監局 · 醫療保險','保監局 · 人壽保險','保監局 · 保險詞彙'],
  borrowing:['投委會 · 借貸清單','投委會 · 貸款基本知識','金管局 · 個人信貸','投委會 · 先買後付費用'],
  scams:['投委會 · 防範詐騙','證監會 · 公開名冊','證監會 · 可疑投資產品','金管局 · 慎防詐騙','保監局 · 核查中介人']
@@ -1732,7 +1673,8 @@ window.QUESTIONS_ZH = window.QUESTIONS.map(q => {
 });
 })();
 
-// Twenty-five choices per stage: thirteen correct and twelve decoys, in both languages.
+// Booth Round 1 keeps 13 correct + 12 decoys from the 30-option banks.
+// Round 2 (investment) already ships with 12 + 12 exact options.
 for (const bank of [window.QUESTIONS, window.QUESTIONS_ZH]) {
- for (const q of bank) q.options=q.options.filter((_,i)=>i<13||(i>=15&&i<27));
+ for (const q of bank) if (q.options.length === 30) q.options = q.options.filter((_, i) => i < 13 || (i >= 15 && i < 27));
 }
