@@ -1,7 +1,7 @@
 /* FuLam arcade progression v7. Original code; scores are local, not verified online records. */
 (function(root){
  'use strict';
- const VERSION='booth-v15', ROUND=30, BOOTH_ROUND=30, CHOICE=12, KNIFE_STAGES=2, KNIFE_OPTIONS=25, BOOTH_STAGES=4, BOOTH_STAGE_TIME=[20,20,25,25], LIMIT=90;
+ const VERSION='booth-v16', ROUND=30, BOOTH_ROUND=30, CHOICE=12, KNIFE_STAGES=2, KNIFE_OPTIONS=25, BOOTH_STAGES=4, BOOTH_STAGE_TIME=[20,20,25,25], LIMIT=90;
  const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function random(seed){return()=>{let t=seed+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;};}

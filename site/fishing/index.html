@@ -217,6 +217,18 @@ body.welcome-screen .overlay,body.combat-score-mode .overlay{
 .card.festive-card .label,.showing-result .card .label{color:#f0d878!important}
 .card.festive-card h2 em,.showing-result .result-score{color:#fff4cb!important}
 @media(prefers-reduced-motion:reduce){.card.festive-card,.showing-result .card{animation:none}}
+body.combat-score-mode.game-active .scene.journey-live{
+ border-color:#f0d87844;box-shadow:0 18px 48px #020a1444,inset 0 0 0 1px #f0d87822;
+}
+body.combat-score-mode .control-panel{
+ border-color:#f0d87833;background:linear-gradient(135deg,#163a32,#0f2824 55%,#142433);
+}
+body.combat-score-mode .score-value{color:#fff4cb;text-shadow:0 1px 10px #020a1466}
+body.combat-score-mode .combo b{color:#fff4cb}
+body.combat-score-mode .event{border-color:#f0d87855;background:#163a32ee;color:#fff4cb}
+body.combat-score-mode .ability{border-color:#2f8f6355;background:linear-gradient(160deg,#123d3a,#0a2428)}
+body.combat-score-mode .ability:not(:disabled){border-color:#f0d87844}
+body.combat-score-mode .upgrade:not(:disabled){background:linear-gradient(145deg,#fff4cb,#f0d878);color:#17392b}
 
 .journey-settings{margin:12px 0;color:inherit}.journey-options{display:flex;gap:8px;margin:8px 0}.journey-options button{flex:1;min-width:0;min-height:44px;border:1px solid #78988b;border-radius:12px;padding:9px;background:#f4f2e8;color:#214b3b;font:700 14px inherit;cursor:pointer}.journey-options button[aria-pressed=true]{background:#214b3b;color:#fff4cb;border-color:#d4b36d}.journey-options button:disabled{opacity:.6;cursor:default}.journey-rule{font-size:12px!important;line-height:1.5!important;margin:6px 0!important}.journey-status{position:relative;z-index:4;background:#153b35;color:#fff1c9;padding:7px 12px;font-size:12px;line-height:1.4;flex-shrink:0;border-bottom:1px solid #75877c;white-space:normal}.journey-overlay{position:absolute;inset:0;background:#071f28e8;display:flex;align-items:center;justify-content:center;z-index:120;padding:12px;overflow:auto;color:#eef6e8}.journey-card{max-width:620px;width:100%;max-height:100%;overflow:auto;padding:22px;background:#143b38;border:1px solid #c4b67d;border-radius:20px;box-shadow:0 20px 60px #0005;text-align:left}.journey-card h2{font-size:26px;line-height:1.2;color:#fff1c9;margin:10px 0}.journey-card p{font-size:14px;line-height:1.5}.journey-kicker{color:#a7dbce;font-size:12px;letter-spacing:2px}.journey-upgrades{display:grid;gap:10px}.journey-upgrades button{display:flex;flex-direction:column;gap:6px;text-align:left;padding:15px;border:1px solid #7a9a8a;border-radius:12px;background:#e9eddd;color:#214b3b;font:inherit;cursor:pointer;min-height:60px}.journey-upgrades button[data-upgrade=weapon]{background:#f1d797}.journey-upgrades small{font-size:12px}.journey-upgrades button:focus-visible,.journey-options button:focus-visible{outline:3px solid #f1c36c;outline-offset:2px}.journey-result{margin:12px 0;padding:14px;border:1px solid #97ac91;border-radius:12px;text-align:left;font-size:13px;line-height:1.55}.journey-result p{font-size:13px!important;margin:8px 0!important}.journey-result small{display:block;font-size:11px;margin:6px 0;opacity:.85}.journey-result details{margin:8px 0}.journey-result a{color:inherit;text-decoration:underline}.journey-swap{min-height:44px;border:1px solid #c1b77f;border-radius:10px;background:#f1ddb0;color:#214b3b;font:700 14px sans-serif;padding:8px 12px;touch-action:none;cursor:pointer}.journey-live{position:relative}.journey-live>.journey-status{position:absolute;left:0;right:0;top:0}.journey-live .journey-overlay{position:absolute}.journey-counter{color:#e9c879;font-size:12px}.journey-hidden{display:none!important}@media(max-height:450px){.journey-card{padding:12px}.journey-card h2{font-size:20px;margin:4px 0}.journey-card p{margin:5px 0}.journey-upgrades{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.journey-upgrades button{padding:9px;font-size:13px;min-height:70px}.journey-status{padding:3px 8px;font-size:10px}}@media(prefers-reduced-motion:reduce){.journey-overlay *{animation:none!important;transition:none!important}}
 .scene.journey-live>.hud{top:42px!important}.scene.journey-live .timer{display:grid!important;gap:0;min-width:62px;padding:5px 8px;background:#133a35dd;border:1px solid #82b79b}.scene.journey-live .timer small{font-size:10px}.scene.journey-live .timer b{font-size:20px}.scene.journey-live .timer.urgent{border-color:#ffac84;color:#ffbf9c}.scene.journey-live .mission{left:12px;right:12px;display:flex;gap:10px;align-items:center}.scene.journey-live .mission .bar{flex:1;max-width:160px}.sea.journey-live>.sector{top:38px}.game-wrap.journey-live>.game-topline{padding-top:35px}.game-wrap.journey-live>.journey-status{z-index:15}.journey-result summary{cursor:pointer;min-height:36px;padding:6px 0}.journey-result ol{padding-left:24px}.journey-result li{padding:4px 0;border-bottom:1px solid #b7bca533}.journey-upgrades button:hover{filter:brightness(1.04)}.journey-upgrades b{font-size:15px}.journey-upgrades small{line-height:1.5}.journey-next{padding:10px 12px;border-left:3px solid #e6cb85;background:#ffffff0a}.journey-next:empty{display:none}.journey-result a{display:inline-flex;padding:8px 0}.journey-settings button{font-family:inherit;font-weight:700}.journey-rule{opacity:.9}.game-wrap .arena-footer{flex-wrap:wrap;gap:6px}.game-wrap .arena-footer>.journey-swap{font-size:12px;padding:7px 10px}.game-wrap .arena-footer>span{flex:1;min-width:90px}@media(max-width:450px){.journey-card{padding:18px}.journey-card h2{font-size:24px}.journey-upgrades button{min-height:68px;padding:12px}.game-wrap .arena-footer>span{font-size:10px}.game-wrap .arena-footer>.finish-session{font-size:11px;padding:8px}.game-wrap .arena-footer .journey-swap{min-height:42px}}@media(max-height:450px){.scene.journey-live>.hud{top:27px!important}.scene.journey-live .timer{padding:2px 6px;min-width:48px}.scene.journey-live .timer b{font-size:15px}.scene.journey-live .timer small{font-size:8px}.game-wrap.journey-live>.game-topline{padding-top:20px}.journey-next{padding:5px 8px;font-size:12px!important}.journey-upgrades button{min-height:65px}.journey-card{padding:10px}}
@@ -465,6 +477,86 @@ body.welcome-screen .overlay,body.combat-score-mode .overlay{
 }
 @media(prefers-reduced-motion:reduce){
  .journey-overlay:before,.journey-quiz-tip{animation:none!important}
+}
+
+/* Quiet Noel — in-play HUD only: thin ornaments, never over the canvas action. */
+.journey-live>.journey-status{
+ background:
+  linear-gradient(#c23b3b 0 2px,#2f8f63 2px 4px,#0000 4px),
+  linear-gradient(90deg,#143b32,#1a4a3c 42%,#3a1a1e);
+ color:#fff4cb;border-bottom:1px solid #f0d87855;
+ letter-spacing:.01em;box-shadow:0 6px 18px #020a1433;
+}
+.scene.journey-live .timer{
+ background:linear-gradient(160deg,#163a32ee,#0f2824ee)!important;
+ border:1px solid #f0d87855!important;color:#fff4cb;
+ box-shadow:inset 0 1px #fff4cb22;
+}
+.scene.journey-live .timer.urgent{
+ border-color:#c23b3b88!important;color:#ffc4b0!important;
+ background:linear-gradient(160deg,#3a1a1eee,#2a1216ee)!important;
+}
+.scene.journey-live .score-value,.sea.journey-live #score{color:#fff4cb!important;text-shadow:0 1px 8px #020a1466}
+.scene.journey-live .combo b{color:#fff4cb!important}
+.scene.journey-live .event,.sea.journey-live .event-banner{
+ border-color:#f0d87855!important;background:#163a32ee!important;color:#fff4cb!important;
+}
+.scene.journey-live .control-panel,.combat-score-mode .control-panel{
+ border-color:#f0d87833!important;
+ background:linear-gradient(135deg,#163a32,#0f2824 55%,#142433)!important;
+}
+.scene.journey-live .ability{
+ border-color:#2f8f6355!important;
+ background:linear-gradient(160deg,#123d3a,#0a2428)!important;
+}
+.scene.journey-live .ability:not(:disabled){border-color:#f0d87844!important}
+.scene.journey-live .upgrade:not(:disabled){
+ background:linear-gradient(145deg,#fff4cb,#f0d878)!important;color:#17392b!important;
+ border-color:#b48a2f!important;
+}
+.sea.journey-live .hud{
+ background:linear-gradient(110deg,#163a32,#102a28 50%,#2a1a1e)!important;
+ border-bottom:1px solid #f0d87833;
+}
+.sea.journey-live>.sector{
+ color:#fff4cb;text-shadow:0 1px 6px #020a1466;
+}
+.sea.journey-live .boss-bar{
+ border-color:#c23b3b66;background:#163a32cc;
+}
+.fleet-playing .battle-footer,.fleet-playing .combat-actions{
+ background:linear-gradient(0deg,#0f2824f0,#0f282488);
+ border-top:1px solid #f0d87822;
+}
+.fleet-playing .shield-btn{
+ border-color:#f0d87844!important;
+ background:linear-gradient(145deg,#214b3b,#163a32)!important;color:#fff4cb!important;
+}
+.game-wrap.journey-live .question-bar{
+ border-color:#f0d87844!important;
+ background:
+  linear-gradient(#c23b3b 0 2px,#2f8f63 2px 4px,#0000 4px),
+  linear-gradient(135deg,#163a32f0,#0f2824ee)!important;
+ box-shadow:0 12px 36px #020a1444,inset 0 1px #fff4cb18!important;
+}
+.game-wrap.journey-live .question-bar .eyebrow{color:#f0d878!important}
+.game-wrap.journey-live .question-bar h1{color:#fff6d8}
+.game-wrap.journey-live .game-hud{
+ border-color:#f0d87833!important;
+ background:linear-gradient(160deg,#163a32e8,#0f2824e0)!important;
+}
+.game-wrap.journey-live .score-value,.game-wrap.journey-live .combo-block{color:#fff4cb}
+.game-wrap.journey-live .arena-footer{
+ background:linear-gradient(0deg,#0f2824f2,#0f282466)!important;
+ border-top:1px solid #f0d87822;
+ color:#e8f0df;
+}
+.game-wrap.journey-live .step-dot.current{
+ background:#f0d878;box-shadow:0 0 10px #f0d87833;
+}
+.game-wrap.journey-live .step-dot.done{background:#2f8f63}
+.scene.journey-live,.sea.journey-live{
+ box-shadow:inset 0 0 0 1px #f0d87822,0 18px 48px #020a1444;
 }
 </style>
 </head>
@@ -1621,7 +1713,7 @@ window.FuLamFormations = Object.freeze({ create });
 <script>/* FuLam arcade progression v7. Original code; scores are local, not verified online records. */
 (function(root){
  'use strict';
- const VERSION='booth-v15', ROUND=30, BOOTH_ROUND=30, CHOICE=12, KNIFE_STAGES=2, KNIFE_OPTIONS=25, BOOTH_STAGES=4, BOOTH_STAGE_TIME=[20,20,25,25], LIMIT=90;
+ const VERSION='booth-v16', ROUND=30, BOOTH_ROUND=30, CHOICE=12, KNIFE_STAGES=2, KNIFE_OPTIONS=25, BOOTH_STAGES=4, BOOTH_STAGE_TIME=[20,20,25,25], LIMIT=90;
  const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function random(seed){return()=>{let t=seed+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;};}
