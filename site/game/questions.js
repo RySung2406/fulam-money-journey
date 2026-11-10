@@ -4,10 +4,10 @@ window.QUESTIONS = [
     "id": "tools",
     "chapter": "Know the money tools",
     "eyebrow": "01 / KNOW THE TOOLS",
-    "question": "Which of the following are NOT money tools?",
-    "context": "Slice everyday purchases and bills. Leave financial products and planning tools.",
+    "question": "Which options are mainly money tools?",
+    "context": "Slice financial products and planning tools. Leave everyday purchases and bills.",
     "takeaway": "Money tools help you save, invest, protect or borrow; everyday spending is not a money tool.",
-    "action": "Pick one everyday expense and ask whether it is really a money tool.",
+    "action": "Pick one money tool and one everyday expense, then compare what each is for.",
     "sources": [
       {
         "title": "IFEC · Investment products",
@@ -34,185 +34,185 @@ window.QUESTIONS = [
       {
         "id": "tools-01",
         "text": "Stocks",
-        "good": false,
+        "good": true,
         "why": "Shares represent ownership in a company; their value can fall."
       },
       {
         "id": "tools-02",
         "text": "Bonds",
-        "good": false,
+        "good": true,
         "why": "Bonds are debt investments with credit and interest-rate risks."
       },
       {
         "id": "tools-03",
         "text": "Funds",
-        "good": false,
+        "good": true,
         "why": "Funds pool investors' money into a portfolio of assets."
       },
       {
         "id": "tools-04",
         "text": "ETFs",
-        "good": false,
+        "good": true,
         "why": "Exchange-traded funds are investment products traded on an exchange."
       },
       {
         "id": "tools-05",
         "text": "REITs",
-        "good": false,
+        "good": true,
         "why": "Real estate investment trusts invest in property-related assets."
       },
       {
         "id": "tools-06",
         "text": "Time deposits",
-        "good": false,
+        "good": true,
         "why": "A time deposit holds money for an agreed period."
       },
       {
         "id": "tools-07",
         "text": "Savings account",
-        "good": false,
+        "good": true,
         "why": "A savings account holds money and generally pays interest."
       },
       {
         "id": "tools-08",
         "text": "Current account",
-        "good": false,
+        "good": true,
         "why": "A current account is a banking product for managing payments."
       },
       {
         "id": "tools-09",
         "text": "Insurance",
-        "good": false,
+        "good": true,
         "why": "Insurance transfers specified financial risks under a contract."
       },
       {
         "id": "tools-10",
         "text": "Credit card",
-        "good": false,
+        "good": true,
         "why": "A credit card provides borrowing for payments, subject to terms."
       },
       {
         "id": "tools-11",
         "text": "Personal loan",
-        "good": false,
+        "good": true,
         "why": "A personal loan is borrowed money that must be repaid."
       },
       {
         "id": "tools-12",
         "text": "Mortgage",
-        "good": false,
+        "good": true,
         "why": "A mortgage is a loan secured against property."
       },
       {
         "id": "tools-13",
         "text": "Budget planner",
-        "good": false,
+        "good": true,
         "why": "A budget planner helps organise income and spending."
       },
       {
         "id": "tools-14",
         "text": "Debt calculator",
-        "good": false,
+        "good": true,
         "why": "A debt calculator helps estimate repayments and borrowing costs."
       },
       {
         "id": "tools-15",
         "text": "Savings calculator",
-        "good": false,
+        "good": true,
         "why": "A savings calculator helps explore a savings target."
       },
       {
         "id": "tools-16",
         "text": "Tuition bill",
-        "good": true,
+        "good": false,
         "why": "Tuition is education spending, not a financial product."
       },
       {
         "id": "tools-17",
         "text": "Coffee",
-        "good": true,
+        "good": false,
         "why": "Coffee is an everyday purchase, not a money-management tool."
       },
       {
         "id": "tools-18",
         "text": "Textbooks",
-        "good": true,
+        "good": false,
         "why": "Textbooks for study are goods purchased for learning."
       },
       {
         "id": "tools-19",
         "text": "Laptop",
-        "good": true,
+        "good": false,
         "why": "A laptop for personal use is a consumer purchase."
       },
       {
         "id": "tools-20",
         "text": "Meal plan",
-        "good": true,
+        "good": false,
         "why": "A meal plan pays for food, not financial services."
       },
       {
         "id": "tools-21",
         "text": "Gym membership",
-        "good": true,
+        "good": false,
         "why": "Gym membership buys access to exercise facilities."
       },
       {
         "id": "tools-22",
         "text": "Concert ticket",
-        "good": true,
+        "good": false,
         "why": "A concert ticket buys entertainment, not a financial product."
       },
       {
         "id": "tools-23",
         "text": "Phone case",
-        "good": true,
+        "good": false,
         "why": "A phone case is a consumer accessory."
       },
       {
         "id": "tools-24",
         "text": "Food delivery",
-        "good": true,
+        "good": false,
         "why": "Food delivery is spending on food and a service."
       },
       {
         "id": "tools-25",
         "text": "Hostel rent",
-        "good": true,
+        "good": false,
         "why": "Rent pays for accommodation; it is an expense."
       },
       {
         "id": "tools-26",
         "text": "Train ticket",
-        "good": true,
+        "good": false,
         "why": "A train ticket pays for transport."
       },
       {
         "id": "tools-27",
         "text": "Streaming plan",
-        "good": true,
+        "good": false,
         "why": "A streaming subscription pays for entertainment access."
       },
       {
         "id": "tools-28",
         "text": "Tutor lesson",
-        "good": true,
+        "good": false,
         "why": "A tutoring lesson is an education service."
       },
       {
         "id": "tools-29",
         "text": "Haircut",
-        "good": true,
+        "good": false,
         "why": "A haircut is a personal service."
       },
       {
         "id": "tools-30",
         "text": "Game console",
-        "good": true,
+        "good": false,
         "why": "A console for personal use is a consumer good."
       }
     ],
-    "menuDescription": "Spot what is not a money tool among everyday spending."
+    "menuDescription": "Spot money tools among everyday spending."
   },
   {
     "id": "investment",
@@ -1031,11 +1031,11 @@ const translations = {
   "tools": [
     "認識理財工具",
     "認識理財工具",
-    "以下哪項不屬於理財工具？",
-    "切開日常消費和帳單，避開金融產品及理財工具。",
+    "以下哪些主要是理財工具？",
+    "切開金融產品及理財工具，避開日常消費和帳單。",
     "儲蓄、投資、保障和借貸各有不同的產品及規劃工具；日常消費不算理財工具。",
-    "選一項日常開支，想清楚它是否真的是理財工具。",
-    "從錢袋中找出不屬於理財工具的選項。",
+    "選一項理財工具和一項日常開支，比較兩者用途。",
+    "從錢袋中找出理財工具。",
     [
       [
         "股票",
@@ -1673,8 +1673,7 @@ window.QUESTIONS_ZH = window.QUESTIONS.map(q => {
 });
 })();
 
-// Booth Round 1 keeps 12 non-tool corrects + 13 tool decoys from the 30-option banks.
-// Round 2 (investment) already ships with 12 + 12 exact options.
+// Trim 30-option banks to booth size: tools 12 corrects + 13 decoys; others 13 + 12.
 for (const bank of [window.QUESTIONS, window.QUESTIONS_ZH]) {
- for (const q of bank) if (q.options.length === 30) q.options = q.options.filter((_, i) => i < 13 || (i >= 15 && i < 27));
+ for (const q of bank) if (q.options.length === 30) q.options = q.options.filter((_, i) => q.id === 'tools' ? (i < 12 || (i >= 15 && i < 28)) : (i < 13 || (i >= 15 && i < 27)));
 }
