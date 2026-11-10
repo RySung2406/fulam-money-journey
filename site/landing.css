@@ -476,19 +476,36 @@
 .booth-entry{margin:0 0 22px}.booth-entry .button{background:#214b3b;color:#f7edce;border:1px solid #214b3b;padding:12px 18px;border-radius:12px}
 .public-home .daily-feature.festive-booth{
   position:relative;overflow:hidden;
-  border-color:#c3cfbb;
+  border-color:#9bb89a;
+  box-shadow:inset 0 0 0 1px #ffffff88;
   background:
-    linear-gradient(#c23b3b 0 3px,#2f8f63 3px 6px,#0000 6px),
-    linear-gradient(160deg,#f4f7ef,#efe9dc 55%,#f7f1e4);
+    linear-gradient(#b32828 0 5px,#1f7a4d 5px 10px,#0000 10px),
+    radial-gradient(circle at 92% 18%,#c23b3bcc 0 7px,#0000 8px),
+    radial-gradient(circle at 86% 22%,#1f7a4dcc 0 5px,#0000 6px),
+    radial-gradient(circle at 97% 24%,#1f7a4d99 0 4px,#0000 5px),
+    linear-gradient(165deg,#e7f0e4 0%,#f3efe4 48%,#f8f1e6 100%);
 }
-.public-home .daily-feature.festive-booth:after{
-  content:"";position:absolute;top:14px;right:16px;width:10px;height:10px;border-radius:50%;
-  background:radial-gradient(circle at 35% 35%,#fff4cb,#c23b3b 58%,#8e2428);
-  box-shadow:12px 0 0 -2px #2f8f63;opacity:.9;pointer-events:none;
+.public-home .daily-feature.festive-booth:before{
+  content:"";position:absolute;inset:auto -8% -18% auto;width:120px;height:120px;
+  background:radial-gradient(circle at 50% 40%,#c23b3b 0 10%,#0000 11%),
+    conic-gradient(from 20deg at 50% 55%,#1f7a4d 0 12%,#0000 0 20%,#1f7a4d 0 32%,#0000 0 40%,#1f7a4d 0 52%,#0000 0 60%,#1f7a4d 0 72%,#0000 0 80%,#1f7a4d 0 92%,#0000 0);
+  opacity:.18;pointer-events:none;transform:rotate(18deg);
 }
-.public-home .daily-feature.festive-booth .booth-label{color:#3f5a4d}
+.public-home .daily-feature.festive-booth .booth-label{color:#3f5a4d;position:relative;z-index:1}
 .public-home .daily-feature.festive-booth .coming{
-  border-color:#2f8f6388;color:#214b3b;background:#fffef8;
+  border-color:#1f7a4d99;color:#214b3b;background:#fffef8;
 }
-.public-home .daily-feature.festive-booth h3{color:#214b3b}
-.public-home .daily-feature.festive-booth .text-link{color:#214b3b}
+.public-home .daily-feature.festive-booth h3,
+.public-home .daily-feature.festive-booth .text-link,
+.public-home .daily-feature.festive-booth > .icon{color:#214b3b;position:relative;z-index:1}
+.public-home .daily-feature.festive-booth p{position:relative;z-index:1}
+@media (max-width:720px){
+  .public-home .play-layout .daily-feature.festive-booth{grid-column:1/-1}
+}
+.pretest-card.festive-booth{
+  position:relative;overflow:hidden;
+  border-color:#9bb89a;
+  background:
+    linear-gradient(#b32828 0 5px,#1f7a4d 5px 10px,#0000 10px),
+    linear-gradient(165deg,#e7f0e4,#f8f1e6);
+}
