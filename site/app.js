@@ -58,6 +58,40 @@ function questionAction(state, saving) {
     phase: state.phase, busy, saving
   });
 }
+function updatePostSurvey(completed, rewardTarget, rewardKnown) {
+  const url = typeof config.postSurveyUrl === 'string' ? config.postSurveyUrl.trim() : '';
+  const unlocked = Boolean(url) && rewardKnown && completed >= rewardTarget;
+  const remaining = Math.max(0, rewardTarget - completed);
+  for (const open of document.querySelectorAll('[data-posttest-open]')) {
+    open.hidden = !unlocked;
+    if (unlocked) {
+      open.href = url;
+      open.setAttribute('aria-label', '填寫後測問卷（另開分頁）');
+    } else {
+      open.removeAttribute('href');
+      open.removeAttribute('aria-label');
+    }
+  }
+  for (const locked of document.querySelectorAll('[data-posttest-locked]')) {
+    locked.hidden = unlocked;
+    locked.textContent = !rewardKnown
+      ? (checkIns.state.phase === 'loading' || checkIns.state.phase === 'idle' ? '正在載入…' : '暫未能確認打卡')
+      : `未達 80% 打卡 · 還差 ${remaining} 天`;
+    locked.setAttribute('aria-label', unlocked ? '後測問卷已開放' : `後測問卷需完成至少 ${rewardTarget} 天打卡`);
+  }
+  for (const hint of document.querySelectorAll('[data-posttest-hint]')) {
+    hint.textContent = unlocked
+      ? '已達 80% 打卡門檻，可以填寫後測問卷。'
+      : !rewardKnown
+        ? '正在確認你的打卡進度…'
+        : `完成至少 ${rewardTarget} / 21 天打卡（80%）後可填寫。目前 ${completed} / 21 天。`;
+  }
+  if (typeof config.preSurveyUrl === 'string' && config.preSurveyUrl.trim()) {
+    const pre = $('survey-link');
+    if (pre) pre.href = config.preSurveyUrl.trim();
+  }
+}
+
 function renderCheckIns(state = checkIns.state) {
   const loading = state.phase === 'idle' || state.phase === 'loading';
   const unavailable = state.phase === 'error' && state.days.length === 0;
@@ -67,6 +101,7 @@ function renderCheckIns(state = checkIns.state) {
   const completed = state.records.length;
   const rewardTarget = Math.ceil(21 * 0.8);
   const rewardKnown = !loading && state.phase !== 'error';
+  updatePostSurvey(completed, rewardTarget, rewardKnown);
   $('rewards-progress-text').textContent = !rewardKnown
     ? (loading ? '正在載入紀錄…' : '暫未能載入紀錄')
     : completed >= rewardTarget ? `已達打卡門檻 · ${completed} / 21 天（仍須完成後測）` : `已完成 ${completed} / ${rewardTarget} 天 · 還差 ${rewardTarget - completed} 天`;
