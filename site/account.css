@@ -59,6 +59,7 @@
 .auth-bottom a:hover{text-decoration:underline;text-underline-offset:5px}
 .account-notice{border:1px solid #e1c69f;border-radius:10px;background:#fcf1df;padding:15px;margin-bottom:25px;font-size:14px;line-height:1.6}
 .account-notice p{margin:7px 0 0}
+.account-notice .account-secondary{margin-top:12px}
 .account-text-button{background:none;border:0;min-height:44px;padding:8px 0;font-size:14px;color:#355c43;text-align:left}
 .account-text-button:hover:enabled{text-decoration:underline;text-underline-offset:4px}
 .account-text-button:disabled{color:#727e73}
