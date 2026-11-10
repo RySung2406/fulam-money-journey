@@ -2,10 +2,12 @@
 // Lightweight canvas effects share the game's animation clock, including pause.
 (function(root){
   class MoneyEffects {
-    constructor(reducedMotion=false){this.reducedMotion=reducedMotion;this.particles=[];this.flashes=[];}
-    clear(){this.particles=[];this.flashes=[];}
+    constructor(reducedMotion=false){this.reducedMotion=reducedMotion;this.particles=[];this.flashes=[];this.shake=0;}
+    clear(){this.particles=[];this.flashes=[];this.shake=0;}
+    bump(amount=.35){if(!this.reducedMotion)this.shake=Math.min(1.25,this.shake+amount);}
+    tickShake(dt){this.shake=Math.max(0,this.shake-dt*3.4);return this.shake;}
     burst(x,y,good=true,scale=1){
-      const count=this.reducedMotion?5:(good?24:14);
+      const count=this.reducedMotion?5:(good?Math.round(24*Math.min(1.45,scale)):14);
       this.flashes.push({x,y,good,age:0,life:this.reducedMotion?.2:.48,scale});
       for(let i=0;i<count;i++){
         const angle=Math.PI*2*(i/count)+(Math.random()-.5)*.24;

@@ -1,2 +1,2 @@
-// One Slice is open to everyone; no account is required.
-window.startMoneyGame();
+// Kept for older bookmarks; app.js now starts the public game itself.
+if (typeof window.startMoneyGame === 'function') window.startMoneyGame();

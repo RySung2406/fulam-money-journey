@@ -49,28 +49,32 @@ function toast(text) {
  const el = document.createElement('div'); el.className = 'toast'; el.textContent = text; document.body.append(el);
  later(() => el.remove(), 3000);
 }
-function playSound(kind){
+function playSound(kind, extra = {}){
  if(!sound)return;
  try{
   audioCtx??=new (window.AudioContext||window.webkitAudioContext)();
   if(audioCtx.state==='suspended')audioCtx.resume();
   const t=audioCtx.currentTime;
-  if(kind==='good'){coinAudio.play(audioCtx);return;}
-  if(kind==='slice'){
-   const length=Math.ceil(audioCtx.sampleRate*.13),buffer=audioCtx.createBuffer(1,length,audioCtx.sampleRate),data=buffer.getChannelData(0);
-   for(let i=0;i<length;i++)data[i]=(Math.random()*2-1)*(1-i/length);
-   const source=audioCtx.createBufferSource(),filter=audioCtx.createBiquadFilter(),gain=audioCtx.createGain();
-   source.buffer=buffer;filter.type='bandpass';filter.Q.value=.7;filter.frequency.setValueAtTime(3200,t);filter.frequency.exponentialRampToValueAtTime(650,t+.12);
-   gain.gain.setValueAtTime(0,t);gain.gain.linearRampToValueAtTime(.13,t+.015);gain.gain.exponentialRampToValueAtTime(.001,t+.13);
-   source.connect(filter);filter.connect(gain);gain.connect(audioCtx.destination);source.start(t);source.stop(t+.14);
-   source.onended=()=>{source.disconnect();filter.disconnect();gain.disconnect();};return;
-  }
-  const notes=kind==='bad'?[180,115]:[440,660,880];
-  notes.forEach((n,i)=>{
-   const o=audioCtx.createOscillator(),g=audioCtx.createGain(),at=t+i*.065;
-   o.type=kind==='bad'?'triangle':'sine';o.frequency.setValueAtTime(n,at);
-   g.gain.setValueAtTime(0,at);g.gain.linearRampToValueAtTime(.055,at+.004);g.gain.exponentialRampToValueAtTime(.001,at+.23);
-   o.connect(g);g.connect(audioCtx.destination);o.start(at);o.stop(at+.25);o.onended=()=>{o.disconnect();g.disconnect();};
+  void coinAudio.ensure(audioCtx).then(()=>{
+   if(!sound||!audioCtx)return;
+   if(coinAudio.play(audioCtx, kind, extra))return;
+   if(kind==='good'||kind==='combo'){coinAudio.playSynthCoin(audioCtx);return;}
+   if(kind==='slice'){
+    const length=Math.ceil(audioCtx.sampleRate*.13),buffer=audioCtx.createBuffer(1,length,audioCtx.sampleRate),data=buffer.getChannelData(0);
+    for(let i=0;i<length;i++)data[i]=(Math.random()*2-1)*(1-i/length);
+    const source=audioCtx.createBufferSource(),filter=audioCtx.createBiquadFilter(),gain=audioCtx.createGain();
+    source.buffer=buffer;filter.type='bandpass';filter.Q.value=.7;filter.frequency.setValueAtTime(3200,t);filter.frequency.exponentialRampToValueAtTime(650,t+.12);
+    gain.gain.setValueAtTime(0,t);gain.gain.linearRampToValueAtTime(.13,t+.015);gain.gain.exponentialRampToValueAtTime(.001,t+.13);
+    source.connect(filter);filter.connect(gain);gain.connect(audioCtx.destination);source.start(t);source.stop(t+.14);
+    source.onended=()=>{source.disconnect();filter.disconnect();gain.disconnect();};return;
+   }
+   const notes=kind==='bad'?[180,115]:[440,660,880];
+   notes.forEach((n,i)=>{
+    const o=audioCtx.createOscillator(),g=audioCtx.createGain(),at=audioCtx.currentTime+i*.065;
+    o.type=kind==='bad'?'triangle':'sine';o.frequency.setValueAtTime(n,at);
+    g.gain.setValueAtTime(0,at);g.gain.linearRampToValueAtTime(.055,at+.004);g.gain.exponentialRampToValueAtTime(.001,at+.23);
+    o.connect(g);g.connect(audioCtx.destination);o.start(at);o.stop(at+.25);o.onended=()=>{o.disconnect();g.disconnect();};
+   });
   });
  }catch{}
 }
@@ -97,7 +101,7 @@ function releasePointer() {
  pointer = null; trail = []; hideKnife();
 }
 function stopAnimation() {
- cancelAnimationFrame(raf); raf = 0;
+ cancelAnimationFrame(raf); raf = 0; if (arena) arena.style.transform = '';
  arenaEvents?.abort(); arenaEvents = null;
  cleanupTimers.forEach(clearTimeout); cleanupTimers.clear();
  document.querySelector('.toast')?.remove();
@@ -153,9 +157,34 @@ function refreshTopicCards() {
  $('.topic-grid').innerHTML = topicCards();
  app.querySelectorAll('[data-topic]').forEach(button => { button.onclick = () => startGame(button.dataset.topic); });
 }
+function paintWelcome() {
+ const title = journey.text('切準一刀。<br><em>再破紀錄。</em>','Make it count.<br><em>Beat your best.</em>');
+ const copy = journey.text('由第一關開始。每關 25 個選項，出過不再重複，然後選擇刀具強化。','Start at stage 1. Each stage shows 25 choices once, then you upgrade your blade.');
+ const start = journey.text('從第一關開始','Start at stage 1');
+ const how = journey.text('玩法指引','How to play');
+ const existing = $('.welcome-stage');
+ if (existing && $('#start-journey') && $('#how-to') && $('#journey-settings')) {
+  $('#welcome-title').innerHTML = title;
+  $('.welcome-copy').textContent = copy;
+  $('#start-journey').innerHTML = `${start} <span aria-hidden="true">↗</span>`;
+  $('#how-to').textContent = how;
+ } else {
+  render(`<section class="welcome-stage page-in" aria-labelledby="welcome-title"><div class="welcome-card"><div class="welcome-mark" aria-hidden="true">${icon('slice')}</div><p class="eyebrow">FULAM · ONE SLICE</p><h1 id="welcome-title">${title}</h1><p class="welcome-copy">${copy}</p><div id="journey-settings"></div><button class="primary" id="start-journey" type="button" data-autofocus>${start} <span aria-hidden="true">↗</span></button><button class="text-button" id="how-to" type="button">${how}</button></div></section>`);
+ }
+ journey.settings($('#journey-settings'), d => { mode = d === 'intermediate' ? 'medium' : d === 'challenge' ? 'hard' : 'easy'; playKind = 'practice'; });
+ $('#start-journey').onclick = prepareJourneyStart;
+ $('#how-to').onclick = rules;
+ document.addEventListener('fulam-language', () => { if (phase === 'home') home(); }, { once: true });
+ $('#start-journey')?.focus({ preventScroll: true });
+}
 function home() {
  journey?.close();
  phase = 'home'; paused = false; closeModal();
+ // Booth / journey path matches Catch & Wings: one welcome card, then guide → play.
+ if (journey) {
+  paintWelcome();
+  return;
+ }
  render(`<section class="hero page-in"><div class="hero-copy"><div class="eyebrow"><span class="live-dot"></span> THE MONEY CHOICE CHALLENGE</div><h1>One topic.<br>Keep <span class="gold">slicing.</span></h1><p class="hero-desc">A continuous stream of money choices.<br>Read the question. Find your rhythm.<br><strong>How long can you keep a combo?</strong></p><div class="mode-picker" aria-label="Game difficulty">${Object.entries(E.DIFFICULTIES).map(([key, d]) => `<button data-mode="${key}" aria-pressed="${mode === key}">${d.label}<span>${d.description}</span></button>`).join('')}</div><div class="play-kind-picker" aria-label="Play mode"><button data-play-kind="practice" aria-pressed="${playKind === 'practice'}"><strong>Endless practice</strong><span>No time limit · finish when you want</span></button><button data-play-kind="sprint" aria-pressed="${playKind === 'sprint'}"><strong>20-correct sprint</strong><span>Beat your time · +3s per wrong slice</span></button></div><div class="hero-actions"><a class="primary" href="#topics">Choose a topic ${icon('arrow')}</a><button class="text-button" id="how-to">How to play ↗</button></div><div class="hero-meta"><span>No rounds or waiting</span><span>Phone or desktop</span><span>Open to everyone</span></div></div><div class="hero-art" aria-hidden="true"><div class="art-glow"></div><div class="orbit"></div><div class="orbit two"></div><div class="small-bag one">${bag()}</div><div class="small-bag two">${bag()}</div><div class="hero-bag">${bag()}</div><div class="art-label">Stocks</div><div class="art-slice"></div><div class="floating-label top">Pick your topic ↗</div><div class="floating-label bottom">✦ GOOD CHOICE +100</div><span class="art-number">YOUR NEXT MOVE</span><span class="spark s1">✦</span><span class="spark s2">✧</span><span class="spark s3">✦</span></div></section><section class="topic-menu" id="topics"><div class="topic-menu-heading"><div class="eyebrow">PICK YOUR TOPIC</div><h2>One topic. Non-stop choices.</h2><p>Each entrance has its own question and answer pool. Read once, then keep slicing.</p></div><div class="topic-grid">${topicCards()}</div></section><section class="bottom-strip" aria-label="Game features"><div class="strip-item"><span class="strip-number">05</span><div><strong>Separate topic entrances</strong><small>Tools · Investing · Insurance · Loans · Scams</small></div></div><div class="strip-item"><span class="strip-number">${totalChoices()}</span><div><strong>Different money choices</strong><small>Shuffled answers, timing and flight paths.</small></div></div><div class="strip-item"><span class="strip-number">∞</span><div><strong>Keep your rhythm</strong><small>Practice freely or chase a sprint best.</small></div></div></section>`);
  app.querySelectorAll('[data-mode]').forEach(button => {
   button.onclick = () => {
@@ -173,16 +202,11 @@ function home() {
  });
  app.querySelectorAll('[data-topic]').forEach(button => { button.onclick = () => startGame(button.dataset.topic); });
  $('#how-to').onclick = rules;
- if(journey){
-  $('.mode-picker')?.remove();$('.play-kind-picker')?.remove();const settings=document.createElement('div');settings.id='journey-settings';$('.hero-copy').insertBefore(settings,$('.hero-actions'));
-  const setup=()=>journey.settings(settings,d=>{mode=d==='intermediate'?'medium':d==='challenge'?'hard':'easy';playKind='practice';});setup();
-  $('.hero-copy h1').innerHTML=journey.text('切準一刀。<br><span class="gold">再破紀錄。</span>','Make it count.<br><span class="gold">Beat your best.</span>');$('.topic-menu-heading h2').textContent=journey.text('揀一個起始主題。','Choose your first topic.');$('.topic-menu-heading p').textContent=journey.text('回合之間會切換主題；先看清楚題目，再開始切袋。','Topics change between rounds. Read each question before slicing.');$('.bottom-strip').hidden=true;
-  $('.hero-desc').textContent=journey.text('切正確選項、保持連擊。每回合換題與強化刀具，挑戰你的最高分。','Slice correct choices and keep your combo. New topics and blade upgrades each round. Chase your high score.');
-  $('.hero-meta').textContent=journey.text('Booth · 三關 · 兩分鐘內','Booth · 3 stages · within 2 minutes');
-  $('.topic-menu').remove();$('.hero-actions').innerHTML='<button class="primary" id="start-journey">'+journey.text('從第一關開始','Start at stage 1')+'</button><button class="text-button" id="how-to">'+journey.text('玩法指引','How to play')+'</button>';$('#start-journey').onclick=()=>startGame(QUESTIONS[0].id);$('#how-to').onclick=rules;$('.floating-label.top').textContent=journey.text('逐關挑戰 ↗','Stage by stage ↗');$('.hero-desc').textContent=journey.text('由第一關開始。每關 25 個選項，出過不再重複，然後選擇刀具強化。','Start at stage 1. Each stage shows 25 choices once, then you upgrade your blade.');
-  document.addEventListener('fulam-language',()=>{if(phase==='home'&&settings.isConnected)home();},{once:true});
- }
-
+}
+function prepareJourneyStart() {
+ if (!journey || phase !== 'home') return;
+ const host = $('.welcome-stage') || app;
+ journey.guide(host, () => startGame(QUESTIONS[0].id), home);
 }
 $('#brand-home').onclick = () => {
  if (['playing', 'ready'].includes(phase)) {
@@ -400,8 +424,13 @@ function cutTarget(target) {
  target.el.classList.add(target.option.good ? 'cut-good' : 'cut-bad');
  const stats = optionStats.get(target.option.id); stats[target.option.good ? 'correct' : 'wrong']++;
  playSound(target.option.good ? 'good' : 'bad');
+ if (target.option.good && result.combo > 1) {
+  playSound('combo', { rate: 1 + Math.min(.4, (result.combo - 1) * .045), gain: .28 + Math.min(.16, result.combo * .015) });
+ }
  const centerX = target.x + target.el.offsetWidth / 2, centerY = target.y + target.el.offsetHeight * .48;
- splitBag(target); effects.burst(centerX, centerY, target.option.good, arenaWidth < 650 ? .8 : 1);
+ const burstScale = (arenaWidth < 650 ? .8 : 1) * (target.option.good && result.combo > 1 ? 1 + Math.min(.45, result.combo * .04) : 1);
+ splitBag(target); effects.burst(centerX, centerY, target.option.good, burstScale);
+ effects.bump(target.option.good ? (result.combo > 3 ? .55 : result.combo > 1 ? .4 : .28) : .5);
  feedback(centerX, centerY, result.delta > 0 ? '+' + result.delta : String(result.delta), target.option.good ? (result.combo > 1 ? result.combo + ' COMBO' : 'Good choice!') : (playKind === 'sprint' ? '+3 seconds' : 'Wrong choice'), target.option.good);
  updateHUD(); announce(target.option.text + ': ' + (target.option.good ? 'Correct slice' : 'Wrong slice'));
  if(journey&&hearts<=0){journey.run.finish('hearts');finishSession(false);return;}
@@ -466,6 +495,13 @@ function bindPointer() {
 function drawTrail(now, dt) {
  if (!ctx) return;
  ctx.clearRect(0, 0, arenaWidth, arenaHeight); effects.draw(ctx, dt);
+ const shake = effects.tickShake(dt);
+ if (arena) {
+  if (shake > .02) {
+   const mag = shake * 11;
+   arena.style.transform = `translate(${((Math.random() - .5) * mag).toFixed(2)}px, ${((Math.random() - .5) * mag).toFixed(2)}px)`;
+  } else if (arena.style.transform) arena.style.transform = '';
+ }
  trail = trail.filter(point => now - point.t < 180); if (trail.length < 2) return;
  ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
  for (let index = 1; index < trail.length; index++) {
@@ -564,3 +600,5 @@ Object.defineProperty(window, 'FuLamSlice', {value: Object.freeze({getState() {
 }}), writable: false, configurable: false});
 home();
 };
+// Public entry: open to everyone; no account gate.
+window.startMoneyGame();

@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-10T07:16:00.000Z",
+  "title": "Design System: FuLam Money Journey",
+  "extensions": {
+    "colorMeta": {
+      "forest-ink": {
+        "role": "primary",
+        "displayName": "Forest Ink",
+        "canonical": "#214b3b",
+        "tonalRamp": ["#0f241c", "#17392b", "#214b3b", "#2f6350", "#4a7d68", "#7aa08f", "#b7cdc2", "#e7efe9"]
+      },
+      "forest-ink-deep": {
+        "role": "primary",
+        "displayName": "Forest Ink Deep",
+        "canonical": "#17392b",
+        "tonalRamp": ["#0c1c16", "#123026", "#17392b", "#214b3b", "#3a6654", "#6b9180", "#a9c4b8", "#e2ece7"]
+      },
+      "amber-accent": {
+        "role": "secondary",
+        "displayName": "Amber Accent",
+        "canonical": "#ed9858",
+        "tonalRamp": ["#5a3012", "#8a4a1f", "#b86a35", "#ed9858", "#f2b07a", "#f6c9a0", "#fbe2c8", "#fff4ea"]
+      },
+      "amber-highlight": {
+        "role": "secondary",
+        "displayName": "Amber Highlight",
+        "canonical": "#edb579",
+        "tonalRamp": ["#5c3a14", "#8a5824", "#c48a45", "#edb579", "#f2c898", "#f7dbb8", "#fbecd8", "#fff8ef"]
+      },
+      "warm-paper": {
+        "role": "neutral",
+        "displayName": "Warm Paper",
+        "canonical": "#f6f5ef",
+        "tonalRamp": ["#2c2b27", "#5a574f", "#8a867b", "#bdb9ad", "#d9d5c9", "#ebe8df", "#f6f5ef", "#fffcf7"]
+      },
+      "cream-white": {
+        "role": "neutral",
+        "displayName": "Cream White",
+        "canonical": "#fffef9",
+        "tonalRamp": ["#2f2e2a", "#5c5a53", "#8d8a80", "#c0bcb1", "#ddd9cf", "#f0ede5", "#fffef9", "#ffffff"]
+      },
+      "soft-muted": {
+        "role": "neutral",
+        "displayName": "Soft Muted",
+        "canonical": "#59675e",
+        "tonalRamp": ["#1c221f", "#334039", "#59675e", "#738278", "#95a29a", "#b9c3bd", "#dce2de", "#f1f4f2"]
+      },
+      "quiet-line": {
+        "role": "neutral",
+        "displayName": "Quiet Line",
+        "canonical": "#d9ded5",
+        "tonalRamp": ["#3a3f38", "#6a7166", "#9aa396", "#b8c0b3", "#d9ded5", "#e7ebe3", "#f2f4f0", "#fafbf9"]
+      },
+      "focus-ring": {
+        "role": "neutral",
+        "displayName": "Focus Ring",
+        "canonical": "#a95520",
+        "tonalRamp": ["#3d1d09", "#6b3212", "#a95520", "#c9743c", "#e0a06d", "#efc49d", "#f8e2c9", "#fff4e9"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Homepage hero titles." },
+      "headline": { "displayName": "Headline", "purpose": "Section and dashboard titles." },
+      "title": { "displayName": "Title", "purpose": "Onboarding and feature titles." },
+      "body": { "displayName": "Body", "purpose": "Default bilingual reading text." },
+      "label": { "displayName": "Label", "purpose": "Eyebrows and meta labels." }
+    },
+    "shadows": [
+      {
+        "name": "button-hover",
+        "value": "0 7px 20px #214b3b1a",
+        "purpose": "Soft lift under primary button hover."
+      },
+      {
+        "name": "card-whisper",
+        "value": "0 12px 40px #214b3b05",
+        "purpose": "Barely-there lift for onboarding cards."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-standard",
+        "value": "cubic-bezier(.22,1,.36,1)",
+        "purpose": "Default easing for hover and entrance."
+      }
+    ],
+    "breakpoints": [
+      { "name": "phone", "value": "760px" },
+      { "name": "tablet", "value": "900px" },
+      { "name": "desktop-nav", "value": "1000px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Solid forest CTA for joins, starts, and primary journey actions.",
+      "html": "<button class=\"ds-btn-primary\" type=\"button\">加入 WhatsApp 社群</button>",
+      "css": ".ds-btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:54px;padding:15px 24px;border:0;border-radius:8px;background:#214b3b;color:#fffef9;font:650 17px/1.4 Inter,\"Noto Sans TC\",sans-serif;cursor:pointer;transition:transform .2s cubic-bezier(.22,1,.36,1),background-color .2s,box-shadow .2s}.ds-btn-primary:hover{background:#17392b;transform:translateY(-2px);box-shadow:0 7px 20px #214b3b1a}.ds-btn-primary:focus-visible{outline:3px solid #a95520;outline-offset:5px}.ds-btn-primary:active{transform:translateY(0)}"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary bordered action on paper surfaces.",
+      "html": "<button class=\"ds-btn-outline\" type=\"button\">登入我的旅程</button>",
+      "css": ".ds-btn-outline{display:inline-flex;align-items:center;justify-content:center;min-height:54px;padding:15px 24px;border:1px solid #214b3b;border-radius:8px;background:transparent;color:#214b3b;font:650 17px/1.4 Inter,\"Noto Sans TC\",sans-serif;cursor:pointer;transition:background-color .2s,transform .2s}.ds-btn-outline:hover{background:#214b3b08;transform:translateY(-2px)}.ds-btn-outline:focus-visible{outline:3px solid #a95520;outline-offset:5px}"
+    },
+    {
+      "name": "Amber Button",
+      "kind": "button",
+      "refersTo": "button-amber",
+      "description": "Rare warm CTA for emphasis moments.",
+      "html": "<button class=\"ds-btn-amber\" type=\"button\">開始打卡</button>",
+      "css": ".ds-btn-amber{display:inline-flex;align-items:center;justify-content:center;min-height:54px;padding:15px 24px;border:0;border-radius:8px;background:#ed9858;color:#183b2e;font:650 17px/1.4 Inter,\"Noto Sans TC\",sans-serif;cursor:pointer}.ds-btn-amber:hover{filter:brightness(1.05)}.ds-btn-amber:focus-visible{outline:3px solid #a95520;outline-offset:5px}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "HKU email and form fields on cream sheets.",
+      "html": "<label class=\"ds-field\"><span>HKU 電郵地址</span><input class=\"ds-input\" type=\"email\" placeholder=\"yourname@connect.hku.hk\"></label>",
+      "css": ".ds-field{display:grid;gap:8px;font:650 15px/1.5 Inter,\"Noto Sans TC\",sans-serif;color:#214b3b}.ds-input{width:100%;height:58px;padding:0 17px;border:1px solid #cdd6ca;border-radius:10px;background:#fffefa;color:#214b3b;font:400 16px/1.4 Inter,\"Noto Sans TC\",sans-serif}.ds-input:focus{outline:0;border-color:#52755b;box-shadow:0 0 0 3px #e5eddf}"
+    },
+    {
+      "name": "Surface Card",
+      "kind": "card",
+      "refersTo": "card-surface",
+      "description": "Cream programme and journey cards on warm paper.",
+      "html": "<article class=\"ds-card\"><p class=\"ds-eyebrow\">STEP 01 · SURVEY</p><h3>先填寫前測問卷。</h3><p>填妥前測與後測問卷，就有機會獲得獎品。</p></article>",
+      "css": ".ds-card{padding:28px;border:1px solid #d9ded5;border-radius:16px;background:#fffef9;color:#214b3b;font:400 17px/1.7 Inter,\"Noto Sans TC\",sans-serif}.ds-eyebrow{margin:0 0 10px;font:700 14px/1.4 Inter,\"Noto Sans TC\",sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#59675e}.ds-card h3{margin:0 0 12px;font:650 29px/1.4 Inter,\"Noto Sans TC\",sans-serif;letter-spacing:-.025em}.ds-card p{margin:0;color:#59675e}"
+    },
+    {
+      "name": "Check-in Panel",
+      "kind": "custom",
+      "refersTo": "check-in-panel",
+      "description": "Dark forest stage for the 21-day calendar and questions.",
+      "html": "<section class=\"ds-checkin\"><p class=\"ds-checkin-eyebrow\">21 DAY CHALLENGE</p><h2>每日一小步。</h2><p>點選已開放的日子打卡；可隨時補做。</p></section>",
+      "css": ".ds-checkin{padding:34px 38px;border-radius:22px;background:#214b3b;color:#fffef9;font:400 18px/1.7 Inter,\"Noto Sans TC\",sans-serif}.ds-checkin-eyebrow{margin:0;color:#d1dfcb;font:700 14px/1.4 Inter,\"Noto Sans TC\",sans-serif;letter-spacing:.1em}.ds-checkin h2{margin:8px 0 14px;font:600 clamp(28px,3.4vw,38px)/1.4 Inter,\"Noto Sans TC\",sans-serif}.ds-checkin p{margin:0;color:#d5e0cf}"
+    },
+    {
+      "name": "Answer Reveal Box",
+      "kind": "custom",
+      "refersTo": "check-in-reveal",
+      "description": "Distinct amber-bordered box for next-day answers.",
+      "html": "<section class=\"ds-reveal\" aria-label=\"翌日揭曉答案\"><p class=\"ds-reveal-badge\">翌日揭曉 · 答案</p><p class=\"ds-reveal-answer\">正確選項：B 追蹤恒生指數的交易所買賣基金。</p><p>解釋文字放在框內，與題目分開。</p></section>",
+      "css": ".ds-reveal{margin:22px 0 8px;padding:18px;border:2px solid #edb579;border-radius:16px;background:linear-gradient(180deg,rgba(237,181,121,.22),rgba(255,254,249,.08));color:#fffef9;font:400 17px/1.7 Inter,\"Noto Sans TC\",sans-serif}.ds-reveal-badge{display:inline-flex;align-items:center;min-height:30px;margin:0 0 12px;padding:4px 10px;border-radius:999px;background:#edb579;color:#214b3b;font:700 13px/1 Inter,\"Noto Sans TC\",sans-serif}.ds-reveal-answer{margin:0 0 12px;padding:12px 14px;border-radius:12px;background:#214b3b;border:1px solid rgba(237,181,121,.7);color:#f7d7a8;font:700 18px/1.45 Inter,\"Noto Sans TC\",sans-serif}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Green Money Carriage",
+    "overview": "FuLam’s visual world is a warm campus programme desk rendered as a quiet journey vehicle: ivory paper fields, deep forest ink, and a careful amber spark for momentum. It should feel trustworthy and readable on a phone between classes—never flashy, never corporate-purple AI default.\n\nPersonality is warm, clear, and credible. Public pages use soft paper surfaces and large editorial headlines; My Journey and check-in lean on solid forest panels so tasks feel grounded. Motion is brief and respectful of prefers-reduced-motion.",
+    "keyCharacteristics": [
+      "Warm ivory paper + forest green ink as the identity pair",
+      "Amber used sparingly for energy, eyebrows, and prize accents",
+      "Large, bilingual-friendly sans type with generous body leading",
+      "Soft radii (8–22px), mostly tonal depth instead of heavy shadows",
+      "Programme honesty over decorative spectacle"
+    ],
+    "rules": [
+      {
+        "name": "The One Spark Rule",
+        "body": "Amber appears as punctuation (eyebrow bars, rare CTAs, reveal accents)—not as a second full theme competing with Forest Ink.",
+        "section": "colors"
+      },
+      {
+        "name": "The Readable Campus Rule",
+        "body": "Prefer open leading and clear contrast over dense dashboard type; bilingual lines must stay legible at phone widths.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-By-Default Rule",
+        "body": "Surfaces rest flat; lift only on hover/focus or when a dark forest panel needs a soft outer whisper.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep Forest Ink + Warm Paper as the identity pair on every major surface.",
+      "Do reserve Amber for eyebrows, rare CTAs, open-day states, and answer reveals.",
+      "Do preserve bilingual clarity and large tap targets (≥44px) on phone.",
+      "Do honor prefers-reduced-motion by collapsing nonessential motion.",
+      "Do keep programme/prize facts visually quieter than CTAs—accurate, not flashy."
+    ],
+    "donts": [
+      "Don't introduce purple-indigo AI default gradients or neon glow stacks.",
+      "Don't replace the warm paper field with flat pure white or a dark-mode theme without an explicit redesign.",
+      "Don't nest heavy card-in-card chrome on the homepage hero.",
+      "Don't show prize/answer spoilers outside their intended panels.",
+      "Don't invent Inter-only English styling that breaks Traditional Chinese readability."
+    ]
+  }
+}
