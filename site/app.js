@@ -85,8 +85,7 @@ function questionAction(state, saving) {
 }
 function updatePostSurvey(completed, rewardTarget, rewardKnown) {
   const url = typeof config.postSurveyUrl === 'string' ? config.postSurveyUrl.trim() : '';
-  const unlocked = Boolean(url) && rewardKnown && completed >= rewardTarget;
-  const remaining = Math.max(0, rewardTarget - completed);
+  const unlocked = Boolean(url);
   for (const open of document.querySelectorAll('[data-posttest-open]')) {
     open.hidden = !unlocked;
     if (unlocked) {
@@ -99,17 +98,13 @@ function updatePostSurvey(completed, rewardTarget, rewardKnown) {
   }
   for (const locked of document.querySelectorAll('[data-posttest-locked]')) {
     locked.hidden = unlocked;
-    locked.textContent = !rewardKnown
-      ? (checkIns.state.phase === 'loading' || checkIns.state.phase === 'idle' ? '正在載入…' : '暫未能確認打卡')
-      : `未達 80% 打卡 · 還差 ${remaining} 天`;
-    locked.setAttribute('aria-label', unlocked ? '後測問卷已開放' : `後測問卷需完成至少 ${rewardTarget} 天打卡`);
+    locked.textContent = unlocked ? '後測問卷已開放' : '後測問卷連結準備中';
+    locked.setAttribute('aria-label', unlocked ? '後測問卷已開放' : '後測問卷連結準備中');
   }
   for (const hint of document.querySelectorAll('[data-posttest-hint]')) {
     hint.textContent = unlocked
-      ? '已達 80% 打卡門檻，可以填寫後測問卷。'
-      : !rewardKnown
-        ? '正在確認你的打卡進度…'
-        : `完成至少 ${rewardTarget} / 21 天打卡（80%）後可填寫。目前 ${completed} / 21 天。`;
+      ? '後測問卷現已開放，可直接填寫。'
+      : '後測問卷連結準備中。';
   }
   if (typeof config.preSurveyUrl === 'string' && config.preSurveyUrl.trim()) {
     const pre = $('survey-link');
