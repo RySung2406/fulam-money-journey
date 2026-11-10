@@ -39,9 +39,10 @@ export function renderQuestion(container, { day, en, choice, locked, revealed, r
   container.replaceChildren();
   if (!day) { container.hidden = true; return; }
   container.hidden = false;
-  const back = node('button', 'check-in-back', en ? 'Back to calendar' : '返回日曆');
+  const back = node('button', 'check-in-back', en ? '← Back to calendar' : '← 返回日曆');
   back.type = 'button';
   back.dataset.checkInBack = 'true';
+  back.setAttribute('aria-label', en ? 'Back to calendar' : '返回日曆');
   container.append(
     back,
     node('p', 'check-in-label', en ? 'Today’s question' : '當日題目'),

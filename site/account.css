@@ -568,7 +568,9 @@ to{opacity:1;transform:translateY(0)}
 .check-in-story p{margin:0 0 12px;color:#d5e0cf;font-size:17px;line-height:1.7}
 .check-in-kicker,.check-in-label{color:#f4c99a;font-size:13px;font-weight:700;letter-spacing:.06em}
 .check-in-question{color:#fffef9;font-weight:650}
-.check-in-back{margin:0 0 12px;padding:0;border:0;background:transparent;color:#f4c99a;font:inherit;font-size:15px;cursor:pointer}
+.check-in-back{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;margin:0 0 16px;padding:10px 16px;border:1.5px solid #edb579;border-radius:10px;background:rgba(237,181,121,.12);color:#f7d7a8;font:inherit;font-size:15px;font-weight:650;line-height:1.3;cursor:pointer;transition:background-color .2s,border-color .2s,transform .2s}
+.check-in-back:hover{background:rgba(237,181,121,.22);border-color:#f4c99a}
+.check-in-back:active{transform:translateY(1px)}
 .check-in-options{margin:0 0 16px;display:grid;gap:8px}
 .check-in-option{display:flex;gap:10px;align-items:flex-start;width:100%;padding:12px 14px;border:1px solid rgba(255,254,249,.28);border-radius:12px;background:transparent;color:#fffef9;font:inherit;line-height:1.55;text-align:left;cursor:pointer}
 .check-in-option[aria-checked=true],.check-in-option.is-answer{border-color:#edb579;background:rgba(237,181,121,.18)}
