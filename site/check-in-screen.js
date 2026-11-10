@@ -82,17 +82,19 @@ export function renderQuestion(container, { day, en, choice, locked, revealed, r
   }
   const matched = day.opts.find(option => option.k === reveal.letter);
   const answerText = en ? (matched ? matched.en : '') : reveal.nick;
-  const source = node('p', '');
+  const source = node('p', 'check-in-reveal-source');
   source.append(document.createTextNode(en ? 'Source: ' : '歷史依據：'), link(reveal.src_url, en ? reveal.src_en : reveal.src_zh));
-  const revealedCopy = [
-    node('p', 'check-in-label', en ? 'What happened' : '翌日揭曉'),
+  const box = node('section', 'check-in-reveal');
+  box.setAttribute('aria-label', en ? 'Answer reveal' : '翌日揭曉答案');
+  box.append(
+    node('p', 'check-in-reveal-badge', en ? 'Answer revealed' : '翌日揭曉 · 答案'),
+    ...(savedChoice ? [node('p', 'check-in-reveal-yours', en ? `Your choice: ${savedChoice}` : `你的選擇：${savedChoice}`)] : []),
     node('p', 'check-in-answer', en ? `Correct choice: ${reveal.letter}. ${answerText}` : `正確選項：${reveal.letter} ${answerText}`),
-    node('p', '', en ? reveal.exp_en : reveal.exp_zh),
+    node('p', 'check-in-reveal-exp', en ? reveal.exp_en : reveal.exp_zh),
     source,
     node('p', 'check-in-take', en ? reveal.take_en : reveal.take_zh)
-  ];
-  if (savedChoice) revealedCopy.splice(1, 0, node('p', '', en ? `Your choice: ${savedChoice}` : `你的選擇：${savedChoice}`));
-  container.append(...revealedCopy);
+  );
+  container.append(box);
 }
 
 export function renderPublishedAnswer(container, { day, en, savedChoice, reveal }) {

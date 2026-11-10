@@ -577,7 +577,12 @@ to{opacity:1;transform:translateY(0)}
 .check-in-story a{color:#f4c99a}
 .check-in-tip,.check-in-take,.check-in-waiting{padding:12px 14px;border-radius:10px;background:rgba(255,254,249,.08)}
 .check-in-published{display:grid;gap:14px;margin:0 0 22px}
-.check-in-reveal{padding:16px 16px 4px;border:1px solid rgba(237,181,121,.5);border-radius:14px;background:rgba(255,254,249,.06)}
+.check-in-reveal{margin:22px 0 8px;padding:18px 18px 14px;border:2px solid #edb579;border-radius:16px;background:linear-gradient(180deg,rgba(237,181,121,.22),rgba(255,254,249,.08));box-shadow:inset 0 0 0 1px rgba(255,254,249,.08)}
+.check-in-reveal-badge{display:inline-flex;align-items:center;min-height:30px;margin:0 0 12px;padding:4px 10px;border-radius:999px;background:#edb579;color:#214b3b;font-size:13px;font-weight:700;letter-spacing:.04em}
+.check-in-reveal-yours,.check-in-reveal-exp,.check-in-reveal-source{margin:0 0 10px;color:#fffef9}
+.check-in-answer{margin:0 0 12px;padding:12px 14px;border-radius:12px;background:#214b3b;border:1px solid rgba(237,181,121,.7);color:#f7d7a8;font-size:18px;font-weight:700;line-height:1.45}
+.check-in-reveal .check-in-take{margin:12px 0 0;background:rgba(33,75,59,.45);border:1px solid rgba(237,181,121,.35)}
+.check-in-reveal a{color:#f4c99a}
 .check-in-panel[data-question] > #check-in-description,
 .check-in-panel[data-question] > #check-in-published,
 .check-in-panel[data-question] > .check-in-calendar{display:none}
