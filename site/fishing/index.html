@@ -191,6 +191,33 @@ body.welcome-screen .card .journey-rule{font-size:12px!important}
 .combat-score-mode .control-panel .effect-status{display:none}
 .combat-score-mode .footer .desktop-hint,.combat-score-mode .heading .tag{display:none}
 
+/* Winter Booth arcade cards — entry / quiz host / end */
+@keyframes fishing-snow{0%{transform:translateY(-6%)}100%{transform:translateY(110%)}}
+body.welcome-screen .overlay,body.combat-score-mode .overlay{
+ background:
+  radial-gradient(ellipse at 18% 10%,#2f6a4e44,transparent 42%),
+  radial-gradient(ellipse at 88% 8%,#8e242844,transparent 38%),
+  linear-gradient(160deg,#061812cc,#0a1f1caa 48%,#07141acc);
+}
+.card.festive-card,.showing-result .card{
+ position:relative;isolation:isolate;overflow:hidden;
+ border:1px solid #f0d87866!important;
+ background:
+  linear-gradient(#c23b3b 0 4px,#2f8f63 4px 7px,#0000 7px),
+  linear-gradient(165deg,#163a32f7,#0f2a28f5 55%,#142433f2)!important;
+ box-shadow:0 24px 70px #020a1488,inset 0 1px #fff4cb22!important;
+}
+.card.festive-card:before,.card.festive-card:after,.showing-result .card:before,.showing-result .card:after{
+ content:"";position:absolute;width:12px;height:12px;border-radius:50%;
+ background:radial-gradient(circle at 35% 35%,#fff4cb,#c23b3b 58%,#8e2428);
+ box-shadow:14px 0 0 -2px #2f8f63,22px 3px 0 -3px #c23b3b;pointer-events:none;opacity:.9;z-index:2;
+}
+.card.festive-card:before,.showing-result .card:before{top:12px;left:12px}
+.card.festive-card:after,.showing-result .card:after{top:12px;right:12px;transform:scaleX(-1)}
+.card.festive-card .label,.showing-result .card .label{color:#f0d878!important}
+.card.festive-card h2 em,.showing-result .result-score{color:#fff4cb!important}
+@media(prefers-reduced-motion:reduce){.card.festive-card,.showing-result .card{animation:none}}
+
 .journey-settings{margin:12px 0;color:inherit}.journey-options{display:flex;gap:8px;margin:8px 0}.journey-options button{flex:1;min-width:0;min-height:44px;border:1px solid #78988b;border-radius:12px;padding:9px;background:#f4f2e8;color:#214b3b;font:700 14px inherit;cursor:pointer}.journey-options button[aria-pressed=true]{background:#214b3b;color:#fff4cb;border-color:#d4b36d}.journey-options button:disabled{opacity:.6;cursor:default}.journey-rule{font-size:12px!important;line-height:1.5!important;margin:6px 0!important}.journey-status{position:relative;z-index:4;background:#153b35;color:#fff1c9;padding:7px 12px;font-size:12px;line-height:1.4;flex-shrink:0;border-bottom:1px solid #75877c;white-space:normal}.journey-overlay{position:absolute;inset:0;background:#071f28e8;display:flex;align-items:center;justify-content:center;z-index:120;padding:12px;overflow:auto;color:#eef6e8}.journey-card{max-width:620px;width:100%;max-height:100%;overflow:auto;padding:22px;background:#143b38;border:1px solid #c4b67d;border-radius:20px;box-shadow:0 20px 60px #0005;text-align:left}.journey-card h2{font-size:26px;line-height:1.2;color:#fff1c9;margin:10px 0}.journey-card p{font-size:14px;line-height:1.5}.journey-kicker{color:#a7dbce;font-size:12px;letter-spacing:2px}.journey-upgrades{display:grid;gap:10px}.journey-upgrades button{display:flex;flex-direction:column;gap:6px;text-align:left;padding:15px;border:1px solid #7a9a8a;border-radius:12px;background:#e9eddd;color:#214b3b;font:inherit;cursor:pointer;min-height:60px}.journey-upgrades button[data-upgrade=weapon]{background:#f1d797}.journey-upgrades small{font-size:12px}.journey-upgrades button:focus-visible,.journey-options button:focus-visible{outline:3px solid #f1c36c;outline-offset:2px}.journey-result{margin:12px 0;padding:14px;border:1px solid #97ac91;border-radius:12px;text-align:left;font-size:13px;line-height:1.55}.journey-result p{font-size:13px!important;margin:8px 0!important}.journey-result small{display:block;font-size:11px;margin:6px 0;opacity:.85}.journey-result details{margin:8px 0}.journey-result a{color:inherit;text-decoration:underline}.journey-swap{min-height:44px;border:1px solid #c1b77f;border-radius:10px;background:#f1ddb0;color:#214b3b;font:700 14px sans-serif;padding:8px 12px;touch-action:none;cursor:pointer}.journey-live{position:relative}.journey-live>.journey-status{position:absolute;left:0;right:0;top:0}.journey-live .journey-overlay{position:absolute}.journey-counter{color:#e9c879;font-size:12px}.journey-hidden{display:none!important}@media(max-height:450px){.journey-card{padding:12px}.journey-card h2{font-size:20px;margin:4px 0}.journey-card p{margin:5px 0}.journey-upgrades{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.journey-upgrades button{padding:9px;font-size:13px;min-height:70px}.journey-status{padding:3px 8px;font-size:10px}}@media(prefers-reduced-motion:reduce){.journey-overlay *{animation:none!important;transition:none!important}}
 .scene.journey-live>.hud{top:42px!important}.scene.journey-live .timer{display:grid!important;gap:0;min-width:62px;padding:5px 8px;background:#133a35dd;border:1px solid #82b79b}.scene.journey-live .timer small{font-size:10px}.scene.journey-live .timer b{font-size:20px}.scene.journey-live .timer.urgent{border-color:#ffac84;color:#ffbf9c}.scene.journey-live .mission{left:12px;right:12px;display:flex;gap:10px;align-items:center}.scene.journey-live .mission .bar{flex:1;max-width:160px}.sea.journey-live>.sector{top:38px}.game-wrap.journey-live>.game-topline{padding-top:35px}.game-wrap.journey-live>.journey-status{z-index:15}.journey-result summary{cursor:pointer;min-height:36px;padding:6px 0}.journey-result ol{padding-left:24px}.journey-result li{padding:4px 0;border-bottom:1px solid #b7bca533}.journey-upgrades button:hover{filter:brightness(1.04)}.journey-upgrades b{font-size:15px}.journey-upgrades small{line-height:1.5}.journey-next{padding:10px 12px;border-left:3px solid #e6cb85;background:#ffffff0a}.journey-next:empty{display:none}.journey-result a{display:inline-flex;padding:8px 0}.journey-settings button{font-family:inherit;font-weight:700}.journey-rule{opacity:.9}.game-wrap .arena-footer{flex-wrap:wrap;gap:6px}.game-wrap .arena-footer>.journey-swap{font-size:12px;padding:7px 10px}.game-wrap .arena-footer>span{flex:1;min-width:90px}@media(max-width:450px){.journey-card{padding:18px}.journey-card h2{font-size:24px}.journey-upgrades button{min-height:68px;padding:12px}.game-wrap .arena-footer>span{font-size:10px}.game-wrap .arena-footer>.finish-session{font-size:11px;padding:8px}.game-wrap .arena-footer .journey-swap{min-height:42px}}@media(max-height:450px){.scene.journey-live>.hud{top:27px!important}.scene.journey-live .timer{padding:2px 6px;min-width:48px}.scene.journey-live .timer b{font-size:15px}.scene.journey-live .timer small{font-size:8px}.game-wrap.journey-live>.game-topline{padding-top:20px}.journey-next{padding:5px 8px;font-size:12px!important}.journey-upgrades button{min-height:65px}.journey-card{padding:10px}}
 
@@ -315,6 +342,129 @@ body.welcome-screen .card .journey-rule{font-size:12px!important}
  .journey-choice-card .journey-upgrades button,.journey-choice-card .journey-upgrades[data-count="4"] button,.journey-choice-card .journey-upgrades [data-upgrade=life],.journey-choice-card .journey-upgrades [data-upgrade=protection]{grid-column:span 1!important;padding:8px;min-height:104px!important}
  .journey-choice-card .journey-upgrades b{font-size:13px}.journey-choice-card .journey-upgrades small{font-size:12px}
  .journey-choice-card h2{font-size:20px;margin:4px 0}.journey-choice-card .journey-next{padding:5px 8px;margin:5px 0}
+}
+
+/* Winter Booth Arcade — spruce night, candle gold, berry ribbon. Shared entry / quiz / end. */
+@keyframes journey-snow{0%{transform:translate3d(0,-8%,0)}100%{transform:translate3d(0,110%,0)}}
+@keyframes journey-garland{0%,100%{filter:brightness(1)}50%{filter:brightness(1.18)}}
+.journey-overlay{
+ background:
+  radial-gradient(ellipse at 18% 12%,#2f6a4e55,transparent 42%),
+  radial-gradient(ellipse at 86% 8%,#8e242855,transparent 38%),
+  linear-gradient(160deg,#061812f2,#0a1f1ce8 48%,#07141af0);
+}
+.journey-overlay:before{
+ content:"";position:absolute;inset:0;pointer-events:none;opacity:.55;z-index:0;
+ background-image:
+  radial-gradient(2px 2px at 12% 18%,#fff8,#0000),
+  radial-gradient(1.5px 1.5px at 28% 42%,#fff6,#0000),
+  radial-gradient(2px 2px at 46% 22%,#fff7,#0000),
+  radial-gradient(1.5px 1.5px at 63% 58%,#fff5,#0000),
+  radial-gradient(2px 2px at 78% 34%,#fff8,#0000),
+  radial-gradient(1.5px 1.5px at 88% 72%,#fff6,#0000),
+  radial-gradient(2px 2px at 34% 78%,#fff7,#0000);
+ animation:journey-snow 18s linear infinite;
+}
+.journey-card{
+ position:relative;z-index:1;isolation:isolate;
+ background:
+  linear-gradient(#c23b3b 0 4px,#2f8f63 4px 7px,#0000 7px),
+  linear-gradient(165deg,#163a32f7,#0f2a28f5 55%,#142433f2);
+ border:1px solid #f0d87866;
+ box-shadow:0 24px 70px #020a1488,inset 0 1px #fff4cb22;
+ overflow:hidden;
+}
+.journey-card:before,.journey-card:after{
+ content:"";position:absolute;width:14px;height:14px;border-radius:50%;
+ background:radial-gradient(circle at 35% 35%,#fff4cb,#c23b3b 58%,#8e2428);
+ box-shadow:16px 0 0 -3px #2f8f63,24px 4px 0 -4px #c23b3b,8px 12px 0 -4px #2f8f63;
+ pointer-events:none;z-index:2;opacity:.9;
+}
+.journey-card:before{top:14px;left:14px}
+.journey-card:after{top:14px;right:14px;transform:scaleX(-1)}
+.journey-kicker{
+ display:inline-block;color:#f0d878;letter-spacing:.14em;text-transform:uppercase;
+ padding:4px 0 2px;border-bottom:1px solid #f0d87844;
+}
+.journey-card h2{color:#fff6d8;text-shadow:0 1px 0 #0a1f1c}
+.journey-guide-rule{color:#f0d878!important}
+.journey-guide-grid>div{
+ background:linear-gradient(180deg,#f7f1df,#e8efd8);
+ border:1px solid #c9b67a88;color:#173d35;
+}
+.journey-guide-grid kbd{
+ background:#fff4cb;border-color:#c23b3b88;color:#8e2428;
+ box-shadow:inset 0 -2px #c23b3b33;
+}
+.journey-guide-question,.journey-granted{
+ background:linear-gradient(120deg,#fff1cd,#ffe7a8);
+ border-left-color:#c23b3b;color:#173d35;
+}
+.journey-scene-note{
+ background:linear-gradient(120deg,#dce8dc,#cfe6d4);
+ border:1px solid #2f8f6344;
+}
+.journey-begin{
+ background:linear-gradient(120deg,#fff4cb,#f0d878);
+ border-color:#fff1be;color:#163b34;
+ box-shadow:0 3px 0 #b48a2f88;
+}
+.journey-begin:hover{filter:brightness(1.06)}
+.journey-booth{
+ border-color:#f0d878;background:linear-gradient(120deg,#214b3b,#2f8f63);color:#fff6d8;
+}
+.journey-booth[aria-pressed=true]{
+ background:linear-gradient(120deg,#8e2428,#c23b3b);border-color:#fff4cb;color:#fff6d8;
+ box-shadow:inset 0 0 0 1px #fff4cb88;
+}
+.journey-status{
+ background:linear-gradient(90deg,#143b32,#1a4a3c 40%,#3a1a1e);
+ color:#fff4cb;border-bottom:1px solid #f0d87844;
+}
+.journey-quiz-card .journey-quiz-q{
+ padding:10px 12px;border-radius:10px;
+ background:#0f2824;border:1px solid #f0d87844;color:#fff6d8;
+}
+.journey-quiz-card .journey-quiz-choices button{
+ background:linear-gradient(180deg,#f7f1df,#e9eedc);border-color:#b9a56a;
+}
+.journey-quiz-card .journey-quiz-choices button:hover{border-color:#c23b3b;filter:brightness(1.03)}
+.journey-quiz-card .journey-quiz-choices button.is-wrong{
+ background:#f3dede;border-color:#c07070;opacity:.7;
+}
+.journey-quiz-tip{
+ background:linear-gradient(120deg,#fff6e8,#ffe8c0);
+ border-color:#c23b3b66;color:#4a3420;
+ animation:journey-garland 2.4s ease-in-out infinite;
+}
+.journey-next{
+ border-left:3px solid #c23b3b;
+ background:linear-gradient(90deg,#ffffff12,#ffffff05);
+}
+.showing-result>.overlay{
+ background:
+  radial-gradient(ellipse at 20% 0%,#2f6a4e44,transparent 45%),
+  radial-gradient(ellipse at 80% 100%,#8e242844,transparent 40%),
+  #061812eb;
+}
+.showing-result .card,.showing-result #end-menu{
+ border:1px solid #f0d87866;
+ background:
+  linear-gradient(#c23b3b 0 4px,#2f8f63 4px 7px,#0000 7px),
+  linear-gradient(165deg,#163a32,#102a2c 60%,#142433);
+ box-shadow:0 24px 70px #020a1488;
+}
+.showing-result .result-heading h2,.showing-result .result-score,.showing-result .end-score strong{color:#fff4cb}
+.journey-scoreboard .score-list li.this-run{background:#c23b3b22;box-shadow:inset 2px 0 #f0d878}
+.journey-scoreboard .result-lesson{
+ background:#ffffff0c;border-left:2px solid #c23b3b;
+}
+.journey-result{
+ border-color:#f0d87866;
+ background:linear-gradient(160deg,#163a3288,#0f282488);
+}
+@media(prefers-reduced-motion:reduce){
+ .journey-overlay:before,.journey-quiz-tip{animation:none!important}
 }
 </style>
 </head>
@@ -1471,7 +1621,7 @@ window.FuLamFormations = Object.freeze({ create });
 <script>/* FuLam arcade progression v7. Original code; scores are local, not verified online records. */
 (function(root){
  'use strict';
- const VERSION='booth-v13', ROUND=30, BOOTH_ROUND=30, CHOICE=12, KNIFE_STAGES=2, KNIFE_OPTIONS=25, BOOTH_STAGES=4, BOOTH_STAGE_TIME=[20,20,25,25], LIMIT=90;
+ const VERSION='booth-v15', ROUND=30, BOOTH_ROUND=30, CHOICE=12, KNIFE_STAGES=2, KNIFE_OPTIONS=25, BOOTH_STAGES=4, BOOTH_STAGE_TIME=[20,20,25,25], LIMIT=90;
  const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function random(seed){return()=>{let t=seed+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;};}
@@ -1491,6 +1641,12 @@ window.FuLamFormations = Object.freeze({ create });
     {q:['有人在投資群組推薦一個交易平台，聲稱可以提供穩定高回報。你應該怎樣做？','Someone in an investment chat promotes a platform that claims stable high returns. What should you do?'],choices:[['先投入小額資金測試平台','Test with a small deposit first'],['查看群組成員的盈利截圖','Look at members’ profit screenshots'],['核實平台及相關中介人是否持有適當牌照','Verify the platform and intermediaries hold proper licences'],['邀請朋友一同投資以分散風險','Invite friends to invest together to spread risk']],ok:2,why:['可以透過證監會的持牌人及註冊機構公眾紀錄冊核實相關資料。持牌也不代表投資必然安全。','Check the SFC public register of licensed persons and registered institutions. A licence still does not make an investment safe.']},
     {q:['你有 HK$20,000，準備半年後用作交換生費用。以下哪種安排通常較合適？','You have HK$20,000 needed in six months for an exchange programme. Which arrangement usually fits better?'],choices:[['全數投資於高波動股票','Invest it all in high-volatility stocks'],['優先考慮流動性及本金風險較低的儲蓄方式','Favour liquidity and lower principal risk'],['借錢增加投資本金','Borrow to increase the principal'],['投資近期升幅最大的加密貨幣','Buy the crypto that rose the most recently']],ok:1,why:['短期內需要使用的資金，應優先考慮流動性、投資期限及承受虧損的能力。','Money needed soon should prioritise liquidity, time horizon and loss tolerance.']}
    ]
+  },
+  knife:{
+   topic:['認識理財工具','Know money tools'],
+   items:[
+    {q:['理財工具通常可以分成哪幾種分類？','Which categories do money tools usually fall into?'],choices:[['只有股票與基金','Only stocks and funds'],['投資產品、存款、借貸或純保障工具','Investment products, deposits, borrowing, or pure protection tools'],['只有現金與消費券','Only cash and shopping vouchers'],['只有貸款與信用卡','Only loans and credit cards']],ok:1,why:['理財工具可按用途粗分為投資產品、存款、借貸及純保障等類型，方便按目標選擇。','Money tools are often grouped by purpose: investing, depositing, borrowing and pure protection, so you can match them to your goals.']}
+   ]
   }
  };
  function quizFor(game,wave){const bank=QUIZZES[game];if(!bank)return null;return bank.items[Math.max(0,Math.min(bank.items.length-1,(wave|0)-1))]||null;}
@@ -1499,7 +1655,7 @@ window.FuLamFormations = Object.freeze({ create });
    this.game=game;this.scene=scene==='booth'?'booth':'web';this.difficulty=this.scene==='booth'?'intermediate':difficulty==='challenge'?'challenge':'standard';
    this.seed=this.scene==='booth'?20261104:seed;this.random=random(this.seed);this.active=0;this.total=0;this.wave=1;this.roundTime=0;this.choiceTime=0;this.phase='play';this.choices=[];this.reason='';this.weapon=0;this.rate=0;this.trajectory=0;this.escort=0;this.focus=0;this.guard=0;this.life=0;this.protection=0;
   }
-  quizMode(){return this.scene==='booth'&&(this.game==='fishing'||this.game==='fleet');}
+  quizMode(){return this.scene==='booth'&&(this.game==='fishing'||this.game==='fleet'||this.game==='knife');}
   tick(dt,playing=true){
    if(this.phase==='over'||!Number.isFinite(dt)||dt<=0)return null;
    // Quiz / upgrade wait does not spend the 90s match clock.
@@ -1516,10 +1672,15 @@ window.FuLamFormations = Object.freeze({ create });
    return null;
   }
   roundLimit(){if(this.scene==='booth'&&this.game!=='knife'){const scheduled=BOOTH_STAGE_TIME[this.wave-1];if(Number.isFinite(scheduled))return scheduled;return Math.max(0,LIMIT-(this.total-this.roundTime));}return this.scene==='booth'?BOOTH_ROUND:ROUND;}
-  completeRound(){if(this.phase!=='play')return false;this.phase='choice';this.choiceTime=this.quizMode()?Number.POSITIVE_INFINITY:CHOICE;this.grantedFrom=this.weapon;this.weapon++;return true;}
+  completeRound(){if(this.phase!=='play')return false;this.phase='choice';this.choiceTime=this.quizMode()?Number.POSITIVE_INFINITY:CHOICE;this.grantedFrom=this.weapon;if(this.game!=='knife')this.weapon++;return true;}
   choose(kind){
    if(this.phase!=='choice')return false;
    if(this.quizMode()){
+    if(this.game==='knife'){
+     if(kind!=='continue')return false;
+     this.choices.push('continue');if(this.choices.length>100)this.choices.shift();
+     this.wave++;this.roundTime=0;this.choiceTime=0;this.phase='play';return true;
+    }
     if(kind!=='trajectory')return false;
     this.choices.push('trajectory');if(this.choices.length>100)this.choices.shift();
     this.trajectory++;
@@ -1527,13 +1688,13 @@ window.FuLamFormations = Object.freeze({ create });
     if(this.game==='fleet'&&this.wave===3)this.escort=Math.max(1,this.escort);
     this.roundTime=0;this.choiceTime=0;this.phase='play';return true;
    }
-   const allowed=this.game==='knife'?['focus','life']:this.game==='fleet'?['escort','trajectory','rate']:['trajectory','rate'];
+   const allowed=this.game==='knife'?['continue']:this.game==='fleet'?['escort','trajectory','rate']:['trajectory','rate'];
    if(!allowed.includes(kind))return false;
-   this.choices.push(kind);if(this.choices.length>100)this.choices.shift();this[kind]++;
+   this.choices.push(kind);if(this.choices.length>100)this.choices.shift();if(kind!=='continue')this[kind]++;
    this.wave++;this.roundTime=0;this.choiceTime=0;this.phase='play';return true;
   }
   finish(reason='defeat'){if(this.phase==='over')return false;this.phase='over';this.reason=reason;return true;}
-  key(topic='',language=''){return [this.game==='knife'?VERSION+'-slow2':VERSION+'-combat4',this.game,this.scene,this.difficulty,topic,language].join(':');}
+  key(topic='',language=''){return [this.game==='knife'?VERSION+'-quiz1':VERSION+'-combat4',this.game,this.scene,this.difficulty,topic,language].join(':');}
   record(score,extra={}){return{score:Math.max(0,Math.floor(Number(score)||0)),wave:this.wave,seconds:Math.round(this.active),reason:this.reason,...extra};}
  }
  function readBoard(storage,key){try{const a=JSON.parse(storage.getItem(key)||'[]');return Array.isArray(a)?a.filter(r=>r&&Number.isSafeInteger(r.score)&&r.score>=0&&Number.isInteger(r.wave)&&r.wave>0&&Number.isFinite(r.seconds)&&r.seconds>=0).slice(0,10):[];}catch{return[];}}
@@ -1587,8 +1748,8 @@ window.FuLamFormations = Object.freeze({ create });
   settings(host,change=()=>{}){
    if(!host)return;
    this.scene='booth';this.difficulty='intermediate';
-   const rule=this.game==='knife'?this.text('兩關。第 1 關 25 個、第 2 關 24 個選項，出過不再重複。','Two stages. 25 choices in stage 1, 24 in stage 2, each shown once.'):this.text('四回合 · 90 秒 · 答對題才繼續 · 本機排名','4 rounds · 90 seconds · Answer correctly to continue · Local high scores');
-   host.innerHTML=`<div class="journey-settings">${this.game==='knife'?`<p class="journey-setting-label">${this.text('Booth · 兩關','BOOTH · 2 STAGES')}</p>`:''}<p class="journey-rule" aria-live="polite">${rule}</p></div>`;
+   const rule=this.game==='knife'?this.text('聖誕兩關。第 1 關 25 個、第 2 關 24 個選項；過關先答分類題，再看下一關題目。','Festive two stages. 25 choices in stage 1, 24 in stage 2; answer a category quiz, then read the next question.'):this.text('聖誕四回合 · 90 秒 · 答對題才繼續 · 本機排名','Festive 4 rounds · 90 seconds · Answer correctly to continue · Local high scores');
+   host.innerHTML=`<div class="journey-settings">${this.game==='knife'?`<p class="journey-setting-label">${this.text('聖誕 Booth · 兩關','CHRISTMAS BOOTH · 2 STAGES')}</p>`:''}<p class="journey-rule" aria-live="polite">${rule}</p></div>`;
    change('intermediate','booth');
   }
   guide(host,onStart,onBack,question='',context=''){
@@ -1603,15 +1764,15 @@ window.FuLamFormations = Object.freeze({ create });
     ['Q',this.text('留金幣，危急時開盾','Save coins for a shield'),this.text('Q 或護盾按鈕。每回合補 20 護甲；前兩回合受傷較輕。','Press Q or tap Shield. Recover 20 armour each round; early hits are gentler.')],
     ['★',this.text('答對題才升級彈道','Answer correctly to upgrade spread'),this.text('飛機每回合自動升級；答對投資題後彈道加一，第 3 回合自動加入僚機。','Your jet upgrades each round; a correct investing answer adds spread, and a wingman joins automatically in round 3.')]
    ]:[
-    ['01',this.text('先看題目，再切正確錢袋','Read first, then slice correct bags'),this.text('兩關練習：先認識理財工具，再分辨投資產品。','Two stages: know money tools, then spot investment products.')],
+    ['01',this.text('先看題目，再切正確錢袋','Read first, then slice correct bags'),this.text('兩關練習：先找出不屬於理財工具的選項，再分辨投資產品。','Two stages: spot what is not a money tool, then spot investment products.')],
     ['↗',this.text('手指／滑鼠劃過錢袋','Swipe with your finger or mouse'),this.text('鍵盤可用 Tab 選袋，再按 Enter 或 Space。','Keyboard: Tab to a bag, then Enter or Space.')],
-    ['↑ / Q',this.text('刀刃自動升級','Blade upgrades automatically'),this.text('每關刀刃先升級，再揀減速或加1心。切對充能，滿格按 Q 全屏緩慢。','Each stage upgrades the blade, then choose slow-down or +1 heart. Correct cuts charge full-screen slow with Q.')],
+    ['Q1',this.text('過關先答一題分類','Answer a category quiz to continue'),this.text('第 1 關結束後，答對理財工具分類，再介紹第 2 關題目。沒有升級或減速。','After stage 1, answer the money-tool categories correctly, then read stage 2. No upgrades or slow-down.')],
     ['♥',this.text('錯切扣 1 心；漏切也有代價','Wrong cuts cost a heart; misses add up'),this.text(`${this.scene==='booth'?'Booth 中等':this.difficulty==='challenge'?'挑戰':'標準'} ${this.sliceHearts()} 心；每漏切 ${this.sliceHearts()} 個正確選項扣 1 心。`,`${this.scene==='booth'?'Booth intermediate':this.difficulty==='challenge'?'Challenge':'Standard'}: ${this.sliceHearts()} hearts; ${this.sliceHearts()} missed correct bags cost a heart.`)]
    ];
-   const kicker=showQuestion?this.text(this.run?'下一關開始前':'開始前 · 先看題目',this.run?'BEFORE THIS STAGE':'READ THE QUESTION FIRST'):this.text('開始前 · 操作指引','BEFORE YOU PLAY');
-   const heading=showQuestion?(this.en()?'Question: ':'題目: ')+question:this.text('準備好，再開始。','Ready when you are.');
+   const kicker=showQuestion?this.text(this.run?'聖誕下一關':'聖誕開始前 · 先看題目',this.run?'FESTIVE NEXT STAGE':'FESTIVE WARM-UP · READ FIRST'):this.text('聖誕攤位 · 操作指引','CHRISTMAS BOOTH · HOW TO PLAY');
+   const heading=showQuestion?(this.en()?'Question: ':'題目: ')+question:this.text('聖誕關卡，準備好了嗎？','Ready for the festive stage?');
    const startLabel=showQuestion&&this.run?this.text('看完題目，開始','Start this stage'):this.text('知道了，開始！','Got it — start!');
-   o.innerHTML=`<div class="journey-card"><span class="journey-kicker">${kicker}</span><h2${showQuestion?' class="journey-guide-topic"':''}>${esc(heading)}</h2>${showQuestion&&context?`<p class="journey-guide-context">${esc(context)}</p>`:''}${showQuestion?`<p class="journey-guide-lead">${this.text('切中符合題目的錢袋，讓錯誤選項落下。','Slice the bags that fit the question. Let the wrong ones fall.')}</p>`:(question?`<p class="journey-guide-question">${esc(question)}</p>`:'')}<div class="journey-guide-grid">${rows.map(([key,title,copy])=>`<div><kbd>${esc(key)}</kbd><p><b>${esc(title)}</b><small>${esc(copy)}</small></p></div>`).join('')}</div><p class="journey-guide-rule">${this.game!=='knife'?this.text('四回合，共 90 秒（20／20／25／25）。答對題才繼續；P 暫停。','Four rounds, 90 seconds total (20 / 20 / 25 / 25). Answer correctly to continue; P pauses.'):this.scene==='booth'?this.text('Booth 兩關。第 1 關認識理財工具，第 2 關分辨投資產品。','Booth is two stages: money tools, then investment products.'):this.text('自由遊玩 · 沒有總時限，挑戰最高分。','Free play · No overall time limit. Chase your best score.')}</p><div class="journey-guide-actions"><button class="journey-exit" data-guide-back>${this.text('返回選單','Back')}</button><button class="journey-begin" data-guide-start>${startLabel}</button></div></div>`;
+   o.innerHTML=`<div class="journey-card"><span class="journey-kicker">${kicker}</span><h2${showQuestion?' class="journey-guide-topic"':''}>${esc(heading)}</h2>${showQuestion&&context?`<p class="journey-guide-context">${esc(context)}</p>`:''}${showQuestion?`<p class="journey-guide-lead">${this.text('切中符合題目的錢袋，讓錯誤選項落下。','Slice the bags that fit the question. Let the wrong ones fall.')}</p>`:(question?`<p class="journey-guide-question">${esc(question)}</p>`:'')}<div class="journey-guide-grid">${rows.map(([key,title,copy])=>`<div><kbd>${esc(key)}</kbd><p><b>${esc(title)}</b><small>${esc(copy)}</small></p></div>`).join('')}</div><p class="journey-guide-rule">${this.game!=='knife'?this.text('聖誕四回合，共 90 秒（20／20／25／25）。答題時間不算入時鐘；答對才繼續；P 暫停。','Festive four rounds, 90 seconds total (20 / 20 / 25 / 25). Quiz time pauses the clock; answer correctly to continue; P pauses.'):this.scene==='booth'?this.text('聖誕 Booth 兩關。第 1 關找出不屬於理財工具的選項，第 2 關分辨投資產品。','Christmas Booth is two stages: spot what is not a money tool, then spot investment products.'):this.text('自由遊玩 · 沒有總時限，挑戰最高分。','Free play · No overall time limit. Chase your best score.')}</p><div class="journey-guide-actions"><button class="journey-exit" data-guide-back>${this.text('返回選單','Back')}</button><button class="journey-begin" data-guide-start>${startLabel}</button></div></div>`;
    host.append(o);o.querySelector('[data-guide-start]').onclick=()=>{this.close();onStart();};o.querySelector('[data-guide-back]').onclick=()=>{this.close();onBack();};
    o.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();o.querySelector('[data-guide-back]').click();}if(e.key==='Tab'){const b=[...o.querySelectorAll('button')];if(e.shiftKey&&document.activeElement===b[0]){e.preventDefault();b.at(-1).focus();}else if(!e.shiftKey&&document.activeElement===b.at(-1)){e.preventDefault();b[0].focus();}}});o.querySelector('[data-guide-start]').focus({preventScroll:true});
   }
@@ -1624,11 +1785,12 @@ window.FuLamFormations = Object.freeze({ create });
   step(playing){
    if(!this.run||this.run.phase==='over')return;const now=performance.now(),dt=Math.max(0,(now-this.last)/1000);this.last=now;
    const event=this.run.tick(dt,playing);if(event==='over'){this.close();this.onEnd('time');return;}
-   if(event==='choice'){this.onIntermission();this.showChoices();}if(event==='auto')this.pick(this.overlay?.querySelector('[data-upgrade]')?.dataset.upgrade||(this.run.game==='knife'?'focus':'trajectory'));
+   if(event==='choice'){this.onIntermission();this.showChoices();}if(event==='auto')this.pick(this.overlay?.querySelector('[data-upgrade]')?.dataset.upgrade||(this.run.game==='knife'?'continue':'trajectory'));
    const counter=this.overlay?.querySelector('.journey-count');if(counter&&Number.isFinite(this.run.choiceTime))counter.textContent=this.text('未揀就自動選：','Auto pick: ')+Math.ceil(this.run.choiceTime)+'s';this.update();
   }
   showChoices(){
    if(this.run?.quizMode()){this.showQuiz();return;}
+   if(this.game==='knife'){this.pick('continue');return;}
    this.close();const r=this.run,s=this.stageScene(r.wave+1),before=weaponProfile(this.game,r);
    const stats=(kind)=>weaponProfile(this.game,{...r,[kind]:r[kind]+1});
    const health=this.game==='knife'?this.survival(r):null,nextHealth=this.game==='knife'?this.survival({...r,life:r.life+1}):null;
@@ -1650,19 +1812,25 @@ window.FuLamFormations = Object.freeze({ create });
   }
   showQuiz(){
    this.close();const r=this.run,bank=QUIZZES[this.game],item=quizFor(this.game,r.wave),s=this.stageScene(r.wave+1);
+   const knife=this.game==='knife';
    const fromName=this.name(r.grantedFrom??Math.max(0,r.weapon-1)),toName=this.name(r.weapon);
-   const grant=this.game==='fleet'?this.text(`飛機已升級：${fromName} → ${toName}`,`Jet upgraded: ${fromName} → ${toName}`):this.text(`武器已升級：${fromName} → ${toName}`,`Weapon upgraded: ${fromName} → ${toName}`);
-   const reward=this.game==='fleet'&&r.wave===2
+   const grant=knife?this.text('第 1 關完成。答對分類題，再看第 2 關題目。','Stage 1 done. Answer the category quiz, then read stage 2.'):this.game==='fleet'?this.text(`飛機已升級：${fromName} → ${toName}`,`Jet upgraded: ${fromName} → ${toName}`):this.text(`武器已升級：${fromName} → ${toName}`,`Weapon upgraded: ${fromName} → ${toName}`);
+   const reward=knife
+    ?this.text('沒有升級或減速；答對後會介紹下一關題目。','No upgrades or slow-down; the next stage question follows a correct answer.')
+    :this.game==='fleet'&&r.wave===2
     ?this.text(`答對後彈道 ${r.trajectory} → ${r.trajectory+1}，並自動加入僚機。`,`Answer correctly: spread ${r.trajectory} → ${r.trajectory+1}, and a wingman joins.`)
     :this.text(`答對後彈道 ${r.trajectory} → ${r.trajectory+1}，會留在每一種武器。`,`Answer correctly: spread ${r.trajectory} → ${r.trajectory+1}, kept on every weapon.`);
+   const nextCopy=knife
+    ?esc(this.nextHint?.()||this.text('下一關：分辨投資產品。','Next stage: spot investment products.'))
+    :this.game==='fishing'?this.text('每回合補給 12 能源；第 3 回合 Boss 破甲，第 4 回合爆炸聖誕糖豆。','Recover 12 energy each round. Boss armour breaks in R3; exploding jellybeans arrive in R4.'):this.text('下一回合：敵人血量、速度及密度上升；第 3 回合起有精英與 Boss；每回合補給 20 護甲。','Next round: tougher, faster, denser enemies. Elites and bosses from round 3; recover 20 armour each round.');
    const letters='ABCD';
    const o=document.createElement('div');o.className='journey-overlay';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label',this.text('答題繼續','Answer to continue'));this.overlay=o;
-   o.innerHTML=`<div class="journey-card journey-choice-card journey-quiz-card"><span class="journey-kicker">ROUND ${r.wave} → ${r.wave+1} · ${esc(this.text(bank.topic[0],bank.topic[1]))}</span><h2>${this.text('答對題目，才能繼續下一回合。','Answer correctly to continue to the next round.')}</h2><p class="journey-granted">${esc(grant)}</p><p class="journey-scene-note"><b>${esc(s.name[this.en()?1:0])}</b> · ${esc(reward)}</p><p class="journey-quiz-q"><b>Q${r.wave}.</b> ${esc(this.text(item.q[0],item.q[1]))}</p><div class="journey-upgrades journey-quiz-choices" data-count="4">${item.choices.map((c,i)=>`<button type="button" data-quiz="${i}"><b>${letters[i]} · ${esc(this.text(c[0],c[1]))}</b></button>`).join('')}</div><p class="journey-quiz-tip" hidden></p><p class="journey-next">${this.game==='fishing'?this.text('每回合補給 12 能源；第 3 回合 Boss 破甲，第 4 回合爆炸聖誕糖豆。','Recover 12 energy each round. Boss armour breaks in R3; exploding jellybeans arrive in R4.'):this.text('下一回合：敵人血量、速度及密度上升；第 3 回合起有精英與 Boss；每回合補給 20 護甲。','Next round: tougher, faster, denser enemies. Elites and bosses from round 3; recover 20 armour each round.')}</p></div>`;
+   o.innerHTML=`<div class="journey-card journey-choice-card journey-quiz-card"><span class="journey-kicker">${this.text('聖誕答題','FESTIVE QUIZ')} · ${r.wave} → ${r.wave+1} · ${esc(this.text(bank.topic[0],bank.topic[1]))}</span><h2>${knife?this.text('答對分類題，才進入下一關。','Answer the category quiz to open the next stage.'):this.text('答對題目，才能繼續下一回合。','Answer correctly to continue to the next round.')}</h2><p class="journey-granted">${esc(grant)}</p><p class="journey-scene-note"><b>${esc(s.name[this.en()?1:0])}</b> · ${esc(reward)}</p><p class="journey-quiz-q"><b>Q${r.wave}.</b> ${esc(this.text(item.q[0],item.q[1]))}</p><div class="journey-upgrades journey-quiz-choices" data-count="4">${item.choices.map((c,i)=>`<button type="button" data-quiz="${i}"><b>${letters[i]} · ${esc(this.text(c[0],c[1]))}</b></button>`).join('')}</div><p class="journey-quiz-tip" hidden></p><p class="journey-next">${knife?this.text('答對後下一關題目：','Next stage question after a correct answer: ')+nextCopy:nextCopy}</p></div>`;
    this.host.classList.add('journey-choosing');this.host.append(o);
    const tip=o.querySelector('.journey-quiz-tip');
    o.querySelectorAll('[data-quiz]').forEach(b=>b.onclick=()=>{
     const i=Number(b.dataset.quiz);
-    if(i===item.ok){this.pick('trajectory');return;}
+    if(i===item.ok){this.pick(knife?'continue':'trajectory');return;}
     b.classList.add('is-wrong');b.disabled=true;
     tip.hidden=false;tip.textContent=this.text(item.why[0],item.why[1]);
     const next=[...o.querySelectorAll('[data-quiz]:not(:disabled)')].find(x=>x!==b);next?.focus({preventScroll:true});
@@ -1688,7 +1856,7 @@ window.FuLamFormations = Object.freeze({ create });
   }
   combatResult(data){
    const lesson=this.game==='fishing'?this.text('分散彈道照顧魚群，集中火力對付大魚；理財也要按目標分配資源。留一道具應急，就像預留一筆儲備。遊戲得分不代表投資回報。','Spread covers a school; focused shots tackle big fish—allocate resources to your goals. Keeping a skill ready is like keeping a reserve. Game scores are not investment returns.'):this.text('護盾和護甲就像應急儲備，讓你有餘地面對突發風險。追分也要閃避火力，理財同樣要兼顧回報與風險。遊戲得分不代表投資回報。','Shields and armour act like reserves for unexpected risks. Chasing points still calls for dodging—balance potential rewards with risk. Game scores are not investment returns.');
-   return `<section class="journey-result journey-scoreboard"><div class="scoreboard-main"><div class="result-rank"><span>${this.text('本機排名','LOCAL RANK')}</span><strong>${data.rank>10?'10+':'#'+data.rank}</strong><small>${this.text('同一裝置 · 同一版本','Same device · same version')}</small></div><div class="result-board"><b>${this.text('本機前五名','TOP 5 ON THIS DEVICE')}</b><ol class="score-list">${data.board.slice(0,5).map((r,i)=>`<li${i+1===data.rank?' class="this-run" aria-current="true"':''}><span>${i+1}</span><strong>${r.score.toLocaleString('en')}</strong><small>${i+1===data.rank?this.text('本局','THIS RUN'):'R'+r.wave}</small></li>`).join('')}</ol></div></div><p class="result-lesson">${esc(lesson)}</p>${!data.saved?'<small>'+this.text('本次未能儲存排名。','This score could not be saved.')+'</small>':''}</section>`;
+   return `<section class="journey-result journey-scoreboard"><div class="scoreboard-main"><div class="result-rank"><span>${this.text('聖誕本機排名','FESTIVE LOCAL RANK')}</span><strong>${data.rank>10?'10+':'#'+data.rank}</strong><small>${this.text('同一裝置 · 同一版本','Same device · same version')}</small></div><div class="result-board"><b>${this.text('聖誕本機前五名','FESTIVE TOP 5')}</b><ol class="score-list">${data.board.slice(0,5).map((r,i)=>`<li${i+1===data.rank?' class="this-run" aria-current="true"':''}><span>${i+1}</span><strong>${r.score.toLocaleString('en')}</strong><small>${i+1===data.rank?this.text('本局','THIS RUN'):'R'+r.wave}</small></li>`).join('')}</ol></div></div><p class="result-lesson">${esc(lesson)}</p>${!data.saved?'<small>'+this.text('本次未能儲存排名。','This score could not be saved.')+'</small>':''}</section>`;
   }
   result(score,extra={},reason='defeat'){
    if(!this.run)return '';this.run.finish(reason);this.close();if(this.status)this.status.hidden=true;
@@ -1696,7 +1864,7 @@ window.FuLamFormations = Object.freeze({ create });
    const r=this.run,data=this.resultData;
    if(this.game!=='knife')return this.combatResult(data);
    const lesson=this.game==='knife'?this.text('切對才加分；護心擋扣心，不會把錯誤答案變成正確。遊戲分數不等於理財能力。','Only correct cuts score. Guard protects a heart, not an incorrect answer. Game score is not financial ability.'):this.text('火力與生存都需要資源。強化一項就要延後另一項；先觀察威脅，再決定進攻或保護。','Attack and survival compete for limited upgrades. Observe threats before deciding where to invest resources.');
-   return `<section class="journey-result"><b>${r.reason==='time'||r.reason==='stages'?this.text('Booth 挑戰完成','Booth challenge complete'):this.text('本局紀錄','Run record')} · ${this.text('本機排名','Local rank')} #${data.rank}</b><p>${esc(lesson)}</p><small>${this.text('遊戲資源並非投資回報。','Game resources are not investment returns.')}</small><details><summary>${this.text('查看此模式本機前十名','Top 10 on this device')}</summary><ol>${data.board.map(x=>`<li>${x.score.toLocaleString('en')} · R${x.wave} · ${x.seconds}s</li>`).join('')}</ol></details>${!data.saved?'<p>'+this.text('此瀏覽器未能保存紀錄。','This browser could not save the result.')+'</p>':''}${r.scene==='booth'?`<div class="journey-qr"><img src="../arcade/${this.game}-qr.svg" width="128" height="128" alt="${this.text('再開一局 QR code','Play again QR code')}"><a href="./">${this.text('用自己手機掃碼，再開一局','Scan to play another round on your phone')}</a></div>`:''}<small>${this.text('本機紀錄，未經核實；不同模式及版本分榜。','Local, unverified records. Modes and versions have separate boards.')}</small></section>`;
+   return `<section class="journey-result"><b>${r.reason==='time'||r.reason==='stages'?this.text('聖誕 Booth 挑戰完成','Christmas Booth complete'):this.text('本局紀錄','Run record')} · ${this.text('本機排名','Local rank')} #${data.rank}</b><p>${esc(lesson)}</p><small>${this.text('遊戲資源並非投資回報。','Game resources are not investment returns.')}</small><details><summary>${this.text('查看此模式本機前十名','Top 10 on this device')}</summary><ol>${data.board.map(x=>`<li>${x.score.toLocaleString('en')} · R${x.wave} · ${x.seconds}s</li>`).join('')}</ol></details>${!data.saved?'<p>'+this.text('此瀏覽器未能保存紀錄。','This browser could not save the result.')+'</p>':''}${r.scene==='booth'?`<div class="journey-qr"><img src="../arcade/${this.game}-qr.svg" width="128" height="128" alt="${this.text('再開一局 QR code','Play again QR code')}"><a href="./">${this.text('用自己手機掃碼，再開一局','Scan to play another round on your phone')}</a></div>`:''}<small>${this.text('本機紀錄，未經核實；不同模式及版本分榜。','Local, unverified records. Modes and versions have separate boards.')}</small></section>`;
   }
  }
  root.FuLamJourney={Run,UI,random,readBoard,saveBoard,VERSION,LIMIT,ROUND,BOOTH_ROUND,CHOICE,KNIFE_STAGES,KNIFE_OPTIONS,BOOTH_STAGES,BOOTH_STAGE_TIME,QUIZZES,quizFor,weaponProfile,survivalProfile,threatProfile,sceneInfo,drawScene};
@@ -1732,7 +1900,7 @@ const translations={
  '12 階炮台 · 回合強化':'4 cannons · round upgrades','炮台養成 · 12 級火力':'4 cannons · round upgrades','本局捕財':'SCORE','可用金幣':'Coins','捕獲':'Caught','無限暢玩':'Endless','連續發射':'hold to fire','長按滑鼠':'Hold mouse','長按畫面':'Hold screen','純遊戲積分':'Game points only','製作與授權':'Credits & licences','返回遊戲區':'Back to games',
  '冰凍技能，鍵盤 Q 或 1':'Freeze skill, press Q or 1','狂熱連射技能，鍵盤 W 或 2':'Rapid fire, press W or 2','雙倍金幣技能，鍵盤 R 或 4':'Double coins, press R or 4','深海炸彈技能，鍵盤 E 或 3':'Bomb skill, press E or 3','黃金誘餌技能，鍵盤 R 或 4':'Lure skill, press R or 4','暫停遊戲，鍵盤 P':'Pause game, press P','升級炮台，鍵盤 U':'Upgrade cannon, press U','玩法說明':'How to play','開關音效':'Toggle sound','關閉音效':'Mute sound','開啟音效':'Enable sound','暫停 · P':'Pause · P',
  '捕財遊戲畫面。按住滑鼠或手指連射；鍵盤左右方向瞄準，空白鍵發射，Q 冰凍，W 狂熱連射，E 深海炸彈，R 黃金誘餌，U 升級，P 暫停。':'Fishing arena. Hold to fire. Arrow keys aim; Space fires; Q freeze, W rapid fire, E bomb, R lure, U upgrade, P pause.',
- '想捕幾耐，':'Catch for','就捕幾耐。':'as long as you like.','瞄準大魚，長按連射。':'Aim for fish and hold to fire.','捕魚補能源，升炮打大魚。':'Catch for energy. Evolve your cannon for bigger targets.','遊戲難度':'Difficulty','輕鬆':'Easy','標準':'Normal','Booth 中等':'Booth intermediate','挑戰':'Hard','開炮捕財':'Start fishing','01 · 無限時':'01 · NO TIME LIMIT','隨時暫停結算':'Pause and finish anytime','02 · 武器變形':'02 · EVOLVING WEAPONS','散射、大球、射線':'Spread, orbs and beams','03 · 海域升溫':'03 · RISING CHALLENGE','魚血量和速度漸增':'Fish get tougher and faster','魚種與武器是理財概念造型 · 分數不代表投資回報':'Financial themes are fictional · Scores are not investment returns',
+ '想捕幾耐，':'Catch for','就捕幾耐。':'as long as you like.','90 秒聖誕捕財。':'90 seconds of festive catch.','長按連射，捕魚補能源。答對保險題才升級彈道；連捕和 Boss 都是追分關鍵。':'Hold to fire; catches refill energy. Answer insurance questions to upgrade spread. Combos and bosses earn bigger scores.','富臨 · 聖誕捕財':'FULAM · FESTIVE CATCH','聖誕本局成績':'FESTIVE SCORE','聖誕捕財完成':'Festive catch complete','瞄準大魚，長按連射。':'Aim for fish and hold to fire.','捕魚補能源，升炮打大魚。':'Catch for energy. Evolve your cannon for bigger targets.','遊戲難度':'Difficulty','輕鬆':'Easy','標準':'Normal','Booth 中等':'Booth intermediate','挑戰':'Hard','開炮捕財':'Start fishing','01 · 無限時':'01 · NO TIME LIMIT','隨時暫停結算':'Pause and finish anytime','02 · 武器變形':'02 · EVOLVING WEAPONS','散射、大球、射線':'Spread, orbs and beams','03 · 海域升溫':'03 · RISING CHALLENGE','魚血量和速度漸增':'Fish get tougher and faster','魚種與武器是理財概念造型 · 分數不代表投資回報':'Financial themes are fictional · Scores are not investment returns',
  '遊戲已暫停':'Game paused','無限時，隨時繼續捕財。':'No time limit. Continue whenever you are ready.','本局':'This run','分 · 炮台 Lv.':'points · Cannon Lv.','繼續遊戲':'Resume','結算離場':'Finish run','結算後可重新開局 · 最佳分數已儲存':'Play again after finishing · Best score saved','滿載而歸！':'Great catch!','刷新個人最佳 · ':'New personal best · ','模式 · ':' · ','深海財神':'Ocean Tycoon','金庫大戶':'Vault Master','捕財高手':'Expert Fisher','新晉捕手':'New Fisher','捕獲魚數':'Fish caught','最高連擊':'Best combo','炮台等級':'Cannon level','今次捕財 ':'Played for ',' 分 ':' min ',' 秒。':' sec.','想玩隨時再出海。':'Come back to the ocean anytime.','重新開局':'Play again','返回遊戲首頁':'Game menu','最佳紀錄儲存在此瀏覽器 · 純遊戲積分':'Best score saved on this browser · Game points only','本局已結算，共 ':'Run complete: ',' 分，捕獲 ':' points, ',' 條。':' fish caught.',
  '無限捕財。':'Endless fishing.','長按畫面連射，移動手指或滑鼠瞄準。發射免費，無限時；想離場可按暫停，再選「結算離場」。':'Hold to fire and move your finger or mouse to aim. Shots are free and there is no time limit. Pause and choose Finish run when you are done.',
  '金幣可升級 12 級炮台，唔會扣總積分。分散投資炮會散射、複利炮會發射穿透大球、長線炮會射出光束。海域每 45 秒升一級，魚會更耐打、更快；最高 16 級，沒有時間上限。':'Spend coins on 12 cannon levels without reducing your score. Upgrade to spread shots, piercing orbs and beams. The sea gets tougher every 45 seconds, up to level 16, with no time limit.',
@@ -1757,7 +1925,7 @@ function localize(root){
  const modalSwitch=$('languageModal');if(modalSwitch){modalSwitch.textContent=language==='en'?'繁中':'English';modalSwitch.setAttribute('aria-label',language==='en'?'Switch to Traditional Chinese':'Switch to English')}
  document.documentElement.lang=language;document.title=language==='en'?'FuLam Catch · The Money Journey':'捕財達人 · 富臨錢進號';
 }
-function toggleLanguage(){language=language==='en'?'zh-Hant':'en';try{localStorage.setItem('fulam-language',language)}catch{}localize(document.body);updateHud();if(journey&&mode==='welcome'){const holder=overlay.querySelector('.journey-settings')?.parentNode;if(holder)journey.settings(holder,d=>{difficulty=d==='intermediate'?'booth':d==='challenge'?'hard':'normal';});}}
+function toggleLanguage(){language=language==='en'?'zh-Hant':'en';try{localStorage.setItem('fulam-language',language)}catch{}localize(document.body);updateHud();if(journey&&mode==='welcome'){showWelcome();}}
 
 let w=1000,h=600,dpr=1,mode='welcome',difficulty='normal',last=0,time=0,round=0,score=0,wallet=0,caught=0,shots=0,hits=0,level=1,combo=0,maxCombo=0,lastCatch=-10,missionIndex=0,bossSpawned=0,nextBossAt=20,saveClock=5,startingBest=0;
 let fish=[],bullets=[],beams=[],particles=[],rings=[],floaters=[],coins=[],aim={x:500,y:240},pointerDown=false,keys=new Set(),shotClock=0,spawnClock=0,recoil=0,shake=0,freezeTime=0,freezeCooldown=0,hudClock=0,eventTime=0,sessionStarted=false;
@@ -1900,7 +2068,7 @@ function showWelcome(){
  scene.classList.remove('showing-result');journey?.close();if(journey?.status)journey.status.hidden=true;scene.classList.remove('journey-live');
  fx.clear();soundscape.stop();mode='welcome';sessionStarted=false;$('pause').disabled=true;document.body.classList.remove('game-active');resetItems();score=wallet=caught=round=0;level=1;combo=0;missionIndex=0;bullets=[];beams=[];particles=[];rings=[];floaters=[];coins=[];eventTime=0;seedDemo();
  openModal(welcomeIcon+'<div class="label">FULAM · ENDLESS FISHING</div><h2 id="dialogTitle">想捕幾耐，<br> <em>就捕幾耐。</em></h2><p>瞄準大魚，長按連射。<br>捕魚補能源，升炮打大魚。</p><div class="difficulty" role="group" aria-label="遊戲難度"><button data-diff="easy">輕鬆</button><button data-diff="normal">標準</button><button data-diff="hard">挑戰</button></div><button class="primary" id="start" data-autofocus>開炮捕財 <span aria-hidden="true">↗</span></button><div class="how"><span><b>01 · 無限時</b>隨時暫停結算</span><span><b>02 · 武器變形</b>散射、大球、射線</span><span><b>03 · 海域升溫</b>魚血量和速度漸增</span></div><div class="micro">魚種與武器是理財概念造型 · 分數不代表投資回報</div>');
- overlay.querySelectorAll('[data-diff]').forEach(b=>{b.classList.toggle('selected',b.dataset.diff===difficulty);b.setAttribute('aria-pressed',String(b.dataset.diff===difficulty));b.onclick=()=>{difficulty=b.dataset.diff;overlay.querySelectorAll('[data-diff]').forEach(e=>{e.classList.toggle('selected',e===b);e.setAttribute('aria-pressed',String(e===b))});updateHud()}});$('start').onclick=prepareStart;if(journey){const container=document.createElement('div');overlay.querySelector('.difficulty').replaceWith(container);journey.settings(container,d=>{difficulty=d==='intermediate'?'booth':d==='challenge'?'hard':'normal';});overlay.querySelector('.card>.label').textContent='FULAM · CATCH';$('dialogTitle').textContent=journey.text('90 秒，捕出高分。','90 seconds. Your best catch.');const intro=overlay.querySelector('.card>p');if(intro)intro.textContent=journey.text('長按連射，捕魚補能源。連捕和 Boss 都是追分關鍵。','Hold to fire; catches refill energy. Combos and bosses earn bigger scores.');}updateHud();
+ overlay.querySelectorAll('[data-diff]').forEach(b=>{b.classList.toggle('selected',b.dataset.diff===difficulty);b.setAttribute('aria-pressed',String(b.dataset.diff===difficulty));b.onclick=()=>{difficulty=b.dataset.diff;overlay.querySelectorAll('[data-diff]').forEach(e=>{e.classList.toggle('selected',e===b);e.setAttribute('aria-pressed',String(e===b))});updateHud()}});$('start').onclick=prepareStart;if(journey){const container=document.createElement('div');overlay.querySelector('.difficulty').replaceWith(container);journey.settings(container,d=>{difficulty=d==='intermediate'?'booth':d==='challenge'?'hard':'normal';});overlay.querySelector('.card')?.classList.add('festive-card');overlay.querySelector('.card>.label').textContent=journey.text('富臨 · 聖誕捕財','FULAM · FESTIVE CATCH');$('dialogTitle').textContent=journey.text('90 秒聖誕捕財。','90 seconds of festive catch.');const intro=overlay.querySelector('.card>p');if(intro)intro.textContent=journey.text('長按連射，捕魚補能源。答對保險題才升級彈道；連捕和 Boss 都是追分關鍵。','Hold to fire; catches refill energy. Answer insurance questions to upgrade spread. Combos and bosses earn bigger scores.');}updateHud();
 }
 function prepareStart(){document.body.classList.remove('welcome-screen');if(!journey){start();return;}closeModal();document.body.classList.add('game-active');resize();journey.guide(scene,start,showWelcome);}
 function start(){
@@ -1922,7 +2090,7 @@ function finish(commit=true){
  mode='ended';journey?.close();clearPointerInput();keys.clear();if(commit){resultRecord=score>startingBest;persistBest();sound('end')}
  const rank=score>=20000?'深海財神':score>=8000?'金庫大戶':score>=2000?'捕財高手':'新晉捕手';
  if(!journey)openModal('<div class="label">YOUR CATCH OF THE DAY</div><h2 id="dialogTitle">滿載而歸！</h2><div class="result-score">'+fmt(score)+'</div><div class="badge">'+(resultRecord?'刷新個人最佳 · ':modes[difficulty].label+'模式 · ')+rank+'</div><div class="result-grid"><div><b>'+caught+'</b><span>捕獲魚數</span></div><div><b>'+maxCombo+'</b><span>最高連擊</span></div><div><b>Lv.'+level+'</b><span>炮台等級</span></div></div><p>今次捕財 '+Math.floor(round/60)+' 分 '+Math.floor(round%60)+' 秒。<br>想玩隨時再出海。</p><button class="primary" id="again" data-autofocus>重新開局</button><button class="journey-exit" id="home">返回遊戲首頁</button><div class="micro">最佳紀錄儲存在此瀏覽器 · 純遊戲積分</div>');
- if(journey){const result=journey.result(score,{caught,maxCombo},journey.run.reason||'finish');openModal('<div class="result-heading"><div><div class="label">'+journey.text('本局成績','YOUR SCORE')+'</div><h2 id="dialogTitle">'+journey.text('捕財挑戰完成','Catch complete')+'</h2></div><div class="result-score">'+fmt(score)+'</div></div><p class="result-meta">'+journey.text('第 '+journey.run.wave+' / 4 回合 · 捕獲 '+caught+' 條 · 最高連捕 '+maxCombo,'Round '+journey.run.wave+' / 4 · '+caught+' catches · Best combo '+maxCombo)+'</p>'+result+'<div class="result-actions"><button class="primary" id="again" data-autofocus>'+journey.text('再玩一次','Play again')+'</button><button class="journey-exit" id="home">'+journey.text('返回選單','Menu')+'</button></div>');}
+ if(journey){const result=journey.result(score,{caught,maxCombo},journey.run.reason||'finish');openModal('<div class="result-heading"><div><div class="label">'+journey.text('聖誕本局成績','FESTIVE SCORE')+'</div><h2 id="dialogTitle">'+journey.text('聖誕捕財完成','Festive catch complete')+'</h2></div><div class="result-score">'+fmt(score)+'</div></div><p class="result-meta">'+journey.text('第 '+journey.run.wave+' / 4 回合 · 捕獲 '+caught+' 條 · 最高連捕 '+maxCombo,'Round '+journey.run.wave+' / 4 · '+caught+' catches · Best combo '+maxCombo)+'</p>'+result+'<div class="result-actions"><button class="primary" id="again" data-autofocus>'+journey.text('再玩一次','Play again')+'</button><button class="journey-exit" id="home">'+journey.text('返回選單','Menu')+'</button></div>');overlay.querySelector('.card')?.classList.add('festive-card');}
  $('again').onclick=prepareStart;$('home').onclick=showWelcome;$('live').textContent='本局已結算，共 '+score+' 分，捕獲 '+caught+' 條。';updateHud();
 }
 function help(){

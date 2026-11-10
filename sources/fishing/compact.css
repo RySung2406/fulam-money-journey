@@ -115,3 +115,30 @@ body.welcome-screen .card .journey-rule{font-size:12px!important}
 .combat-score-mode .control-panel .upgrade svg{display:none}
 .combat-score-mode .control-panel .effect-status{display:none}
 .combat-score-mode .footer .desktop-hint,.combat-score-mode .heading .tag{display:none}
+
+/* Winter Booth arcade cards — entry / quiz host / end */
+@keyframes fishing-snow{0%{transform:translateY(-6%)}100%{transform:translateY(110%)}}
+body.welcome-screen .overlay,body.combat-score-mode .overlay{
+ background:
+  radial-gradient(ellipse at 18% 10%,#2f6a4e44,transparent 42%),
+  radial-gradient(ellipse at 88% 8%,#8e242844,transparent 38%),
+  linear-gradient(160deg,#061812cc,#0a1f1caa 48%,#07141acc);
+}
+.card.festive-card,.showing-result .card{
+ position:relative;isolation:isolate;overflow:hidden;
+ border:1px solid #f0d87866!important;
+ background:
+  linear-gradient(#c23b3b 0 4px,#2f8f63 4px 7px,#0000 7px),
+  linear-gradient(165deg,#163a32f7,#0f2a28f5 55%,#142433f2)!important;
+ box-shadow:0 24px 70px #020a1488,inset 0 1px #fff4cb22!important;
+}
+.card.festive-card:before,.card.festive-card:after,.showing-result .card:before,.showing-result .card:after{
+ content:"";position:absolute;width:12px;height:12px;border-radius:50%;
+ background:radial-gradient(circle at 35% 35%,#fff4cb,#c23b3b 58%,#8e2428);
+ box-shadow:14px 0 0 -2px #2f8f63,22px 3px 0 -3px #c23b3b;pointer-events:none;opacity:.9;z-index:2;
+}
+.card.festive-card:before,.showing-result .card:before{top:12px;left:12px}
+.card.festive-card:after,.showing-result .card:after{top:12px;right:12px;transform:scaleX(-1)}
+.card.festive-card .label,.showing-result .card .label{color:#f0d878!important}
+.card.festive-card h2 em,.showing-result .result-score{color:#fff4cb!important}
+@media(prefers-reduced-motion:reduce){.card.festive-card,.showing-result .card{animation:none}}

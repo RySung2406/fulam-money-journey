@@ -28,8 +28,8 @@ test('five ordered stages have unique, legible choice banks for booth play', () 
     assert.equal(q.options.length, n, q.id + ' answer bank');
     assert.equal(new Set(q.options.map(o => o.id)).size, n, q.id + ' unique IDs');
     assert.equal(new Set(q.options.map(o => o.text.toLowerCase())).size, n, q.id + ' unique labels');
-    assert.equal(q.options.filter(o => o.good === true).length, q.id==='investment'?12:13, q.id + ' correct choices');
-    assert.equal(q.options.filter(o => o.good === false).length, 12, q.id + ' plausible decoys');
+    assert.equal(q.options.filter(o => o.good === true).length, q.id==='investment'||q.id==='tools'?12:13, q.id + ' correct choices');
+    assert.equal(q.options.filter(o => o.good === false).length, q.id==='tools'?13:12, q.id + ' plausible decoys');
     for (const o of q.options) {
       assert.ok(o.text.trim().length > 0 && o.text.length <= 36, q.id + ': ' + o.text);
     }

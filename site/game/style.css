@@ -115,6 +115,15 @@ body.immersive-game{overflow:hidden;overscroll-behavior:none;height:100dvh}
 /* English labels and account navigation. */
 [hidden]{display:none!important}.account-nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--line);font-size:12px}.account-nav a{color:var(--mint);text-decoration:none}.account-nav button{background:none;color:var(--muted);font-size:12px}.immersive-game .account-nav{display:none}.welcome-stage{display:grid;place-items:center;min-height:calc(100svh - 220px);padding:28px 0 40px}
 .welcome-card{width:min(520px,100%);padding:28px 30px 26px;border:1px solid #3b5260;border-radius:22px;background:linear-gradient(180deg,#1a2f3ecc,#142533f2);box-shadow:0 24px 80px #020a1480;text-align:left}
+.welcome-card.festive-card{position:relative;isolation:isolate;overflow:hidden;border:1px solid #f0d87866;background:linear-gradient(#c23b3b 0 4px,#2f8f63 4px 7px,#0000 7px),linear-gradient(165deg,#163a32f5,#0f2a28f2 55%,#142533f0);box-shadow:0 24px 80px #020a1488,inset 0 1px #fff4cb22}
+.welcome-card.festive-card:before,.welcome-card.festive-card:after{content:"";position:absolute;width:12px;height:12px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff4cb,#c23b3b 58%,#8e2428);box-shadow:14px 0 0 -2px #2f8f63,22px 3px 0 -3px #c23b3b;pointer-events:none;opacity:.9}
+.welcome-card.festive-card:before{top:14px;left:14px}.welcome-card.festive-card:after{top:14px;right:14px;transform:scaleX(-1)}
+.welcome-card.festive-card .eyebrow{color:#f0d878}
+.welcome-card.festive-card h1 em{color:#fff4cb}
+.welcome-stage{background:radial-gradient(ellipse at 20% 0%,#2f6a4e33,transparent 45%),radial-gradient(ellipse at 90% 20%,#8e242822,transparent 40%)}
+.festive-results{position:relative}
+.festive-results .result-top{border:1px solid #f0d87855;border-radius:18px;padding:22px 20px;background:linear-gradient(#c23b3b 0 3px,#2f8f63 3px 6px,#0000 6px),linear-gradient(165deg,#163a32cc,#142533ee);box-shadow:0 18px 50px #020a1466}
+.festive-results .eyebrow{color:#f0d878}.festive-results .big-score{color:#fff4cb}
 .welcome-mark{width:56px;height:56px;margin:0 0 16px;display:grid;place-items:center;border-radius:16px;border:1px solid #f2c46f55;background:#f2c46f12;color:var(--gold);transform:rotate(-8deg)}
 .welcome-mark svg{width:28px;height:28px}
 .welcome-card .eyebrow{margin:0 0 10px}
