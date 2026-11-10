@@ -112,7 +112,9 @@
 .pretest-card .posttest-entry { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top:28px; padding-top:24px; border-top:1px solid var(--line); }
 .pretest-card .posttest-entry .eyebrow { font-size:12px; letter-spacing:.1em; }
 .pretest-card .posttest-entry h3 { font-family:inherit; font-size:22px; font-weight:600; line-height:1.4; margin-top:5px; letter-spacing:-.02em; }
-.posttest-locked { flex-shrink:0; min-height:44px; padding:9px 15px; border:1px solid #d5dbd0; border-radius:8px; background:#edf0e7; color:#65705e; font-size:16px; font-weight:550; cursor:not-allowed; }
+.posttest-hint { margin:6px 0 0; font-size:14px; line-height:1.45; color:var(--muted,#65705e); }
+.posttest-locked { flex-shrink:0; min-height:44px; padding:9px 15px; border:1px solid #d5dbd0; border-radius:8px; background:#edf0e7; color:#65705e; font-size:15px; font-weight:550; cursor:not-allowed; }
+.posttest-open { display:inline-flex; align-items:center; justify-content:center; gap:6px; flex-shrink:0; min-height:44px; padding:9px 15px; border-radius:8px; background:var(--ink,#173f36); color:#fffef9; font-size:16px; font-weight:600; text-decoration:none; }
 @media(prefers-reduced-motion:no-preference) {
   .hero-copy { animation:hero-in .75s var(--ease) both; }
   .hero-visual { animation:art-in 1s var(--ease) both; }

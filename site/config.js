@@ -6,5 +6,8 @@ window.FULIN_CONFIG = Object.freeze({
   otpLength: 8,
   turnstileSiteKey: "0x4AAAAAAFzsY4FjFao8xJ-T",
   // Participant community invite (not the internal team chat). Add a verified HTTPS chat.whatsapp.com link.
-  whatsappCommunityUrl: "https://chat.whatsapp.com/HrA6jkRlXX9CLXdgJoMZGf"
+  whatsappCommunityUrl: "https://chat.whatsapp.com/HrA6jkRlXX9CLXdgJoMZGf",
+  // Microsoft Forms. Post-survey opens in My Journey only after 17/21 check-ins (80%).
+  preSurveyUrl: "https://forms.cloud.microsoft/r/EtyFDy1Y7p",
+  postSurveyUrl: "https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=dY4N6LlSOUijWIeruTs1Z-VOzApBm_VOvTm0gGA8MWtUM1Q3UVlZQlpZTlZVV05HVlo1WTNJR0JNMS4u"
 });
