@@ -2,7 +2,7 @@ import { normalizeSchoolEmail, normalizeOtp, isVerifiedSchoolUser, configuration
 import { persistentAuthOptions } from './auth-session.js';
 import { createCheckInController } from './check-in.js';
 import { CHECK_IN_DAYS } from './check-in-content.js';
-import { checkInAction, renderQuestion, renderPublishedAnswer, selectableCheckInDay } from './check-in-screen.js';
+import { checkInAction, renderQuestion, selectableCheckInDay } from './check-in-screen.js';
 
 const $ = (id) => document.getElementById(id);
 const config = window.FULIN_CONFIG || {};
@@ -135,7 +135,7 @@ function renderCheckIns(state = checkIns.state) {
     rewardBar.setAttribute('aria-valuetext', `已完成 ${completed} 天，抽獎門檻為 ${rewardTarget} 天`);
   }
   $('check-in-status').textContent = loading ? '正在載入…' : state.phase === 'error' ? '暫未能載入' : nextDay ? `第 ${nextDay} 日已開放` : completed ? '打卡已記錄' : '暫未開放';
-  $('check-in-description').textContent = '第 1 日和第 2 日已經開放。第 3 至 21 日在對應日期早上 6 時開放，直至 11 月 28 日；已開放的日子可隨時補做（香港時間）。點選日曆上已開放的日子，或按「開始打卡」，即可進入該日題目並選擇答案。第 1 日答案只向已完成的同學公布。';
+  $('check-in-description').textContent = '第 1 日和第 2 日已經開放。第 3 至 21 日在對應日期早上 6 時開放，直至 11 月 28 日；已開放的日子可隨時補做（香港時間）。點選日曆上已開放的日子，或按「開始打卡」，即可進入該日題目並選擇答案。正確答案只在進入該日後，向已完成的同學顯示。';
   $('check-in-progress').textContent = loading ? '正在讀取你的紀錄…' : state.phase === 'error' ? '請重新載入紀錄' : `已完成 ${completed} / 21 天`;
   $('check-in-calendar').setAttribute('aria-label', `21 天打卡${loading ? '，正在載入' : unavailable ? '，暫未能載入紀錄' : `，已完成 ${completed} 天`}`);
   for (const cell of $('check-in-calendar').querySelectorAll('[data-check-in-day]')) {
@@ -164,7 +164,10 @@ function renderCheckIns(state = checkIns.state) {
   $('check-in-message').classList.toggle('error', state.isError);
   $('check-in-retry').hidden = !state.isError;
   $('check-in-retry').disabled = busy || loading || saving;
-  renderPublished(state);
+  // Keep correct answers off the calendar overview; they appear only after opening that day.
+  const published = $('check-in-published');
+  published.replaceChildren();
+  published.hidden = true;
   const story = $('check-in-story');
   if (!action.showQuestion) { story.hidden = true; story.replaceChildren(); return; }
   const day = CHECK_IN_DAYS.find(item => item.n === action.day);
@@ -177,23 +180,6 @@ function renderCheckIns(state = checkIns.state) {
     locked: Boolean(savedChoice),
     revealed: Boolean(reveal), reveal, submitted: Boolean(record), savedChoice
   });
-}
-function renderPublished(state) {
-  const box = $('check-in-published');
-  const en = window.FuLamI18n?.getLanguage?.() === 'en';
-  const reveals = state.reveals || [];
-  const published = CHECK_IN_DAYS.filter(day => {
-    const record = state.records.find(row => row.day_number === day.n);
-    return record && reveals.some(item => item.day_number === day.n);
-  });
-  box.replaceChildren();
-  box.hidden = published.length === 0;
-  for (const day of published) {
-    const record = state.records.find(row => row.day_number === day.n);
-    const section = document.createElement('section');
-    renderPublishedAnswer(section, { day, en, savedChoice: record.choice, reveal: reveals.find(item => item.day_number === day.n) });
-    box.append(section);
-  }
 }
 function handleQuestionClick(event) {
   if (busy || view !== 'member') return;
