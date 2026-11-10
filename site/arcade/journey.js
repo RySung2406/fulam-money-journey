@@ -20,7 +20,7 @@
    if(this.game!=='knife'&&this.roundTime>=this.roundLimit()){this.roundTime=this.roundLimit();if(this.scene==='booth'&&this.wave>=BOOTH_STAGES){this.finish('stages');return 'over';}this.completeRound();return 'choice';}
    return null;
   }
-  roundLimit(){if(this.scene==='booth'&&this.game!=='knife'){const scheduled=BOOTH_STAGE_TIME[this.wave-1];if(Number.isFinite(scheduled))return scheduled;return Math.max(0,LIMIT-(this.total-this.roundTime));}return this.scene==='booth'?BOOTH_ROUND:ROUND;}
+  roundLimit(){if(this.scene==='booth'&&this.game!=='knife'){const times=this.game==='fleet'?[20,20,30]:BOOTH_STAGE_TIME;const scheduled=times[this.wave-1];if(Number.isFinite(scheduled))return scheduled;return Math.max(0,LIMIT-(this.total-this.roundTime));}return this.scene==='booth'?BOOTH_ROUND:ROUND;}
   completeRound(){if(this.phase!=='play')return false;this.phase='choice';this.choiceTime=CHOICE;this.grantedFrom=this.weapon;this.weapon++;return true;}
   choose(kind){
    const allowed=this.game==='knife'?['focus','life']:this.game==='fleet'?['escort','trajectory','rate']:['trajectory','rate'];
@@ -150,7 +150,10 @@
    const r=this.run,wallLeft=Math.ceil(Math.max(0,LIMIT-r.total)),stageLeft=Math.ceil(Math.max(0,r.roundLimit()-r.roundTime));
    if(this.game!=='knife'&&r.scene==='booth'){
     const left=r.wave>=BOOTH_STAGES?wallLeft:stageLeft;
-    this.status.textContent=this.text(`第 ${r.wave} / 4 回合 · ${r.phase==='choice'?'選擇升級':left+' 秒'}`,`Round ${r.wave} / 4 · ${r.phase==='choice'?'Choose an upgrade':left+'s'}`);
+    const finale=r.phase==='play'&&wallLeft>0&&wallLeft<=15;
+    this.status.textContent=finale
+     ?this.text(this.game==='fleet'?`終極模式 · 剩餘 ${wallLeft} 秒`:`狂歡模式 · 剩餘 ${wallLeft} 秒`,this.game==='fleet'?`Ultimate · ${wallLeft}s left`:`Carnival · ${wallLeft}s left`)
+     :this.text(`第 ${r.wave} / 4 回合 · ${r.phase==='choice'?'選擇升級':left+' 秒'}`,`Round ${r.wave} / 4 · ${r.phase==='choice'?'Choose an upgrade':left+'s'}`);
     return;
    }
    const clock=this.game==='knife'&&r.scene==='booth'?this.text(`第 ${Math.min(r.wave,KNIFE_STAGES)}/${KNIFE_STAGES} 關 · ${wallLeft}s`,`Stage ${Math.min(r.wave,KNIFE_STAGES)}/${KNIFE_STAGES} · ${wallLeft}s`):Math.floor(r.active)+'s';

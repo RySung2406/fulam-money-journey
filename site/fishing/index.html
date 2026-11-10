@@ -16,7 +16,13 @@
 .mission{bottom:20px;left:20px;max-width:calc(50% - 76px);flex-wrap:wrap;gap:6px;line-height:1.5;font-size:11px}
 .control-panel{margin-top:14px;padding:18px 20px 20px;background:linear-gradient(135deg,#10373d,#092a32);border:1px solid #9be8cf24;border-radius:18px}
 .control-top{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:16px}
-.cannon-progress{min-width:0}
+.cannon-progress{min-width:0;padding:6px 10px;border-radius:12px;border:1px solid #3f666244;background:#0c2c3388;transition:border-color .25s,background .25s,box-shadow .25s}
+.cannon-progress[data-cannon-tier="1"]{border-color:#f2c46f55;box-shadow:inset 0 0 0 1px #f2c46f14}
+.cannon-progress[data-cannon-tier="2"]{border-color:#8cf4ff66;background:#0d364088;box-shadow:0 0 18px #8cf4ff14}
+.cannon-progress[data-cannon-tier="3"]{border-color:#dab7ff77;background:#1a2f4888;box-shadow:0 0 18px #dab7ff18}
+.cannon-progress[data-cannon-tier="4"]{border-color:#ffb07a88;background:#3a241888;box-shadow:0 0 20px #ffb07a22}
+.cannon-progress.cannon-level-up{animation:cannonLevelUp .7s ease}
+@keyframes cannonLevelUp{0%{transform:scale(1)}35%{transform:scale(1.03);filter:brightness(1.25)}100%{transform:scale(1)}}
 .control-label{display:block;font-size:10px;color:var(--muted);letter-spacing:.12em;margin-bottom:7px}
 .level{position:static;display:inline-block;transform:none;font-size:12px;letter-spacing:.06em;background:none;border:0;padding:0;white-space:normal;line-height:1.5;font-weight:750}
 .effect-status{font-size:11px;line-height:1.5;color:#b4dcd3;margin:5px 0 0;min-height:17px}
@@ -190,6 +196,9 @@ body.welcome-screen .card .journey-rule{font-size:12px!important}
 .combat-score-mode .control-panel .upgrade svg{display:none}
 .combat-score-mode .control-panel .effect-status{display:none}
 .combat-score-mode .footer .desktop-hint,.combat-score-mode .heading .tag{display:none}
+.scene.carnival{box-shadow:inset 0 0 0 2px #ffd24a88,inset 0 0 48px #ffb84a33}
+.scene.carnival .journey-status{background:#5a3a12;color:#ffe7a8;border-bottom-color:#ffd24a88}
+body.carnival-mode .event{background:#5a3a12ee;border-color:#ffd24a;color:#fff4c8;box-shadow:0 0 24px #ffb84a44}
 
 .journey-settings{margin:12px 0;color:inherit}.journey-options{display:flex;gap:8px;margin:8px 0}.journey-options button{flex:1;min-width:0;min-height:44px;border:1px solid #78988b;border-radius:12px;padding:9px;background:#f4f2e8;color:#214b3b;font:700 14px inherit;cursor:pointer}.journey-options button[aria-pressed=true]{background:#214b3b;color:#fff4cb;border-color:#d4b36d}.journey-options button:disabled{opacity:.6;cursor:default}.journey-rule{font-size:12px!important;line-height:1.5!important;margin:6px 0!important}.journey-status{position:relative;z-index:4;background:#153b35;color:#fff1c9;padding:7px 12px;font-size:12px;line-height:1.4;flex-shrink:0;border-bottom:1px solid #75877c;white-space:normal}.journey-overlay{position:absolute;inset:0;background:#071f28e8;display:flex;align-items:center;justify-content:center;z-index:120;padding:12px;overflow:auto;color:#eef6e8}.journey-card{max-width:620px;width:100%;max-height:100%;overflow:auto;padding:22px;background:#143b38;border:1px solid #c4b67d;border-radius:20px;box-shadow:0 20px 60px #0005;text-align:left}.journey-card h2{font-size:26px;line-height:1.2;color:#fff1c9;margin:10px 0}.journey-card p{font-size:14px;line-height:1.5}.journey-kicker{color:#a7dbce;font-size:12px;letter-spacing:2px}.journey-upgrades{display:grid;gap:10px}.journey-upgrades button{display:flex;flex-direction:column;gap:6px;text-align:left;padding:15px;border:1px solid #7a9a8a;border-radius:12px;background:#e9eddd;color:#214b3b;font:inherit;cursor:pointer;min-height:60px}.journey-upgrades button[data-upgrade=weapon]{background:#f1d797}.journey-upgrades small{font-size:12px}.journey-upgrades button:focus-visible,.journey-options button:focus-visible{outline:3px solid #f1c36c;outline-offset:2px}.journey-result{margin:12px 0;padding:14px;border:1px solid #97ac91;border-radius:12px;text-align:left;font-size:13px;line-height:1.55}.journey-result p{font-size:13px!important;margin:8px 0!important}.journey-result small{display:block;font-size:11px;margin:6px 0;opacity:.85}.journey-result details{margin:8px 0}.journey-result a{color:inherit;text-decoration:underline}.journey-swap{min-height:44px;border:1px solid #c1b77f;border-radius:10px;background:#f1ddb0;color:#214b3b;font:700 14px sans-serif;padding:8px 12px;touch-action:none;cursor:pointer}.journey-live{position:relative}.journey-live>.journey-status{position:absolute;left:0;right:0;top:0}.journey-live .journey-overlay{position:absolute}.journey-counter{color:#e9c879;font-size:12px}.journey-hidden{display:none!important}@media(max-height:450px){.journey-card{padding:12px}.journey-card h2{font-size:20px;margin:4px 0}.journey-card p{margin:5px 0}.journey-upgrades{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.journey-upgrades button{padding:9px;font-size:13px;min-height:70px}.journey-status{padding:3px 8px;font-size:10px}}@media(prefers-reduced-motion:reduce){.journey-overlay *{animation:none!important;transition:none!important}}
 .scene.journey-live>.hud{top:42px!important}.scene.journey-live .timer{display:grid!important;gap:0;min-width:62px;padding:5px 8px;background:#133a35dd;border:1px solid #82b79b}.scene.journey-live .timer small{font-size:10px}.scene.journey-live .timer b{font-size:20px}.scene.journey-live .timer.urgent{border-color:#ffac84;color:#ffbf9c}.scene.journey-live .mission{left:12px;right:12px;display:flex;gap:10px;align-items:center}.scene.journey-live .mission .bar{flex:1;max-width:160px}.sea.journey-live>.sector{top:38px}.game-wrap.journey-live>.game-topline{padding-top:35px}.game-wrap.journey-live>.journey-status{z-index:15}.journey-result summary{cursor:pointer;min-height:36px;padding:6px 0}.journey-result ol{padding-left:24px}.journey-result li{padding:4px 0;border-bottom:1px solid #b7bca533}.journey-upgrades button:hover{filter:brightness(1.04)}.journey-upgrades b{font-size:15px}.journey-upgrades small{line-height:1.5}.journey-next{padding:10px 12px;border-left:3px solid #e6cb85;background:#ffffff0a}.journey-next:empty{display:none}.journey-result a{display:inline-flex;padding:8px 0}.journey-settings button{font-family:inherit;font-weight:700}.journey-rule{opacity:.9}.game-wrap .arena-footer{flex-wrap:wrap;gap:6px}.game-wrap .arena-footer>.journey-swap{font-size:12px;padding:7px 10px}.game-wrap .arena-footer>span{flex:1;min-width:90px}@media(max-width:450px){.journey-card{padding:18px}.journey-card h2{font-size:24px}.journey-upgrades button{min-height:68px;padding:12px}.game-wrap .arena-footer>span{font-size:10px}.game-wrap .arena-footer>.finish-session{font-size:11px;padding:8px}.game-wrap .arena-footer .journey-swap{min-height:42px}}@media(max-height:450px){.scene.journey-live>.hud{top:27px!important}.scene.journey-live .timer{padding:2px 6px;min-width:48px}.scene.journey-live .timer b{font-size:15px}.scene.journey-live .timer small{font-size:8px}.game-wrap.journey-live>.game-topline{padding-top:20px}.journey-next{padding:5px 8px;font-size:12px!important}.journey-upgrades button{min-height:65px}.journey-card{padding:10px}}
@@ -458,7 +467,8 @@ window.FuLamArt = (() => {
     ray: ['#b1fff2', '#38c8bb', '#185d7a', '#ffe695'],
     bond: ['#f0e5b4', '#9ecb7e', '#3c7252', '#ffe4a0'],
     crypto: ['#ffe0fb', '#c37bff', '#6039a1', '#98f4ff'],
-    gold: ['#fff3a1', '#efbf4b', '#ad632a', '#ffdf86']
+    gold: ['#fff3a1', '#efbf4b', '#ad632a', '#ffdf86'],
+    king: ['#fff4b0', '#ffd24a', '#b56a12', '#ffe9a0']
   };
   const TAU = Math.PI * 2;
   const ellipse = (c, x, y, rx, ry, fill, stroke, width = 1) => {
@@ -488,9 +498,9 @@ window.FuLamArt = (() => {
     const body = gradient(c, -15, -37, 12, 42, [[0,p[0]],[0.34,p[1]],[0.8,p[2]],[1,p[1]]]);
     const fin = gradient(c,-70,-35,-24,32,[[0,p[0]],[0.38,p[1]],[1,p[2]]]);
     if (tailOnly) {
-      if (type === 'whale') {
+      if (type === 'whale' || type === 'king') {
         path(c,'M -38 -2 C -52 -7 -62 -21 -83 -24 Q -78 -3 -60 1 Q -77 7 -83 25 C -61 23 -50 9 -38 7 Z',fin,p[2],1.5);
-        path(c,'M -48 3 Q -63 -2 -76 -17 M -48 4 Q -64 10 -76 20',null,'#d4fff055',1.5);
+        path(c,'M -48 3 Q -63 -2 -76 -17 M -48 4 Q -64 10 -76 20',null,type==='king'?'#ffe29a66':'#d4fff055',1.5);
       } else if (type === 'shark') {
         path(c,'M -37 0 Q -61 -16 -68 -43 Q -80 -21 -58 3 Q -75 7 -78 29 Q -57 21 -37 7 Z',fin,p[2],1.4);
       } else if (type === 'ray') {
@@ -574,21 +584,28 @@ window.FuLamArt = (() => {
       c.beginPath();c.moveTo(7,0);c.arc(7,0,17,-Math.PI/2,Math.PI*.16);c.closePath();c.fillStyle='#88e4d2';c.fill();
       c.beginPath();c.moveTo(7,0);c.arc(7,0,17,Math.PI*.16,Math.PI);c.closePath();c.fillStyle='#d5b1fb';c.fill();
       path(c,'M 7 -17 L 7 0 L -10 0 M 7 0 L 22 8',null,'#514378',1.4);
-    } else if (type === 'whale') {
+    } else if (type === 'whale' || type === 'king') {
       path(c,'M -42 -9 Q -25 -27 8 -32 Q 55 -38 72 -13 Q 83 5 67 24 Q 48 42 6 34 Q -26 30 -42 9 Z',body,p[2],1.6);
       c.shadowColor='transparent';
-      path(c,'M -30 17 Q 5 38 54 25 Q 71 21 75 9 Q 64 35 26 36 Q -9 35 -30 17 Z','#c5efce99');
+      path(c,'M -30 17 Q 5 38 54 25 Q 71 21 75 9 Q 64 35 26 36 Q -9 35 -30 17 Z',type==='king'?'#ffe7a899':'#c5efce99');
       path(c,'M -13 5 Q 9 17 9 47 Q -13 40 -23 17 Z',fin,p[2],1);
       path(c,'M -12 -28 L 4 -44 Q 13 -43 21 -30',p[2]);
-      for (let i = 0; i < 4; i++) path(c,`M ${17+i*9} 25 Q ${20+i*8} 30 ${26+i*8} 30`,null,'#256a7190',1);
+      for (let i = 0; i < 4; i++) path(c,`M ${17+i*9} 25 Q ${20+i*8} 30 ${26+i*8} 30`,null,type==='king'?'#b56a1290':'#256a7190',1);
       // A little captain's golden crown makes the boss silhouette distinct.
       path(c,'M 25 -27 L 22 -44 L 32 -38 L 39 -48 L 45 -38 L 55 -44 L 52 -27 Z','#f7c85d','#fff1b6',1.2);
-      ellipse(c,38,-32,2.2,2.2,'#26a99b');
+      ellipse(c,38,-32,2.2,2.2,type==='king'?'#ff9a3a':'#26a99b');
+      if(type==='king'){
+        // Extra meaty gold plating and a second crown band for the carnival fish king.
+        path(c,'M -18 -20 Q 8 -36 42 -18 Q 18 -8 -18 -20 Z','#ffd76a88','#fff1b6',1.2);
+        path(c,'M 18 -34 L 14 -52 L 28 -44 L 36 -56 L 44 -44 L 56 -52 L 52 -34 Z','#ffcf4a','#fff8d2',1.3);
+        for(let i=0;i<3;i++)ellipse(c,-8+i*18,8,7,9,'#ffefb8','#b56a12',1.2);
+      }
       // Treasury vault door with gold spokes.
-      ellipse(c,8,-1,20,21,'#103f5366','#e5bf70',2.2);
+      ellipse(c,8,-1,20,21,type==='king'?'#6a3a1066':'#103f5366','#e5bf70',2.2);
       ellipse(c,8,-1,13,14,null,'#ffe69a',1.2);
       ellipse(c,8,-1,4,4,'#ffe69a');
       for(let i=0;i<4;i++){const a=i*TAU/4;path(c,`M ${8+Math.cos(a)*4} ${-1+Math.sin(a)*4} L ${8+Math.cos(a)*12} ${-1+Math.sin(a)*12}`,null,'#ffe69a',2);}
+      if(type==='king'){c.font='bold 11px sans-serif';c.textAlign='center';c.fillStyle='#7a3f10';c.fillText('KING',8,3);}
     } else if (type === 'shark') {
       path(c,'M -47 -7 Q -16 -22 23 -19 L 74 -3 Q 52 22 13 22 Q -24 19 -47 7 Z',body,p[2],1.8);
       c.shadowColor='transparent';
@@ -629,8 +646,8 @@ window.FuLamArt = (() => {
       }
       path(c,'M 50 14 Q 56 17 60 10',null,p[2],1.5);
     }
-    const ex=({fund:35,whale:53,shark:46,ray:40,bond:53,crypto:43,gold:30})[type]??45;
-    const ey=({fund:-8,whale:-1,shark:-4,ray:-9,bond:-5,crypto:-10,gold:-38})[type]??-6;
+    const ex=({fund:35,whale:53,king:53,shark:46,ray:40,bond:53,crypto:43,gold:30})[type]??45;
+    const ey=({fund:-8,whale:-1,king:-1,shark:-4,ray:-9,bond:-5,crypto:-10,gold:-38})[type]??-6;
     ellipse(c,ex,ey,5.8,6.8,'#faffed',p[2],0.8);
     ellipse(c,ex+1.5,ey+0.6,3.3,4.3,'#153749');
     ellipse(c,ex+2.1,ey-1.4,1.5,1.7,'#ffffff');
@@ -653,7 +670,8 @@ window.FuLamArt = (() => {
       for(let i=0;i<3;i++){c.beginPath();c.moveTo(-65,-16+i*16);c.lineTo(-88-(i%2)*5,-16+i*16);c.stroke();}c.restore();
     }
     if(f.hit>0){c.shadowColor='#fff8c8';c.shadowBlur=18;}
-    c.save();c.translate(-36,0);c.rotate(wave*(type==='whale'?.09:.15));c.translate(36,0);
+    c.save();c.translate(-36,0);c.rotate(wave*((type==='whale'||type==='king')?.09:.15));c.translate(36,0);
+    if(type==='king'){c.save();c.globalAlpha=.22;c.strokeStyle='#ffe29a';c.lineWidth=3;c.beginPath();c.ellipse(0,0,78,48,0,0,TAU);c.stroke();c.restore();}
     c.drawImage(makeSprite(type,true),-96,-72,192,144);c.restore();
     c.drawImage(makeSprite(type,false),-96,-72,192,144);
     if(f.hit>0){c.globalAlpha=Math.min(.35,f.hit*3);ellipse(c,0,0,46,27,'#fff8d6');}
@@ -717,12 +735,13 @@ window.FuLamArt = (() => {
 
   function drawCannon(c,x,y,angle,level=1,recoil=0,time=0,weaponKind){
     c.save();c.translate(x,y);
-    const kind=weaponKind||(['single','single','double','spread','orb','beam','spread','orb','beam','spread','orb','hybrid'][level-1]||'single');
-    const accent=kind==='beam'?'#8cf4ff':kind==='orb'?'#dab7ff':kind==='hybrid'?'#ffd58c':kind==='spread'?'#9be8cf':'#ffdc85';
-    if(level>=7){
-      c.save();c.globalAlpha=.3;c.strokeStyle=accent;c.lineWidth=1.5;
-      c.beginPath();c.ellipse(0,7,54,35,0,0,TAU);c.stroke();
-      for(let i=0;i<4;i++){const a=i*TAU/4+time*.2;ellipse(c,Math.cos(a)*54,7+Math.sin(a)*35,2.5,2.5,accent);}
+    const raw=weaponKind||(['single','single','double','spread','orb','beam','spread','orb','beam','spread','orb','hybrid'][level-1]||'single');
+    const kind=raw==='bullet'?'single':raw==='missile'?'spread':raw==='arc'?'hybrid':raw==='twin'?'double':raw;
+    const accent=kind==='beam'||raw==='twin'?'#8cf4ff':kind==='orb'?'#dab7ff':kind==='hybrid'?'#ffd58c':kind==='blast'?'#ffb07a':kind==='spread'?'#9be8cf':'#ffdc85';
+    if(level>=4||kind==='blast'||kind==='hybrid'||kind==='beam'){
+      c.save();c.globalAlpha=.28;c.strokeStyle=accent;c.lineWidth=1.5;
+      c.beginPath();c.ellipse(0,7,48+Math.min(10,level),32+Math.min(6,level*.4),0,0,TAU);c.stroke();
+      for(let i=0;i<4;i++){const a=i*TAU/4+time*.2;ellipse(c,Math.cos(a)*(48+Math.min(10,level)),7+Math.sin(a)*(32+Math.min(6,level*.4)),2.2,2.2,accent);}
       c.restore();
     }
     c.shadowColor='#00141d';c.shadowBlur=20;c.shadowOffsetY=7;
@@ -735,14 +754,14 @@ window.FuLamArt = (() => {
       ellipse(c,Math.cos(a)*34,5+Math.sin(a)*25,2.3,2.3,'#fff1b7');
     }
     c.save();c.rotate(angle);c.translate(-Math.min(1,recoil)*6,0);
-    const barrel=(yaw=0,offset=0,length=52,width=15)=>{
+    const barrel=(yaw=0,offset=0,length=52,width=15,tip=accent)=>{
       c.save();c.rotate(yaw);c.translate(0,offset);
       c.fillStyle=gradient(c,0,-width/2,0,width/2,[[0,'#ffeab1'],[.32,'#b99758'],[.7,'#476261'],[1,'#b6b88e']]);
       c.strokeStyle='#e9d6a0';c.lineWidth=1.2;c.beginPath();c.roundRect(7,-width/2,length,width,4);c.fill();c.stroke();
       c.fillStyle='#123e48';c.beginPath();c.roundRect(19,-width*.27,length*.4,width*.54,2);c.fill();
-      c.fillStyle=accent;c.fillRect(length-3,-width*.45,7,width*.9);
+      c.fillStyle=tip;c.fillRect(length-3,-width*.45,7,width*.9);
       c.fillStyle='#082c39';c.fillRect(length+3,-width*.31,3,width*.62);
-      if(recoil>.2){c.shadowColor=accent;c.shadowBlur=9;ellipse(c,length+9,0,3+recoil*3,width*.3,'#e3fff2');c.shadowColor='transparent';}
+      if(recoil>.2){c.shadowColor=tip;c.shadowBlur=9;ellipse(c,length+9,0,3+recoil*3,width*.3,'#e3fff2');c.shadowColor='transparent';}
       c.restore();
     };
     const coil=()=>{
@@ -764,13 +783,21 @@ window.FuLamArt = (() => {
       path(c,'M 29 0 L 66 0',null,'#e5ffff',2.2);
       ellipse(c,41,0,6,6,'#dbffff');c.shadowColor='transparent';
     };
+    const blast=()=>{
+      barrel(0,0,54,18,'#ffb07a');
+      c.fillStyle='#3a2418';c.strokeStyle='#ffc08a';c.lineWidth=1.6;c.beginPath();c.roundRect(18,-16,28,32,8);c.fill();c.stroke();
+      for(const sy of [-1,1])ellipse(c,48,sy*11,5,5,'#ff9a5c');
+      c.shadowColor='#ffb07a';c.shadowBlur=12;ellipse(c,58,0,7+recoil*2,7+recoil*2,'#ffe0b8');c.shadowColor='transparent';
+    };
     if(kind==='spread'){
       for(const yaw of [-.25,0,.25])barrel(yaw,0,yaw?47:58,12);
       path(c,'M 30 -25 Q 42 0 30 25',null,accent,2.8);
     }else if(kind==='double'){
-      barrel(0,-11,53,14);barrel(0,11,53,14);
+      barrel(0,-11,53,14,raw==='twin'?'#8cf4ff':accent);barrel(0,11,53,14,raw==='twin'?'#8cf4ff':accent);
+      if(raw==='twin'){c.shadowColor='#8cf4ff';c.shadowBlur=10;path(c,'M 52 -11 L 66 -11',null,'#b9f7ff',3);path(c,'M 52 11 L 66 11',null,'#b9f7ff',3);c.shadowColor='transparent';}
     }else if(kind==='orb')coil();
     else if(kind==='beam')beam();
+    else if(kind==='blast')blast();
     else if(kind==='hybrid'){
       barrel(-.28,0,58,12);barrel(.28,0,58,12);beam();
       ellipse(c,22,0,14,19,null,'#f1ca81',2.5);
@@ -780,7 +807,8 @@ window.FuLamArt = (() => {
     ellipse(c,0,0,13,13,'#103944','#69bda4',1);
     c.fillStyle=accent;c.font='bold 20px Georgia';c.textAlign='center';c.textBaseline='middle';c.fillText('$',0,1);
     // Ring displays cannon upgrades without requiring tiny text.
-    for(let i=0;i<12;i++){const a=Math.PI*.15+i*Math.PI*.7/11;ellipse(c,Math.cos(a)*43,7+Math.sin(a)*29,1.7,1.7,i<level?accent:'#426463');}
+    const lit=Math.max(1,Math.min(12,level|0));
+    for(let i=0;i<12;i++){const a=Math.PI*.15+i*Math.PI*.7/11;ellipse(c,Math.cos(a)*43,7+Math.sin(a)*29,1.7,1.7,i<lit?accent:'#426463');}
     c.restore();
   }
 
@@ -1426,7 +1454,10 @@ window.FuLamFormations = Object.freeze({ create });
    const r=this.run,wallLeft=Math.ceil(Math.max(0,LIMIT-r.total)),stageLeft=Math.ceil(Math.max(0,r.roundLimit()-r.roundTime));
    if(this.game!=='knife'&&r.scene==='booth'){
     const left=r.wave>=BOOTH_STAGES?wallLeft:stageLeft;
-    this.status.textContent=this.text(`第 ${r.wave} / 4 回合 · ${r.phase==='choice'?'選擇升級':left+' 秒'}`,`Round ${r.wave} / 4 · ${r.phase==='choice'?'Choose an upgrade':left+'s'}`);
+    const carnival=this.game==='fishing'&&r.phase==='play'&&wallLeft>0&&wallLeft<=15;
+    this.status.textContent=carnival
+     ?this.text(`狂歡模式 · 剩餘 ${wallLeft} 秒`,`Carnival · ${wallLeft}s left`)
+     :this.text(`第 ${r.wave} / 4 回合 · ${r.phase==='choice'?'選擇升級':left+' 秒'}`,`Round ${r.wave} / 4 · ${r.phase==='choice'?'Choose an upgrade':left+'s'}`);
     return;
    }
    const clock=this.game==='knife'&&r.scene==='booth'?this.text(`第 ${Math.min(r.wave,KNIFE_STAGES)}/${KNIFE_STAGES} 關 · ${wallLeft}s`,`Stage ${Math.min(r.wave,KNIFE_STAGES)}/${KNIFE_STAGES} · ${wallLeft}s`):Math.floor(r.active)+'s';
@@ -1486,7 +1517,8 @@ const translations={
  '範圍捕捉，冷卻 16 秒。':'Area damage; 16-second cooldown.','慢速 5 秒，冷卻 20 秒。':'Slows fish for 5 seconds; 20-second cooldown.','射速加倍 8 秒，冷卻 24 秒。':'Double fire rate for 8 seconds; 24-second cooldown.','捕魚收益加倍 8 秒，冷卻 30 秒。':'Double coins for 8 seconds; 30-second cooldown.','大範圍爆破，冷卻 28 秒。':'Large explosion; 28-second cooldown.','召喚高值魚群，冷卻 32 秒。':'Summon valuable fish; 32-second cooldown.','鍵盤：← → 瞄準 · 空白鍵射擊':'Keyboard: ← → aim · Space fires','道具（亦可 1–4）':'skills (or 1–4)','升級':'upgrade','暫停':'pause','知道了':'Got it',
  '現金流單炮':'Cashflow Cannon','雙軌儲蓄':'Double Savings','分散投資':'Diversified Spread','複利能量球':'Compound Orb','複利增幅':'Compound Boost','長線光束':'Long-term Beam','資產配置':'Asset Allocation','複利重核':'Compound Core','長線聚焦':'Focused Beam','全球配置':'Global Allocation','平衡組合':'Balanced Portfolio','全域財富':'Total Wealth',
  '精準單發':'Single shot','雙管齊射':'Double shot','三路散射':'Three-way spread','穿透大球':'Piercing orb','爆破大球':'Blast orb','直線穿透':'Piercing beam','五路散射':'Five-way spread','巨球連爆':'Multi-blast orb','寬幅射線':'Wide beam','七路火網':'Seven-way spread','光束＋三球':'Beam + three orbs','巨球＋寬射線':'Orbs + wide beam',
- '現金金幣魚':'Cash Coinfish','儲蓄魚':'Savings Fish','基金魚':'Fund Fish','股票折線魚':'Stock Fish','金庫巨鯨':'Vault Whale','槓桿快鯊':'Leveraged Shark','ETF 魔鬼魚':'ETF Manta Ray','債券海龜':'Bond Turtle','波動水母':'Volatility Jellyfish','黃金海馬':'Gold Seahorse',
+ '現金金幣魚':'Cash Coinfish','儲蓄魚':'Savings Fish','基金魚':'Fund Fish','股票折線魚':'Stock Fish','金庫巨鯨':'Vault Whale','槓桿快鯊':'Leveraged Shark','ETF 魔鬼魚':'ETF Manta Ray','債券海龜':'Bond Turtle','波動水母':'Volatility Jellyfish','黃金海馬':'Gold Seahorse','財神魚王':'Fortune Fish King',
+ '狂歡模式 · 最後 15 秒！射速加快 · 魚潮湧入':'Carnival · Final 15s! Faster fire · Fish rush in','財神魚王登場 · 超厚血肉':'Fortune Fish King arrives · Extra meaty','財神魚王收下！':'Fortune Fish King claimed!',
  '冰凍':'Freeze','狂熱連射':'Rapid Fire','雙倍金幣':'Double Coins','深海炸彈':'Bomb','黃金誘餌':'Golden Lure','範圍捕捉':'Area damage','慢速 5 秒':'Slow for 5s','加速 8 秒':'Faster for 8s','雙倍 8 秒':'Double for 8s','大範圍爆破':'Area blast','召喚高值魚群':'Summon valuable fish',
  '無限時捕財 · U 升級可改變攻擊方式':'No time limit · Press U to change your weapon','冰凍時間 · 5 秒慢速捕財':'Freeze · Fish slowed for 5s','狂熱連射 · 8 秒雙倍射速':'Rapid Fire · Double speed for 8s','雙倍金幣 · 8 秒捕魚收益 ×2':'Double Coins · 2× coins for 8s','深海炸彈 · 魚群大豐收':'Bomb · Big catch!','黃金誘餌 · 高值魚群入場':'Golden Lure · Valuable fish incoming','魚群太多，捕幾條再放魚餌':'Too many fish. Catch some before using the lure.','金庫巨鯨入袋！':'Vault Whale caught!','槓桿快鯊擊破！':'Leveraged Shark caught!','捕財小目標完成 · +':'Goal complete · +',' 金幣就可以升級':' more coins needed to upgrade','再捕 ':'Catch ',' 金幣':' coins',' · 解鎖':' · unlocked ',' 解鎖':' unlock',' 秒生效':'s active',' 秒冷卻':'s cooldown','全部道具已解鎖 · 自由組合火力':'All skills unlocked','升級炮台，解鎖更多道具':'Upgrade the cannon to unlock skills','升級炮台':'Upgrade','已達最高等級':'Maximum level','海域 ':'Sea ',' · 獎勵 ':' · reward ','連捕加成 ×':'Combo bonus ×','第 ':'Wave ',' 波 · ':' · ','出現！':' appears!','魚群血量與速度提升':'fish health and speed increased',
  '富臨錢進號 · 投資海洋單機版 v3.0':'The Money Journey · Investment Ocean v3.0','沿用 Fishing Joy 的魚群編排程式，重製為 Canvas 遊戲。畫面、魚種、炮台及計分玩法為此版本重新製作。':'Fish formations adapted from Fishing Joy. Art, fish, cannons and scoring were remade for this Canvas game.','原始專案：':'Original project: ','授權：':'Licence: ','返回遊戲':'Back to game'
@@ -1506,11 +1538,13 @@ function toggleLanguage(){language=language==='en'?'zh-Hant':'en';try{localStora
 
 let w=1000,h=600,dpr=1,mode='welcome',difficulty='normal',last=0,time=0,round=0,score=0,wallet=0,caught=0,shots=0,hits=0,level=1,combo=0,maxCombo=0,lastCatch=-10,missionIndex=0,bossSpawned=0,nextBossAt=20,saveClock=5,startingBest=0;
 let fish=[],bullets=[],beams=[],particles=[],rings=[],floaters=[],coins=[],aim={x:500,y:240},pointerDown=false,keys=new Set(),shotClock=0,spawnClock=0,recoil=0,shake=0,freezeTime=0,freezeCooldown=0,hudClock=0,eventTime=0,sessionStarted=false;
+let carnivalOn=false,carnivalKingSpawned=false;
+const CARNIVAL_SECS=15;
 let angle=-Math.PI/2,demoSpawn=0,modalReturn='welcome',oldFocus=null,toastTimeout,resultRecord=false;
 let rapidCooldown=0,doubleCooldown=0,bombCooldown=0,lureCooldown=0,rapidTime=0,doubleTime=0,fishSerial=0,lastPressureTier=0;
 // Each cost upgrades TO this level; the first cannon is free.
 const cannons=[
- {name:'現金流單炮',kind:'single',label:'精準單發',cost:0,damage:1,spread:[0],interval:.16,speed:700},
+ {name:'現金流單炮',kind:'single',label:'定投金幣',cost:0,damage:1,spread:[0],interval:.16,speed:700},
  {name:'雙軌儲蓄',kind:'double',label:'雙管齊射',cost:80,damage:1.6,spread:[-.045,.045],interval:.17,speed:730},
  {name:'分散投資',kind:'spread',label:'三路散射',cost:180,damage:2,spread:[-.18,0,.18],interval:.19,speed:750},
  {name:'複利能量球',kind:'orb',label:'穿透大球',cost:300,damage:8,spread:[0],interval:.22,speed:470,pierce:2,blast:42},
@@ -1537,6 +1571,7 @@ const defs={
  stock:{name:'股票折線魚',value:55,hp:12,size:34,speed:105,color:'#ffb78b',swim:'zigzag'},
  whale:{name:'金庫巨鯨',value:360,hp:34,size:72,speed:38,color:'#ffdb85',swim:'glide',boss:true},
  shark:{name:'槓桿快鯊',value:240,hp:22,size:56,speed:140,color:'#9cd9ff',swim:'dash',boss:true},
+ king:{name:'財神魚王',value:1800,hp:240,size:118,speed:20,color:'#ffd24a',swim:'glide',boss:true},
  ray:{name:'ETF 魔鬼魚',value:95,hp:22,size:45,speed:74,color:'#a6baff',swim:'glide'},
  bond:{name:'債券海龜',value:65,hp:18,size:35,speed:43,color:'#a9e0b0',swim:'cruise'},
  crypto:{name:'波動水母',value:85,hp:15,size:32,speed:65,color:'#e7a2fa',swim:'pulse'},
@@ -1568,10 +1603,12 @@ function swimBounds(size=38){
 // Apply the size and durability adjustment only to touch-first devices.
 function mobileFishing(){return matchMedia('(hover: none) and (pointer: coarse) and (max-width: 650px), (hover: none) and (pointer: coarse) and (max-height: 500px)').matches;}
 function fishSize(type){
- const boss=!!defs[type].boss,base=defs[type].size*(boss?1.3:1.55)*(w<600?.9:1);
- return Math.min(base,w*(boss?.26:.16),h*.20)*(mobileFishing()?.9:1);
+ const boss=!!defs[type].boss,king=type==='king',base=defs[type].size*(boss?1.3:1.55)*(w<600?.9:1);
+ return Math.min(base,w*(king?.4:boss?.26:.16),h*(king?.3:.20))*(mobileFishing()?.9:1);
 }
-function fishLimit(){return journey?(w<600?18:28):(w<600?30:42)}
+function carnivalLeft(){return journey?.run&&journey.run.scene==='booth'?Math.max(0,window.FuLamJourney.LIMIT-journey.run.total):0}
+function inCarnival(){return !!journey?.run&&journey.run.phase==='play'&&carnivalLeft()>0&&carnivalLeft()<=CARNIVAL_SECS}
+function fishLimit(){const base=journey?(w<600?18:28):(w<600?30:42);return inCarnival()?Math.min(base+(w<600?10:14),w<600?30:44):base}
 function mission(){
  if(missionIndex<missions.length)return {...missions[missionIndex],previous:missionIndex?missions[missionIndex-1].n:0};
  const extra=missionIndex-missions.length;return {n:150+extra*50,bonus:Math.min(1000,450+extra*50),previous:100+extra*50};
@@ -1605,6 +1642,12 @@ function spawnRoundBoss(){
  notify(translated(defs[type].name)+' · '+journey.text(wave<3?'裝甲保護 · 第 3 回合破甲':'已破甲 · 集中火力！',wave<3?'Armoured · breaks in round 3':'Armour broken · focus fire!'),2.5);
  return true;
 }
+function spawnFishKing(){
+ if(fish.some(f=>!f.dead&&f.type==='king'))return false;
+ while(fish.filter(f=>!f.dead).length>=Math.max(4,fishLimit()-2)){const i=fish.findIndex(f=>!defs[f.type].boss);if(i<0)break;fish.splice(i,1);}
+ if(!spawn('king',{x:w*.5,y:h*.4,dir:gameRandom()<.5?1:-1}))return false;
+ sound('boss');shake=reduced?0:6;notify('財神魚王登場 · 超厚血肉',3);return true;
+}
 function school(demo=false){
  if(fish.filter(f=>!f.dead).length>fishLimit()-6)return;
  const dir=gameRandom()<.5?1:-1,types=['coin','coin','save','fund','bond'],type=types[Math.floor(gameRandom()*types.length)],kind=['line','wave','v','circle'][Math.floor(gameRandom()*4)],count=w<600?4:6,points=FuLamFormations.create(kind,count,w,h,dir,gameRandom),speed=defs[type].speed*(demo?.55:modes[difficulty].speed*pressure().speed);
@@ -1620,7 +1663,7 @@ function closeModal(){scene.classList.remove('showing-result');overlay.hidden=tr
 function showWelcome(){
  document.body.classList.add('welcome-screen');
  scene.classList.remove('showing-result');journey?.close();if(journey?.status)journey.status.hidden=true;scene.classList.remove('journey-live');
- fx.clear();soundscape.stop();mode='welcome';sessionStarted=false;$('pause').disabled=true;document.body.classList.remove('game-active');resetItems();score=wallet=caught=round=0;level=1;combo=0;missionIndex=0;bullets=[];beams=[];particles=[];rings=[];floaters=[];coins=[];eventTime=0;seedDemo();
+ fx.clear();soundscape.stop();mode='welcome';sessionStarted=false;$('pause').disabled=true;document.body.classList.remove('game-active','carnival-mode');scene.classList.remove('carnival');carnivalOn=false;carnivalKingSpawned=false;resetItems();score=wallet=caught=round=0;level=1;combo=0;missionIndex=0;bullets=[];beams=[];particles=[];rings=[];floaters=[];coins=[];eventTime=0;seedDemo();
  openModal(welcomeIcon+'<div class="label">FULAM · ENDLESS FISHING</div><h2 id="dialogTitle">想捕幾耐，<br> <em>就捕幾耐。</em></h2><p>瞄準大魚，長按連射。<br>捕魚補能源，升炮打大魚。</p><div class="difficulty" role="group" aria-label="遊戲難度"><button data-diff="easy">輕鬆</button><button data-diff="normal">標準</button><button data-diff="hard">挑戰</button></div><button class="primary" id="start" data-autofocus>開炮捕財 <span aria-hidden="true">↗</span></button><div class="how"><span><b>01 · 無限時</b>隨時暫停結算</span><span><b>02 · 武器變形</b>散射、大球、射線</span><span><b>03 · 海域升溫</b>魚血量和速度漸增</span></div><div class="micro">魚種與武器是理財概念造型 · 分數不代表投資回報</div>');
  overlay.querySelectorAll('[data-diff]').forEach(b=>{b.classList.toggle('selected',b.dataset.diff===difficulty);b.setAttribute('aria-pressed',String(b.dataset.diff===difficulty));b.onclick=()=>{difficulty=b.dataset.diff;overlay.querySelectorAll('[data-diff]').forEach(e=>{e.classList.toggle('selected',e===b);e.setAttribute('aria-pressed',String(e===b))});updateHud()}});$('start').onclick=prepareStart;if(journey){const container=document.createElement('div');overlay.querySelector('.difficulty').replaceWith(container);journey.settings(container,d=>{difficulty=d==='intermediate'?'booth':d==='challenge'?'hard':'normal';});overlay.querySelector('.card>.label').textContent='FULAM · CATCH';$('dialogTitle').textContent=journey.text('兩分鐘，捕出高分。','Two minutes. Your best catch.');const intro=overlay.querySelector('.card>p');if(intro)intro.textContent=journey.text('長按連射，捕魚補能源。連捕和 Boss 都是追分關鍵。','Hold to fire; catches refill energy. Combos and bosses earn bigger scores.');}updateHud();
 }
@@ -1629,7 +1672,7 @@ function start(){
  document.body.classList.remove('welcome-screen');
  if(journey){journey.start(scene);scene.classList.add('journey-live');energy=100;difficulty=journey.run.difficulty==='intermediate'?'booth':journey.run.difficulty==='challenge'?'hard':'normal';}
  fx.clear();initAudio();mode='playing';sessionStarted=true;round=0;score=wallet=caught=shots=hits=0;level=1;combo=maxCombo=0;lastCatch=-10;missionIndex=0;bossSpawned=0;nextBossAt=20;saveClock=5;startingBest=journey?journey.best():prefs.best[difficulty];resultRecord=false;lastPressureTier=0;
- fish=[];bullets=[];beams=[];particles=[];floaters=[];coins=[];rings=[];resetItems();shotClock=0;spawnClock=.5;clearPointerInput();keys.clear();aim={x:w/2,y:h*.35};angle=-Math.PI/2;closeModal();document.body.classList.add('game-active');
+ fish=[];bullets=[];beams=[];particles=[];floaters=[];coins=[];rings=[];resetItems();shotClock=0;spawnClock=.5;carnivalOn=false;carnivalKingSpawned=false;scene.classList.remove('carnival');document.body.classList.remove('carnival-mode');clearPointerInput();keys.clear();aim={x:w/2,y:h*.35};angle=-Math.PI/2;closeModal();document.body.classList.add('game-active');
  if(journey)nextBossAt=8;
  for(let i=0;i<(journey?6:10);i++)spawn(['coin','save','coin','fund','stock','bond','gold','crypto','gold','coin'][i%10],journey?{x:w*(.17+.33*(i%3)),y:h*(.35+.25*Math.floor(i/3))}:{x:gameRnd(w*.06,w*.94)});
  notify(journey?'捕魚補能源 · 回合升級 · 最高分挑戰':'無限時捕財 · U 升級可改變攻擊方式',3);updateHud();
@@ -1662,7 +1705,7 @@ function capture(f){
  const mult=1+Math.min(1,Math.floor(combo/5)*.15),gain=Math.round(f.value*mult);score+=gain;wallet+=gain;
  fx.burst(f.x,f.y,{color:defs[f.type].color,size:f.size*.7,water:true,heavy:f.type==='whale'||f.type==='shark'});if(['bond','crypto'].includes(f.type)){fx.shatter(f.x,f.y,defs[f.type].color,f.size*.4);sound('crack');}rings.push({x:f.x,y:f.y,r:10,end:f.size*2.3,life:.45,max:.45,color:defs[f.type].color,net:false});floater(f.x,f.y-15,'+'+gain,defs[f.type].color,f.type==='whale'||f.type==='shark');
  for(let i=0;i<(reduced?2:Math.min(8,Math.ceil(gain/15)))&&coins.length<180;i++)coins.push({x:f.x+rnd(-12,12),y:f.y+rnd(-12,12),sx:f.x,sy:f.y,age:0,delay:i*.035,life:.8+Math.random()*.2,spin:rnd(0,TAU),vx:rnd(-60,60)});
- sound(combo>=5&&combo%5===0?'combo':'coin');if(f.type==='whale'||f.type==='shark'){notify(f.type==='whale'?'金庫巨鯨入袋！':'槓桿快鯊擊破！',2.5);shake=reduced?0:5;sound('heavy')}
+ sound(combo>=5&&combo%5===0?'combo':'coin');if(f.type==='whale'||f.type==='shark'||f.type==='king'){notify(f.type==='king'?'財神魚王收下！':f.type==='whale'?'金庫巨鯨入袋！':'槓桿快鯊擊破！',2.5);shake=reduced?0:(f.type==='king'?8:5);sound('heavy')}
  const m=mission();if(caught>=m.n){score+=m.bonus;wallet+=m.bonus;missionIndex++;notify('捕財小目標完成 · +'+m.bonus+' 金幣',2.5);sound('upgrade')}
 }
 function damage(f,amount){if(f.dead)return;f.hp-=amount*(f.armored?.5:1);f.hit=.16;fx.hit(f.x,f.y,f.armored?'#9cd9ff':'#c6f6e2');if(f.hp<=0)capture(f);else sound('hit')}
@@ -1695,26 +1738,33 @@ function boothSpread(base,trajectory,openStep,packedStep){
  return Array.from({length:count},(_,i)=>(i-(count-1)/2)*gap);
 }
 function currentCannon(){
- if(!journey?.run)return cannons[level-1];
+ if(!journey?.run)return {...cannons[level-1],drawKind:cannons[level-1].kind};
  const p=window.FuLamJourney.weaponProfile('fishing',journey.run);
  const booth=journey.run.scene==='booth',shots=journey.run.trajectory||0;
- if(booth&&p.tier===1){const spread=boothSpread(1,shots,.1,.09);return {...p,name:journey.text('普通子彈','Bullets'),label:journey.text('普通子彈','Bullets'),kind:'bullet',spread,count:spread.length,radius:4.2,reach:1,pierce:1,blast:0,speed:p.speed,color:'#ffe39b'};}
- if(booth&&p.tier===2){const spread=boothSpread(2,shots,.16,.08);return {...p,name:journey.text('雙聯激光','Twin laser'),label:journey.text('雙聯激光','Twin laser'),kind:'beam',spread,count:spread.length,beamWidth:8,pierce:p.pierce+1,blast:0,speed:p.speed,color:'#8cf4ff'};}
- if(booth&&p.tier===3){const spread=boothSpread(1,shots,.1,.09);return {...p,name:journey.text('穿透巨彈','Piercing shot'),label:journey.text('穿透巨彈','Piercing shot'),kind:'orb',spread,count:spread.length,radius:16,reach:1,pierce:8,blast:0,speed:620,color:'#d7b4ff'};}
- if(booth&&p.tier>=4){const spread=boothSpread(1,shots,.1,.09);return {...p,name:journey.text('爆裂彈','Blast shot'),label:journey.text('爆裂彈','Blast shot'),kind:'bullet',spread,count:spread.length,radius:6,reach:1,pierce:1,blast:w<600?84:112,speed:680,color:'#ffb07a'};}
+ const modeNote=(label)=>journey.text(
+  label+(shots?` · 彈道 +${shots}`:'')+(journey.run.rate?` · 射速 +${journey.run.rate}`:''),
+  label+(shots?` · spread +${shots}`:'')+(journey.run.rate?` · rate +${journey.run.rate}`:'')
+ );
+ if(booth&&p.tier===1){const spread=boothSpread(1,shots,.1,.09);return {...p,name:journey.text('金幣子彈','Coin shot'),label:modeNote(journey.text('定投金幣','Gold coins')),kind:'bullet',drawKind:'single',spread,count:spread.length,radius:4.2,reach:1,pierce:1,blast:0,speed:p.speed,color:'#ffd24a'};}
+ if(booth&&p.tier===2){const spread=boothSpread(2,shots,.16,.08);return {...p,name:journey.text('雙聯激光','Twin laser'),label:modeNote(journey.text('雙管激光','Twin lasers')),kind:'beam',drawKind:'twin',spread,count:spread.length,beamWidth:8,pierce:p.pierce+1,blast:0,speed:p.speed,color:'#8cf4ff'};}
+ if(booth&&p.tier===3){const spread=boothSpread(1,shots,.1,.09);return {...p,name:journey.text('穿透巨彈','Piercing shot'),label:modeNote(journey.text('穿透大球','Piercing orb')),kind:'orb',drawKind:'orb',spread,count:spread.length,radius:16,reach:1,pierce:8,blast:0,speed:620,color:'#d7b4ff'};}
+ if(booth&&p.tier>=4){const spread=boothSpread(1,shots,.1,.09);return {...p,name:journey.text('爆裂彈','Blast shot'),label:modeNote(journey.text('命中爆炸','Blast on hit')),kind:'bullet',drawKind:'blast',spread,count:spread.length,radius:6,reach:1,pierce:1,blast:w<600?84:112,speed:680,color:'#ffb07a'};}
  const wide=booth?1.8:1;
- return {...p,name:journey.name(journey.run.weapon),label:journey.name(journey.run.weapon),kind:p.kind,beamWidth:8+p.stage,pierce:p.pierce+1,blast:(p.blast||0)*wide,speed:p.speed,color:p.color};
+ const drawKind=p.kind==='bullet'?'single':p.kind==='missile'?'spread':p.kind==='arc'?'hybrid':p.kind;
+ return {...p,name:journey.name(journey.run.weapon),label:modeNote(journey.name(journey.run.weapon)),kind:p.kind,drawKind,beamWidth:8+p.stage,pierce:p.pierce+1,blast:(p.blast||0)*wide,speed:p.speed,color:p.color};
 }
 function fire(){
  if(mode!=='playing'||bullets.length>180)return;const o=origin(),cannon=currentCannon();
+ const coinShot=(!journey&&level===1)||(!!journey&&(cannon.drawKind==='single'||cannon.tier===1));
  if(cannon.kind==='beam'||cannon.kind==='hybrid')for(const offset of journey?cannon.spread:[0])emitBeam(cannon,angle+offset,(cannon.beamDamage||cannon.damage)*(journey&&cannon.count===2?.65:journey&&offset!==0?.55:1));
  if(cannon.kind!=='beam')for(const spread of cannon.spread){
   const a=angle+spread,isOrb=cannon.kind==='orb'||cannon.kind==='hybrid';
   const torpedo=cannon.kind==='missile'||cannon.kind==='arc',reach=cannon.reach??(journey?.run?.scene==='booth'?1.8:1);
-  bullets.push({x:o.x+Math.cos(a)*48,y:o.y+Math.sin(a)*48,px:o.x,py:o.y,vx:Math.cos(a)*cannon.speed,vy:Math.sin(a)*cannon.speed,age:0,damage:cannon.damage*(journey&&cannon.count===2?.65:journey&&spread!==0?.55:1),color:cannon.color,homing:cannon.homing||0,chain:cannon.chain||0,r:(cannon.radius||(isOrb?Math.min(24,12+level):torpedo?8:Math.min(6,3.8+level*.25)))*reach,kind:isOrb?'orb':torpedo?'missile':'bullet',pierce:journey?cannon.pierce:isOrb?cannon.pierce:1,blast:(journey?cannon.blast:isOrb?cannon.blast:0)*(torpedo?reach:1),hitIds:new Set(),exploded:false});
+  const radius=((cannon.radius||(isOrb?Math.min(24,12+level):torpedo?8:Math.min(6,3.8+level*.25)))*reach)*(coinShot?1.35:1);
+  bullets.push({x:o.x+Math.cos(a)*48,y:o.y+Math.sin(a)*48,px:o.x,py:o.y,vx:Math.cos(a)*cannon.speed,vy:Math.sin(a)*cannon.speed,age:0,damage:cannon.damage*(journey&&cannon.count===2?.65:journey&&spread!==0?.55:1),color:coinShot?'#ffd24a':cannon.color,homing:cannon.homing||0,chain:cannon.chain||0,r:radius,kind:coinShot?'coin':isOrb?'orb':torpedo?'missile':'bullet',coin:coinShot,pierce:journey?cannon.pierce:isOrb?cannon.pierce:1,blast:(journey?cannon.blast:isOrb?cannon.blast:0)*(torpedo?reach:1),hitIds:new Set(),exploded:false});
   shots++;
  }
- recoil=1;fx.hit(o.x+Math.cos(angle)*48,o.y+Math.sin(angle)*48,cannon.color||'#ffdfa3');sound(cannon.kind==='beam'?'laser':cannon.kind==='orb'?'pierce':cannon.blast?'burstShot':'fire');
+ recoil=1;fx.hit(o.x+Math.cos(angle)*48,o.y+Math.sin(angle)*48,coinShot?'#ffd24a':(cannon.color||'#ffdfa3'));sound(cannon.kind==='beam'?'laser':cannon.kind==='orb'?'pierce':cannon.blast?'burstShot':coinShot?'coin':'fire');
 }
 function useFreeze(){if(!canUse('freeze'))return;initAudio();freezeCooldown=itemDefs.freeze.cooldown;freezeTime=5;sound('freeze');notify('冰凍時間 · 5 秒慢速捕財',2);updateHud()}
 function useRapid(){if(!canUse('rapid'))return;initAudio();rapidCooldown=itemDefs.rapid.cooldown;rapidTime=8;shotClock=0;sound('rapid');notify('狂熱連射 · 8 秒雙倍射速',2);updateHud()}
@@ -1752,7 +1802,15 @@ function updateHud(){
  const effects=[];if(freezeTime>0)effects.push('冰凍 '+Math.ceil(freezeTime)+'s');if(rapidTime>0)effects.push('連射 ×2 '+Math.ceil(rapidTime)+'s');
  $('effectStatus').textContent=translated(effects.join(' · ')||(level===maxLevel?'全部道具已解鎖 · 自由組合火力':'升級炮台，解鎖更多道具'));
  const next=cannons[level];$('upgrade').disabled=mode!=='playing'||!next||wallet<next.cost;$('upgradeTitle').textContent=translated(next?'升級炮台':'已達最高等級');$('upgradePrice').textContent=translated(next?fmt(next.cost)+' 金幣 → Lv.'+(level+1):cannons[level-1].name+' · 巨球＋射線');
- if(journey?.run){$('timer').textContent=Math.ceil(energy/survival().max*100)+'%';$('timerBox').querySelector('small').textContent=journey.text('能源','ENERGY');$('timerBox').classList.toggle('urgent',energy<25);$('level').textContent=currentCannon().name;$('weaponMode').textContent='';$('upgrade').disabled=mode!=='playing';$('upgradeTitle').textContent=journey.text('玩法','Guide');$('upgrade').setAttribute('aria-label',journey.text('玩法說明，鍵盤 U','How to play, press U'));$('upgradePrice').textContent='';$('effectStatus').textContent=journey.text(journey.run.wave>=4?'命中爆炸 · 波紋內魚群受傷':'捕魚補充能源 · 第 3 回合 Boss 破甲',journey.run.wave>=4?'Blast hits fish inside the ripple':'Catches refill energy · Boss armour breaks in R3');}
+ if(journey?.run){
+  const cannon=currentCannon(),tier=Math.min(4,cannon.tier||journey.run.weapon+1);
+  $('timer').textContent=Math.ceil(energy/survival().max*100)+'%';$('timerBox').querySelector('small').textContent=journey.text('能源','ENERGY');$('timerBox').classList.toggle('urgent',energy<25);
+  $('level').textContent=journey.text(`炮台 ${tier} / 4 · ${cannon.name}`,`Cannon ${tier} / 4 · ${cannon.name}`);
+  $('weaponMode').textContent=cannon.label||'';
+  $('upgrade').disabled=mode!=='playing';$('upgradeTitle').textContent=journey.text('玩法','Guide');$('upgrade').setAttribute('aria-label',journey.text('玩法說明，鍵盤 U','How to play, press U'));$('upgradePrice').textContent=journey.text(`下一階自動升級`,`Next stage auto-upgrades`);
+  $('effectStatus').textContent=inCarnival()?journey.text('狂歡模式 · 射速加快 · 魚王在場','Carnival · Faster fire · Fish King live'):journey.text(journey.run.wave>=4?'命中爆炸 · 波紋內魚群受傷':'捕魚補充能源 · 第 3 回合 Boss 破甲',journey.run.wave>=4?'Blast hits fish inside the ripple':'Catches refill energy · Boss armour breaks in R3');
+  document.querySelector('.cannon-progress')?.setAttribute('data-cannon-tier',String(tier));
+}
  const m=mission();$('missionLabel').textContent=translated('捕獲 '+caught+' / '+m.n+' · 獎勵 '+fmt(m.bonus));$('missionFill').style.width=clamp((caught-m.previous)/(m.n-m.previous)*100,0,100)+'%';
  if(journey?.run){$('missionLabel').textContent=journey.text('能源 ','ENERGY ')+Math.ceil(energy)+' / '+survival().max+(journey.run.protection?journey.text(' · 保護 ',' · Guard ')+Math.round((1-survival().multiplier)*100)+'%':'');$('missionFill').style.width=Math.min(100,energy/survival().max*100)+'%';$('missionFill').style.background=energy<25?'#f4a381':'#94dfc2';}
  $('combo').classList.toggle('show',combo>=3&&round-lastCatch<2.6&&mode==='playing');$('comboNum').textContent=combo+' COMBO';$('comboSub').textContent=translated('連捕加成 ×'+(1+Math.min(1,Math.floor(combo/5)*.15)).toFixed(2));
@@ -1782,13 +1840,18 @@ function step(dt,elapsed=dt){
  if(playing){
   if(journey){energy=Math.max(0,energy-elapsed*((modes[difficulty].drain??.85)+Math.min(1.4,pressureTier()*.09))*survival().multiplier);if(energy<=0){journey.run.finish('energy');finish();return;}}
   round+=elapsed;const tier=pressureTier();if(tier>lastPressureTier){lastPressureTier=tier;notify('海域 '+(tier+1)+' · 魚群血量與速度提升',2.8)}
+  const carnival=inCarnival();
+  if(carnival&&!carnivalOn){carnivalOn=true;scene.classList.add('carnival');document.body.classList.add('carnival-mode');notify('狂歡模式 · 最後 15 秒！射速加快 · 魚潮湧入',3);sound('upgrade');}
+  if(!carnival&&carnivalOn){carnivalOn=false;scene.classList.remove('carnival');document.body.classList.remove('carnival-mode');}
+  if(carnival&&!carnivalKingSpawned){carnivalKingSpawned=true;spawnFishKing();}
   freezeTime=Math.max(0,freezeTime-elapsed);rapidTime=Math.max(0,rapidTime-elapsed);doubleTime=Math.max(0,doubleTime-elapsed);
   freezeCooldown=Math.max(0,freezeCooldown-elapsed);rapidCooldown=Math.max(0,rapidCooldown-elapsed);doubleCooldown=Math.max(0,doubleCooldown-elapsed);bombCooldown=Math.max(0,bombCooldown-elapsed);lureCooldown=Math.max(0,lureCooldown-elapsed);eventTime=Math.max(0,eventTime-elapsed);
   saveClock-=elapsed;if(saveClock<=0){persistBest();saveClock=5}
   if(keys.has('ArrowLeft')||keys.has('ArrowRight')){angle=clamp(angle+(keys.has('ArrowLeft')?-1:1)*dt*1.7,-Math.PI+.16,-.16);const o=origin();aim={x:o.x+Math.cos(angle)*h*.65,y:o.y+Math.sin(angle)*h*.65}}
   else{const o=origin();angle=clamp(Math.atan2(Math.min(aim.y,o.y-24)-o.y,aim.x-o.x),-Math.PI+.16,-.16)}
-  shotClock=Math.max(-.3,shotClock-dt);if(pointerDown||keys.has(' ')){let catchUp=0;while(shotClock<=0&&catchUp++<4){fire();shotClock+=currentCannon().interval/(rapidTime>0?2:1)}}else shotClock=Math.max(0,shotClock)
-  spawnClock-=dt;if(spawnClock<=0){spawnClock=modes[difficulty].spawn*(1-Math.min(.4,(level-1)*.025+pressureTier()*.01))/(pressure().density||1);if(fish.length<fishLimit()){if(gameRandom()<.24)school();else{const pool=['coin','coin','save','fund','stock','ray','bond','crypto','gold',...(journey?[]:['shark'])];spawn(pool[Math.floor(gameRandom()*pool.length)])}}}
+  const fireMul=(rapidTime>0?2:1)*(carnival?2.35:1);
+  shotClock=Math.max(-.3,shotClock-dt);if(pointerDown||keys.has(' ')){let catchUp=0;while(shotClock<=0&&catchUp++<(carnival?7:4)){fire();shotClock+=currentCannon().interval/fireMul}}else shotClock=Math.max(0,shotClock)
+  spawnClock-=dt;if(spawnClock<=0){spawnClock=modes[difficulty].spawn*(1-Math.min(.4,(level-1)*.025+pressureTier()*.01))/(pressure().density||1)/(carnival?2.6:1);if(fish.length<fishLimit()){if(gameRandom()<(carnival?.55:.24))school();else{const pool=['coin','coin','save','fund','stock','ray','bond','crypto','gold',...(journey?[]:['shark']),...(carnival?['gold','stock','fund','coin','coin']:[])];spawn(pool[Math.floor(gameRandom()*pool.length)])}}if(carnival&&fish.length<fishLimit()&&gameRandom()<.45)school()}
   if(round>=nextBossAt){
    if(journey){const spawned=spawnRoundBoss();nextBossAt=round+(spawned?14:2);}
    else{
@@ -1828,14 +1891,14 @@ function step(dt,elapsed=dt){
  }
  hudClock-=dt;if(hudClock<=0){updateHud();hudClock=.09}
 }
-function draw(){ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);ctx.save();if(shake&&!reduced)ctx.translate(rnd(-shake,shake),rnd(-shake,shake));if(journey)window.FuLamJourney.drawScene(ctx,w,h,'fishing',journey.run?.wave||1,time,reduced);else Art.drawBackground(ctx,w,h,time,reduced?.2:1);for(const f of fish){if(f.dead||f.x<-f.size*3||f.x>w+f.size*3)continue;Art.drawFish(ctx,f,time);if(f.armored){ctx.strokeStyle='#9cd9ff88';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(f.x,f.y,f.size*1.15,f.size*.78,0,0,TAU);ctx.stroke();}if(f.elite){ctx.strokeStyle='#ffad79';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(f.x,f.y,f.size*1.15,f.size*.8,0,0,TAU);ctx.stroke();}if(mode!=='welcome'){const bw=Math.max(35,f.size*1.2),x=f.x-bw/2,y=f.y-f.size*.85;ctx.fillStyle='#001d28dd';ctx.beginPath();ctx.roundRect(x,y,bw,5,2);ctx.fill();ctx.fillStyle=defs[f.type].color;ctx.beginPath();ctx.roundRect(x,y,bw*Math.max(0,f.hp)/f.maxHp,5,2);ctx.fill();ctx.font='700 '+(w<600?10:11)+'px system-ui';ctx.textAlign='center';ctx.strokeStyle='#05232b';ctx.lineWidth=3;const hpText=Math.ceil(Math.max(0,f.hp))+'/'+f.maxHp;ctx.strokeText(hpText,f.x,y-4);ctx.fillStyle='#f4ffef';ctx.fillText(hpText,f.x,y-4)}if(f.type==='whale'||f.type==='shark'){ctx.font='600 '+(w<600?10:11)+'px system-ui';ctx.textAlign='center';ctx.fillStyle=defs[f.type].color;ctx.shadowColor='#001d28';ctx.shadowBlur=5;ctx.fillText(translated(defs[f.type].name)+(f.armored?' · '+journey.text('裝甲','ARMOUR'):' · '+f.value),f.x,f.y+f.size*.9+15);ctx.shadowBlur=0}}
+function draw(){ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);ctx.save();if(shake&&!reduced)ctx.translate(rnd(-shake,shake),rnd(-shake,shake));if(journey)window.FuLamJourney.drawScene(ctx,w,h,'fishing',journey.run?.wave||1,time,reduced);else Art.drawBackground(ctx,w,h,time,reduced?.2:1);for(const f of fish){if(f.dead||f.x<-f.size*3||f.x>w+f.size*3)continue;Art.drawFish(ctx,f,time);if(f.armored){ctx.strokeStyle='#9cd9ff88';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(f.x,f.y,f.size*1.15,f.size*.78,0,0,TAU);ctx.stroke();}if(f.elite){ctx.strokeStyle='#ffad79';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(f.x,f.y,f.size*1.15,f.size*.8,0,0,TAU);ctx.stroke();}if(mode!=='welcome'){const bw=Math.max(35,f.size*1.2),x=f.x-bw/2,y=f.y-f.size*.85;ctx.fillStyle='#001d28dd';ctx.beginPath();ctx.roundRect(x,y,bw,5,2);ctx.fill();ctx.fillStyle=defs[f.type].color;ctx.beginPath();ctx.roundRect(x,y,bw*Math.max(0,f.hp)/f.maxHp,5,2);ctx.fill();ctx.font='700 '+(w<600?10:11)+'px system-ui';ctx.textAlign='center';ctx.strokeStyle='#05232b';ctx.lineWidth=3;const hpText=Math.ceil(Math.max(0,f.hp))+'/'+f.maxHp;ctx.strokeText(hpText,f.x,y-4);ctx.fillStyle='#f4ffef';ctx.fillText(hpText,f.x,y-4)}if(f.type==='whale'||f.type==='shark'||f.type==='king'){ctx.font='600 '+(w<600?10:11)+'px system-ui';ctx.textAlign='center';ctx.fillStyle=defs[f.type].color;ctx.shadowColor='#001d28';ctx.shadowBlur=5;ctx.fillText(translated(defs[f.type].name)+(f.armored?' · '+journey.text('裝甲','ARMOUR'):' · '+f.value),f.x,f.y+f.size*.9+15);ctx.shadowBlur=0}}
 for(const beam of beams){ctx.save();ctx.globalAlpha=clamp(beam.life/beam.max,0,1);ctx.strokeStyle=beam.color;ctx.lineWidth=beam.width*2.2;ctx.shadowColor=beam.color;ctx.shadowBlur=20;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(beam.x,beam.y);ctx.lineTo(beam.ex,beam.ey);ctx.stroke();ctx.strokeStyle='#f2fffb';ctx.lineWidth=Math.max(2,beam.width*.38);ctx.stroke();ctx.restore()}
-for(const b of bullets){ctx.save();const orb=b.kind==='orb';ctx.strokeStyle=orb?'#ceabff99':'#ffdc7f55';ctx.lineWidth=orb?b.r:2;ctx.beginPath();ctx.moveTo(b.x-b.vx*(orb?.055:.024),b.y-b.vy*(orb?.055:.024));ctx.lineTo(b.x,b.y);ctx.stroke();ctx.fillStyle=b.color||(orb?'#bba1fc':'#fff1bd');ctx.shadowColor=orb?'#d9b3ff':'#ffd269';ctx.shadowBlur=orb?20:10;ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,TAU);ctx.fill();if(orb){ctx.shadowBlur=0;ctx.strokeStyle='#f7ebff';ctx.lineWidth=2;ctx.beginPath();ctx.arc(b.x,b.y,b.r*.68,0,TAU);ctx.stroke();ctx.fillStyle='#fff8df';ctx.beginPath();ctx.arc(b.x-b.r*.23,b.y-b.r*.23,b.r*.25,0,TAU);ctx.fill()}ctx.restore()}
+for(const b of bullets){ctx.save();if(b.coin||b.kind==='coin'){Art.drawCoin(ctx,b.x,b.y,Math.max(6,b.r),b.age*16);ctx.restore();continue;}const orb=b.kind==='orb';ctx.strokeStyle=orb?'#ceabff99':'#ffdc7f55';ctx.lineWidth=orb?b.r:2;ctx.beginPath();ctx.moveTo(b.x-b.vx*(orb?.055:.024),b.y-b.vy*(orb?.055:.024));ctx.lineTo(b.x,b.y);ctx.stroke();ctx.fillStyle=b.color||(orb?'#bba1fc':'#fff1bd');ctx.shadowColor=orb?'#d9b3ff':'#ffd269';ctx.shadowBlur=orb?20:10;ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,TAU);ctx.fill();if(orb){ctx.shadowBlur=0;ctx.strokeStyle='#f7ebff';ctx.lineWidth=2;ctx.beginPath();ctx.arc(b.x,b.y,b.r*.68,0,TAU);ctx.stroke();ctx.fillStyle='#fff8df';ctx.beginPath();ctx.arc(b.x-b.r*.23,b.y-b.r*.23,b.r*.25,0,TAU);ctx.fill()}ctx.restore()}
 for(const r of rings){const progress=1-r.life/r.max,rad=r.end*(1-Math.pow(1-progress,3)),alpha=r.life/r.max;ctx.save();ctx.globalAlpha=alpha;ctx.strokeStyle=r.color;ctx.lineWidth=r.blast?3:r.net?2:1.4;ctx.beginPath();ctx.arc(r.x,r.y,rad,0,TAU);ctx.stroke();if(r.blast){ctx.globalAlpha=alpha*.10;ctx.fillStyle=r.color;ctx.fill();ctx.globalAlpha=alpha*.7;ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(r.x,r.y,rad*.72,0,TAU);ctx.stroke();}if(r.net){ctx.globalAlpha=alpha*.17;ctx.fillStyle=r.color;ctx.fill();ctx.globalAlpha=alpha*.65;ctx.beginPath();ctx.arc(r.x,r.y,rad,0,TAU);ctx.clip();ctx.lineWidth=1;for(let v=-rad*2;v<rad*2;v+=22){ctx.beginPath();ctx.moveTo(r.x-rad,r.y+v-rad);ctx.lineTo(r.x+rad,r.y+v+rad);ctx.stroke();ctx.beginPath();ctx.moveTo(r.x-rad,r.y+v+rad);ctx.lineTo(r.x+rad,r.y+v-rad);ctx.stroke()}}ctx.restore()}
 for(const p of particles){ctx.globalAlpha=clamp(p.life/p.max,0,1);ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,TAU);ctx.fill()}ctx.globalAlpha=1;
 fx.draw(ctx);
 const o=origin();if(mode==='playing'&&overlay.hidden){ctx.save();ctx.globalAlpha=.16;ctx.strokeStyle='#fff2c8';ctx.setLineDash([3,10]);ctx.beginPath();ctx.moveTo(o.x+Math.cos(angle)*55,o.y+Math.sin(angle)*55);ctx.lineTo(o.x+Math.cos(angle)*150,o.y+Math.sin(angle)*150);ctx.stroke();ctx.restore()}
-Art.drawCannon(ctx,o.x,o.y,angle,journey?.run?Math.min(12,journey.run.weapon+1):level,recoil,time,currentCannon().kind);
+{const cannon=currentCannon();Art.drawCannon(ctx,o.x,o.y,angle,journey?.run?Math.min(12,Math.max(1,cannon.tier||journey.run.weapon+1)):level,recoil,time,cannon.drawKind||cannon.kind);}
 if(sessionStarted&&journey?.run?.protection){ctx.save();ctx.strokeStyle='#bcb2ff99';ctx.lineWidth=2;ctx.beginPath();ctx.arc(o.x,o.y,43,Math.PI,TAU);ctx.stroke();ctx.restore()}
 for(const c of coins){const t=clamp((c.age-c.delay)/c.life,0,1);if(c.age<c.delay)continue;const e=t*t,x=c.sx+(55-c.sx)*e+Math.sin(t*Math.PI)*c.vx,y=c.sy+(47-c.sy)*e-Math.sin(t*Math.PI)*60;ctx.globalAlpha=1-t*.7;Art.drawCoin(ctx,x,y,7,c.spin+time*9)}ctx.globalAlpha=1;
 for(const f of floaters){ctx.save();ctx.globalAlpha=clamp(f.life/.3,0,1);ctx.font='800 '+(f.big?25:19)+'px system-ui';ctx.textAlign='center';ctx.strokeStyle='#05232bdd';ctx.lineWidth=4;ctx.strokeText(f.text,f.x,f.y);ctx.fillStyle=f.color;ctx.fillText(f.text,f.x,f.y);ctx.restore()}ctx.restore()}
@@ -1862,7 +1925,7 @@ window.addEventListener('keydown',e=>{if(!overlay.hidden){if(e.key==='Tab'){cons
 $('sound').onclick=()=>{prefs.sound=!prefs.sound;soundscape.setEnabled(prefs.sound);if(prefs.sound)initAudio();syncSound();save()};$('soundGame').onclick=$('sound').onclick;$('pause').onclick=pause;$('help').onclick=help;$('freeze').onclick=useFreeze;$('rapid').onclick=useRapid;$('bomb').onclick=useBomb;$('lure').onclick=useLure;$('upgrade').onclick=upgrade;
 $('credits').onclick=()=>{if(mode==='help'||mode==='credits')return;modalReturn=mode;soundscape.stop();mode='credits';openModal('<div class="label">MADE FOR FULAM</div><h2 id="dialogTitle">捕財達人</h2><p style="text-align:left">富臨錢進號 · 投資海洋單機版 v3.0<br>沿用 Fishing Joy 的魚群編排程式，重製為 Canvas 遊戲。畫面、魚種、炮台及計分玩法為此版本重新製作。<br><br>Kenney · CC0 音效 / Lucide · ISC 圖示<br>原始專案：imtonyjaa/ggemu-fishing-joy<br>授權：MIT · Copyright (c) 2026 大帅老猿</p><pre class="license" id="licenseText"></pre><button class="primary" id="creditsClose" data-autofocus>返回遊戲</button>');$('licenseText').textContent=UPSTREAM_LICENSE+'\n\n'+ARCADE_LICENSE;$('creditsClose').onclick=returnModal;updateHud()};
 // Small read-only state snapshot makes local gameplay QA possible without changing outcomes.
-window.FuLamGame={getState:()=>({mode,difficulty,energy,maxEnergy:survival().max,protection:1-survival().multiplier,run:journey?.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,wave:journey.run.wave,phase:journey.run.phase,total:journey.run.total,active:journey.run.active,weapon:journey.run.weapon,rate:journey.run.rate,trajectory:journey.run.trajectory,life:journey.run.life,protection:journey.run.protection,reason:journey.run.reason}:null,pressure:pressure(),endless:journey?.scene!=='booth',timeLimit:journey?.scene==='booth'?window.FuLamJourney.LIMIT:null,score,wallet,caught,shots,hits,level,maxLevel,round,maxCombo,missionIndex,mission:mission(),bossSpawned,nextBossAt,freezeCooldown,freezeTime,rapidCooldown,doubleCooldown,bombCooldown,lureCooldown,rapidTime,doubleTime,cannon:{...currentCannon(),spread:[...currentCannon().spread]},nextUpgradeCost:cannons[level]?.cost??null,abilities:Object.fromEntries(Object.entries(itemDefs).map(([id,item])=>[id,{...item,unlocked:level>=item.unlock,cooldownRemaining:cooldownFor(id),activeRemaining:activeSeconds(id)}])),fishCount:fish.filter(f=>!f.dead).length,bulletCount:bullets.length,beamCount:beams.length,fishTypes:Object.keys(defs),particleCount:particles.length,coinCount:coins.length,ringCount:rings.length,fish:fish.filter(f=>!f.dead&&f.x>0&&f.x<w).map(f=>({x:f.x,y:f.y,baseY:f.baseY,hp:f.hp,maxHp:f.maxHp,elite:f.elite,armored:f.armored,type:f.type,swim:f.swim,speed:f.speed,dashing:!!f.dashing,size:f.size,value:f.value,bounds:swimBounds(f.size)})),width:w,height:h}),version:'3.0'};
+window.FuLamGame={getState:()=>({mode,difficulty,energy,maxEnergy:survival().max,protection:1-survival().multiplier,run:journey?.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,wave:journey.run.wave,phase:journey.run.phase,total:journey.run.total,active:journey.run.active,weapon:journey.run.weapon,rate:journey.run.rate,trajectory:journey.run.trajectory,life:journey.run.life,protection:journey.run.protection,reason:journey.run.reason}:null,pressure:pressure(),endless:journey?.scene!=='booth',timeLimit:journey?.scene==='booth'?window.FuLamJourney.LIMIT:null,carnival:inCarnival(),carnivalLeft:carnivalLeft(),score,wallet,caught,shots,hits,level,maxLevel,round,maxCombo,missionIndex,mission:mission(),bossSpawned,nextBossAt,freezeCooldown,freezeTime,rapidCooldown,doubleCooldown,bombCooldown,lureCooldown,rapidTime,doubleTime,cannon:{...currentCannon(),spread:[...currentCannon().spread]},nextUpgradeCost:cannons[level]?.cost??null,abilities:Object.fromEntries(Object.entries(itemDefs).map(([id,item])=>[id,{...item,unlocked:level>=item.unlock,cooldownRemaining:cooldownFor(id),activeRemaining:activeSeconds(id)}])),fishCount:fish.filter(f=>!f.dead).length,bulletCount:bullets.length,beamCount:beams.length,fishTypes:Object.keys(defs),particleCount:particles.length,coinCount:coins.length,ringCount:rings.length,fish:fish.filter(f=>!f.dead&&f.x>0&&f.x<w).map(f=>({x:f.x,y:f.y,baseY:f.baseY,hp:f.hp,maxHp:f.maxHp,elite:f.elite,armored:f.armored,type:f.type,swim:f.swim,speed:f.speed,dashing:!!f.dashing,size:f.size,value:f.value,bounds:swimBounds(f.size)})),width:w,height:h}),version:'3.0'};
 $('screen').onclick=async()=>{const wrap=document.querySelector('.wrap');try{if(document.fullscreenElement)await document.exitFullscreen();else if(wrap.classList.contains('expanded'))wrap.classList.remove('expanded');else if(wrap.requestFullscreen)await wrap.requestFullscreen();else wrap.classList.add('expanded')}catch{wrap.classList.toggle('expanded')}document.body.classList.toggle('screen-expanded',wrap.classList.contains('expanded'));resize()};
 $('screenGame').onclick=$('screen').onclick;
 if($('languageSwitch'))$('languageSwitch').onclick=toggleLanguage;if($('languageGame'))$('languageGame').onclick=toggleLanguage;window.addEventListener('storage',e=>{if(e.key==='fulam-language'){language=e.newValue==='en'?'en':'zh-Hant';localize(document.body);updateHud()}});
@@ -1872,7 +1935,7 @@ for(const id of ['sound','soundGame','pause','help','freeze','rapid','bomb','lur
 if(journey){
  document.body.classList.add('combat-score-mode');
  journey.onIntermission=()=>{mode='upgrading';clearPointerInput();keys.clear();sound('upgrade');};
- journey.onChoice=(kind,r)=>{level=Math.min(12,r.wave);energy=Math.min(survival().max,energy+12+(kind==='life'?35:0));fish=[];bullets=[];beams=[];spawnClock=.1;mode='playing';spawnRoundBoss();nextBossAt=round+14;updateHud();};
+ journey.onChoice=(kind,r)=>{level=Math.min(12,r.wave);energy=Math.min(survival().max,energy+12+(kind==='life'?35:0));fish=[];bullets=[];beams=[];spawnClock=.1;mode='playing';spawnRoundBoss();nextBossAt=round+14;updateHud();const panel=document.querySelector('.cannon-progress');if(panel){panel.classList.remove('cannon-level-up');void panel.offsetWidth;panel.classList.add('cannon-level-up');}const o=origin();fx.burst(o.x,o.y-12,{color:currentCannon().color||'#ffdfa3',size:28,water:true});notify(journey.text('炮台升級 · '+currentCannon().name,'Cannon upgraded · '+currentCannon().name),2.4);sound('upgrade');};
  journey.onEnd=()=>finish();
  for(const [id,unlock] of Object.entries({rapid:2,bomb:3,lure:4}))itemDefs[id].unlock=unlock;
  const exit=document.createElement('button');exit.id='exit-game';exit.className='journey-exit';exit.textContent=translated('退出');document.querySelector('.control-top').append(exit);window.FuLamArcade.bindAction(exit,()=>{if(sessionStarted&&mode!=='ended'){journey.run.finish('exit');finish();}else showWelcome();});
