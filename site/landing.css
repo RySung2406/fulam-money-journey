@@ -308,9 +308,9 @@
 /* Instagram is a quiet secondary action within the hero. */
 .content-social { margin:0 0 22px; }
 .hero-social { margin-top:18px; }
-.instagram-link { display:inline-flex; align-items:center; gap:12px; min-height:52px; font-size:22px; line-height:1.4; color:var(--muted); border-radius:5px; transition:color .2s var(--ease); }
+.instagram-link { display:inline-flex; align-items:center; gap:12px; min-height:52px; padding:10px 16px; font-size:22px; line-height:1.4; color:var(--ink); border:1px solid #c5d0c2; border-radius:10px; background:#e8efe4; transition:background-color .2s var(--ease),border-color .2s var(--ease),color .2s var(--ease); }
 .instagram-link strong { color:var(--ink); font-size:22px; font-weight:700; margin-left:4px; }
-.instagram-link:hover { color:var(--ink); }
+.instagram-link:hover { color:var(--ink); background:#dce7d7; border-color:#9bb09a; }
 .instagram-link:hover strong { text-decoration:underline; text-underline-offset:4px; }
 .instagram-link .instagram-icon { width:32px; height:32px; flex-shrink:0; }
 .instagram-link > .icon { width:22px; height:22px; flex-shrink:0; }
