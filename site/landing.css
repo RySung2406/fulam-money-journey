@@ -114,7 +114,8 @@
 .pretest-card .posttest-entry h3 { font-family:inherit; font-size:22px; font-weight:600; line-height:1.4; margin-top:5px; letter-spacing:-.02em; }
 .posttest-hint { margin:6px 0 0; font-size:14px; line-height:1.45; color:var(--muted,#65705e); }
 .posttest-locked { display:none; min-height:44px; padding:9px 15px; border:1px solid #d5dbd0; border-radius:8px; background:#edf0e7; color:#65705e; font-size:15px; font-weight:550; cursor:not-allowed; }
-.posttest-open { display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; min-height:54px; padding:13px 20px; border-radius:10px; background:var(--ink,#173f36); color:#fffef9; font-size:17px; font-weight:650; text-decoration:none; }
+.posttest-open { display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; min-height:54px; padding:13px 20px; border-radius:10px; background:var(--ink,#173f36); color:#fffef8!important; font-size:17px; font-weight:650; text-decoration:none; }
+.posttest-open:hover,.posttest-open:focus-visible { background:#153b2b; color:#fffef8!important; }
 @media(prefers-reduced-motion:no-preference) {
   .hero-copy { animation:hero-in .75s var(--ease) both; }
   .hero-visual { animation:art-in 1s var(--ease) both; }
@@ -308,9 +309,9 @@
 /* Instagram is a quiet secondary action within the hero. */
 .content-social { margin:0 0 22px; }
 .hero-social { margin-top:18px; }
-.instagram-link { display:inline-flex; align-items:center; gap:12px; min-height:52px; padding:10px 16px; font-size:22px; line-height:1.4; color:var(--ink); border:1px solid #c5d0c2; border-radius:10px; background:#e8efe4; transition:background-color .2s var(--ease),border-color .2s var(--ease),color .2s var(--ease); }
-.instagram-link strong { color:var(--ink); font-size:22px; font-weight:700; margin-left:4px; }
-.instagram-link:hover { color:var(--ink); background:#dce7d7; border-color:#9bb09a; }
+.instagram-link { display:inline-flex; align-items:center; gap:12px; min-height:52px; padding:10px 16px; font-size:22px; line-height:1.4; color:#5a3214; border:1px solid #e0a66a; border-radius:10px; background:#f0bd83; transition:background-color .2s var(--ease),border-color .2s var(--ease),color .2s var(--ease); }
+.instagram-link strong { color:#3f220c; font-size:22px; font-weight:700; margin-left:4px; }
+.instagram-link:hover { color:#3f220c; background:#f4c99a; border-color:#d78142; }
 .instagram-link:hover strong { text-decoration:underline; text-underline-offset:4px; }
 .instagram-link .instagram-icon { width:32px; height:32px; flex-shrink:0; }
 .instagram-link > .icon { width:22px; height:22px; flex-shrink:0; }
