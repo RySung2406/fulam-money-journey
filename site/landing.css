@@ -296,6 +296,7 @@
 .plan-preview { padding:30px; background:var(--ink); color:var(--paper); border-radius:22px; box-shadow:0 20px 60px #214b3b12; }
 .plan-preview-top { display:flex; align-items:center; justify-content:space-between; gap:12px; font-size:11px; letter-spacing:.12em; }
 .plan-status { border:1px solid #96b09d; border-radius:20px; padding:4px 11px; font-size:13px; letter-spacing:.04em; white-space:nowrap; }
+.plan-status-live { border-color:#f0bd83; color:#f0bd83; background:#f0bd8314; }
 .plan-number { display:flex; align-items:baseline; gap:15px; font-size:118px; font-weight:650; letter-spacing:-.07em; line-height:1; margin:24px 0 12px; color:#f0bd83; }
 .plan-number span { font-size:18px; letter-spacing:.17em; font-weight:500; }
 .plan-preview-title { font-size:23px; font-weight:550; }
