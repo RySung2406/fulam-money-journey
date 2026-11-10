@@ -752,6 +752,18 @@ to{opacity:1;transform:translateY(0)}
 .booth-event-card:nth-child(2) .booth-prize-slot{background:#faf2e5;border-color:#ecdfcc}.booth-event-card:nth-child(2) .booth-prize-icon{background:#f3e2c7;color:#906337}
 .booth-page-note{margin:18px 0 0;font-size:15px;color:var(--account-muted)}
 @media(prefers-reduced-motion:no-preference){.member-booth-page{animation:member-step-enter .35s cubic-bezier(.2,.7,.2,1) both}}
+.member-booth-page.festive-booth .booth-page-heading{
+  position:relative;overflow:hidden;padding:22px 22px 20px;border:1px solid #9bb89a;border-radius:16px;
+  background:
+    linear-gradient(#b32828 0 5px,#1f7a4d 5px 10px,#0000 10px),
+    linear-gradient(165deg,#e7f0e4,#f8f1e6);
+}
+.member-booth-page.festive-booth .account-eyebrow{color:#1f7a4d}
+.member-booth-page.festive-booth .booth-event-card{
+  border-color:#9bb89a;
+  background:linear-gradient(180deg,#fffef9,#f3f7f0);
+}
+.member-booth-page.festive-booth .booth-event-status{background:#e4f0e4;color:#214b3b}
 @media(max-width:720px){
  .onboarding-steps{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
  .onboarding-step-button{min-height:62px;padding:10px;gap:8px;flex-direction:row;text-align:left;justify-content:flex-start;overflow-wrap:normal}
