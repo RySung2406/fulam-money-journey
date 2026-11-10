@@ -5,7 +5,8 @@ import { CHECK_IN_DAYS } from './check-in-content.js';
 import { checkInAction, renderQuestion, selectableCheckInDay } from './check-in-screen.js';
 
 const $ = (id) => document.getElementById(id);
-const config = window.FULIN_CONFIG || {};
+const config = new Proxy({}, { get: (_target, key) => (window.FULIN_CONFIG || {})[key] });
+const POST_SURVEY_FALLBACK = 'https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=dY4N6LlSOUijWIeruTs1Z-VOzApBm_VOvTm0gGA8MWtUM1Q3UVlZQlpZTlZVV05HVlo1WTNJR0JNMS4u';
 const REMEMBERED_EMAIL_KEY = 'fulam.auth.lastEmail';
 const AUTH_STORAGE_KEY = 'fulin.auth.session';
 let client;
@@ -83,28 +84,20 @@ function questionAction(state, saving) {
     phase: state.phase, busy, saving
   });
 }
-function updatePostSurvey(completed, rewardTarget, rewardKnown) {
-  const url = typeof config.postSurveyUrl === 'string' ? config.postSurveyUrl.trim() : '';
-  const unlocked = Boolean(url);
+function updatePostSurvey() {
+  const configured = typeof config.postSurveyUrl === 'string' ? config.postSurveyUrl.trim() : '';
+  const url = configured || POST_SURVEY_FALLBACK;
   for (const open of document.querySelectorAll('[data-posttest-open]')) {
-    open.hidden = !unlocked;
-    if (unlocked) {
-      open.href = url;
-      open.setAttribute('aria-label', '填寫後測問卷（另開分頁）');
-    } else {
-      open.removeAttribute('href');
-      open.removeAttribute('aria-label');
-    }
+    open.hidden = false;
+    open.href = url;
+    open.setAttribute('aria-label', '填寫後測問卷（另開分頁）');
   }
   for (const locked of document.querySelectorAll('[data-posttest-locked]')) {
-    locked.hidden = unlocked;
-    locked.textContent = unlocked ? '後測問卷已開放' : '後測問卷連結準備中';
-    locked.setAttribute('aria-label', unlocked ? '後測問卷已開放' : '後測問卷連結準備中');
+    locked.hidden = true;
+    locked.setAttribute('aria-label', '後測問卷已開放');
   }
   for (const hint of document.querySelectorAll('[data-posttest-hint]')) {
-    hint.textContent = unlocked
-      ? '後測問卷現已開放，可直接填寫。'
-      : '後測問卷連結準備中。';
+    hint.textContent = '後測問卷現已開放，可直接填寫。';
   }
   if (typeof config.preSurveyUrl === 'string' && config.preSurveyUrl.trim()) {
     const pre = $('survey-link');
@@ -121,7 +114,7 @@ function renderCheckIns(state = checkIns.state) {
   const completed = state.records.length;
   const rewardTarget = Math.ceil(21 * 0.8);
   const rewardKnown = !loading && state.phase !== 'error';
-  updatePostSurvey(completed, rewardTarget, rewardKnown);
+  updatePostSurvey();
   $('rewards-progress-text').textContent = !rewardKnown
     ? (loading ? '正在載入紀錄…' : '暫未能載入紀錄')
     : completed >= rewardTarget ? `已達打卡門檻 · ${completed} / 21 天（仍須完成後測）` : `已完成 ${completed} / ${rewardTarget} 天 · 還差 ${rewardTarget - completed} 天`;
@@ -536,6 +529,7 @@ async function init() {
     message('email-error', '暫時未能連接登入服務。請重新整理頁面，或稍後再試。');
   } finally { initializing = false; busy = false; updateButtons(); }
 }
+updatePostSurvey();
 init();
 
 
