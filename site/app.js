@@ -6,6 +6,8 @@ import { checkInAction, renderQuestion, renderPublishedAnswer, selectableCheckIn
 
 const $ = (id) => document.getElementById(id);
 const config = window.FULIN_CONFIG || {};
+const REMEMBERED_EMAIL_KEY = 'fulam.auth.lastEmail';
+const AUTH_STORAGE_KEY = 'fulin.auth.session';
 let client;
 let pendingEmail = '';
 let cooldownUntil = 0;
@@ -15,6 +17,7 @@ let view = 'email';
 let transition = 0;
 let accountUserId;
 let initializing = true;
+let restorePending = false;
 const journeySteps = ['survey', 'community', 'dashboard', 'booth'];
 const checkIns = createCheckInController({ getClient: () => client, onChange: renderCheckIns });
 let storyDay = 0;
@@ -22,6 +25,26 @@ let questionOpen = false;
 const draftChoices = new Map();
 // A fresh Turnstile token is required for each email request, including resends.
 const captcha = { api: null, tokens: { email: '', otp: '' }, ids: {}, failed: false };
+
+function readRememberedEmail() {
+  try { return localStorage.getItem(REMEMBERED_EMAIL_KEY) || ''; }
+  catch { return ''; }
+}
+function rememberEmail(email) {
+  try { localStorage.setItem(REMEMBERED_EMAIL_KEY, email); }
+  catch { /* Prefill remains optional when storage is blocked. */ }
+}
+function hasStoredSession() {
+  try { return Boolean(localStorage.getItem(AUTH_STORAGE_KEY)); }
+  catch { return false; }
+}
+function setRestoreState(kind) {
+  restorePending = kind === 'loading' || kind === 'failed';
+  $('session-restore').hidden = kind !== 'loading';
+  $('session-restore-failed').hidden = kind !== 'failed';
+  $('email-form').hidden = kind === 'loading';
+  if (kind !== 'loading' && kind !== 'failed') $('email-form').hidden = false;
+}
 function renderCaptcha(kind) {
   if (!captcha.api || !['email', 'otp'].includes(kind) || captcha.ids[kind] !== undefined) return;
   try {
@@ -286,17 +309,19 @@ function clearMessages() { ['email-error', 'otp-error', 'member-error', 'resend-
 function remainingSeconds() { return Math.max(0, Math.ceil((cooldownUntil - Date.now()) / 1000)); }
 function updateButtons() {
   const seconds = remainingSeconds();
-  $('send-button').disabled = busy || !client || seconds > 0 || !captcha.tokens.email;
+  const restoreBusy = restorePending || (initializing && hasStoredSession());
+  $('send-button').disabled = busy || restoreBusy || !client || seconds > 0 || !captcha.tokens.email;
   $('send-button').querySelector('span').textContent = initializing ? '正在連接…' : busy && view === 'email' ? '正在發送…' : seconds > 0 && view === 'email' ? `請等候 ${seconds} 秒` : '發送驗證碼';
   $('verify-button').disabled = busy || !client;
   $('verify-button').querySelector('span').textContent = busy && view === 'otp' ? '正在驗證…' : '驗證並登入';
   $('resend-button').disabled = busy || !client || seconds > 0 || !captcha.tokens.otp;
   $('resend-button').textContent = seconds > 0 ? `${seconds} 秒後可重發` : '重新發送';
   $('back-button').disabled = busy;
-  $('email').readOnly = busy;
+  $('session-retry').disabled = busy || initializing;
+  $('email').readOnly = busy || restoreBusy;
   $('otp').readOnly = busy;
   $('signout-button').disabled = busy;
-  $('email-form').setAttribute('aria-busy', String(busy && view === 'email'));
+  $('email-form').setAttribute('aria-busy', String((busy && view === 'email') || restoreBusy));
   $('otp-form').setAttribute('aria-busy', String(busy && view === 'otp'));
   renderCheckIns();
 }
@@ -338,6 +363,7 @@ $('email-form').addEventListener('submit', async (event) => {
   busy = true; updateButtons();
   try {
     await requestCode(email, 'email');
+    rememberEmail(email);
     pendingEmail = email;
     $('sent-email').textContent = email;
     $('email').value = email;
@@ -379,15 +405,39 @@ async function openVerifiedAccount(focus = true) {
   const { data: profile, error: profileError } = await client.from('profiles').select('participant_code').eq('id', data.user.id).single();
   if (attempt !== transition) return;
   if (profileError || !profile?.participant_code) throw new Error('profile-not-ready');
+  rememberEmail(data.user.email);
   $('member-email').textContent = data.user.email;
   $('participant-code').textContent = profile.participant_code;
   accountUserId = data.user.id;
   $('otp').value = '';
   pendingEmail = '';
   clearMessages();
+  setRestoreState('idle');
   showOnboardingStep(savedJourneyStep(), false);
   showView('member', focus);
   void checkIns.setUser(accountUserId);
+}
+
+async function restoreSavedAccount(focus = false) {
+  setRestoreState('loading');
+  updateButtons();
+  try {
+    await openVerifiedAccount(focus);
+  } catch (error) {
+    if (sessionMustBeCleared(error)) {
+      setRestoreState('idle');
+      await client.auth.signOut({ scope: 'local' });
+      showView('email', false);
+      message('email-error', 'Your session has expired. Please verify your HKU email again.');
+      return false;
+    }
+    setRestoreState('failed');
+    message('email-error', '登入已保存，但暫時未能確認帳戶。請重新整理頁面，無需再索取驗證碼；或聯絡活動團隊。');
+    return false;
+  } finally {
+    updateButtons();
+  }
+  return true;
 }
 
 $('otp-form').addEventListener('submit', async (event) => {
@@ -425,10 +475,11 @@ function clearAccountScreen() {
   showOnboardingStep('survey', false);
   $('member-email').textContent = '';
   $('participant-code').textContent = '—';
-  $('email').value = '';
+  $('email').value = readRememberedEmail();
   $('otp').value = '';
   pendingEmail = '';
   clearMessages();
+  setRestoreState('idle');
   showView('email', false);
 }
 $('signout-button').addEventListener('click', async () => {
@@ -453,9 +504,25 @@ dialog.addEventListener('click', (event) => {
   if (event.target === dialog && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) dialog.close();
 });
 
+$('session-retry').addEventListener('click', async () => {
+  if (busy || initializing || !client || view !== 'email') return;
+  busy = true; updateButtons();
+  try { await restoreSavedAccount(true); }
+  finally { busy = false; updateButtons(); }
+});
+
 async function init() {
+  const remembered = readRememberedEmail();
+  if (remembered && !$('email').value) $('email').value = remembered;
+  if (hasStoredSession()) setRestoreState('loading');
   updateButtons();
-  if (!configurationIsReady(config)) { initializing = false; $('setup-notice').hidden = false; updateButtons(); return; }
+  if (!configurationIsReady(config)) {
+    initializing = false;
+    setRestoreState('idle');
+    $('setup-notice').hidden = false;
+    updateButtons();
+    return;
+  }
   busy = true; updateButtons();
   try {
     const { createClient } = await import('@supabase/supabase-js');
@@ -465,7 +532,8 @@ async function init() {
     $('setup-notice').hidden = true;
     client.auth.onAuthStateChange((event, session) => {
       // Keep the callback synchronous to avoid an auth client lock deadlock.
-      if (event === 'SIGNED_OUT') { clearAccountScreen(); updateButtons(); }
+      // Ignore startup SIGNED_OUT noise while the stored session is still restoring.
+      if (event === 'SIGNED_OUT' && !initializing) { clearAccountScreen(); updateButtons(); }
       if (event === 'SIGNED_IN' && accountUserId && session?.user?.id !== accountUserId) {
         clearAccountScreen();
         window.location.reload();
@@ -473,19 +541,11 @@ async function init() {
     });
     const { data, error } = await client.auth.getSession();
     if (error) throw error;
-    if (data.session) {
-      try { await openVerifiedAccount(false); }
-      catch (error) {
-        if (sessionMustBeCleared(error)) {
-          await client.auth.signOut({ scope: 'local' });
-          message('email-error', 'Your session has expired. Please verify your HKU email again.');
-        } else {
-          message('email-error', '登入已保存，但暫時未能確認帳戶。請重新整理頁面，無需再索取驗證碼；或聯絡活動團隊。');
-        }
-      }
-    }
+    if (data.session) await restoreSavedAccount(false);
+    else setRestoreState('idle');
   } catch (error) {
     client = undefined;
+    setRestoreState('idle');
     message('email-error', '暫時未能連接登入服務。請重新整理頁面，或稍後再試。');
   } finally { initializing = false; busy = false; updateButtons(); }
 }

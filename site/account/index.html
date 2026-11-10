@@ -10,16 +10,16 @@
   <title>My Journey · 富臨錢進號</title>
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../theme.css?v=20261103-mobile">
-  <link rel="stylesheet" href="../account.css?v=20261110-posttest">
+  <link rel="stylesheet" href="../account.css?v=20261110-remember">
   <link rel="stylesheet" href="../i18n.css?v=20261103-mobile">
   <script src="../i18n.js?v=20261104-booth-one" defer></script>
   <script src="../i18n-home.js" defer></script>
-  <script src="../i18n-pages.js?v=20261110-posttest" defer></script>
+  <script src="../i18n-pages.js?v=20261110-remember" defer></script>
   <script src="../config.js?v=20261110-survey" defer>
 </script>
   <script src="../community-links.js" defer>
 </script>
-  <script src="../app.bundle.js?v=20261110-posttest" defer>
+  <script src="../app.bundle.js?v=20261110-remember" defer>
 </script>
 </head>
 <body class="account-page" data-auth-view="email">
@@ -79,6 +79,15 @@
 <strong>登入服務尚未開放</strong>
 <p>你可以先瀏覽內容，稍後再回來。</p>
 </div>
+          <div id="session-restore" class="account-notice" role="status" hidden>
+<strong>正在恢復你的登入…</strong>
+<p>同一個瀏覽器會記住帳戶，關閉後再回來通常無需再收驗證碼。</p>
+</div>
+          <div id="session-restore-failed" class="account-notice" role="status" hidden>
+<strong>登入仍然有效</strong>
+<p>暫時未能載入帳戶資料。請再試一次，無需索取新驗證碼。</p>
+<button id="session-retry" class="account-secondary" type="button">重新載入帳戶</button>
+</div>
           <form id="email-form" novalidate>
             <label for="email">HKU 電郵地址</label>
             <div class="account-input-wrap">
@@ -98,7 +107,7 @@
 <path d="M4 12h15m-6-6 6 6-6 6"/>
 </svg>
 </button>
-            <p class="password-note">無需密碼，也不會索取你的 HKU Portal 密碼。</p>
+            <p class="password-note">無需密碼，也不會索取你的 HKU Portal 密碼。同一個瀏覽器會記住登入。</p>
           </form>
         </div>
 
