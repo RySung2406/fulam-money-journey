@@ -124,6 +124,22 @@ body.immersive-game{overflow:hidden;overscroll-behavior:none;height:100dvh}
 .festive-results{position:relative}
 .festive-results .result-top{border:1px solid #f0d87855;border-radius:18px;padding:22px 20px;background:linear-gradient(#c23b3b 0 3px,#2f8f63 3px 6px,#0000 6px),linear-gradient(165deg,#163a32cc,#142533ee);box-shadow:0 18px 50px #020a1466}
 .festive-results .eyebrow{color:#f0d878}.festive-results .big-score{color:#fff4cb}
+body.immersive-game:has(.game-wrap.journey-live){background:#0a1614}
+body.immersive-game:has(.game-wrap.journey-live):before{
+ content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.22;
+ background-image:
+  radial-gradient(1.5px 1.5px at 12% 18%,#fff,#0000),
+  radial-gradient(1.5px 1.5px at 48% 12%,#fff8,#0000),
+  radial-gradient(2px 2px at 78% 22%,#fff,#0000),
+  radial-gradient(1.5px 1.5px at 88% 48%,#fff7,#0000);
+}
+body.immersive-game:has(.game-wrap.journey-live) .site-header{
+ border-bottom-color:#f0d87833;background:linear-gradient(90deg,#143b32ee,#1a2a28ee 60%,#2a1a1eee);
+}
+body.immersive-game:has(.game-wrap.journey-live) .header-tag{color:#f0d878}
+body.immersive-game:has(.game-wrap.journey-live) .brand strong{color:#fff4cb}
+body.immersive-game:has(.game-wrap.journey-live) .game-topline{color:#dce8df}
+@media(prefers-reduced-motion:reduce){body.immersive-game:has(.game-wrap.journey-live):before{opacity:.12}}
 .welcome-mark{width:56px;height:56px;margin:0 0 16px;display:grid;place-items:center;border-radius:16px;border:1px solid #f2c46f55;background:#f2c46f12;color:var(--gold);transform:rotate(-8deg)}
 .welcome-mark svg{width:28px;height:28px}
 .welcome-card .eyebrow{margin:0 0 10px}
