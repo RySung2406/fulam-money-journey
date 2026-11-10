@@ -756,14 +756,32 @@ to{opacity:1;transform:translateY(0)}
   position:relative;overflow:hidden;padding:22px 22px 20px;border:1px solid #9bb89a;border-radius:16px;
   background:
     linear-gradient(#b32828 0 5px,#1f7a4d 5px 10px,#0000 10px),
+    radial-gradient(circle at 92% 18%,#c23b3bcc 0 8px,#0000 9px),
+    radial-gradient(circle at 86% 24%,#1f7a4dcc 0 6px,#0000 7px),
     linear-gradient(165deg,#e7f0e4,#f8f1e6);
 }
 .member-booth-page.festive-booth .account-eyebrow{color:#1f7a4d}
+.member-booth-page.festive-booth .booth-play-link{margin:16px 0 0}
+.member-booth-page.festive-booth .booth-play-link .account-primary{display:inline-flex}
 .member-booth-page.festive-booth .booth-event-card{
-  border-color:#9bb89a;
-  background:linear-gradient(180deg,#fffef9,#f3f7f0);
+  position:relative;overflow:hidden;border-color:#9bb89a;
+  background:
+    linear-gradient(#b32828 0 3px,#1f7a4d 3px 6px,#0000 6px),
+    linear-gradient(180deg,#fffef9,#f3f7f0);
 }
-.member-booth-page.festive-booth .booth-event-status{background:#e4f0e4;color:#214b3b}
+.member-booth-page.festive-booth .booth-event-status{background:#e4f0e4;color:#214b3b;border:1px solid #9bb89a}
+.member-booth-page.festive-booth .booth-shared-prizes{
+  border-color:#9bb89a;
+  background:
+    linear-gradient(#b32828 0 3px,#1f7a4d 3px 6px,#0000 6px),
+    linear-gradient(180deg,#fffdf8,#f0f5ec);
+}
+.show-booth #booth-step-label.onboarding-step-button[aria-current=step]{
+  border-color:#1f7a4d;background:linear-gradient(165deg,#e7f0e4,#f8f1e6);
+}
+.show-booth #booth-step-label.onboarding-step-button[aria-current=step]>.onboarding-step-number{
+  background:#1f7a4d;border-color:#1f7a4d;
+}
 @media(max-width:720px){
  .onboarding-steps{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
  .onboarding-step-button{min-height:62px;padding:10px;gap:8px;flex-direction:row;text-align:left;justify-content:flex-start;overflow-wrap:normal}
