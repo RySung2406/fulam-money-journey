@@ -24,8 +24,8 @@ test('Each stage grants a weapon, then one other upgrade, and a new player start
  for(const game of ['fleet','fishing','knife']){
   const r=new Run(game,'booth');
   if(game==='knife'){
-   for(const kind of ['focus','life','focus']){r.completeRound();assert.equal(r.choose('weapon'),false);assert.equal(r.choose('guard'),false);assert(r.choose(kind));}
-   assert.equal(r.weapon,3);assert.equal(r.wave,4);assert.equal(r.focus,2);assert.equal(r.guard,0);assert.equal(r.life,1);
+   for(let i=0;i<3;i++){r.completeRound();assert(r.quizMode());assert.equal(r.choose('focus'),false);assert.equal(r.choose('life'),false);assert(r.choose('continue'));}
+   assert.equal(r.weapon,0);assert.equal(r.wave,4);assert.equal(r.focus,0);assert.equal(r.life,0);
   }else{
    for(let i=0;i<3;i++){r.completeRound();assert(r.quizMode());assert.equal(r.choose('weapon'),false);assert.equal(r.choose('rate'),false);assert(r.choose('trajectory'));}
    assert.equal(r.weapon,3);assert.equal(r.wave,4);assert.equal(r.trajectory,3);assert.equal(r.rate,0);
@@ -99,7 +99,7 @@ test('An upgrade applies once; rate, evolution and trajectory accumulate without
  assert.deepEqual([r.weapon,r.rate,r.trajectory],[2,1,1]);assert.equal(typeof r.swap,'undefined');
 });
 test('All games evolve through twelve stages and continue growing beyond the final form',()=>{
- for(const game of ['fishing','fleet','knife']){const r=new Run(game);for(let i=0;i<14;i++){r.completeRound();assert.equal(r.weapon,i+1);assert(r.choose(game==='knife'?'focus':'rate'));}assert.equal(r.weapon,14);assert.equal(r.wave,15);}
+ for(const game of ['fishing','fleet','knife']){const r=new Run(game);for(let i=0;i<14;i++){r.completeRound();if(game==='knife'){assert.equal(r.weapon,0);assert(r.choose('continue'));}else{assert.equal(r.weapon,i+1);assert(r.choose('rate'));}}assert.equal(r.weapon,game==='knife'?0:14);assert.equal(r.wave,15);}
 });
 test('A paused public run cannot advance rounds or time out, even after an hour',()=>{
  const r=new Run('knife');r.tick(3600,false);assert.equal(r.phase,'play');assert.equal(r.active,0);assert.equal(r.wave,1);
@@ -209,7 +209,7 @@ test('Published shared files exactly match the authored runtime',()=>{
 
 test('Slice stages wait for their choice pool, not thirty seconds; completing twice cannot skip a stage',()=>{
  const r=new Run('knife');tick(r,60);assert.equal(r.phase,'play');assert.equal(r.wave,1);
- assert(r.completeRound());assert(!r.completeRound());assert.equal(r.phase,'choice');assert.equal(r.choiceTime,12);
- assert.equal(r.weapon,1);assert.equal(r.choose('weapon'),false);assert(r.choose('focus'));assert.equal(r.wave,2);assert.equal(r.weapon,1);assert.equal(r.roundTime,0);
- const booth=new Run('knife','booth');booth.tick(30);assert.equal(booth.phase,'play');assert.equal(booth.reason,'');assert(booth.completeRound());assert.equal(booth.phase,'choice');assert(booth.choose('life'));assert.equal(booth.wave,2);assert.equal(booth.life,1);
+ assert(r.completeRound());assert(!r.completeRound());assert.equal(r.phase,'choice');assert.equal(r.weapon,0);assert.equal(r.choose('focus'),false);assert(r.choose('continue'));assert.equal(r.wave,2);assert.equal(r.weapon,0);assert.equal(r.roundTime,0);
+ const booth=new Run('knife','booth');booth.tick(30);assert.equal(booth.phase,'play');assert.equal(booth.reason,'');assert(booth.completeRound());assert.equal(booth.phase,'choice');assert(booth.quizMode());assert.equal(booth.choose('life'),false);assert(booth.choose('continue'));assert.equal(booth.wave,2);assert.equal(booth.weapon,0);assert.equal(booth.life,0);
+ assert.equal(context.FuLamJourney.QUIZZES.knife.items[0].ok,1);
 });

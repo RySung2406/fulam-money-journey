@@ -128,14 +128,14 @@ modal.addEventListener('close', () => {
  }
 });
 function about() {
- if(journey){showModal(journey.text('兩關挑戰，練習理財判斷。','Two stages, practise money decisions.'),'<p>'+journey.text('第 1 關認識理財工具（25 個選項）；第 2 關分辨投資產品（24 個選項）。出過不再重複；完成一關後選擇刀具強化。','Stage 1: know money tools (25 choices). Stage 2: spot investment products (24 choices). Each choice appears once; upgrade your blade between stages.')+'</p><p>'+journey.text('只有 Booth 兩關。紀錄只存在本機，遊戲分數不是前後測成績。','Booth only: two stages. Scores stay on this device and are not assessment results.')+'</p><a href="./OPEN_SOURCE.md">'+journey.text('開源來源與授權','Open-source credits')+'</a>','<button class="primary" id="close-modal">'+journey.text('知道了','Got it')+'</button>');$('#close-modal').onclick=closeModal;return;}
+ if(journey){showModal(journey.text('聖誕兩關，練習理財判斷。','Festive two stages — practise money decisions.'),'<p>'+journey.text('第 1 關找出不屬於理財工具的選項（25 個）；第 2 關分辨投資產品（24 個選項）。出過不再重複；過關先答分類題，再介紹下一關題目。沒有升級或減速。','Stage 1: spot what is not a money tool (25 choices). Stage 2: spot investment products (24 choices). Each choice appears once; answer a category quiz, then read the next question. No upgrades or slow-down.')+'</p><p>'+journey.text('只有聖誕 Booth 兩關。紀錄只存在本機，遊戲分數不是前後測成績。','Christmas Booth only: two stages. Scores stay on this device and are not assessment results.')+'</p><a href="./OPEN_SOURCE.md">'+journey.text('開源來源與授權','Open-source credits')+'</a>','<button class="primary" id="close-modal">'+journey.text('知道了','Got it')+'</button>');$('#close-modal').onclick=closeModal;return;}
 
  showModal('Every slice is a choice.', `<p>FuLam One Slice is The Money Journey’s finance arcade. Choose a topic and slice its correct money bags in a continuous stream.</p><p>Practice has no time limit. The sprint finishes after ${E.GAME_RULES.sprintTarget} correct slices, with ${E.GAME_RULES.wrongPenaltySeconds} seconds added for each wrong slice. Repeated bags count as new chances to answer.</p><p>No account is needed. Completed sprint bests stay on this device, separately for each topic and difficulty. There is no online leaderboard in this game.</p><p>Optional explanations and official resources are available after you finish. Your score reflects gameplay, not overall financial ability.</p><p><a href="./OPEN_SOURCE.md" target="_blank" rel="noopener noreferrer">Open-source credits and licences ↗</a></p>`, '<button class="primary" id="close-modal">Got it</button>');
  $('#close-modal').onclick = closeModal;
 }
 $('#about-button').onclick = about;
 function rules() {
- if(journey){showModal(journey.text('切對、連擊、升級','Slice, combo, upgrade'),'<p>'+journey.text('切正確選項得分，切錯扣心；累積漏切亦扣心。兩關結束：先理財工具，再投資產品。Booth 5 心。','Correct choices score; wrong cuts and repeated misses cost hearts. Two stages: money tools, then investment products. Booth gives 5 hearts.')+'</p>','<button class="primary" id="close-modal">'+journey.text('知道了','Got it')+'</button>');$('#close-modal').onclick=closeModal;return;}
+ if(journey){showModal(journey.text('切對、連擊、判斷','Slice, combo, decide'),'<p>'+journey.text('切正確選項得分，切錯扣心；累積漏切亦扣心。兩關結束：先理財工具，再投資產品。過關答分類題。Booth 5 心。','Correct choices score; wrong cuts and repeated misses cost hearts. Two stages: money tools, then investment products. Answer a category quiz between stages. Booth gives 5 hearts.')+'</p>','<button class="primary" id="close-modal">'+journey.text('知道了','Got it')+'</button>');$('#close-modal').onclick=closeModal;return;}
 
  showModal('Read. Choose. Slice.', `<ol><li><strong>Pick a topic.</strong> Its question stays visible throughout your run.</li><li><strong>Swipe through correct bags.</strong> Hold your mouse button or use your finger. Let wrong choices fall.</li><li><strong>Keep going.</strong> Bags arrive continuously in a shuffled order, with varied timing and flight paths.</li><li><strong>Choose your finish.</strong> Practice lasts until you finish. Sprint ends at ${E.GAME_RULES.sprintTarget} correct cuts; every wrong cut adds ${E.GAME_RULES.wrongPenaltySeconds} seconds.</li></ol><div class="rule-points"><span>Correct +100</span><span>Wrong −150</span><span>Combo bonus</span></div><p>Keyboard: Tab to an active bag, then press Enter or Space. A missed correct bag breaks your combo. Review explanations after your run, whenever you want.</p>`, `<button class="primary" id="close-modal">Got it ${icon('slice')}</button>`);
  $('#close-modal').onclick = closeModal;
@@ -150,24 +150,29 @@ function refreshTopicCards() {
  $('.topic-grid').innerHTML = topicCards();
  app.querySelectorAll('[data-topic]').forEach(button => { button.onclick = () => startGame(button.dataset.topic); });
 }
-function paintWelcome() {
- const title = journey.text('切準一刀。<br><em>再破紀錄。</em>','Make it count.<br><em>Beat your best.</em>');
- const copy = journey.text('兩關設計：先認識理財工具，再分辨投資產品。出過不再重複，然後選擇刀具強化。','Two stages: know money tools, then spot investment products. Each choice appears once, then you upgrade your blade.');
+ function paintWelcome() {
+ const title = journey.text('聖誕切袋。<br><em>兩關破紀錄。</em>','Festive slices.<br><em>Two stages. Beat your best.</em>');
+ const copy = journey.text('聖誕兩關：先找出不屬於理財工具的選項，再分辨投資產品。出過不再重複；過關答分類題後再看下一關題目。沒有升級或減速。','Festive two stages: spot what is not a money tool, then spot investment products. Each choice appears once; answer a category quiz, then read the next question. No upgrades or slow-down.');
  const start = journey.text('從第一關開始','Start at stage 1');
  const how = journey.text('玩法指引','How to play');
  const existing = $('.welcome-stage');
  if (existing && $('#start-journey') && $('#how-to') && $('#journey-settings')) {
   $('#welcome-title').innerHTML = title;
   $('.welcome-copy').textContent = copy;
+  $('.welcome-card .eyebrow').textContent = journey.text('富臨 · 聖誕一刀','FULAM · FESTIVE SLICE');
   $('#start-journey').innerHTML = `${start} <span aria-hidden="true">↗</span>`;
   $('#how-to').textContent = how;
  } else {
-  render(`<section class="welcome-stage page-in" aria-labelledby="welcome-title"><div class="welcome-card"><div class="welcome-mark" aria-hidden="true">${icon('slice')}</div><p class="eyebrow">FULAM · ONE SLICE</p><h1 id="welcome-title">${title}</h1><p class="welcome-copy">${copy}</p><div id="journey-settings"></div><button class="primary" id="start-journey" type="button" data-autofocus>${start} <span aria-hidden="true">↗</span></button><button class="text-button" id="how-to" type="button">${how}</button></div></section>`);
+  render(`<section class="welcome-stage page-in" aria-labelledby="welcome-title"><div class="welcome-card festive-card"><div class="welcome-mark" aria-hidden="true">${icon('slice')}</div><p class="eyebrow">${journey.text('富臨 · 聖誕一刀','FULAM · FESTIVE SLICE')}</p><h1 id="welcome-title">${title}</h1><p class="welcome-copy">${copy}</p><div id="journey-settings"></div><button class="primary" id="start-journey" type="button" data-autofocus>${start} <span aria-hidden="true">↗</span></button><button class="text-button" id="how-to" type="button">${how}</button></div></section>`);
  }
+ $('.welcome-card')?.classList.add('festive-card');
  journey.settings($('#journey-settings'), d => { mode = d === 'intermediate' ? 'medium' : d === 'challenge' ? 'hard' : 'easy'; playKind = 'practice'; });
  $('#start-journey').onclick = prepareJourneyStart;
  $('#how-to').onclick = rules;
- document.addEventListener('fulam-language', () => { if (phase === 'home') home(); }, { once: true });
+ if (!window.__fulamLangHome) {
+  window.__fulamLangHome = true;
+  document.addEventListener('fulam-language', () => { if (phase === 'home') paintWelcome(); });
+ }
  $('#start-journey')?.focus({ preventScroll: true });
 }
 function home() {
@@ -236,7 +241,6 @@ function renderGame() {
   $('#finish-session').classList.add('journey-exit');$('#finish-session').textContent=journey.text('退出','Exit');$('#finish-session').disabled=false;$('#finish-session').onclick=()=>phase==='ready'?home():finishSession(false);
   $('#ready-overlay').remove();showQuestionGate(beginStream,home);
   const blade=document.createElement('span');blade.id='knife-level';blade.className='journey-loadout';$('.arena-footer').append(blade);
-  const focus=document.createElement('button');focus.id='knife-focus';focus.className='journey-swap';focus.textContent=journey.text('全屏緩慢 0%','Full-screen slow 0%');$('.arena-footer').append(focus);focus.onclick=()=>{if(phase==='playing'&&!paused&&focusCharge>=100){focusCharge=0;focusTime=2.5+.6*journey.run.focus;playSound('start');}};
  }
 
  updateSound();
@@ -404,7 +408,7 @@ function updateHUD() {
  $('#missed-count').textContent = `${session.missed} missed`;
  $('#run-goal').textContent = playKind === 'sprint' ? `${session.correct} / ${E.GAME_RULES.sprintTarget} CORRECT` : 'NO TIME LIMIT';
  $('#run-clock').textContent = timeLabel(playKind === 'sprint' ? E.sprintTimeMs(elapsed, session.wrong) : Math.ceil(elapsed * 1000));
- if(journey?.run){$('#run-goal').textContent='♥ '+hearts+'/'+journey.sliceMaxHearts();$('#run-clock').hidden=false;if(journey.scene==='booth')$('#run-clock').textContent=journey.name(journey.run.weapon);const stageTotal=journey.scene==='booth'?(question?.options?.length||window.FuLamJourney.KNIFE_OPTIONS):20;$('.round-number').textContent=journey.scene==='booth'?journey.text('第 '+journey.run.wave+'/'+window.FuLamJourney.KNIFE_STAGES+' 關 · '+roundResolved+'/'+stageTotal,'Stage '+journey.run.wave+'/'+window.FuLamJourney.KNIFE_STAGES+' · '+roundResolved+'/'+stageTotal):journey.text('第 '+journey.run.wave+' 關 · '+roundResolved+'/20','Stage '+journey.run.wave+' · '+roundResolved+'/20');if($('#knife-level'))$('#knife-level').textContent=journey.name(journey.run.weapon)+' Lv.'+(journey.run.weapon+1)+' · +'+(journey.run.weapon*25)+'%';if($('#knife-focus')){$('#knife-focus').disabled=paused||focusCharge<100;$('#knife-focus').textContent=journey.text('全屏緩慢 ','Full-screen slow ')+Math.floor(focusCharge)+'% · Q';}}
+ if(journey?.run){$('#run-goal').textContent='♥ '+hearts+'/'+journey.sliceMaxHearts();$('#run-clock').hidden=false;if(journey.scene==='booth')$('#run-clock').textContent=journey.name(journey.run.weapon);const stageTotal=journey.scene==='booth'?(question?.options?.length||window.FuLamJourney.KNIFE_OPTIONS):20;$('.round-number').textContent=journey.scene==='booth'?journey.text('第 '+journey.run.wave+'/'+window.FuLamJourney.KNIFE_STAGES+' 關 · '+roundResolved+'/'+stageTotal,'Stage '+journey.run.wave+'/'+window.FuLamJourney.KNIFE_STAGES+' · '+roundResolved+'/'+stageTotal):journey.text('第 '+journey.run.wave+' 關 · '+roundResolved+'/20','Stage '+journey.run.wave+' · '+roundResolved+'/20');if($('#knife-level'))$('#knife-level').textContent=journey.name(journey.run.weapon);}
  $('#run-clock').title = playKind === 'sprint' ? `Includes ${session.wrong * E.GAME_RULES.wrongPenaltySeconds} seconds of wrong-slice penalties` : 'Time played';
 }
 function cutTarget(target) {
@@ -553,7 +557,7 @@ function showResults(completed) {
  const primaryResult = sprintComplete ? timeLabel(finalTimeMs) : session.score.toLocaleString();
  const resultCaption = sprintComplete ? `Raw time ${timeLabel(Math.ceil(elapsed * 1000))} + ${session.wrong * E.GAME_RULES.wrongPenaltySeconds}s penalties` : `Time played ${timeLabel(Math.ceil(elapsed * 1000))} · Best ${session.bestCombo} combo`;
  render(`<section class="results-page page-in"><div class="result-top"><div class="result-emblem">${icon('slice')}</div><div class="eyebrow">${sprintComplete ? '20-CORRECT SPRINT COMPLETE' : playKind === 'sprint' ? 'SPRINT ENDED EARLY' : 'PRACTICE COMPLETE'}</div><h1>${sprintComplete ? 'Your next target: a faster run.' : 'That was your rhythm.'}</h1><p>${escape(q.chapter)} · ${difficulty().label}</p><div class="big-score">${primaryResult}<small>${sprintComplete ? 'final time' : 'points'}</small></div><p>${resultCaption}</p>${sprintComplete ? `<p class="local-best">${bestResult.saved ? `${bestResult.improved ? 'New best! ' : ''}On this device: ${timeLabel(bestResult.timeMs)}` : 'This browser could not save your best time.'}</p>` : playKind === 'sprint' ? '<p class="local-best">Complete 20 correct slices to record a sprint best on this device.</p>' : ''}</div><div class="results-stats"><div class="result-stat"><strong>${session.correct}</strong><small>Correct bags sliced</small></div><div class="result-stat"><strong>${avoided}</strong><small>Wrong bags avoided</small></div><div class="result-stat needs-work"><strong>${session.wrong}</strong><small>Wrong bags sliced</small></div><div class="result-stat needs-work"><strong>${session.missed}</strong><small>Correct bags missed</small></div></div><div class="action-card"><div class="action-number">✦</div><div><div class="eyebrow">${sprintComplete ? `${session.score} POINTS · BEST ${session.bestCombo} COMBO` : 'ONE THING TO KEEP'}</div><p>${escape(q.takeaway)}</p></div></div><div class="result-actions"><button class="primary" id="replay">Play this topic again ${icon('arrow')}</button><button class="secondary" id="choose-topic">Choose another topic</button><button class="secondary" id="review-mistakes">Review choices${mistakes ? ' · ' + mistakes : ''}</button><button class="text-button" id="copy-result">Copy results ↗</button></div><p class="result-caption">Every run reshuffles the answer pool and flight paths. Best times stay on this device, separately for each topic and difficulty.</p><div class="result-review" id="result-review" hidden><h2>A closer look at your choices.</h2>${reviewCards()}${sourceLinks(q)}</div></section>`);
- if(journey){const box=document.createElement('div');box.innerHTML=newResult;$('.result-top').append(box);$('.result-top .eyebrow').textContent=journey.text('最高分挑戰','HIGH SCORE CHALLENGE');$('.result-top h1').textContent=journey.text('下一局，再進一步。','Go further next run.');$('.result-caption').textContent=journey.text('不同模式、起始主題及語言分榜 · 紀錄只保存在此瀏覽器','Separate boards by mode, starting topic and language · Records stay on this browser');$('#choose-topic').textContent=journey.text('返回選單','Back to menu');$('#choose-topic').classList.add('journey-exit');$('#replay').textContent=journey.text(journey.scene==='booth'?'下一位':'再玩一次',journey.scene==='booth'?'Next player':'Play again');}
+ if(journey){const box=document.createElement('div');box.innerHTML=newResult;$('.results-page')?.classList.add('festive-results');$('.result-top').append(box);$('.result-top .eyebrow').textContent=journey.text('聖誕最高分挑戰','FESTIVE HIGH SCORE');$('.result-top h1').textContent=journey.text('下一局，再切高分。','Slice higher next run.');$('.result-caption').textContent=journey.text('不同模式、起始主題及語言分榜 · 紀錄只保存在此瀏覽器','Separate boards by mode, starting topic and language · Records stay on this browser');$('#choose-topic').textContent=journey.text('返回選單','Back to menu');$('#choose-topic').classList.add('journey-exit');$('#replay').textContent=journey.text(journey.scene==='booth'?'下一位':'再玩一次',journey.scene==='booth'?'Next player':'Play again');}
  $('#replay').onclick = () => startGame(journey?startTopic:q.id); $('#choose-topic').onclick = home;
  $('#review-mistakes').onclick = () => {
   const box = $('#result-review'); box.hidden = !box.hidden;
@@ -573,12 +577,10 @@ function freezeSnapshot(value) {
  return value;
 }
 if(journey){
- document.addEventListener('keydown',event=>{if(event.repeat||event.ctrlKey||event.metaKey||event.altKey||/INPUT|TEXTAREA|SELECT/.test(event.target.tagName))return;if(event.code==='KeyP'&&phase==='playing'&&!paused){event.preventDefault();pauseGame();}if(phase!=='playing'||paused)return;if(event.code==='KeyQ')$('#knife-focus')?.click();});
+ document.addEventListener('keydown',event=>{if(event.repeat||event.ctrlKey||event.metaKey||event.altKey||/INPUT|TEXTAREA|SELECT/.test(event.target.tagName))return;if(event.code==='KeyP'&&phase==='playing'&&!paused){event.preventDefault();pauseGame();}});
  journey.nextHint=()=>{const initial=QUESTIONS.findIndex(q=>q.id===startTopic),q=QUESTIONS[(initial+journey.run.wave)%QUESTIONS.length];return window.FuLamSliceLanguage?.translate(q.question)||q.question;};
  journey.onIntermission=()=>{paused=true;releasePointer();targets.forEach(t=>t.el.remove());targets=[];playSound('start');};
  journey.onChoice=(kind,r)=>{
-  if(kind==='guard'){guardCharges++;hearts=Math.min(journey.sliceMaxHearts(),hearts+1);}
-  if(kind==='life')hearts=Math.min(journey.sliceMaxHearts(),hearts+1);
   roundSpawned=0;roundResolved=0;const initial=QUESTIONS.findIndex(q=>q.id===startTopic);question=QUESTIONS[(initial+r.wave-1)%QUESTIONS.length];
   optionDeck=E.createOptionDeck(question.options,roundRandom,journey.scene==='booth');for(const option of question.options)if(!optionStats.has(option.id))optionStats.set(option.id,{option,shown:0,correct:0,wrong:0,missed:0,avoided:0});
   $('.question-bar h1').innerHTML='<span class="question-kicker">Question: </span>'+escape(question.question);$('.question-context').textContent=question.context;$('.question-bar .eyebrow').textContent=question.eyebrow;$('.round-number').textContent='ROUND '+r.wave+' · '+question.chapter;
