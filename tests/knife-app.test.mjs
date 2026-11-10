@@ -89,7 +89,7 @@ function harness({width = 1000, height = 600, storageThrows = false, initialStor
   };
   const sandbox={document,Math:math,console,AbortController,devicePixelRatio:1,innerWidth:width,innerHeight:height,
     performance:{now:()=>now},matchMedia:()=>({matches:true}),scrollTo:no,
-    MoneyEffects:class{clear(){}draw(){}burst(){}},CoinAudio:class{play(){}},
+    MoneyEffects:class{clear(){}draw(){}burst(){}bump(){}tickShake(){return 0;}},CoinAudio:class{play(){}},
     localStorage:{getItem:key=>storage.get(key)??null,setItem:(key,value)=>{if(storageThrows)throw new Error('Storage unavailable');storage.set(key,value);}},
     requestAnimationFrame:fn=>{const id=++serial;raf.set(id,fn);return id;},cancelAnimationFrame:id=>raf.delete(id),
     setTimeout:(fn,ms)=>{const id=++serial;timers.set(id,{fn,at:now+ms});return id;},clearTimeout:id=>timers.delete(id),

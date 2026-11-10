@@ -91,4 +91,7 @@
 .combat-score-mode #end-menu #share,.combat-score-mode .brief-rules,.combat-score-mode .modes{display:none!important}
 .combat-score-mode.fleet-menu .brief{display:none}
 .combat-score-mode.fleet-menu .layout{display:block;max-width:1000px}
+#sea.ultimate-mode{box-shadow:inset 0 0 0 2px #ffd24a88,inset 0 0 42px #ffb84a28}
+#sea.ultimate-mode .journey-status{background:#5a3a12;color:#ffe7a8;border-bottom-color:#ffd24a88}
+body.ultimate-mode .event-banner{background:#5a3a12ee;border-color:#ffd24a;color:#fff4c8}
 @media(max-height:500px){.combat-score-mode .hud #score{font-size:23px}}

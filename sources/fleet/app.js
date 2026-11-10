@@ -25,7 +25,7 @@
     weapon: 'Compound cannon', escort: 'Diversify escorts', reserve: 'Reserve system', repair: 'Repair capital', repairHint: 'Restore 35 armour immediately',
     income: 'RESERVE INCOME', incomeHint: 'Cash earns game income every 15 seconds. Upgrade reserves to increase income and coin pickup range.',
     enemyTag: 'KNOW THE THREAT', fee: 'Impulse spending', feeHint: 'Light raider', inflation: 'Inflation', inflationHint: 'Fan-shaped fire', scam: 'Investment scam', scamHint: 'Fast zigzag', debt: 'High-interest debt', debtHint: 'Homing torpedoes',
-    label_fee: 'Spending', label_inflation: 'Inflation', label_scam: 'Scam', label_debt: 'Debt', label_trap: 'Money trap', label_myth: 'Money myth', label_rumor: 'Rumour',
+    label_fee: 'Spending', label_inflation: 'Inflation', label_scam: 'Scam', label_debt: 'Debt', label_trap: 'Money trap', label_myth: 'Money myth', label_rumor: 'Rumour', label_overlord: 'Ultimate Jet',
     metaphor: 'Money concepts become aircraft abilities. Coins, income and armour are fictional game values.', credits: 'Open-source credits & licence', creditNote: 'Combat core adapted from',
     changes: 'Adds endless waves, finance-themed upgrades, new aircraft art, touch controls and bilingual UI. Original music and font assets are not used.',
     wave: 'SECTOR', combo: 'COMBO', max: 'MAX', full: 'FULL', ready: 'coins · ready', active: 'Shield active', cooldown: 'Ready in', seconds: 's', coins: 'coins',
@@ -33,7 +33,7 @@
     escorts: ['Add a homing escort', 'Add a second escort', 'Rapid-fire escorts', 'Two rapid-fire escorts'],
     reserves: ['Longer shield · wider pickup', 'More income · cheaper shield', 'Maximum shield efficiency', 'Reserve system fully upgraded'],
     weaponNext: 'Next: ', equipped: 'Equipped: ', noCash: 'Collect more coins first', shieldWait: 'Shield is recharging', upgraded: 'Upgrade installed', repaired: 'Capital repaired',
-    shieldRaised: 'EMERGENCY SHIELD', waveBanner: 'ENTERING SECTOR', bossBanner: 'WARNING · DEBT STORM', dividend: 'Reserve income', graze: 'CLOSE CALL +20',
+    shieldRaised: 'EMERGENCY SHIELD', waveBanner: 'ENTERING SECTOR', bossBanner: 'WARNING · DEBT STORM', ultimateBanner: 'ULTIMATE MODE · FINAL JET', dividend: 'Reserve income', graze: 'CLOSE CALL +20',
     newBest: 'NEW LOCAL BEST', storageUnavailable: 'Saving is unavailable in this browser.', copied: 'Result copied — ready to share.', copyFallback: 'Copy this result:', fullscreenError: 'Full screen is not available in this browser.',
     endStats: (s) => `Sector ${s.wave} · ${s.kills} aircraft down · ${s.mode === 'booth' ? 'Booth intermediate' : s.mode === 'storm' ? 'Challenge' : 'Standard'}`,
     tip: 'Keep a small cash reserve. A shield can save your next run.',
@@ -41,12 +41,12 @@
   };
   const ZH = {
     soundOn: '音效：開', wave: '空域', combo: '連擊', max: '滿級', full: '已滿', ready: '幣 · 就緒', active: '護盾生效中', cooldown: '冷卻', seconds: '秒', coins: '幣',
-    label_fee: '衝動消費', label_inflation: '通脹', label_scam: '投資騙局', label_debt: '高息債務', label_trap: '理財陷阱', label_myth: '理財誤解', label_rumor: '流言',
+    label_fee: '衝動消費', label_inflation: '通脹', label_scam: '投資騙局', label_debt: '高息債務', label_trap: '理財陷阱', label_myth: '理財誤解', label_rumor: '流言', label_overlord: '終極戰機',
     weapons: ['追蹤火炮', '雙管追蹤炮', '三路散射炮', '貫穿射線炮', '重型能量球'],
     escorts: ['增加一架追蹤僚機', '增加第二架僚機', '僚機射速提升', '雙架高速僚機'],
     reserves: ['護盾更長 · 拾幣更遠', '收益提升 · 護盾更省', '護盾與儲備全面提升', '儲備系統已滿級'],
     weaponNext: '下級：', equipped: '裝備：', noCash: '先收集更多金幣', shieldWait: '護盾正在冷卻', upgraded: '升級完成', repaired: '本金已修復',
-    shieldRaised: '應急護盾啟動', waveBanner: '進入空域', bossBanner: '警報 · 債務風暴來襲', dividend: '儲備收益', graze: '擦彈 +20',
+    shieldRaised: '應急護盾啟動', waveBanner: '進入空域', bossBanner: '警報 · 債務風暴來襲', ultimateBanner: '終極模式 · 終極戰機來襲', dividend: '儲備收益', graze: '擦彈 +20',
     newBest: '刷新本機最佳', storageUnavailable: '此瀏覽器暫時無法保存成績。', copied: '已複製戰績，可以分享了。', copyFallback: '請複製以下戰績：', fullscreenError: '此瀏覽器暫不支援全螢幕。',
     endStats: s => `空域 ${s.wave} · 擊落 ${s.kills} 架 · ${s.mode === 'booth' ? 'Booth 中等' : s.mode === 'storm' ? '挑戰' : '標準'}`,
     tip: '留一筆應急金，下次危急時按 Q 開盾。',
@@ -125,10 +125,11 @@
     for (const id of ['menu', 'pause-menu', 'end-menu']) $(id).hidden = id !== which;
   }
   function prepareStart(){if(!journey){start();return;}document.body.classList.remove('fleet-menu');document.body.classList.add('fleet-playing');showOverlay(null);journey.guide($('sea'),start,returnMenu);}
-  function returnMenu(){journey?.close();if(journey?.status)journey.status.hidden=true;$('sea').classList.remove('journey-live');document.body.classList.remove('fleet-playing');document.body.classList.add('fleet-menu');phase='menu';paused=false;shopOpen=false;$('combat-layout').classList.remove('workshop-open');clearInput();game=C.createState({mode});showOverlay('menu');updateHUD();$('start').focus({preventScroll:true});}
+  function returnMenu(){journey?.close();if(journey?.status)journey.status.hidden=true;$('sea').classList.remove('journey-live','ultimate-mode');document.body.classList.remove('fleet-playing','ultimate-mode');document.body.classList.add('fleet-menu');phase='menu';paused=false;shopOpen=false;ultimateAnnounced=false;$('combat-layout').classList.remove('workshop-open');clearInput();game=C.createState({mode});showOverlay('menu');updateHUD();$('start').focus({preventScroll:true});}
+  let ultimateAnnounced=false;
   function start() {
-    document.body.classList.remove('fleet-menu');document.body.classList.add('fleet-playing');
-    shopOpen = false; deathTime = lowHealthSound = 0; fx.clear();
+    document.body.classList.remove('fleet-menu','ultimate-mode');document.body.classList.add('fleet-playing');$('sea').classList.remove('ultimate-mode');
+    shopOpen = false; deathTime = lowHealthSound = 0; fx.clear();ultimateAnnounced=false;
     $('combat-layout').classList.remove('workshop-open');
     game = C.createState({ mode, arcade:!!journey, seed:journey?.scene==='booth'?20261104:Date.now() }); if(journey){journey.start($('sea'));$('sea').classList.add('journey-live');} phase = 'play'; paused = false; accumulator = 0; lastTime = null; lastSound = 0; saveFailed = false;
     clearInput(); particles.length = ripples.length = floats.length = 0; bannerTime = 0; $('banner').classList.remove('show'); shake = 0;
@@ -206,10 +207,10 @@
         if(journey?.run&&kind==='weapon')desc=journey.name(journey.run.weapon)+' · '+game.power.toFixed(2)+'×';put(`${kind}-desc`, desc);
       }
     }
-    const boss = s.entities.find(e => e.kind === 'boss' && !e.dead); $('boss-bar').hidden = !boss || phase !== 'play';
-    if (boss) $('boss-hp').style.width = `${Math.max(0, boss.hp / boss.maxHp * 100)}%`;
+    const boss = s.entities.find(e => C.isBossKind(e.kind) && !e.dead); $('boss-bar').hidden = !boss || phase !== 'play';
+    if(boss){const label=boss.kind==='overlord'?t('label_overlord'):t('boss');const span=$('boss-bar').querySelector('span');if(span)span.textContent=label;$('boss-hp').style.width=`${Math.max(0,boss.hp/boss.maxHp*100)}%`;}
   }
-  const COLORS = { player: '#a6d5ce', fee: '#eaa694', inflation: '#d9bc85', scam: '#f99664', debt: '#b6a2cc', boss: '#e7a08b', trap: '#e4bd73', myth: '#a9b8ed', rumor: '#c6c791', escort: '#9bc8cd' };
+  const COLORS = { player: '#a6d5ce', fee: '#eaa694', inflation: '#d9bc85', scam: '#f99664', debt: '#b6a2cc', boss: '#e7a08b', overlord: '#ffd24a', trap: '#e4bd73', myth: '#a9b8ed', rumor: '#c6c791', escort: '#9bc8cd' };
   function path(points, fill, stroke = null) {
     ctx.beginPath(); points.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath();
     if (fill) { ctx.fillStyle = fill; ctx.fill(); } if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 1; ctx.stroke(); }
@@ -219,12 +220,12 @@
     ctx.save(); ctx.translate(x, y); ctx.rotate(angle + Math.PI / 2); ctx.scale(scale, scale);
     // Original vector aircraft: swept wings, cockpit, wingtip lights and jet exhaust.
     ctx.fillStyle='#09192355';ctx.beginPath();ctx.ellipse(5,10,28,12,0,0,Math.PI*2);ctx.fill();
-    const flame=10+Math.sin(time*38)*4;ctx.fillStyle=kind==='player'?'#a2f3ee':'#ffbd7d';
+    const flame=10+Math.sin(time*38)*4;ctx.fillStyle=kind==='player'?'#a2f3ee':kind==='overlord'?'#ffe39b':'#ffbd7d';
     path([[-4,19],[0,28+flame],[4,19]],ctx.fillStyle);ctx.globalAlpha=.35;path([[-7,18],[0,36+flame],[7,18]],ctx.fillStyle);ctx.globalAlpha=1;
     if(kind==='player'&&level>=3){const side=8+Math.sin(time*38+1)*3;path([[-16,16],[-12,22+side],[-8,16]],'#7ee7ff');path([[8,16],[12,22+side],[16,16]],'#7ee7ff');}
-    path([[0,-32],[6,-10],[31,12],[30,19],[7,11],[5,23],[13,29],[13,33],[0,28],[-13,33],[-13,29],[-5,23],[-7,11],[-30,19],[-31,12],[-6,-10]],fill,'#e1f3e9aa');
-    path([[0,-23],[4,-7],[3,9],[-3,9],[-4,-7]],'#204758','#adf3ed');
-    ctx.fillStyle='#f4d58f';ctx.fillRect(-25,14,5,2);ctx.fillRect(20,14,5,2);
+    path([[0,-32],[6,-10],[31,12],[30,19],[7,11],[5,23],[13,29],[13,33],[0,28],[-13,33],[-13,29],[-5,23],[-7,11],[-30,19],[-31,12],[-6,-10]],fill,kind==='overlord'?'#fff3c4':'#e1f3e9aa');
+    path([[0,-23],[4,-7],[3,9],[-3,9],[-4,-7]],kind==='overlord'?'#c9952e':'#204758',kind==='overlord'?'#ffe9a8':'#adf3ed');
+    ctx.fillStyle=kind==='overlord'?'#fff1b8':'#f4d58f';ctx.fillRect(-25,14,5,2);ctx.fillRect(20,14,5,2);
     if(kind==='player'&&level>=1){ctx.fillStyle=level>=2?'#8cf4ff':'#d7fff6';ctx.fillRect(-30,4,9,16);ctx.fillRect(21,4,9,16);}
     if(kind==='player'&&level>=2){ctx.strokeStyle='#8cf4ff';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-4,-30);ctx.lineTo(0,-48);ctx.lineTo(4,-30);ctx.stroke();ctx.fillStyle='#e8fdff';ctx.fillRect(-1.5,-46,3,16);}
     if(kind==='player'&&level>=3){path([[-31,6],[-46,16],[-44,24],[-30,16]],'#6faca8','#d7fff6');path([[31,6],[46,16],[44,24],[30,16]],'#6faca8','#d7fff6');}
@@ -232,6 +233,7 @@
     if(kind==='myth'){path([[-22,-2],[-38,8],[-30,14],[-14,7]],'#697fb1','#d8eaff');path([[22,-2],[38,8],[30,14],[14,7]],'#697fb1','#d8eaff');ctx.fillStyle='#e9edff';ctx.fillRect(-2,-17,4,9);}
     if(kind==='rumor'){path([[-12,-4],[-34,7],[-25,19],[-11,7]],'#8b9872','#e8edc8');path([[12,-4],[34,7],[25,19],[11,7]],'#8b9872','#e8edc8');}
     if(kind==='boss'){path([[-44,9],[-10,-11],[10,-11],[44,9],[42,27],[15,18],[-15,18],[-42,27]],'#d39582','#ffe2a8');path([[0,-35],[9,8],[0,26],[-9,8]],fill);}
+    if(kind==='overlord'){path([[-44,9],[-10,-11],[10,-11],[44,9],[42,27],[15,18],[-15,18],[-42,27]],'#f0c14a','#fff3c4');path([[0,-35],[9,8],[0,26],[-9,8]],'#ffd24a','#fff7d6');ctx.fillStyle='#ffe9a8';ctx.fillRect(-34,8,10,3);ctx.fillRect(24,8,10,3);path([[-31,6],[-48,16],[-46,24],[-30,16]],'#e2b03a','#fff1b8');path([[31,6],[48,16],[46,24],[30,16]],'#e2b03a','#fff1b8');}
     ctx.restore();
   }
   const ocean = document.createElement('canvas'); ocean.width = C.W; ocean.height = C.H;
@@ -262,20 +264,21 @@
   function drawEntity(e, time) {
     const p = e.position;
     if (e.type === 'ship') {
-      const scale = e.kind === 'boss' ? 2.3 : e.kind === 'debt' ? 1.3 : e.kind === 'inflation' ? 1.1 : e.kind === 'scam' ? .8 : e.kind==='trap'?1:e.kind==='myth'?.9:.87;
-      ship(p.x,p.y,Math.PI/2,scale,e.kind,time,e.flash);if(e.elite){ctx.strokeStyle='#ffb37e';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,scale*29,0,Math.PI*2);ctx.stroke();}if(!game.arcade&&e.kind==='boss'&&e.strategy.remainingBeforeAttack<.65){ctx.strokeStyle='#ffdb9c';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,55+Math.sin(time*14)*3,0,Math.PI*2);ctx.stroke();}
-      if(e.attack){ctx.save();ctx.strokeStyle='#ffcf99';ctx.globalAlpha=.4+.4*(1-e.attack.remaining/e.attack.duration);ctx.lineWidth=2;ctx.setLineDash([5,7]);for(const a of e.attack.angles){ctx.beginPath();ctx.moveTo(p.x+Math.cos(a)*24,p.y+Math.sin(a)*24);ctx.lineTo(p.x+Math.cos(a)*(e.kind==='boss'?135:78),p.y+Math.sin(a)*(e.kind==='boss'?135:78));ctx.stroke();}ctx.setLineDash([]);ctx.beginPath();ctx.arc(p.x,p.y,scale*24,0,Math.PI*2);ctx.stroke();ctx.restore();}
-      if (e.hp < e.maxHp) { const w=e.kind==='boss'?80:35; ctx.fillStyle='#09242f';ctx.fillRect(p.x-w/2,p.y-scale*35,w,3);ctx.fillStyle=COLORS[e.kind];ctx.fillRect(p.x-w/2,p.y-scale*35,w*Math.max(0,e.hp/e.maxHp),3); }
-      if (e.kind !== 'boss') drawLabel(t(`label_${e.kind}`),p.x,p.y+scale*34,COLORS[e.kind],13);
+      const scale = e.kind === 'overlord' ? 2.7 : e.kind === 'boss' ? 2.3 : e.kind === 'debt' ? 1.3 : e.kind === 'inflation' ? 1.1 : e.kind === 'scam' ? .8 : e.kind==='trap'?1:e.kind==='myth'?.9:.87;
+      ship(p.x,p.y,Math.PI/2,scale,e.kind,time,e.flash);if(e.kind==='overlord'){ctx.save();ctx.strokeStyle='#ffd24acc';ctx.lineWidth=3;ctx.beginPath();ctx.arc(p.x,p.y,scale*34+Math.sin(time*4)*3,0,Math.PI*2);ctx.stroke();ctx.strokeStyle='#fff3c488';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(p.x,p.y,scale*40+Math.sin(time*4+1)*2,0,Math.PI*2);ctx.stroke();ctx.restore();}if(e.elite){ctx.strokeStyle='#ffb37e';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,scale*29,0,Math.PI*2);ctx.stroke();}if(!game.arcade&&e.kind==='boss'&&e.strategy.remainingBeforeAttack<.65){ctx.strokeStyle='#ffdb9c';ctx.lineWidth=2;ctx.beginPath();ctx.arc(p.x,p.y,55+Math.sin(time*14)*3,0,Math.PI*2);ctx.stroke();}
+      if(e.attack){ctx.save();ctx.strokeStyle=e.kind==='overlord'?'#ffe39b':'#ffcf99';ctx.globalAlpha=.4+.4*(1-e.attack.remaining/e.attack.duration);ctx.lineWidth=2;ctx.setLineDash([5,7]);for(const a of e.attack.angles){ctx.beginPath();ctx.moveTo(p.x+Math.cos(a)*24,p.y+Math.sin(a)*24);ctx.lineTo(p.x+Math.cos(a)*(C.isBossKind(e.kind)?135:78),p.y+Math.sin(a)*(C.isBossKind(e.kind)?135:78));ctx.stroke();}ctx.setLineDash([]);ctx.beginPath();ctx.arc(p.x,p.y,scale*24,0,Math.PI*2);ctx.stroke();ctx.restore();}
+      if (e.hp < e.maxHp || e.kind==='overlord') { const w=C.isBossKind(e.kind)?90:35; ctx.fillStyle='#09242f';ctx.fillRect(p.x-w/2,p.y-scale*35,w,3);ctx.fillStyle=COLORS[e.kind]||COLORS.boss;ctx.fillRect(p.x-w/2,p.y-scale*35,w*Math.max(0,e.hp/e.maxHp),3); }
+      if (e.kind !== 'boss') drawLabel(t(`label_${e.kind}`),p.x,p.y+scale*34,COLORS[e.kind]||COLORS.boss,13);
     } else if (e.type === 'torpedo' && e.ray) {
       ctx.save(); ctx.strokeStyle=e.color||'#8cf4ff'; ctx.lineCap='round';
       ctx.globalAlpha=.28; ctx.lineWidth=6; ctx.beginPath(); ctx.moveTo(e.ray.start.x,e.ray.start.y); ctx.lineTo(e.ray.end.x,e.ray.end.y); ctx.stroke();
       ctx.globalAlpha=1; ctx.lineWidth=2.2; ctx.stroke(); ctx.restore();
     } else if (e.type === 'torpedo') {
       ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r); const friendly=e.collision.group===C.FRIEND; if(friendly&&game.mode==='booth'&&e.style!=='beam'&&e.style!=='bomb')ctx.scale(1.8,1.8);
-      const color=friendly?(e.color||(e.style==='escort'?'#9df1de':'#ffe1a1')):e.style==='debt'?'#d5acf1':'#ff9b84';
+      const color=friendly?(e.color||(e.style==='escort'?'#9df1de':'#ffe1a1')):e.style==='debt'?'#d5acf1':e.style==='seeker'?'#ffb36a':'#ff9b84';
       ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=e.style==='beam'?3:2;
       if(e.style==='missile'){ctx.beginPath();ctx.moveTo(12,0);ctx.lineTo(-7,-4);ctx.lineTo(-4,0);ctx.lineTo(-7,4);ctx.closePath();ctx.fill();ctx.fillStyle='#fff5c9';ctx.fillRect(-12,-1,6,2);}else if(e.style==='bomb'){ctx.fillStyle='#ffb07a55';ctx.beginPath();ctx.arc(0,0,9,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ffb07a';ctx.beginPath();ctx.arc(0,0,5,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#fff1c2';ctx.beginPath();ctx.moveTo(2,-4);ctx.lineTo(6,-9);ctx.stroke();}else if(e.style==='arc'){ctx.beginPath();ctx.moveTo(-16,-4);ctx.lineTo(-5,4);ctx.lineTo(2,-4);ctx.lineTo(12,0);ctx.stroke();}else if(e.style==='beam'){const slim=friendly&&game.mode==='booth';ctx.lineWidth=slim?2:(friendly?6:3);ctx.globalAlpha=.4;ctx.beginPath();ctx.moveTo(slim?-8:-30,0);ctx.lineTo(slim?16:(friendly?34:12),0);ctx.stroke();ctx.globalAlpha=1;ctx.lineWidth=slim?1.2:(friendly?2.6:2);ctx.beginPath();ctx.moveTo(slim?-2:-10,0);ctx.lineTo(slim?14:(friendly?28:10),0);ctx.stroke();}else if (e.style==='orb') { ctx.fillStyle='#e9c87b25';ctx.beginPath();ctx.arc(0,0,16,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ffe1a1';ctx.beginPath();ctx.arc(0,0,8,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff7e4';ctx.beginPath();ctx.arc(2,-2,3,0,Math.PI*2);ctx.fill(); }
+      else if(e.style==='seeker'){ctx.globalAlpha=.35;ctx.beginPath();ctx.moveTo(-14,0);ctx.lineTo(2,0);ctx.stroke();ctx.globalAlpha=1;ctx.beginPath();ctx.moveTo(7,0);ctx.lineTo(-4,-3.5);ctx.lineTo(-1,0);ctx.lineTo(-4,3.5);ctx.closePath();ctx.fill();}
       else { ctx.globalAlpha=.3;ctx.beginPath();ctx.moveTo(-17,0);ctx.lineTo(0,0);ctx.stroke();ctx.globalAlpha=1;ctx.beginPath();ctx.moveTo(-4,0);ctx.lineTo(friendly?7:3,0);ctx.stroke();if(!friendly){ctx.beginPath();ctx.arc(0,0,e.collision.radius,0,Math.PI*2);ctx.stroke();} }
       ctx.restore();
     } else if (e.type === 'coin') {
@@ -292,7 +295,7 @@
   }
   function events() {
     for(const e of game.events){
-      if(e.type==='sink'){if(game.combo>=5&&game.combo%5===0)soundscape.play('combo');const boss=e.kind==='boss';fx.burst(e.x,e.y,{size:boss?60:28,heavy:boss});fx.shatter(e.x,e.y,COLORS[e.kind],boss?55:24);soundscape.play(boss?'heavy':'sink');if(boss&&!reduced.matches)shake=.2;}
+      if(e.type==='sink'){if(game.combo>=5&&game.combo%5===0)soundscape.play('combo');const boss=C.isBossKind(e.kind);fx.burst(e.x,e.y,{size:boss?(e.kind==='overlord'?78:60):28,heavy:boss});fx.shatter(e.x,e.y,COLORS[e.kind]||COLORS.boss,boss?55:24);soundscape.play(boss?'heavy':'sink');if(boss&&!reduced.matches)shake=e.kind==='overlord'?.28:.2;}
       if(e.type==='damage'){fx.hit(e.x,e.y,'#ffad8f');if(!reduced.matches)shake=.14;soundscape.play('hit');}
       if(e.type==='blast'){fx.burst(e.x,e.y,{size:e.radius,color:'#ffbd84',heavy:false});soundscape.play('blast');}
       if(e.type==='impact'){fx.hit(e.x,e.y);soundscape.play('hit');}
@@ -301,6 +304,7 @@
       if(e.type==='block'){fx.hit(e.x,e.y,'#a9eee2');soundscape.play('crack');}
       if(e.type==='wave')banner('waveBanner',String(e.wave).padStart(2,'0'));
       if(e.type==='boss'){banner('bossBanner','',3);soundscape.play('boss');}
+      if(e.type==='ultimate'){banner('ultimateBanner','',3.2);soundscape.play('boss');if(!reduced.matches)shake=.18;}
       if(e.type==='dividend'){floats.push({x:C.W/2,y:C.H-150,key:'dividend',extra:` +${e.amount}`,life:1.7});soundscape.play('coin');}
       if(e.type==='graze')floats.push({x:e.x,y:e.y-38,key:'graze',extra:'',life:.8});
       if(e.type==='over')end();
@@ -318,7 +322,7 @@
       if(game.shield>0){ctx.strokeStyle='#9becd9aa';ctx.lineWidth=2;ctx.fillStyle='#78dfc31b';ctx.beginPath();ctx.arc(h.x,h.y,34+Math.sin(time*5)*2,0,Math.PI*2);ctx.fill();ctx.stroke();}
       if(phase!=='over'&&phase!=='sinking'){
         ctx.globalAlpha=game.invulnerable>0&&Math.floor(game.time*12)%2===0?.5:1;
-        const jetLevel=journey?game.evolution.weapon||0:Math.max(0,(game.weapon||1)-1);ship(h.x,h.y,h.r,1.08+Math.min(.22,jetLevel*.04),'player',time,0,jetLevel);ctx.globalAlpha=1;
+        const jetLevel=journey?game.evolution.weapon||0:Math.max(0,(game.weapon||1)-1);ship(h.x,h.y,h.r,1.08+Math.min(.22,jetLevel*.04)+(game.ultimate?.08:0),'player',time,0,jetLevel);if(game.ultimate){ctx.save();ctx.strokeStyle='#ffd24a88';ctx.lineWidth=2;ctx.beginPath();ctx.arc(h.x,h.y,30+Math.sin(time*6)*2,0,Math.PI*2);ctx.stroke();ctx.restore();}ctx.globalAlpha=1;
         if(game.escort)for(const side of game.escort===1?[-1]:[-1,1])ship(Math.max(12,Math.min(C.W-12,h.x+side*32)),h.y+18,h.r,.43,'escort',time);
       }
       for(const e of game.entities) if(e.type==='torpedo'&&e.collision.group===C.FRIEND)drawEntity(e,time);
@@ -339,6 +343,11 @@
     if(!paused){animation+=dt;fx.update(dt);}
     if(phase==='sinking'){deathTime-=dt;if(deathTime<=0)finishSinking();}
     if(phase==='play'&&!paused){
+      if(journey?.run&&journey.run.scene==='booth'){
+        const left=Math.max(0,window.FuLamJourney.LIMIT-journey.run.total);
+        const on=journey.run.phase==='play'&&left>0&&left<=15;
+        if(on!==game.ultimate){game.ultimate=on;document.body.classList.toggle('ultimate-mode',on);$('sea').classList.toggle('ultimate-mode',on);if(on){game.hero.hp=game.hero.maxHp;if(!ultimateAnnounced){ultimateAnnounced=true;banner('ultimateBanner','',3.2);soundscape.play('upgrade');updateHUD();}}}
+      }else if(game.ultimate){game.ultimate=false;document.body.classList.remove('ultimate-mode');$('sea').classList.remove('ultimate-mode');}
       accumulator+=dt;
       const directions=new Set([...pressed,...directionPointers.values()]);
       const input={x:Number(directions.has('right'))-Number(directions.has('left')),y:Number(directions.has('down'))-Number(directions.has('up'))};
@@ -421,7 +430,7 @@
       game.entities=game.entities.filter(e=>e.type==='coin');game.raised=[];game.invulnerable=1.5;paused=false;accumulator=0;banner('waveBanner',r.wave);updateHUD();
     };
     journey.onEnd=()=>{soundscape.play('end');game.running=false;paused=false;phase='over';clearInput();showOverlay('end-menu');renderEnd();};
-    window.FuLamFleet={getState:()=>({phase,paused,hero:{x:game.hero.position.x,y:game.hero.position.y,r:game.hero.collision.radius},threats:game.entities.filter(e=>!e.dead&&((e.type==='torpedo'&&e.collision.group===C.ENEMY)||e.type==='ship')).map(e=>({x:e.position.x,y:e.position.y,vx:e.type==='ship'?0:e.velocity.dx*e.velocity.speed,vy:e.type==='ship'?e.velocity.speed:e.velocity.dy*e.velocity.speed,r:e.collision.radius,type:e.type,elite:!!e.elite,hp:e.hp,kind:e.kind})),score:game.score,hp:game.hero.hp,maxHp:game.hero.maxHp,mode:game.mode,wave:game.wave,kills:game.kills,evolution:{...game.evolution},weaponKind:game.weaponKind,weapon:game.weapon,power:game.power,shield:game.shield,shots:game.shots,run:journey.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,phase:journey.run.phase,active:journey.run.active,total:journey.run.total,wave:journey.run.wave,weapon:journey.run.weapon,rate:journey.run.rate,trajectory:journey.run.trajectory,life:journey.run.life,protection:journey.run.protection,choiceTime:journey.run.choiceTime,reason:journey.run.reason}:null})};
+    window.FuLamFleet={getState:()=>({phase,paused,ultimate:!!game.ultimate,hero:{x:game.hero.position.x,y:game.hero.position.y,r:game.hero.collision.radius},threats:game.entities.filter(e=>!e.dead&&((e.type==='torpedo'&&e.collision.group===C.ENEMY)||e.type==='ship')).map(e=>({x:e.position.x,y:e.position.y,vx:e.type==='ship'?0:e.velocity.dx*e.velocity.speed,vy:e.type==='ship'?e.velocity.speed:e.velocity.dy*e.velocity.speed,r:e.collision.radius,type:e.type,elite:!!e.elite,hp:e.hp,kind:e.kind,homing:e.homing||0,style:e.style||''})),seekers:game.entities.filter(e=>!e.dead&&e.type==='torpedo'&&e.collision.group===C.ENEMY&&e.homing).map(e=>({x:e.position.x,y:e.position.y,dx:e.velocity.dx,dy:e.velocity.dy,homing:e.homing||0,style:e.style||'',lock:e.strategy?.type||'',past:e.position.y>game.hero.position.y-8})),score:game.score,hp:game.hero.hp,maxHp:game.hero.maxHp,mode:game.mode,wave:game.wave,kills:game.kills,evolution:{...game.evolution},weaponKind:game.weaponKind,weapon:game.weapon,power:game.power,shield:game.shield,shots:game.shots,run:journey.run?{scene:journey.run.scene,difficulty:journey.run.difficulty,phase:journey.run.phase,active:journey.run.active,total:journey.run.total,wave:journey.run.wave,weapon:journey.run.weapon,rate:journey.run.rate,trajectory:journey.run.trajectory,life:journey.run.life,protection:journey.run.protection,choiceTime:journey.run.choiceTime,reason:journey.run.reason}:null})};
   }
   if(journey)document.body.classList.add('fleet-menu');setLanguage(lang);sizeCanvas();requestAnimationFrame(frame);
 })();
