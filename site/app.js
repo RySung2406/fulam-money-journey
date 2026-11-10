@@ -54,6 +54,8 @@ function renderCaptcha(kind) {
       'expired-callback': () => { captcha.tokens[kind] = ''; $(`captcha-${kind}-status`).textContent = '請完成安全驗證。'; updateButtons(); },
       'error-callback': () => { captcha.tokens[kind] = ''; $(`captcha-${kind}-status`).textContent = '安全驗證未能載入，請重新整理頁面再試。'; updateButtons(); }
     });
+    // Widget is on screen; stop announcing a false "still loading" state.
+    if (!captcha.tokens[kind]) $(`captcha-${kind}-status`).textContent = '';
   } catch { captcha.failed = true; $(`captcha-${kind}-status`).textContent = '安全驗證未能載入，請重新整理頁面再試。'; }
 }
 function resetCaptcha(kind) {
@@ -158,6 +160,8 @@ function renderCheckIns(state = checkIns.state) {
   const button = $('check-in-button');
   button.textContent = action.label;
   button.disabled = action.disabled;
+  // Avoid two identical "返回日曆" controls when the story panel already has a back button.
+  button.hidden = action.showQuestion && action.action === 'close';
   button.setAttribute('aria-busy', String(saving));
   $('check-in-message').textContent = state.message;
   $('check-in-message').hidden = !state.message;
@@ -248,6 +252,8 @@ function showView(next, focus = true) {
   view = next;
   document.body.dataset.authView = next;
   for (const name of ['email', 'otp', 'member']) $(`${name}-screen`).hidden = name !== next;
+  const authShell = document.querySelector('.auth-shell');
+  if (authShell) authShell.hidden = next === 'member';
   renderCaptcha(next);
   if (focus) $(next === 'email' ? 'email' : next === 'otp' ? 'otp' : 'member-title').focus();
 }
