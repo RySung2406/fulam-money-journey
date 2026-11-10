@@ -16,19 +16,21 @@ test('Combat results show score ranking and three short lessons without duplicat
   const lesson=html.match(/class="result-lesson">([^<]+)/)[1];assert.equal((lesson.match(lang==='en'?/\./g:/。/g)||[]).length,3);
   const outside=ui.combatResult({rank:11,saved:false,board:[]});assert(outside.includes('<strong>10+</strong>'));assert(!outside.includes('#11'));
  }
- assert(new Run('fleet','booth').key().includes('combat3'));
- assert(!new Run('knife','booth').key().includes('combat3'));
+ assert(new Run('fleet','booth').key().includes('combat4'));
+ assert(!new Run('knife','booth').key().includes('combat4'));
 });
 const tick=(r,seconds,playing=true)=>{for(let i=0;i<Math.round(seconds*60);i++)r.tick(1/60,playing);};
 test('Each stage grants a weapon, then one other upgrade, and a new player starts fresh',()=>{
  for(const game of ['fleet','fishing','knife']){
   const r=new Run(game,'booth');
-  const picks=game==='knife'?['focus','life','focus']:game==='fleet'?['escort','trajectory','rate']:['trajectory','rate','trajectory'];
-  for(const kind of picks){r.completeRound();assert.equal(r.choose('weapon'),false);assert.equal(r.choose('guard'),false);assert(r.choose(kind));}
-  assert.equal(r.weapon,3);assert.equal(r.wave,4);
-  if(game==='knife'){assert.equal(r.focus,2);assert.equal(r.guard,0);assert.equal(r.life,1);}
-  else if(game==='fleet'){assert.equal(r.escort,1);assert.equal(r.trajectory,1);assert.equal(r.rate,1);}
-  else{assert.equal(r.trajectory,2);assert.equal(r.rate,1);assert.equal(r.choose('escort'),false);}
+  if(game==='knife'){
+   for(const kind of ['focus','life','focus']){r.completeRound();assert.equal(r.choose('weapon'),false);assert.equal(r.choose('guard'),false);assert(r.choose(kind));}
+   assert.equal(r.weapon,3);assert.equal(r.wave,4);assert.equal(r.focus,2);assert.equal(r.guard,0);assert.equal(r.life,1);
+  }else{
+   for(let i=0;i<3;i++){r.completeRound();assert(r.quizMode());assert.equal(r.choose('weapon'),false);assert.equal(r.choose('rate'),false);assert(r.choose('trajectory'));}
+   assert.equal(r.weapon,3);assert.equal(r.wave,4);assert.equal(r.trajectory,3);assert.equal(r.rate,0);
+   assert.equal(r.escort,game==='fleet'?1:0);
+  }
   const fresh=new Run(game,'booth');assert.equal(fresh.weapon,0);assert.equal(fresh.life,0);assert.equal(fresh.protection,0);assert.equal(fresh.guard,0);assert.equal(fresh.rate,0);assert.equal(fresh.trajectory,0);assert.equal(fresh.escort,0);
  }
 });
@@ -83,7 +85,8 @@ test('Every Booth game forces intermediate difficulty and a reproducible seed; p
   assert.deepEqual(Array.from({length:30},()=>a.random()),Array.from({length:30},()=>b.random()));
   assert.equal(new Run(game,'web','challenge').difficulty,'challenge');
   assert.equal(new Run(game,'web','intermediate').difficulty,'standard');
-  assert.notEqual(a.key(),a.key().replace('booth-v9','booth-v8'));
+  assert(a.key().includes(context.FuLamJourney.VERSION));
+  assert.notEqual(a.key(),a.key().replace(context.FuLamJourney.VERSION,'booth-old'));
  }
 });
 test('Thirty active seconds opens one choice and freezes the active play clock',()=>{
@@ -101,21 +104,30 @@ test('All games evolve through twelve stages and continue growing beyond the fin
 test('A paused public run cannot advance rounds or time out, even after an hour',()=>{
  const r=new Run('knife');r.tick(3600,false);assert.equal(r.phase,'play');assert.equal(r.active,0);assert.equal(r.wave,1);
 });
-test('Booth wall time expires through pause and upgrade, exactly once',()=>{
- const limit=context.FuLamJourney.LIMIT;
- for(const inChoice of [false,true]){const r=new Run('fleet','booth');if(inChoice)tick(r,20.1);r.tick(limit-r.total,false);assert.equal(r.phase,'over');assert.equal(r.reason,'time');assert.equal(r.total,limit);assert.equal(r.finish('defeat'),false);assert.equal(r.reason,'time');assert.equal(r.tick(10),null);assert(!r.choose('weapon'));}
+test('Booth quiz time does not spend the wall clock; pause freezes it; play can still expire once',()=>{
+ const limit=context.FuLamJourney.LIMIT,stages=context.FuLamJourney.BOOTH_STAGE_TIME;
+ const paused=new Run('fleet','booth');paused.tick(limit,false);assert.equal(paused.phase,'play');assert.equal(paused.total,0);
+ const quiz=new Run('fleet','booth');tick(quiz,stages[0]+.05);assert.equal(quiz.phase,'choice');assert(quiz.quizMode());
+ const held=quiz.total;tick(quiz,30);assert.equal(quiz.phase,'choice');assert.equal(quiz.total,held);assert.equal(quiz.choose('rate'),false);assert(quiz.choose('trajectory'));
+ for(let i=1;i<3;i++){tick(quiz,stages[i]+.05);assert.equal(quiz.phase,'choice');assert(quiz.choose('trajectory'));}
+ assert.equal(quiz.wave,4);tick(quiz,limit-quiz.total+.05);assert.equal(quiz.phase,'over');assert.equal(quiz.reason,'time');assert.equal(quiz.total,limit);
+ assert.equal(quiz.finish('defeat'),false);assert.equal(quiz.tick(10),null);
  const paced=new Run('fleet','booth');tick(paced,19);assert.equal(paced.phase,'play');tick(paced,1.2);assert.equal(paced.phase,'choice');
- const slice=new Run('knife','booth');tick(slice,119);assert.equal(slice.phase,'play');tick(slice,1.2);assert.equal(slice.phase,'over');assert.equal(slice.reason,'time');assert.equal(slice.total,limit);
 });
-test('Booth plays four stages inside two minutes and the last one fills the remaining time',()=>{
- const r=new Run('fishing','booth');
- assert.equal(context.FuLamJourney.LIMIT,120);
- assert.equal(JSON.stringify([...context.FuLamJourney.BOOTH_STAGE_TIME]),JSON.stringify([20,20,20]));
- tick(r,20.05);assert.equal(r.phase,'choice');assert.equal(r.weapon,1);assert(r.choose('rate'));
+test('Booth plays four stages inside 90 seconds and quiz rounds only advance on a correct trajectory pick',()=>{
+ const r=new Run('fishing','booth'),limit=context.FuLamJourney.LIMIT;
+ assert.equal(limit,90);
+ assert.equal(JSON.stringify([...context.FuLamJourney.BOOTH_STAGE_TIME]),JSON.stringify([20,20,25,25]));
+ tick(r,20.05);assert.equal(r.phase,'choice');assert.equal(r.weapon,1);assert(r.quizMode());assert.equal(r.choose('rate'),false);assert(r.choose('trajectory'));
  tick(r,20.05);assert.equal(r.phase,'choice');assert.equal(r.weapon,2);assert(r.choose('trajectory'));
- tick(r,20.05);assert.equal(r.phase,'choice');assert.equal(r.weapon,3);assert(r.choose('rate'));
- assert.equal(r.wave,4);assert.equal(r.phase,'play');assert(r.total<120);
- tick(r,120-r.total-.3);assert.equal(r.phase,'play');tick(r,.6);assert.equal(r.phase,'over');assert.equal(r.reason,'time');assert.equal(r.total,120);
+ tick(r,25.05);assert.equal(r.phase,'choice');assert.equal(r.weapon,3);assert(r.choose('trajectory'));
+ assert.equal(r.wave,4);assert.equal(r.trajectory,3);assert.equal(r.phase,'play');assert(r.total<limit);
+ tick(r,limit-r.total-.3);assert.equal(r.phase,'play');tick(r,.6);assert.equal(r.phase,'over');assert.equal(r.reason,'time');assert.equal(r.total,limit);
+});
+test('Fleet booth quiz auto-grants a wingman when round 3 begins',()=>{
+ const r=new Run('fleet','booth');
+ r.completeRound();assert(r.choose('trajectory'));assert.equal(r.wave,2);assert.equal(r.escort,0);
+ r.completeRound();assert(r.choose('trajectory'));assert.equal(r.wave,3);assert.equal(r.escort,1);assert.equal(r.trajectory,2);
 });
 test('Public challenges continue beyond six rounds with bounded choice history',()=>{
  const r=new Run('fleet','web','challenge');for(let i=0;i<110;i++){tick(r,30.1);assert.equal(r.weapon,i+1);assert(r.choose('rate'));}assert.equal(r.weapon,110);assert.equal(r.wave,111);assert.equal(r.phase,'play');assert.equal(r.choices.length,100);
@@ -135,18 +147,18 @@ test('Blocked storage and malformed records do not crash results',()=>{
  assert.equal(readBoard({getItem:()=>'{broken'},'x').length,0);
  assert.equal(readBoard({getItem:()=>JSON.stringify([{score:'<script>',wave:1,seconds:1},{score:1,wave:-1,seconds:2},{score:7,wave:2,seconds:2}])},'x').length,1);
 });
-test('A Booth jet becomes a laser once it upgrades, while a public jet keeps the early shell',()=>{
+test('Booth jet stages are all multi-shot trajectory weapons, while a public jet keeps the early shell',()=>{
  const fire=(mode,weapon,trajectory=0)=>{const s=C.createState({arcade:true,mode,seed:1});s.evolution.weapon=weapon;s.evolution.trajectory=trajectory;s.spawnTime=100;s.fireTime=.01;C.tick(s,.05);return s.entities.filter(e=>e.type==='torpedo'&&e.collision.group===C.FRIEND);};
- const upgraded=fire('booth',1);assert.equal(upgraded.length,2);assert(upgraded.every(e=>e.style==='beam'&&e.color==='#8cf4ff'&&e.blast===0&&e.collision.radius<=3.2&&e.ray));
+ const upgraded=fire('booth',1);assert.equal(upgraded.length,2);assert(upgraded.every(e=>e.style==='candycane'&&e.color==='#c23b3b'&&e.blast===0&&e.collision.radius<=3.2&&e.ray));
  const span=e=>Math.hypot(e.ray.end.x-e.ray.start.x,e.ray.end.y-e.ray.start.y);
  assert(upgraded.every(e=>e.ray.end.y<0&&e.ray.start.y>C.H*.5&&span(e)>C.H*.7));
  assert(Math.abs(upgraded[0].position.r-upgraded[1].position.r)<.02);
  assert(Math.abs(upgraded[0].ray.start.x-upgraded[1].ray.start.x)>12);
- const early=fire('booth',0);assert.equal(early.length,1);assert(early.every(e=>e.style==='shell'&&e.blast===0&&!e.ray&&e.damage>=9&&e.damage<=10));
+ const early=fire('booth',0);assert.equal(early.length,2);assert(early.every(e=>e.style==='snowflake'&&e.blast===0&&!e.ray));
  const pub=fire('standard',1);assert(pub.length>=1);assert(pub.every(e=>e.style==='shell'));
- const bomb=fire('booth',2);assert.equal(bomb.length,1);assert(bomb.every(e=>e.style==='bomb'&&e.blast>0&&e.blast<=22&&!e.ray));
- const plane=fire('booth',3);assert.equal(plane.length,1);assert(plane.every(e=>e.style==='missile'&&e.blast>0&&e.blast<=28));
- const wide=fire('booth',1,2);assert.equal(wide.length,4);assert(wide.every(e=>e.style==='beam'&&e.ray));
+ const bomb=fire('booth',2);assert.equal(bomb.length,2);assert(bomb.every(e=>e.style==='bell'&&e.blast>0&&e.blast<=22&&!e.ray));
+ const plane=fire('booth',3);assert.equal(plane.length,2);assert(plane.every(e=>e.style==='jelly'&&e.blast>0&&e.blast<=28));
+ const wide=fire('booth',1,2);assert.equal(wide.length,4);assert(wide.every(e=>e.style==='candycane'&&e.ray));
  assert(new Set(wide.map(e=>e.ray.start.x.toFixed(2))).size===4);
 });
 test('Aircraft evolution changes actual projectiles, with increasing damage and retained fire-rate/trajectory upgrades',()=>{
@@ -199,5 +211,5 @@ test('Slice stages wait for their choice pool, not thirty seconds; completing tw
  const r=new Run('knife');tick(r,60);assert.equal(r.phase,'play');assert.equal(r.wave,1);
  assert(r.completeRound());assert(!r.completeRound());assert.equal(r.phase,'choice');assert.equal(r.choiceTime,12);
  assert.equal(r.weapon,1);assert.equal(r.choose('weapon'),false);assert(r.choose('focus'));assert.equal(r.wave,2);assert.equal(r.weapon,1);assert.equal(r.roundTime,0);
- const booth=new Run('knife','booth');booth.tick(30);assert.equal(booth.phase,'play');assert.equal(booth.reason,'');assert(booth.completeRound());booth.tick(120);assert.equal(booth.phase,'over');assert.equal(booth.reason,'time');
+ const booth=new Run('knife','booth');booth.tick(30);assert.equal(booth.phase,'play');assert.equal(booth.reason,'');assert(booth.completeRound());assert.equal(booth.phase,'choice');assert(booth.choose('life'));assert.equal(booth.wave,2);assert.equal(booth.life,1);
 });

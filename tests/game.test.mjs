@@ -20,16 +20,18 @@ test('scoring rewards combos once per choice and penalises wrong slices', () => 
   assert.equal(session.bestCombo, 2);
   assert.equal(E.recordHit(session, 'next-round', good).delta, 100);
 });
-test('five ordered stages each have 25 unique, legible choices', () => {
+test('five ordered stages have unique, legible choice banks for booth play', () => {
   assert.deepEqual(questions.map(q => q.id), ['tools', 'investment', 'insurance', 'borrowing', 'scams']);
+  const expected={tools:25,investment:24,insurance:25,borrowing:25,scams:25};
   for (const q of questions) {
-    assert.equal(q.options.length, 25, q.id + ' answer bank');
-    assert.equal(new Set(q.options.map(o => o.id)).size, 25, q.id + ' unique IDs');
-    assert.equal(new Set(q.options.map(o => o.text.toLowerCase())).size, 25, q.id + ' unique labels');
-    assert.equal(q.options.filter(o => o.good === true).length, 13, q.id + ' correct choices');
+    const n=expected[q.id];
+    assert.equal(q.options.length, n, q.id + ' answer bank');
+    assert.equal(new Set(q.options.map(o => o.id)).size, n, q.id + ' unique IDs');
+    assert.equal(new Set(q.options.map(o => o.text.toLowerCase())).size, n, q.id + ' unique labels');
+    assert.equal(q.options.filter(o => o.good === true).length, q.id==='investment'?12:13, q.id + ' correct choices');
     assert.equal(q.options.filter(o => o.good === false).length, 12, q.id + ' plausible decoys');
     for (const o of q.options) {
-      assert.ok(o.text.trim().length > 0 && o.text.length <= 23, q.id + ': ' + o.text);
+      assert.ok(o.text.trim().length > 0 && o.text.length <= 36, q.id + ': ' + o.text);
     }
   }
 });

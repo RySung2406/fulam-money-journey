@@ -58,23 +58,16 @@ function playSound(kind, extra = {}){
   void coinAudio.ensure(audioCtx).then(()=>{
    if(!sound||!audioCtx)return;
    if(coinAudio.play(audioCtx, kind, extra))return;
-   if(kind==='good'||kind==='combo'){coinAudio.playSynthCoin(audioCtx);return;}
-   if(kind==='slice'){
-    const length=Math.ceil(audioCtx.sampleRate*.13),buffer=audioCtx.createBuffer(1,length,audioCtx.sampleRate),data=buffer.getChannelData(0);
-    for(let i=0;i<length;i++)data[i]=(Math.random()*2-1)*(1-i/length);
-    const source=audioCtx.createBufferSource(),filter=audioCtx.createBiquadFilter(),gain=audioCtx.createGain();
-    source.buffer=buffer;filter.type='bandpass';filter.Q.value=.7;filter.frequency.setValueAtTime(3200,t);filter.frequency.exponentialRampToValueAtTime(650,t+.12);
-    gain.gain.setValueAtTime(0,t);gain.gain.linearRampToValueAtTime(.13,t+.015);gain.gain.exponentialRampToValueAtTime(.001,t+.13);
-    source.connect(filter);filter.connect(gain);gain.connect(audioCtx.destination);source.start(t);source.stop(t+.14);
-    source.onended=()=>{source.disconnect();filter.disconnect();gain.disconnect();};return;
+   if(kind==='good'||kind==='combo'){coinAudio.playMoneyPlink(audioCtx,{rate:kind==='combo'?1.08:1,gain:kind==='combo'?.34:.28});return;}
+   if(kind==='slice')return;
+   if(kind==='bad'){
+    [180,115].forEach((n,i)=>{
+     const o=audioCtx.createOscillator(),g=audioCtx.createGain(),at=audioCtx.currentTime+i*.065;
+     o.type='triangle';o.frequency.setValueAtTime(n,at);
+     g.gain.setValueAtTime(0,at);g.gain.linearRampToValueAtTime(.045,at+.004);g.gain.exponentialRampToValueAtTime(.001,at+.2);
+     o.connect(g);g.connect(audioCtx.destination);o.start(at);o.stop(at+.22);o.onended=()=>{o.disconnect();g.disconnect();};
+    });
    }
-   const notes=kind==='bad'?[180,115]:[440,660,880];
-   notes.forEach((n,i)=>{
-    const o=audioCtx.createOscillator(),g=audioCtx.createGain(),at=audioCtx.currentTime+i*.065;
-    o.type=kind==='bad'?'triangle':'sine';o.frequency.setValueAtTime(n,at);
-    g.gain.setValueAtTime(0,at);g.gain.linearRampToValueAtTime(.055,at+.004);g.gain.exponentialRampToValueAtTime(.001,at+.23);
-    o.connect(g);g.connect(audioCtx.destination);o.start(at);o.stop(at+.25);o.onended=()=>{o.disconnect();g.disconnect();};
-   });
   });
  }catch{}
 }
@@ -135,14 +128,14 @@ modal.addEventListener('close', () => {
  }
 });
 function about() {
- if(journey){showModal(journey.text('三關挑戰，練習理財判斷。','Three stages, practise money decisions.'),'<p>'+journey.text('每關 25 個選項，出過不再重複。由理財工具開始，依次練習投資、保險。完成一關後選擇刀具強化。','Each stage has 25 choices, shown once. Start with money tools, then investing and insurance. Choose a blade upgrade after each stage.')+'</p><p>'+journey.text('只有 Booth 三關，不限兩分鐘。紀錄只存在本機，遊戲分數不是前後測成績。','Booth only: three stages, with no two-minute limit. Scores stay on this device and are not assessment results.')+'</p><a href="./OPEN_SOURCE.md">'+journey.text('開源來源與授權','Open-source credits')+'</a>','<button class="primary" id="close-modal">'+journey.text('知道了','Got it')+'</button>');$('#close-modal').onclick=closeModal;return;}
+ if(journey){showModal(journey.text('兩關挑戰，練習理財判斷。','Two stages, practise money decisions.'),'<p>'+journey.text('第 1 關認識理財工具（25 個選項）；第 2 關分辨投資產品（24 個選項）。出過不再重複；完成一關後選擇刀具強化。','Stage 1: know money tools (25 choices). Stage 2: spot investment products (24 choices). Each choice appears once; upgrade your blade between stages.')+'</p><p>'+journey.text('只有 Booth 兩關。紀錄只存在本機，遊戲分數不是前後測成績。','Booth only: two stages. Scores stay on this device and are not assessment results.')+'</p><a href="./OPEN_SOURCE.md">'+journey.text('開源來源與授權','Open-source credits')+'</a>','<button class="primary" id="close-modal">'+journey.text('知道了','Got it')+'</button>');$('#close-modal').onclick=closeModal;return;}
 
  showModal('Every slice is a choice.', `<p>FuLam One Slice is The Money Journey’s finance arcade. Choose a topic and slice its correct money bags in a continuous stream.</p><p>Practice has no time limit. The sprint finishes after ${E.GAME_RULES.sprintTarget} correct slices, with ${E.GAME_RULES.wrongPenaltySeconds} seconds added for each wrong slice. Repeated bags count as new chances to answer.</p><p>No account is needed. Completed sprint bests stay on this device, separately for each topic and difficulty. There is no online leaderboard in this game.</p><p>Optional explanations and official resources are available after you finish. Your score reflects gameplay, not overall financial ability.</p><p><a href="./OPEN_SOURCE.md" target="_blank" rel="noopener noreferrer">Open-source credits and licences ↗</a></p>`, '<button class="primary" id="close-modal">Got it</button>');
  $('#close-modal').onclick = closeModal;
 }
 $('#about-button').onclick = about;
 function rules() {
- if(journey){showModal(journey.text('切對、連擊、升級','Slice, combo, upgrade'),'<p>'+journey.text('切正確選項得分，切錯扣心；累積漏切亦扣心。每關 25 個選項，出過不再重複。三關結束。Booth 5 心。','Correct choices score; wrong cuts and repeated misses cost hearts. Each stage has 25 choices, shown once. Three stages, then the run ends. Booth gives 5 hearts.')+'</p>','<button class="primary" id="close-modal">'+journey.text('知道了','Got it')+'</button>');$('#close-modal').onclick=closeModal;return;}
+ if(journey){showModal(journey.text('切對、連擊、升級','Slice, combo, upgrade'),'<p>'+journey.text('切正確選項得分，切錯扣心；累積漏切亦扣心。兩關結束：先理財工具，再投資產品。Booth 5 心。','Correct choices score; wrong cuts and repeated misses cost hearts. Two stages: money tools, then investment products. Booth gives 5 hearts.')+'</p>','<button class="primary" id="close-modal">'+journey.text('知道了','Got it')+'</button>');$('#close-modal').onclick=closeModal;return;}
 
  showModal('Read. Choose. Slice.', `<ol><li><strong>Pick a topic.</strong> Its question stays visible throughout your run.</li><li><strong>Swipe through correct bags.</strong> Hold your mouse button or use your finger. Let wrong choices fall.</li><li><strong>Keep going.</strong> Bags arrive continuously in a shuffled order, with varied timing and flight paths.</li><li><strong>Choose your finish.</strong> Practice lasts until you finish. Sprint ends at ${E.GAME_RULES.sprintTarget} correct cuts; every wrong cut adds ${E.GAME_RULES.wrongPenaltySeconds} seconds.</li></ol><div class="rule-points"><span>Correct +100</span><span>Wrong −150</span><span>Combo bonus</span></div><p>Keyboard: Tab to an active bag, then press Enter or Space. A missed correct bag breaks your combo. Review explanations after your run, whenever you want.</p>`, `<button class="primary" id="close-modal">Got it ${icon('slice')}</button>`);
  $('#close-modal').onclick = closeModal;
@@ -159,7 +152,7 @@ function refreshTopicCards() {
 }
 function paintWelcome() {
  const title = journey.text('切準一刀。<br><em>再破紀錄。</em>','Make it count.<br><em>Beat your best.</em>');
- const copy = journey.text('由第一關開始。每關 25 個選項，出過不再重複，然後選擇刀具強化。','Start at stage 1. Each stage shows 25 choices once, then you upgrade your blade.');
+ const copy = journey.text('兩關設計：先認識理財工具，再分辨投資產品。出過不再重複，然後選擇刀具強化。','Two stages: know money tools, then spot investment products. Each choice appears once, then you upgrade your blade.');
  const start = journey.text('從第一關開始','Start at stage 1');
  const how = journey.text('玩法指引','How to play');
  const existing = $('.welcome-stage');
@@ -226,9 +219,9 @@ function startGame(topicId) {
 }
 function renderGame() {
  const q = question;
- render(`<section class="game-wrap"><div class="game-topline"><div class="progress-steps"><span class="step-dot current"></span><span class="round-number">${escape(q.chapter)} · ${playKind === 'sprint' ? '20-correct sprint' : 'Endless practice'}</span></div><div class="game-tools"><button type="button" class="language-switch">English</button><span class="mode-label">${difficulty().label} · continuous play</span><button class="icon-button" id="game-sound" aria-label="Sound">${icon(sound ? 'volume' : 'muted')}</button><button class="icon-button" id="game-fullscreen" aria-label="Toggle fullscreen">${icon('expand')}</button><button class="icon-button" id="pause-game" aria-label="Pause game">${icon('pause')}</button></div></div><div class="game-panel"><div class="question-bar"><div class="eyebrow">${escape(q.eyebrow)}</div><h1><span class="question-kicker">Question: </span>${escape(q.question)}</h1><p class="question-context">${escape(q.context)}</p></div><div class="game-hud"><div class="score-block"><span>SCORE</span><strong class="score-value" id="score">0</strong><span class="combo-block" id="combo"></span></div><div class="run-progress"><span id="run-goal">${playKind === 'sprint' ? '0 / 20 CORRECT' : 'NO TIME LIMIT'}</span><strong class="sprint-clock" id="run-clock" ${playKind === 'practice' ? 'hidden' : ''}>0:00.00</strong><div class="session-stats"><span id="correct-count">0 correct</span><span id="wrong-count">0 wrong</span><span id="missed-count">0 missed</span></div></div></div><div class="arena" id="arena" role="group" aria-label="Money bag slicing arena"><span class="arena-caption">SLICE THE RIGHT CHOICES</span><span class="arena-watermark">FuLam One Slice</span><canvas class="trail" id="trail" aria-hidden="true"></canvas><span class="knife-cursor" id="knife-cursor" aria-hidden="true"><img src="knife.svg" alt="" draggable="false"></span><div class="arena-overlay" id="ready-overlay"><div class="ready-card"><div class="ready-icon">${icon('slice')}</div><h2>${escape(q.chapter)}</h2><p>Read the question above.<br>Slice correct choices and let wrong ones fall.<br>${q.options.length} different answers · ${difficulty().label}<br>${playKind === 'sprint' ? '20 correct slices to finish. Wrong cuts add 3 seconds.' : 'No time limit. Finish whenever you want.'}</p><button class="primary" id="ready-button">Ready to slice ${icon('arrow')}</button></div></div></div><div class="arena-footer"><span>${playKind === 'sprint' ? 'Wrong slice +3s · Missed correct bag breaks combo' : 'Correct +100 · Wrong −150 · Combo bonus'}</span><button class="finish-session" id="finish-session">Finish & review →</button></div></div><p class="small-note">Bags keep coming · Same topic throughout · Keyboard: Tab to a bag, Enter or Space to slice</p></section>`);
+ render(`<section class="game-wrap"><div class="game-topline"><div class="progress-steps"><span class="step-dot current"></span><span class="round-number">${escape(q.chapter)} · ${playKind === 'sprint' ? '20-correct sprint' : 'Endless practice'}</span></div><div class="game-tools"><button type="button" class="language-switch">English</button><span class="mode-label">${difficulty().label} · continuous play</span><button class="icon-button" id="game-sound" aria-label="Sound">${icon(sound ? 'volume' : 'muted')}</button><button class="icon-button" id="game-fullscreen" aria-label="Toggle fullscreen">${icon('expand')}</button><button class="icon-button" id="pause-game" aria-label="Pause game">${icon('pause')}</button></div></div><div class="game-panel"><div class="question-bar"><div class="eyebrow">${escape(q.eyebrow)}</div><h1><span class="question-kicker">Question: </span>${escape(q.question)}</h1><p class="question-context">${escape(q.context)}</p></div><div class="game-hud"><div class="score-block"><span>SCORE</span><strong class="score-value" id="score">0</strong><span class="combo-block" id="combo"></span></div><div class="run-progress"><span id="run-goal">${playKind === 'sprint' ? '0 / 20 CORRECT' : 'NO TIME LIMIT'}</span><strong class="sprint-clock" id="run-clock" ${playKind === 'practice' ? 'hidden' : ''}>0:00.00</strong><div class="session-stats"><span id="correct-count">0 correct</span><span id="wrong-count">0 wrong</span><span id="missed-count">0 missed</span></div></div></div><div class="arena" id="arena" role="group" aria-label="Money bag slicing arena"><span class="arena-caption">SLICE THE RIGHT CHOICES</span><span class="arena-watermark">FuLam One Slice</span><canvas class="trail" id="trail" aria-hidden="true"></canvas><span class="knife-cursor" id="knife-cursor" data-tier="0" aria-hidden="true"><img src="knife-0.svg?v=xmas2" alt="" draggable="false"></span><div class="arena-overlay" id="ready-overlay"><div class="ready-card"><div class="ready-icon">${icon('slice')}</div><h2>${escape(q.chapter)}</h2><p>Read the question above.<br>Slice correct choices and let wrong ones fall.<br>${q.options.length} different answers · ${difficulty().label}<br>${playKind === 'sprint' ? '20 correct slices to finish. Wrong cuts add 3 seconds.' : 'No time limit. Finish whenever you want.'}</p><button class="primary" id="ready-button">Ready to slice ${icon('arrow')}</button></div></div></div><div class="arena-footer"><span>${playKind === 'sprint' ? 'Wrong slice +3s · Missed correct bag breaks combo' : 'Correct +100 · Wrong −150 · Combo bonus'}</span><button class="finish-session" id="finish-session">Finish & review →</button></div></div><p class="small-note">Bags keep coming · Same topic throughout · Keyboard: Tab to a bag, Enter or Space to slice</p></section>`);
  arena = $('#arena'); canvas = $('#trail'); ctx = canvas.getContext('2d'); knife = $('#knife-cursor');
- resizeArena(); bindPointer();
+ applyKnifeSkin(); resizeArena(); bindPointer();
  $('#pause-game').onclick = pauseGame;
  $('#game-sound').onclick = () => $('#sound-toggle').click();
  $('#game-fullscreen').onclick = () => $('#fullscreen').click();
@@ -239,7 +232,7 @@ function renderGame() {
   $('.mode-label').textContent=journey.text(journey.scene==='booth'?'Booth 中等':journey.difficulty==='challenge'?'挑戰':'標準',journey.scene==='booth'?'Booth intermediate':journey.difficulty==='challenge'?'Challenge':'Standard');
   $('.arena-footer>span').textContent=journey.text('錯切 −1♥ · 漏切 '+(journey.sliceHearts())+' 次 −1♥','Wrong −1♥ · '+(journey.sliceHearts())+' misses −1♥');
   $('.small-note').textContent=journey.text('切錯扣心；漏切正確選項會斷連擊，累積漏切亦會扣心。每回合先看清新題目。','Wrong cuts cost a heart. Missed correct choices break combos; repeated misses cost a heart. Read each new round’s question.');
-  $('.ready-card p').textContent=journey.text('先閱讀上方題目。切正確選項，讓錯誤選項落下。'+hearts+' 顆心；每關 25 個選項，出過不再重複。','Read the question above. Slice correct choices and leave wrong ones. '+hearts+' hearts. 25 choices a stage, with no repeats.');
+  $('.ready-card p').textContent=journey.text('先閱讀上方題目。切正確選項，讓錯誤選項落下。'+hearts+' 顆心；本關選項出過不再重複。','Read the question above. Slice correct choices and leave wrong ones. '+hearts+' hearts. Choices in this stage are shown once.');
   $('#finish-session').classList.add('journey-exit');$('#finish-session').textContent=journey.text('退出','Exit');$('#finish-session').disabled=false;$('#finish-session').onclick=()=>phase==='ready'?home():finishSession(false);
   $('#ready-overlay').remove();showQuestionGate(beginStream,home);
   const blade=document.createElement('span');blade.id='knife-level';blade.className='journey-loadout';$('.arena-footer').append(blade);
@@ -337,7 +330,7 @@ function spawnIfReady() {
  if (!arena || phase !== 'playing' || paused || elapsed < nextSpawnAt) return;
  const available = Math.max(0, liveCap() - targets.filter(target => !target.hit).length);
  if (!available) return;
- const stageCap=journey?(journey.scene==='booth'?window.FuLamJourney.KNIFE_OPTIONS:20):Infinity;
+ const stageCap=journey?(journey.scene==='booth'?(question?.options?.length||window.FuLamJourney.KNIFE_OPTIONS):20):Infinity;
  const count = Math.min(available, journey?Math.max(0,stageCap-roundSpawned):Infinity, Math.max(1, E.spawnGroupSize(available, roundRandom)));if(!count)return;
  const launches = E.createLaunches(count, mode, roundRandom);
  lastGroup = [];
@@ -399,7 +392,7 @@ function loop(now) {
  journey?.step(!paused);if(phase!=='playing')return;
  const frameDelta = Math.max(0, now - lastTime) / 1000;
  advanceClock(now);
- if (!paused) { focusTime=Math.max(0,focusTime-Math.min(frameDelta,.1));positionTargets();if(journey&&hearts<=0){journey.run.finish('hearts');finishSession(false);return;} if(journey&&journey.run.phase==='play'){const cap=journey.scene==='booth'?window.FuLamJourney.KNIFE_OPTIONS:20;if(roundResolved>=cap){if(journey.scene==='booth'&&journey.run.wave>=window.FuLamJourney.KNIFE_STAGES){journey.run.finish('stages');finishSession(true);return;}journey.completeRound();}}spawnIfReady(); drawTrail(now, Math.min(frameDelta, .05)); updateHUD(); }
+ if (!paused) { focusTime=Math.max(0,focusTime-Math.min(frameDelta,.1));positionTargets();if(journey&&hearts<=0){journey.run.finish('hearts');finishSession(false);return;} if(journey&&journey.run.phase==='play'){const cap=journey.scene==='booth'?(question?.options?.length||window.FuLamJourney.KNIFE_OPTIONS):20;if(roundResolved>=cap){if(journey.scene==='booth'&&journey.run.wave>=window.FuLamJourney.KNIFE_STAGES){journey.run.finish('stages');finishSession(true);return;}journey.completeRound();}}spawnIfReady(); drawTrail(now, Math.min(frameDelta, .05)); updateHUD(); }
  raf = requestAnimationFrame(loop);
 }
 function updateHUD() {
@@ -411,7 +404,7 @@ function updateHUD() {
  $('#missed-count').textContent = `${session.missed} missed`;
  $('#run-goal').textContent = playKind === 'sprint' ? `${session.correct} / ${E.GAME_RULES.sprintTarget} CORRECT` : 'NO TIME LIMIT';
  $('#run-clock').textContent = timeLabel(playKind === 'sprint' ? E.sprintTimeMs(elapsed, session.wrong) : Math.ceil(elapsed * 1000));
- if(journey?.run){$('#run-goal').textContent='♥ '+hearts+'/'+journey.sliceMaxHearts();$('#run-clock').hidden=false;const wallLeft=Math.ceil(Math.max(0,window.FuLamJourney.LIMIT-(journey.run.total||0)));if(journey.scene==='booth')$('#run-clock').textContent=wallLeft+'s';$('.round-number').textContent=journey.scene==='booth'?journey.text('第 '+journey.run.wave+'/'+window.FuLamJourney.KNIFE_STAGES+' 關 · '+roundResolved+'/'+window.FuLamJourney.KNIFE_OPTIONS,'Stage '+journey.run.wave+'/'+window.FuLamJourney.KNIFE_STAGES+' · '+roundResolved+'/'+window.FuLamJourney.KNIFE_OPTIONS):journey.text('第 '+journey.run.wave+' 關 · '+roundResolved+'/20','Stage '+journey.run.wave+' · '+roundResolved+'/20');if($('#knife-level'))$('#knife-level').textContent=journey.name(journey.run.weapon)+' Lv.'+(journey.run.weapon+1)+' · +'+(journey.run.weapon*25)+'%';if($('#knife-focus')){$('#knife-focus').disabled=paused||focusCharge<100;$('#knife-focus').textContent=journey.text('全屏緩慢 ','Full-screen slow ')+Math.floor(focusCharge)+'% · Q';}}
+ if(journey?.run){$('#run-goal').textContent='♥ '+hearts+'/'+journey.sliceMaxHearts();$('#run-clock').hidden=false;if(journey.scene==='booth')$('#run-clock').textContent=journey.name(journey.run.weapon);const stageTotal=journey.scene==='booth'?(question?.options?.length||window.FuLamJourney.KNIFE_OPTIONS):20;$('.round-number').textContent=journey.scene==='booth'?journey.text('第 '+journey.run.wave+'/'+window.FuLamJourney.KNIFE_STAGES+' 關 · '+roundResolved+'/'+stageTotal,'Stage '+journey.run.wave+'/'+window.FuLamJourney.KNIFE_STAGES+' · '+roundResolved+'/'+stageTotal):journey.text('第 '+journey.run.wave+' 關 · '+roundResolved+'/20','Stage '+journey.run.wave+' · '+roundResolved+'/20');if($('#knife-level'))$('#knife-level').textContent=journey.name(journey.run.weapon)+' Lv.'+(journey.run.weapon+1)+' · +'+(journey.run.weapon*25)+'%';if($('#knife-focus')){$('#knife-focus').disabled=paused||focusCharge<100;$('#knife-focus').textContent=journey.text('全屏緩慢 ','Full-screen slow ')+Math.floor(focusCharge)+'% · Q';}}
  $('#run-clock').title = playKind === 'sprint' ? `Includes ${session.wrong * E.GAME_RULES.wrongPenaltySeconds} seconds of wrong-slice penalties` : 'Time played';
 }
 function cutTarget(target) {
@@ -423,10 +416,9 @@ function cutTarget(target) {
  target.hit = true; target.active = false; target.el.disabled = true;
  target.el.classList.add(target.option.good ? 'cut-good' : 'cut-bad');
  const stats = optionStats.get(target.option.id); stats[target.option.good ? 'correct' : 'wrong']++;
- playSound(target.option.good ? 'good' : 'bad');
- if (target.option.good && result.combo > 1) {
-  playSound('combo', { rate: 1 + Math.min(.4, (result.combo - 1) * .045), gain: .28 + Math.min(.16, result.combo * .015) });
- }
+ if(!target.option.good)playSound('bad');
+ else if(result.combo>1)playSound('combo',{rate:1+Math.min(.4,(result.combo-1)*.045),gain:.78+Math.min(.12,result.combo*.01)});
+ else playSound('good');
  const centerX = target.x + target.el.offsetWidth / 2, centerY = target.y + target.el.offsetHeight * .48;
  const burstScale = (arenaWidth < 650 ? .8 : 1) * (target.option.good && result.combo > 1 ? 1 + Math.min(.45, result.combo * .04) : 1);
  splitBag(target); effects.burst(centerX, centerY, target.option.good, burstScale);
@@ -449,6 +441,15 @@ function splitBag(target) {
   part.style.width = art.width + 'px'; part.style.height = art.height + 'px'; part.innerHTML = bag();
   arena.append(part); later(() => part.remove(), 700);
  }
+}
+function knifeTier(){return Math.max(0,Math.min(1,journey?.run?.weapon||0));}
+function applyKnifeSkin(){
+ if(!knife)return;
+ const tier=knifeTier();
+ const img=knife.querySelector('img');
+ if(img)img.src=`knife-${tier}.svg?v=xmas2`;
+ knife.dataset.tier=String(tier);
+ knife.classList.toggle('tier-1',tier>=1);
 }
 function hideKnife() { knife?.classList.remove('visible', 'slicing'); }
 function moveKnife(point, active, dx = 0) {
@@ -508,8 +509,8 @@ function drawTrail(now, dt) {
   const alpha = Math.max(0, 1 - (now - trail[index].t) / 180);
   ctx.beginPath(); ctx.moveTo(trail[index - 1].x, trail[index - 1].y); ctx.lineTo(trail[index].x, trail[index].y);
   ctx.strokeStyle = `rgba(120,214,255,${alpha * .12})`; ctx.lineWidth = 20+Math.min(18,(journey?.run?.weapon||0)*2); ctx.stroke();
-  ctx.strokeStyle = journey?.run?window.FuLamJourney.weaponProfile('knife',journey.run).color:`rgba(184,236,255,${alpha * .4})`; ctx.lineWidth = 8; ctx.stroke();
-  ctx.strokeStyle = `rgba(255,251,224,${alpha})`; ctx.lineWidth = 2.5; ctx.stroke();
+  ctx.strokeStyle = journey?.run?'rgba(194,59,59,.42)':`rgba(184,236,255,${alpha * .4})`; ctx.lineWidth = 8; ctx.stroke();
+  ctx.strokeStyle = journey?.run?`rgba(255,242,200,${alpha})`:`rgba(255,251,224,${alpha})`; ctx.lineWidth = 2.5; ctx.stroke();
  }
  ctx.restore();
 }
@@ -581,8 +582,8 @@ if(journey){
   roundSpawned=0;roundResolved=0;const initial=QUESTIONS.findIndex(q=>q.id===startTopic);question=QUESTIONS[(initial+r.wave-1)%QUESTIONS.length];
   optionDeck=E.createOptionDeck(question.options,roundRandom,journey.scene==='booth');for(const option of question.options)if(!optionStats.has(option.id))optionStats.set(option.id,{option,shown:0,correct:0,wrong:0,missed:0,avoided:0});
   $('.question-bar h1').innerHTML='<span class="question-kicker">Question: </span>'+escape(question.question);$('.question-context').textContent=question.context;$('.question-bar .eyebrow').textContent=question.eyebrow;$('.round-number').textContent='ROUND '+r.wave+' · '+question.chapter;
-  paused=true;arena?.classList.add('is-paused');resizeArena();updateHUD();
-  showQuestionGate(()=>{paused=false;lastTime=performance.now();nextSpawnAt=elapsed+.3;arena?.classList.remove('is-paused');updateHUD();},()=>finishSession(false));
+  applyKnifeSkin();paused=true;arena?.classList.add('is-paused');resizeArena();updateHUD();
+  showQuestionGate(()=>{paused=false;lastTime=performance.now();nextSpawnAt=elapsed+.3;arena?.classList.remove('is-paused');applyKnifeSkin();updateHUD();},()=>finishSession(false));
  };
  journey.onEnd=()=>finishSession(false);
 }

@@ -135,6 +135,50 @@
           angle: a, spin: random(-4, 4), life: random(.65, 1.2) });
       }
     }
+    snowburst(x, y, size = 22) {
+      this.add({ type: 'glow', x, y, color: '#e8f6ff', size: size * 1.4, life: .22 });
+      const count = this.reduced ? 5 : 12;
+      for (let i = 0; i < count; i++) {
+        const a = i / count * TAU + random(-.15, .15);
+        this.add({ type: 'flake', x, y, color: i % 2 ? '#ffffff' : '#cfefff',
+          size: size * random(.18, .42), vx: Math.cos(a) * random(40, 120), vy: Math.sin(a) * random(30, 100) - 20,
+          angle: a, spin: random(-6, 6), life: random(.45, .95) });
+      }
+    }
+    candyburst(x, y, size = 22) {
+      this.add({ type: 'glow', x, y, color: '#ffd0d0', size: size * 1.3, life: .2 });
+      const count = this.reduced ? 5 : 14;
+      for (let i = 0; i < count; i++) {
+        const a = i / count * TAU + random(-.12, .12);
+        this.add({ type: i % 3 === 0 ? 'candy' : 'spark', x, y,
+          color: i % 2 ? '#fffef9' : '#c23b3b', size: size * random(.16, .38),
+          vx: Math.cos(a) * random(45, 130), vy: Math.sin(a) * random(35, 110) - 15,
+          angle: a, spin: random(-8, 8), life: random(.4, .9) });
+      }
+    }
+    bellburst(x, y, size = 22) {
+      this.add({ type: 'glow', x, y, color: '#ffe9a8', size: size * 1.35, life: .22 });
+      const count = this.reduced ? 5 : 12;
+      for (let i = 0; i < count; i++) {
+        const a = i / count * TAU + random(-.14, .14);
+        this.add({ type: i % 2 ? 'bell' : 'spark', x, y,
+          color: i % 3 ? '#f0d878' : '#c23b3b', size: size * random(.2, .42),
+          vx: Math.cos(a) * random(40, 125), vy: Math.sin(a) * random(30, 105) - 18,
+          angle: a, spin: random(-7, 7), life: random(.45, .95) });
+      }
+    }
+    jellyburst(x, y, size = 26) {
+      this.add({ type: 'glow', x, y, color: '#ffd6e8', size: size * 1.5, life: .24 });
+      this.add({ type: 'ring', x, y, color: '#ff8ab8', size: size * .9, life: .32 });
+      const palette = ['#c23b3b', '#2f9e6b', '#f0d878', '#fffef9', '#e85a9a'];
+      const count = this.reduced ? 6 : 16;
+      for (let i = 0; i < count; i++) {
+        const a = i / count * TAU + random(-.1, .1);
+        this.add({ type: 'jelly', x, y, color: palette[i % palette.length],
+          size: size * random(.18, .4), vx: Math.cos(a) * random(50, 150), vy: Math.sin(a) * random(40, 130) - 20,
+          angle: a, spin: random(-9, 9), life: random(.5, 1.05) });
+      }
+    }
     hit(x, y, color = '#fff1c4') {
       this.add({ type: 'glow', x, y, color, size: 23, life: .16 });
       for (let i = 0; i < (this.reduced ? 2 : 4); i++) {
@@ -147,6 +191,8 @@
       for (const p of this.items) {
         p.age += dt; p.x += p.vx * dt; p.y += p.vy * dt; p.angle += p.spin * dt;
         if (p.type === 'shard') { p.vy += dt * 60; p.vx *= Math.exp(-dt * 1.8); }
+        if (p.type === 'flake') { p.vy += dt * 28; p.vx *= Math.exp(-dt * 1.2); }
+        if (p.type === 'candy' || p.type === 'bell' || p.type === 'jelly') { p.vy += dt * 55; p.vx *= Math.exp(-dt * 1.5); }
         if (p.type === 'bubble') p.vy -= dt * 110;
       }
       this.items = this.items.filter(p => p.age < p.life);
@@ -172,6 +218,35 @@
           ctx.beginPath(); ctx.moveTo(-p.size, -p.size * .4); ctx.lineTo(p.size * .6, -p.size * .65);
           ctx.lineTo(p.size, p.size * .15); ctx.lineTo(-p.size * .3, p.size * .55); ctx.closePath();
           ctx.fill(); ctx.strokeStyle = '#f8eed6'; ctx.lineWidth = .6; ctx.stroke();
+        } else if (p.type === 'flake') {
+          const r = p.size;
+          ctx.strokeStyle = p.color; ctx.lineWidth = Math.max(1, r * .22); ctx.lineCap = 'round';
+          for (let i = 0; i < 3; i++) {
+            ctx.save(); ctx.rotate(i * Math.PI / 3);
+            ctx.beginPath(); ctx.moveTo(-r, 0); ctx.lineTo(r, 0); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(r * .45, 0); ctx.lineTo(r * .7, -r * .28); ctx.moveTo(r * .45, 0); ctx.lineTo(r * .7, r * .28); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(-r * .45, 0); ctx.lineTo(-r * .7, -r * .28); ctx.moveTo(-r * .45, 0); ctx.lineTo(-r * .7, r * .28); ctx.stroke();
+            ctx.restore();
+          }
+          ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(0, 0, r * .18, 0, TAU); ctx.fill();
+        } else if (p.type === 'candy') {
+          const r = p.size;
+          ctx.fillStyle = '#c23b3b'; ctx.fillRect(-r, -r * .35, r * 2, r * .7);
+          ctx.strokeStyle = '#fffef9'; ctx.lineWidth = Math.max(1.2, r * .28); ctx.setLineDash([r * .45, r * .35]);
+          ctx.beginPath(); ctx.moveTo(-r * .85, 0); ctx.lineTo(r * .85, 0); ctx.stroke(); ctx.setLineDash([]);
+        } else if (p.type === 'bell') {
+          const r = p.size;
+          ctx.fillStyle = '#f0d878';
+          ctx.beginPath(); ctx.moveTo(-r * .55, -r * .15); ctx.quadraticCurveTo(-r * .7, r * .55, -r * .85, r * .7);
+          ctx.lineTo(r * .85, r * .7); ctx.quadraticCurveTo(r * .7, r * .55, r * .55, -r * .15);
+          ctx.quadraticCurveTo(0, -r * .55, -r * .55, -r * .15); ctx.fill();
+          ctx.fillStyle = '#c23b3b'; ctx.fillRect(-r * .18, -r * .62, r * .36, r * .28);
+          ctx.fillStyle = '#d4a84a'; ctx.beginPath(); ctx.arc(0, r * .78, r * .16, 0, TAU); ctx.fill();
+        } else if (p.type === 'jelly') {
+          const r = p.size;
+          ctx.fillStyle = p.color;
+          ctx.beginPath(); ctx.ellipse(0, 0, r * .72, r, 0, 0, TAU); ctx.fill();
+          ctx.fillStyle = '#ffffffaa'; ctx.beginPath(); ctx.ellipse(-r * .2, -r * .28, r * .22, r * .32, -.35, 0, TAU); ctx.fill();
         } else if (p.type === 'bubble') {
           ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(0, 0, p.size * (1 + t * .4), 0, TAU); ctx.stroke();
           ctx.globalAlpha *= .25; ctx.fill();

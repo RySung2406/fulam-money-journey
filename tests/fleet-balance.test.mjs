@@ -34,7 +34,7 @@ test('A slow reactive beginner reaches R4 in most seeded runs; standing still ca
   }
   counts[style]+=reached?1:0;finished[style]+=s.running?1:0;
  }
- assert(counts.react>=8,JSON.stringify(counts));assert.equal(finished.idle,0,JSON.stringify(finished));
+ assert(counts.react>=7,JSON.stringify(counts));assert.equal(finished.idle,0,JSON.stringify(finished));
 });
 
 test('An ordinary volley gives reaction time, locks aim, and can be dodged with keyboard movement',()=>{

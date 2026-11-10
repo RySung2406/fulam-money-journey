@@ -84,33 +84,33 @@ test('Shipped fishing fire supports all twelve evolution stages and preserves tr
 const near=(a,b,tol=.0001)=>assert(Math.abs(a-b)<tol,`${a} != ${b}`);
 const clone = value => JSON.parse(JSON.stringify(value));
 
-test('Booth fishing stages are bullets, a full-screen laser, a piercing shot, then a wide blast',()=>{
+test('Booth fishing stages are all multi-shot trajectory cannons',()=>{
  const g=harness();g.click('start');g.installEvolution();
  const aim=weapon=>{
   g.run(`journey={run:{weapon:${weapon},rate:0,trajectory:0,wave:${weapon+1},phase:'play',scene:'booth'},text:zh=>zh,name:()=>'n'};bullets=[];beams=[];fish=[];angle=-Math.PI/2;fire()`);
   return {cannon:g.run('currentCannon()'),bullets:g.run('bullets'),beams:g.run('beams')};
  };
  const open=aim(0);
- assert.equal(open.cannon.name,'普通子彈');assert.equal(open.beams.length,0);assert.equal(open.bullets.length,1);assert.equal(open.bullets[0].blast,0);
+ assert.equal(open.cannon.name,'雙管雪花');assert.equal(open.beams.length,0);assert.equal(open.bullets.length,2);assert.equal(open.bullets[0].blast,0);
  const laser=aim(1);
- assert.equal(laser.cannon.kind,'beam');assert.equal(laser.cannon.name,'雙聯激光');
+ assert.equal(laser.cannon.kind,'beam');assert.equal(laser.cannon.name,'糖杖雙聯');
  assert.equal(laser.beams.length,2);assert.equal(laser.bullets.length,0);
- assert(laser.beams.every(b=>b.width<=8&&b.color==='#8cf4ff'));
+ assert(laser.beams.every(b=>b.width<=8&&b.color==='#c23b3b'));
  const reach=Math.hypot(laser.beams[0].ex-laser.beams[0].x,laser.beams[0].ey-laser.beams[0].y);
  assert(reach>600&&Math.min(laser.beams[0].y,laser.beams[0].ey)<0,`laser reach ${reach}`);
  const pierce=aim(2);
- assert.equal(pierce.cannon.name,'穿透巨彈');assert.equal(pierce.beams.length,0);assert.equal(pierce.bullets.length,1);
+ assert.equal(pierce.cannon.name,'聖誕鈴鐺');assert.equal(pierce.beams.length,0);assert.equal(pierce.bullets.length,2);
  assert(pierce.bullets[0].pierce>=8&&pierce.bullets[0].r>=14&&pierce.bullets[0].blast===0);
  const boom=aim(3);
- assert.equal(boom.cannon.name,'爆裂彈');assert.equal(boom.bullets.length,1);
+ assert.equal(boom.cannon.name,'爆炸聖誕糖豆');assert.equal(boom.bullets.length,2);
  assert(boom.bullets[0].blast>=84&&boom.bullets[0].blast<=112);
  const kept=weapon=>{
   g.run(`journey={run:{weapon:${weapon},rate:0,trajectory:2,wave:1,phase:'play',scene:'booth'},text:zh=>zh,name:()=>'n'};bullets=[];beams=[];fish=[];angle=-Math.PI/2;fire()`);
   const cannon=g.run('currentCannon()');
   return {cannon,shots:cannon.kind==='beam'?g.run('beams').length:g.run('bullets').length};
  };
- for(const weapon of [0,2,3]){const shot=kept(weapon);assert.equal(shot.cannon.spread.length,3);assert.equal(shot.shots,3);}
- const lasers=kept(1);assert.equal(lasers.cannon.spread.length,4);assert.equal(lasers.shots,4);assert(lasers.cannon.beamWidth<=8);
+ for(const weapon of [0,1,2,3]){const shot=kept(weapon);assert.equal(shot.cannon.spread.length,4);assert.equal(shot.shots,4);}
+ assert(kept(1).cannon.beamWidth<=8);
 });
 test('Fishing protection lowers actual idle drain, and catches respect expanded energy capacity',()=>{
  const losses=[];
@@ -306,9 +306,9 @@ test('Longer seas increase fish health and movement but growth has a finite cap'
   assert(later.hp>start.hp&&later.speed>start.speed);assert.deepEqual(cap,veryLate);
 });
 
-test('All ten fish have visible health and lose health before being captured',()=>{
+test('All fish have visible health and lose health before being captured',()=>{
   const g=harness();g.click('start');
-  const types=clone(g.run('Object.keys(defs)'));assert.equal(types.length,10);
+  const types=clone(g.run('Object.keys(defs)'));assert.equal(types.length,11);
   for(const type of types){
     g.run(`fish=[];spawnClock=999;nextBossAt=999;spawn(${JSON.stringify(type)},{x:w/2,y:h/2,speed:0,phase:0});`);
     const fresh=clone(g.run('fish[0]'));
@@ -324,10 +324,10 @@ test('All ten fish have visible health and lose health before being captured',()
   }
 });
 
-for(const fps of [60,15])test(`All ten fish stay bounded through movement, freeze and pause at ${fps} fps`,()=>{
+for(const fps of [60,15])test(`All fish stay bounded through movement, freeze and pause at ${fps} fps`,()=>{
   const g=harness(390,530);g.click('start');
   g.run('fish=[];spawnClock=999;nextBossAt=999;for(const type of Object.keys(defs)){spawn(type,{x:w/2,y:-999,dir:1,speed:10,phase:0});spawn(type,{x:w/2,y:9999,dir:-1,speed:10,phase:1});}');
-  assert.equal(g.run('fish.length'),20);assert(g.run('new Set(Object.values(defs).map(d=>d.swim)).size')>=6,'different movement profiles');
+  assert.equal(g.run('fish.length'),22);assert(g.run('new Set(Object.values(defs).map(d=>d.swim)).size')>=6,'different movement profiles');
   const verify=()=>{
     for(const f of g.run('fish')){
       for(const key of ['x','y','angle','hp','maxHp','swimTime'])assert(Number.isFinite(f[key]),`${f.type} ${key} finite`);
@@ -343,13 +343,13 @@ for(const fps of [60,15])test(`All ten fish stay bounded through movement, freez
   g.click('resume');g.advance(.5,fps);verify();
 });
 
-test('Low frame rates preserve swim speed and trajectory for all ten fish',()=>{
+test('Low frame rates preserve swim speed and trajectory for all fish',()=>{
   const sample=fps=>{
     const g=harness();g.click('start');
     g.run('fish=[];spawnClock=999;nextBossAt=999;for(const type of Object.keys(defs))spawn(type,{x:400,y:300,dir:1,speed:10,phase:0});');
     g.advance(3,fps);return clone(g.run('fish.map(f=>({type:f.type,x:f.x,y:f.y,swimTime:f.swimTime}))'));
   };
-  const fast=sample(60),slow=sample(15);assert.equal(fast.length,10);assert.equal(slow.length,10);
+  const fast=sample(60),slow=sample(15);assert.equal(fast.length,11);assert.equal(slow.length,11);
   for(let i=0;i<fast.length;i++){assert.equal(slow[i].type,fast[i].type);near(slow[i].swimTime,fast[i].swimTime);near(slow[i].x,fast[i].x,.25);near(slow[i].y,fast[i].y,.25);}
 });
 
@@ -392,8 +392,8 @@ for(const width of [390,1000])test(`Round-four explosion damages nearby fish onc
  const g=harness(width,600);g.click('start');g.installEvolution();
  g.run("journey={run:{random:()=>.5,wave:4,weapon:3,rate:0,trajectory:0,scene:'booth'},best:()=>0,text:zh=>zh,name:()=>'QA',step:()=>{}};fish=[];bullets=[];rings=[];hudClock=100;spawnClock=100;nextBossAt=Infinity;angle=-Math.PI/2;aim={x:w/2,y:250};");
  g.run("for(const dx of [0,70,190]){spawn('coin',{x:w/2+dx,y:250,speed:0});const f=fish.at(-1);f.hp=f.maxHp=1000;f.phase=0;}fire()");
- const damage=g.run('bullets[0].damage');g.advance(.55);
- const hp=g.run('fish.map(f=>f.hp)');near(hp[0],1000-damage);near(hp[1],1000-damage*.6);near(hp[2],1000);
+ const damage=g.run('bullets[0].damage'),shots=g.run('bullets.length');assert(shots>=2);g.advance(.55);
+ const hp=g.run('fish.map(f=>f.hp)');near(hp[0],1000-damage*shots);near(hp[1],1000-damage*.6*shots);near(hp[2],1000);
  const blast=g.run('rings.find(r=>r.blast)');assert(blast);assert.equal(blast.end,g.run('currentCannon().blast'));
  g.advance(.2);near(g.run('fish[1].hp'),hp[1]);
 });
