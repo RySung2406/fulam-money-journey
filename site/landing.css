@@ -116,6 +116,7 @@
 .posttest-locked { display:none; min-height:44px; padding:9px 15px; border:1px solid #d5dbd0; border-radius:8px; background:#edf0e7; color:#65705e; font-size:15px; font-weight:550; cursor:not-allowed; }
 .posttest-open { display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; min-height:54px; padding:13px 20px; border-radius:10px; background:var(--ink,#173f36); color:#fffef8!important; font-size:17px; font-weight:650; text-decoration:none; }
 .posttest-open:hover,.posttest-open:focus-visible { background:#153b2b; color:#fffef8!important; }
+.hub-posttest-open{margin-top:14px}
 @media(prefers-reduced-motion:no-preference) {
   .hero-copy { animation:hero-in .75s var(--ease) both; }
   .hero-visual { animation:art-in 1s var(--ease) both; }
