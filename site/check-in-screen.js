@@ -43,14 +43,20 @@ export function renderQuestion(container, { day, en, choice, locked, revealed, r
   back.type = 'button';
   back.dataset.checkInBack = 'true';
   back.setAttribute('aria-label', en ? 'Back to calendar' : '返回日曆');
+  const block = (label, text, bodyClass) => {
+    const section = node('section', 'check-in-block');
+    section.append(node('h4', 'check-in-block-label', label), node('p', bodyClass || '', text));
+    return section;
+  };
   container.append(
     back,
     node('p', 'check-in-label', en ? 'Today’s question' : '當日題目'),
-    node('p', 'check-in-kicker', en ? `Day ${day.n} · ${day.placeEn} · ${day.year}` : `第 ${day.n} 日 · ${day.placeZh} · ${day.year}`),
+    node('p', 'check-in-kicker', en ? `Day ${day.n} · ${day.placeEn}` : `第 ${day.n} 日 · ${day.placeZh}`),
     Object.assign(node('h3', '', en ? day.titleEn : day.titleZh), { tabIndex: -1 }),
-    node('p', '', en ? `Concept · ${day.conceptEn}` : `概念 · ${day.conceptZh}`),
-    node('p', '', en ? day.bgEn : day.bgZh),
-    node('p', 'check-in-question', en ? day.qEn : day.qZh)
+    node('p', 'check-in-terms', en ? day.conceptEn : day.conceptZh),
+    block(en ? 'Before you answer' : '作答前導讀', en ? day.bgEn : day.bgZh),
+    block(en ? 'Scenario' : '情境', en ? day.sceneEn : day.sceneZh),
+    block(en ? 'Today’s question' : '今日問題', en ? day.qEn : day.qZh, 'check-in-question')
   );
   const options = node('div', 'check-in-options');
   options.setAttribute('role', 'radiogroup');
@@ -66,25 +72,38 @@ export function renderQuestion(container, { day, en, choice, locked, revealed, r
     if (revealed && reveal && option.k === reveal.letter) button.classList.add('is-answer');
     options.append(button);
   }
-  const learn = node('p', '');
-  learn.append(document.createTextNode(en ? 'Learning material: ' : '學習資料：'), link(en ? day.ifecEnUrl : day.ifecZhUrl, en ? day.ifecEn : day.ifecZh));
-  container.append(options, node('p', 'check-in-tip', en ? day.tipEn : day.tipZh), learn);
+  const learn = node('p', 'check-in-learn');
+  learn.append(node('span', 'check-in-block-label', en ? 'Official reference' : '官方學習參考'), link(en ? day.ifecEnUrl : day.ifecZhUrl, en ? day.ifecEn : day.ifecZh));
+  if (day.moreZhUrl) {
+    learn.append(document.createTextNode(en ? ' · ' : ' · '), link(en ? day.moreEnUrl : day.moreZhUrl, en ? day.moreEn : day.moreZh));
+  }
+  const method = block(en ? 'Today’s method' : '今日方法', en ? day.tipEn : day.tipZh);
+  method.classList.add('check-in-method');
+  container.append(options, method, learn);
   const note = en ? day.noteEn : day.noteZh;
   if (note) container.append(node('p', 'check-in-note', note));
   if (!revealed || !reveal) {
     container.append(node('p', 'check-in-waiting', submitted
       ? (en
-        ? 'Your answer has been submitted. The correct answer and historical explanation will be revealed tomorrow. The aim is not only to guess correctly, but to understand real events through financial concepts.'
-        : '答案已提交！正確答案及歷史解說將於翌日公布。今天的目標不只是猜中，而是學會用金融概念理解真實事件。')
+        ? (day.n === 1
+          ? 'Submitted. The correct answer and explanation appear on this page after you submit.'
+          : 'Submitted. The correct answer and explanation are published at 6:00am Hong Kong time tomorrow.')
+        : (day.n === 1
+          ? '答案已提交。正確答案及解釋會在這頁顯示。'
+          : '答案已提交。正確答案及解釋於翌日早上 6 時公布。'))
       : (en
-        ? 'Choose one answer, then submit it. The correct answer is published at 6:00am Hong Kong time tomorrow.'
-        : '選擇一個答案，然後提交。正確答案於翌日早上 6 時公布。')));
+        ? (day.n === 1
+          ? 'Choose one answer, then submit it. The explanation appears after you submit.'
+          : 'Choose one answer, then submit it. The correct answer is published at 6:00am Hong Kong time tomorrow.')
+        : (day.n === 1
+          ? '選擇一個答案，然後提交。解釋會在提交後顯示。'
+          : '選擇一個答案，然後提交。正確答案於翌日早上 6 時公布。'))));
     return;
   }
   const matched = day.opts.find(option => option.k === reveal.letter);
   const answerText = en ? (matched ? matched.en : '') : reveal.nick;
   const source = node('p', 'check-in-reveal-source');
-  source.append(document.createTextNode(en ? 'Source: ' : '歷史依據：'), link(reveal.src_url, en ? reveal.src_en : reveal.src_zh));
+  source.append(document.createTextNode(en ? 'Official reference: ' : '官方參考：'), link(reveal.src_url, en ? reveal.src_en : reveal.src_zh));
   const box = node('section', 'check-in-reveal');
   box.setAttribute('aria-label', en ? 'Answer reveal' : '翌日揭曉答案');
   box.append(
@@ -104,7 +123,7 @@ export function renderPublishedAnswer(container, { day, en, savedChoice, reveal 
   const matched = day.opts.find(option => option.k === reveal.letter);
   const answerText = en ? (matched ? matched.en : '') : reveal.nick;
   const source = node('p', '');
-  source.append(document.createTextNode(en ? 'Source: ' : '歷史依據：'), link(reveal.src_url, en ? reveal.src_en : reveal.src_zh));
+  source.append(document.createTextNode(en ? 'Official reference: ' : '官方參考：'), link(reveal.src_url, en ? reveal.src_en : reveal.src_zh));
   container.append(
     node('p', 'check-in-label', en ? `Day ${day.n} revealed` : `第 ${day.n} 日揭曉`),
     node('h3', '', en ? day.titleEn : day.titleZh),
