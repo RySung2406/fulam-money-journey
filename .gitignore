@@ -8,3 +8,4 @@ __pycache__/
 screenshots/
 /site/game/auth.bundle.js
 /site/game/auth.bundle.js.LEGAL.txt
+/scripts/private-check-in-answers.sql

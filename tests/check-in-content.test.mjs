@@ -13,10 +13,16 @@ test('all 21 days keep separate Chinese and English text', () => {
   assert.equal(CHECK_IN_DAYS.length, 21);
   assert.deepEqual(CHECK_IN_DAYS.map((day) => day.n), Array.from({ length: 21 }, (_, index) => index + 1));
   const day = CHECK_IN_DAYS[10];
-  assert.deepEqual(day.opts.map((option) => option.en), ['6.08%.', '1%.', '7.08%, obtained by adding the two rates.']);
+  assert.deepEqual(day.opts.map((option) => option.en), [
+    'Airfare, insurance, visa or accommodation deposits, and emergency reserves.',
+    'Only add souvenir expenses; everything else can be arranged after arrival.',
+    'No additional funds are needed because monthly living expenses are already covered.'
+  ]);
   const hidden = ['letter', 'nick', 'expZh', 'expEn', 'srcZh', 'srcEn', 'srcUrl', 'takeZh', 'takeEn'];
   for (const item of CHECK_IN_DAYS) {
     for (const key of hidden) assert.equal(Object.hasOwn(item, key), false);
+    assert.equal(item.opts.length, 3);
+    assert.ok(item.sceneZh && item.sceneEn && item.bgZh && item.bgEn && item.qZh && item.qEn);
   }
   assert.equal(JSON.stringify(CHECK_IN_DAYS).includes('utm_source'), false);
 });
@@ -36,7 +42,7 @@ test('day 1 question is open on the morning of 8 November and its answer waits u
 
 test('published source and migrations do not carry the answer key', () => {
   const files = [
-    'site/check-in-content.js', 'site/check-in-screen.js', 'site/check-in.js', 'site/app.js', 'site/app.bundle.js'
+    'site/check-in-content.js', 'site/check-in-days.js', 'site/check-in-screen.js', 'site/check-in.js', 'site/app.js', 'site/app.bundle.js'
   ];
   const migrationDir = path.join(root, 'supabase/migrations');
   for (const name of readdirSync(migrationDir)) files.push(path.join('supabase/migrations', name));
