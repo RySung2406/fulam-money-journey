@@ -1771,7 +1771,7 @@ window.FuLamFormations = Object.freeze({ create });
     if(this.game==='knife'){
      if(kind!=='continue')return false;
      this.choices.push('continue');if(this.choices.length>100)this.choices.shift();
-     this.wave++;this.roundTime=0;this.choiceTime=0;this.phase='play';return true;
+     this.wave++;if(this.scene==='booth'&&this.wave===2)this.weapon=1;this.roundTime=0;this.choiceTime=0;this.phase='play';return true;
     }
     if(kind!=='trajectory')return false;
     this.choices.push('trajectory');if(this.choices.length>100)this.choices.shift();
@@ -1840,7 +1840,7 @@ window.FuLamFormations = Object.freeze({ create });
   settings(host,change=()=>{}){
    if(!host)return;
    this.scene='booth';this.difficulty='intermediate';
-   const rule=this.game==='knife'?this.text('聖誕兩關。第 1 關 25 個、第 2 關 24 個選項；過關先答「哪項不屬於理財工具」，再看下一關題目。','Festive two stages. 25 choices in stage 1, 24 in stage 2; answer which is NOT a money tool, then read the next question.'):this.text('聖誕四回合 · 90 秒 · 答對題才繼續 · 本機排名','Festive 4 rounds · 90 seconds · Answer correctly to continue · Local high scores');
+   const rule=this.game==='knife'?this.text('聖誕兩關。第 1 關 25 個、第 2 關 24 個選項；過關先答「哪項不屬於理財工具」。答對後刀刃進化成拐杖糖刀，再看下一關題目。','Festive two stages. 25 choices in stage 1, 24 in stage 2; answer which is NOT a money tool. A correct answer evolves the blade into a candy cane, then shows the next question.'):this.text('聖誕四回合 · 90 秒 · 答對題才繼續 · 本機排名','Festive 4 rounds · 90 seconds · Answer correctly to continue · Local high scores');
    host.innerHTML=`<div class="journey-settings">${this.game==='knife'?`<p class="journey-setting-label">${this.text('聖誕 Booth · 兩關','CHRISTMAS BOOTH · 2 STAGES')}</p>`:''}<p class="journey-rule" aria-live="polite">${rule}</p></div>`;
    change('intermediate','booth');
   }
@@ -1858,7 +1858,7 @@ window.FuLamFormations = Object.freeze({ create });
    ]:[
     ['01',this.text('先看題目，再切正確錢袋','Read first, then slice correct bags'),this.text('兩關練習：先切開理財工具，再分辨投資產品。','Two stages: slice money tools, then spot investment products.')],
     ['↗',this.text('手指／滑鼠劃過錢袋','Swipe with your finger or mouse'),this.text('鍵盤可用 Tab 選袋，再按 Enter 或 Space。','Keyboard: Tab to a bag, then Enter or Space.')],
-    ['Q1',this.text('過關先答一題 MC','Answer a mid-stage MC to continue'),this.text('第 1 關結束後，答「哪項不屬於理財工具」，再介紹第 2 關題目。沒有升級或減速。','After stage 1, answer which item is NOT a money tool, then read stage 2. No upgrades or slow-down.')],
+    ['Q1',this.text('過關先答一題 MC','Answer a mid-stage MC to continue'),this.text('第 1 關結束後，答「哪項不屬於理財工具」。答對後刀刃進化成拐杖糖刀，再進入第 2 關。','After stage 1, answer which item is NOT a money tool. A correct answer evolves the blade into a candy cane, then opens stage 2.')],
     ['♥',this.text('錯切扣 1 心；漏切也有代價','Wrong cuts cost a heart; misses add up'),this.text(`${this.scene==='booth'?'Booth 中等':this.difficulty==='challenge'?'挑戰':'標準'} ${this.sliceHearts()} 心；每漏切 ${this.sliceHearts()} 個正確選項扣 1 心。`,`${this.scene==='booth'?'Booth intermediate':this.difficulty==='challenge'?'Challenge':'Standard'}: ${this.sliceHearts()} hearts; ${this.sliceHearts()} missed correct bags cost a heart.`)]
    ];
    const kicker=showQuestion?this.text(this.run?'聖誕下一關':'聖誕開始前 · 先看題目',this.run?'FESTIVE NEXT STAGE':'FESTIVE WARM-UP · READ FIRST'):this.text('聖誕攤位 · 操作指引','CHRISTMAS BOOTH · HOW TO PLAY');
@@ -1905,10 +1905,11 @@ window.FuLamFormations = Object.freeze({ create });
   showQuiz(){
    this.close();const r=this.run,bank=QUIZZES[this.game],item=quizFor(this.game,r.wave),s=this.stageScene(r.wave+1);
    const knife=this.game==='knife';
-   const fromName=this.name(r.grantedFrom??Math.max(0,r.weapon-1)),toName=this.name(r.weapon);
-   const grant=knife?this.text('第 1 關完成。答對「哪項不屬於理財工具」，再看第 2 關題目。','Stage 1 done. Answer which is NOT a money tool, then read stage 2.'):this.game==='fleet'?this.text(`飛機已升級：${fromName} → ${toName}`,`Jet upgraded: ${fromName} → ${toName}`):this.text(`武器已升級：${fromName} → ${toName}`,`Weapon upgraded: ${fromName} → ${toName}`);
+   const evolve=knife&&r.scene==='booth'&&r.wave===1;
+   const fromName=this.name(evolve?r.weapon:(r.grantedFrom??Math.max(0,r.weapon-1))),toName=this.name(evolve?r.weapon+1:r.weapon);
+   const grant=knife?(evolve?this.text(`答對後刀刃進化：${fromName} → ${toName}`,`Answer correctly and the blade evolves: ${fromName} → ${toName}`):this.text('第 1 關完成。答對「哪項不屬於理財工具」，再看第 2 關題目。','Stage 1 done. Answer which is NOT a money tool, then read stage 2.')):this.game==='fleet'?this.text(`飛機已升級：${fromName} → ${toName}`,`Jet upgraded: ${fromName} → ${toName}`):this.text(`武器已升級：${fromName} → ${toName}`,`Weapon upgraded: ${fromName} → ${toName}`);
    const reward=knife
-    ?this.text('沒有升級或減速；答對後會介紹下一關題目。','No upgrades or slow-down; the next stage question follows a correct answer.')
+    ?(evolve?this.text('第 2 關使用進化後的拐杖糖刀。','Stage 2 uses the evolved candy-cane blade.'):this.text('答對後會介紹下一關題目。','The next stage question follows a correct answer.'))
     :this.game==='fleet'&&r.wave===2
     ?this.text(`答對後彈道 ${r.trajectory} → ${r.trajectory+1}，並自動加入僚機。`,`Answer correctly: spread ${r.trajectory} → ${r.trajectory+1}, and a wingman joins.`)
     :this.text(`答對後彈道 ${r.trajectory} → ${r.trajectory+1}，會留在每一種武器。`,`Answer correctly: spread ${r.trajectory} → ${r.trajectory+1}, kept on every weapon.`);

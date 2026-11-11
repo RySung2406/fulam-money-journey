@@ -25,7 +25,7 @@ test('Each stage grants a weapon, then one other upgrade, and a new player start
   const r=new Run(game,'booth');
   if(game==='knife'){
    for(let i=0;i<3;i++){r.completeRound();assert(r.quizMode());assert.equal(r.choose('focus'),false);assert.equal(r.choose('life'),false);assert(r.choose('continue'));}
-   assert.equal(r.weapon,0);assert.equal(r.wave,4);assert.equal(r.focus,0);assert.equal(r.life,0);
+   assert.equal(r.weapon,1);assert.equal(r.wave,4);assert.equal(r.focus,0);assert.equal(r.life,0);
   }else{
    for(let i=0;i<3;i++){r.completeRound();assert(r.quizMode());assert.equal(r.choose('weapon'),false);assert.equal(r.choose('rate'),false);assert(r.choose('trajectory'));}
    assert.equal(r.weapon,3);assert.equal(r.wave,4);assert.equal(r.trajectory,3);assert.equal(r.rate,0);
@@ -210,6 +210,6 @@ test('Published shared files exactly match the authored runtime',()=>{
 test('Slice stages wait for their choice pool, not thirty seconds; completing twice cannot skip a stage',()=>{
  const r=new Run('knife');tick(r,60);assert.equal(r.phase,'play');assert.equal(r.wave,1);
  assert(r.completeRound());assert(!r.completeRound());assert.equal(r.phase,'choice');assert.equal(r.weapon,0);assert.equal(r.choose('focus'),false);assert(r.choose('continue'));assert.equal(r.wave,2);assert.equal(r.weapon,0);assert.equal(r.roundTime,0);
- const booth=new Run('knife','booth');booth.tick(30);assert.equal(booth.phase,'play');assert.equal(booth.reason,'');assert(booth.completeRound());assert.equal(booth.phase,'choice');assert(booth.quizMode());assert.equal(booth.choose('life'),false);assert(booth.choose('continue'));assert.equal(booth.wave,2);assert.equal(booth.weapon,0);assert.equal(booth.life,0);
+ const booth=new Run('knife','booth');booth.tick(30);assert.equal(booth.phase,'play');assert.equal(booth.reason,'');assert(booth.completeRound());assert.equal(booth.phase,'choice');assert.equal(booth.weapon,0);assert(booth.quizMode());assert.equal(booth.choose('life'),false);assert(booth.choose('continue'));assert.equal(booth.wave,2);assert.equal(booth.weapon,1);assert.equal(booth.life,0);
  assert.equal(context.FuLamJourney.QUIZZES.knife.items[0].ok,2);
 });

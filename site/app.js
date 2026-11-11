@@ -115,15 +115,18 @@ function renderCheckIns(state = checkIns.state) {
   const rewardTarget = Math.ceil(21 * 0.8);
   const rewardKnown = !loading && state.phase !== 'error';
   updatePostSurvey();
+  const reached = rewardKnown && completed >= rewardTarget;
   $('rewards-progress-text').textContent = !rewardKnown
     ? (loading ? '正在載入紀錄…' : '暫未能載入紀錄')
-    : completed >= rewardTarget ? `已達打卡門檻 · ${completed} / 21 天（仍須完成後測）` : `已完成 ${completed} / ${rewardTarget} 天 · 還差 ${rewardTarget - completed} 天`;
+    : reached ? `已達打卡門檻 · ${completed} / 21 天（完成後測便可抽獎）` : `已完成 ${completed} / ${rewardTarget} 天 · 還差 ${rewardTarget - completed} 天`;
   const rewardBar = $('rewards-progress-bar');
-  rewardBar.hidden = !rewardKnown;
-  if (rewardKnown) {
-    rewardBar.value = Math.min(completed, rewardTarget);
-    rewardBar.setAttribute('aria-valuetext', `已完成 ${completed} 天，抽獎門檻為 ${rewardTarget} 天`);
-  }
+  const shown = rewardKnown ? Math.min(completed, rewardTarget) : 0;
+  rewardBar.hidden = false;
+  rewardBar.max = rewardTarget;
+  rewardBar.value = shown;
+  rewardBar.setAttribute('aria-valuetext', rewardKnown ? `已完成 ${completed} 天，抽獎門檻為 ${rewardTarget} 天` : '正在載入打卡進度');
+  rewardBar.closest('.check-in-progress-card')?.style.setProperty('--check-in-progress', String(shown / rewardTarget));
+  rewardBar.closest('.check-in-progress-card')?.classList.toggle('is-complete', reached);
   $('check-in-status').textContent = loading ? '正在載入…' : state.phase === 'error' ? '暫未能載入' : nextDay ? `第 ${nextDay} 日已開放` : completed ? '打卡已記錄' : '暫未開放';
   $('check-in-description').textContent = '點選已開放的日子打卡；可隨時補做。每日 06:00 開放（香港時間）。';
   $('check-in-progress').textContent = loading ? '正在讀取你的紀錄…' : state.phase === 'error' ? '請重新載入紀錄' : `已完成 ${completed} / 21 天`;
@@ -395,7 +398,27 @@ async function openVerifiedAccount(focus = true) {
   setRestoreState('idle');
   showOnboardingStep(savedJourneyStep(), false);
   showView('member', focus);
+  showUpgradeNotice();
   void checkIns.setUser(accountUserId);
+}
+let upgradeNoticeShown = false;
+let upgradeNoticeHandled = false;
+function upgradeNoticeKey() {
+  return `fulam.notice.check-in-upgrade.${accountUserId}`;
+}
+function showUpgradeNotice() {
+  const notice = $('upgrade-dialog');
+  if (!notice || notice.open || upgradeNoticeHandled || !accountUserId) return;
+  try { if (localStorage.getItem(upgradeNoticeKey()) === 'seen') return; }
+  catch { /* Show it once this visit when storage is unavailable. */ }
+  notice.showModal();
+  upgradeNoticeShown = true;
+}
+function rememberUpgradeNotice() {
+  if (!upgradeNoticeShown || !accountUserId) return;
+  upgradeNoticeHandled = true;
+  try { localStorage.setItem(upgradeNoticeKey(), 'seen'); }
+  catch { /* Closing still dismisses it for this visit. */ }
 }
 
 async function restoreSavedAccount(focus = false) {
@@ -450,6 +473,9 @@ $('otp-form').addEventListener('submit', async (event) => {
 
 function clearAccountScreen() {
   transition += 1;
+  if (upgradeDialog.open) upgradeDialog.close();
+  upgradeNoticeShown = false;
+  upgradeNoticeHandled = false;
   accountUserId = undefined;
   void checkIns.setUser(undefined);
   showOnboardingStep('survey', false);
@@ -472,6 +498,15 @@ $('signout-button').addEventListener('click', async () => {
     $('email').focus();
   } catch (error) { message('member-error', '未能完成登出，請檢查網絡後再試。此瀏覽器目前仍維持登入。'); }
   finally { busy = false; updateButtons(); }
+});
+
+const upgradeDialog = $('upgrade-dialog');
+upgradeDialog.addEventListener('close', rememberUpgradeNotice);
+$('upgrade-close').addEventListener('click', () => upgradeDialog.close());
+$('upgrade-done').addEventListener('click', () => upgradeDialog.close());
+upgradeDialog.addEventListener('click', (event) => {
+  const bounds = upgradeDialog.getBoundingClientRect();
+  if (event.target === upgradeDialog && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) upgradeDialog.close();
 });
 
 const dialog = $('privacy-dialog');
