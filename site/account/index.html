@@ -10,16 +10,16 @@
   <title>My Journey · 富臨錢進號</title>
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../theme.css?v=20261111-audit">
-  <link rel="stylesheet" href="../account.css?v=20261111-bank">
+  <link rel="stylesheet" href="../account.css?v=20261111-notice">
   <link rel="stylesheet" href="../i18n.css?v=20261111-audit">
   <script src="../i18n.js?v=20261111-audit" defer></script>
   <script src="../i18n-home.js?v=20261111-audit" defer></script>
-  <script src="../i18n-pages.js?v=20261111-audit" defer></script>
+  <script src="../i18n-pages.js?v=20261111-notice" defer></script>
   <script src="../config.js?v=20261111-audit" defer>
 </script>
   <script src="../community-links.js" defer>
 </script>
-  <script src="../app.bundle.js?v=20261111-bank" defer>
+  <script src="../app.bundle.js?v=20261111-notice" defer>
 </script>
 </head>
 <body class="account-page" data-auth-view="email">
@@ -218,6 +218,11 @@
           <a href="#daily-check-in">打卡</a>
 <a href="#member-rewards">獎勵</a>
         </nav>
+        <div class="rewards-progress check-in-progress-card">
+          <div class="rewards-progress-heading"><strong>你的打卡進度</strong><span id="rewards-progress-text" role="status" aria-atomic="true">正在載入紀錄…</span></div>
+          <div class="check-in-meter" aria-hidden="true"><span class="check-in-meter-fill" id="rewards-progress-fill"></span></div>
+          <progress id="rewards-progress-bar" class="check-in-meter-native" value="0" max="17" aria-label="完成 17 天的抽獎目標"></progress>
+        </div>
         <section id="daily-check-in" class="check-in-panel" aria-labelledby="dashboard-title">
           <div class="check-in-heading">
 <div>
@@ -267,10 +272,6 @@
               <p>累計完成至少 17 / 21 天打卡（達 80%）及後測問卷，方可參加抽獎。</p>
             </div>
             <span class="rewards-count">抽獎禮物</span>
-          </div>
-          <div class="rewards-progress">
-            <div class="rewards-progress-heading"><strong>你的打卡進度</strong><span id="rewards-progress-text" role="status" aria-atomic="true">正在載入紀錄…</span></div>
-            <progress id="rewards-progress-bar" value="0" max="17" aria-label="完成 17 天的抽獎目標" hidden></progress>
           </div>
           <ol class="rewards-list rewards-products" aria-label="抽獎禮物">
             <li>
@@ -365,6 +366,13 @@
 </p>
 </footer>
 
+  <dialog id="upgrade-dialog" class="upgrade-dialog" aria-labelledby="upgrade-title">
+<button id="upgrade-close" class="dialog-close" type="button" aria-label="關閉題目升級提示">×</button>
+<h2 id="upgrade-title">打卡題目已升級</h2>
+<p>大家可以隨時補答。</p>
+<p>準確率不影響抽獎機會。</p>
+<button id="upgrade-done" class="account-secondary" type="button">知道了</button>
+</dialog>
   <dialog id="privacy-dialog" aria-labelledby="privacy-title">
 <button id="privacy-close" class="dialog-close" type="button" aria-label="關閉資料用途說明">×</button>
 <span class="account-eyebrow">YOUR PRIVACY</span>
