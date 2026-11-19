@@ -9,7 +9,7 @@ test('The database checks the staff password and issues one expiring admission p
   const db = await PGlite.create({extensions:{pgcrypto}});
   try {
     await db.exec('create role anon; create role authenticated; create schema extensions; create extension pgcrypto with schema extensions;');
-    await db.exec(await readFile(new URL('../supabase/migrations/20261119184747_booth_staff_entry.sql',import.meta.url),'utf8'));
+    await db.exec(await readFile(new URL('../supabase/migrations/20261119210102_booth_staff_entry.sql',import.meta.url),'utf8'));
     const password = randomUUID();
     await db.query("insert into booth_private.entry_password(password_hash) values(extensions.crypt($1, extensions.gen_salt('bf',4)))",[password]);
     const request = (sql, args) => db.transaction(async tx => {

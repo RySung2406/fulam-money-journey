@@ -6,7 +6,7 @@ import {PGlite} from '@electric-sql/pglite';
 import {pgcrypto} from '@electric-sql/pglite/contrib/pgcrypto';
 
 const directory = fileURLToPath(new URL('../.openai/booth-postgres', import.meta.url));
-const migration = new URL('../supabase/migrations/20261119184747_booth_staff_entry.sql', import.meta.url);
+const migration = new URL('../supabase/migrations/20261119210102_booth_staff_entry.sql', import.meta.url);
 let database;
 async function openDatabase() {
   await mkdir(directory, {recursive: true});
