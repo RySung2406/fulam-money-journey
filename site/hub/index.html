@@ -3,18 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#f6f5ef">
+<meta name="theme-color" content="#f8f6ee">
 <meta name="description" content="富臨錢進號：由遊戲、街訪、理財講解與 AI 影片出發，讓大學生練習更好的理財判斷。">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'">
 <title>活動與社群 · 富臨錢進號</title>
-<link rel="icon" href="../favicon.svg">
-<link rel="stylesheet" href="../theme.css?v=20261111-audit">
-<link rel="stylesheet" href="../landing.css?v=20261111-audit">
-<link rel="stylesheet" href="../i18n.css?v=20261111-audit">
+<link rel="icon" href="../favicon.svg?v=text-only">
+<link rel="stylesheet" href="../theme.css?v=20261119">
+<link rel="stylesheet" href="../landing.css?v=20261119">
+<link rel="stylesheet" href="../i18n.css?v=20261119">
+<link rel="stylesheet" href="../programme.css?v=20261119-directory">
   <script src="../i18n.js?v=20261111-audit" defer></script>
-  <script src="../i18n-home.js?v=20261111-audit" defer></script>
-  <script src="../i18n-pages.js?v=20261111-audit" defer></script>
+  <script src="../i18n-home.js?v=20261119-member-rewards" defer></script>
+  <script src="../i18n-pages.js?v=20261119-member-rewards" defer></script>
   <script src="../config.js" defer>
 </script>
 <script src="../community-links.js" defer>
@@ -23,114 +24,120 @@
 </script>
 <script src="../ui.js" defer>
 </script>
+<link rel="stylesheet" href="../booth-notice.css?v=20261119-rewards">
+<script src="../booth-notice.js?v=20261119-member-rewards" defer></script>
 </head>
-<body>
+<body class="programme-page">
 <a class="skip-link" href="#main">跳至主要內容</a>
 <header class="site-header">
 <div class="container header-inner">
 <a class="brand" href="../" aria-label="富臨錢進號首頁">
-<span class="brand-mark" aria-hidden="true">
-<svg viewBox="0 0 32 32" fill="none">
-<circle cx="16" cy="16" r="11" stroke="currentColor"/>
-<path d="m8 23 16-14-9 17 1-10-8 7Z" fill="currentColor"/>
-</svg>
-</span>
 <span class="brand-name">富臨錢進號<small>FuLam · MONEY JOURNEY</small>
 </span>
 </a>
 <nav class="desktop-nav" aria-label="主要導覽">
-<a href="../#play">理財遊戲</a>
-<a href="../#stories">內容探索</a>
-<a href="../hub/#check-in">每日打卡</a>
-<a href="../hub/#community">社群</a>
-<a href="../account/" class="button button-outline">My Journey <svg class="icon" aria-hidden="true">
-<use href="../assets/icons.svg#arrow-up-right">
-</use>
-</svg>
-</a>
+  <a href="../#journey-steps">參加流程</a>
+  <a href="../#stories">理財專題</a>
+  <a href="../#play">遊戲與攤位</a>
+  <a href="../#programme">計劃背景</a>
 </nav>
 <button class="menu-toggle" type="button" aria-label="開啟導覽選單" aria-expanded="false" aria-controls="mobile-menu">
-<svg class="icon" aria-hidden="true">
-<use href="../assets/icons.svg#menu">
-</use>
-</svg>
+  <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#menu"></use></svg>
 </button>
+<a class="header-login" href="../account/">
+  <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#user-round"></use></svg>
+  登入
+</a>
 </div>
 <nav id="mobile-menu" class="mobile-menu container" aria-label="手機導覽" hidden>
-<a href="../#play">理財遊戲</a>
-<a href="../#stories">內容探索</a>
-<a href="../hub/#check-in">每日打卡</a>
-<a href="../hub/#community">社群與獎勵</a>
-<a href="../account/">登入 / My Journey</a>
+  <a href="../#journey-steps">參加流程</a>
+  <a href="../#stories">理財專題</a>
+  <a href="../#play">遊戲與攤位</a>
+  <a href="../#programme">計劃背景</a>
 </nav>
 </header>
-<main id="main" class="container section">
-<div class="section-heading">
-<div>
-<span class="eyebrow">FULAM · 21 DAY JOURNEY</span>
-<h1>21 天，一起前進。</h1>
-</div>
-<a class="button button-primary" href="../account/">登入我的旅程 ↗</a>
-</div>
-<p class="onboarding-note">打卡、Booth 及獎勵僅限 HKU 學生，名額有限。內容、遊戲與 WhatsApp 社群公開。</p>
-<div class="hub-sections">
-<section id="questionnaire" class="pretest-card">
-<span class="coming">2–5 分鐘</span>
-<h2>首次問卷</h2>
-<p>使用 HKU Connect 帳戶填寫。填妥前測與後測問卷，就有機會獲得獎品。</p>
-<a class="text-link" href="../questionnaire/">前往前測問卷 ↗</a>
-<a class="posttest-open hub-posttest-open" target="_blank" rel="noopener noreferrer" href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=dY4N6LlSOUijWIeruTs1Z-VOzApBm_VOvTm0gGA8MWtUM1Q3UVlZQlpZTlZVV05HVlo1WTNJR0JNMS4u">填寫後測問卷 <span aria-hidden="true">↗</span></a>
-</section>
-<section id="community" class="pretest-card">
-<span class="coming">公開加入</span>
-<h2>WhatsApp 社群</h2>
-<p>接收題目、題解與活動消息。</p>
-<a class="button button-primary" data-community-invite hidden target="_blank" rel="noopener noreferrer">加入社群 ↗</a>
-<p data-community-pending>社群連結準備中。</p>
-<p>
-<a class="instagram-link" href="https://www.instagram.com/fulam_money/" target="_blank" rel="noopener noreferrer" aria-label="追蹤 Instagram @fulam_money（新分頁）">Instagram · <strong>@fulam_money</strong> <span aria-hidden="true">↗</span></a>
-</p>
-</section>
-<section id="check-in" class="pretest-card">
-<span class="coming">HKU 學生 · 11 月 8 日開始</span>
-<h2>每日打卡</h2>
-<p>21 天，每天一個理財小習慣。</p>
-<a class="text-link" href="../account/">登入查看打卡 ↗</a>
-</section>
-<section id="booth" class="pretest-card festive-booth">
-<span class="coming">聖誕 Booth</span>
-<h2>校園 Booth</h2>
-<p>兩個 Booth 均設有輕鬆遊戲挑戰及小禮物。<br>11 月 20 日及 30 日 · 邵逸夫樓平台（鄰近 Subway）</p>
-<a class="text-link" href="../booth/">前往 Booth 遊戲站 ↗</a>
-<a class="text-link" href="../account/#booth">參加攤位詳情 ↗</a>
-</section>
-<section id="rewards" class="pretest-card">
-<span class="coming">抽獎禮物</span>
-<h2>打卡抽獎</h2>
-<p>完成至少 17 / 21 天打卡及後測問卷，即可參加抽獎。</p>
-<a class="text-link" href="../account/#dashboard">查看抽獎獎品 ↗</a>
-</section>
+<main id="main" class="container programme-main directory">
+  <div class="directory-intro">
+    <div class="directory-heading">
+      <span class="eyebrow">FULAM · 21 DAY JOURNEY</span>
+      <h1>21 天，一起前進。</h1>
+      <p>理財內容、遊戲及 WhatsApp 社群開放予公眾參與。打卡、校園攤位及獎勵則供港大學生參加。</p>
+      <a class="button button-primary" href="../account/">登入我的旅程 ↗</a>
+    </div>
+    <section id="check-in" class="directory-check-in">
+      <div class="directory-meta">
+        <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#calendar-days"></use></svg>
+        <span>HKU 學生 · 11 月 8 日開始</span>
+      </div>
+      <h2>每日打卡</h2>
+      <p>21 天，每天一個理財小習慣。</p>
+      <a class="text-link" href="../account/#dashboard">登入查看打卡 ↗</a>
+    </section>
+  </div>
+  <div class="directory-list">
+    <section id="questionnaire" class="directory-item">
+      <div class="directory-meta">
+        <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#clipboard-list"></use></svg>
+        <span>2–5 分鐘</span>
+      </div>
+      <h2>首次問卷</h2>
+      <p>使用 HKU Connect 帳戶填寫前測及後測問卷，回顧自己的理財習慣。</p>
+      <div class="directory-actions">
+        <a class="text-link" href="../questionnaire/">前往前測問卷 ↗</a>
+        <a class="text-link" target="_blank" rel="noopener noreferrer" href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=dY4N6LlSOUijWIeruTs1Z-VOzApBm_VOvTm0gGA8MWtUM1Q3UVlZQlpZTlZVV05HVlo1WTNJR0JNMS4u">在 Microsoft Forms 填寫後測 <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+    <section id="community" class="directory-item">
+      <div class="directory-meta">
+        <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#messages-square"></use></svg>
+        <span>公開加入</span>
+      </div>
+      <h2>WhatsApp 社群</h2>
+      <p>接收題目、題解與活動消息。</p>
+      <div class="directory-actions">
+        <a class="text-link" data-community-invite hidden target="_blank" rel="noopener noreferrer">加入社群 ↗</a>
+        <p data-community-pending>社群連結準備中。</p>
+        <a class="text-link" href="https://www.instagram.com/fulam_money/" target="_blank" rel="noopener noreferrer" aria-label="追蹤 Instagram @fulam_money（新分頁）">Instagram · <strong>@fulam_money</strong> <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+    <section id="booth" tabindex="-1" class="directory-item" aria-labelledby="booth-heading">
+      <div class="directory-meta">
+        <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#gamepad-2"></use></svg>
+        <span>港大學生限定</span>
+      </div>
+      <h2 id="booth-heading">校園聖誕攤位</h2>
+      <p><time datetime="2026-11-20">11 月 20 日</time> <span>及</span> <time datetime="2026-11-30">30 日</time><br>邵逸夫樓平台（鄰近 Subway）</p>
+      <div class="directory-actions">
+        <a class="text-link" href="../booth/">前往 Booth 遊戲站 <span aria-hidden="true">↗</span></a>
+        <a class="text-link" href="../account/#booth">登入查看攤位獎勵</a>
+      </div>
+    </section>
+    <section id="rewards" tabindex="-1" class="directory-item" aria-labelledby="draw-heading">
+      <div class="directory-meta">
+        <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#calendar-days"></use></svg>
+        <span>每日打卡</span>
+      </div>
+      <h2 id="draw-heading">打卡抽獎</h2>
+      <p>在「我的旅程」查看打卡進度、抽獎資格及領獎安排。</p>
+      <div class="directory-actions">
+        <a class="text-link" href="../account/#member-rewards">登入查看抽獎詳情</a>
+      </div>
+    </section>
+  </div>
 <section id="sponsors" class="hub-programme">
 <section class="programme-support" aria-label="計劃說明">
 <div class="programme-split">
 <div class="programme-side">
 <h2>個人理財大使計劃 <span>2026–2027</span></h2>
-<a class="text-link programme-source" href="https://www.ifec.org.hk/web/tc/other-resources/activities-and-events/personal-finance-ambassador-programme-2627-application.page" target="_blank" rel="noopener noreferrer">了解官方計劃 <span aria-hidden="true">↗</span></a>
+<a class="text-link programme-source" href="https://www.ifec.org.hk/web/tc/other-resources/activities-and-events/personal-finance-ambassador-programme-2627-application.page" target="_blank" rel="noopener noreferrer">查看計劃公開資料 <span aria-hidden="true">↗</span></a>
 </div>
 <a class="programme-site" href="../" aria-label="富臨錢進號首頁">
-<span class="brand-mark" aria-hidden="true">
-<svg viewBox="0 0 32 32" fill="none">
-<circle cx="16" cy="16" r="11" stroke="currentColor"/>
-<path d="m8 23 16-14-9 17 1-10-8 7Z" fill="currentColor"/>
-</svg>
-</span>
 <span class="brand-name">富臨錢進號<small>FuLam · MONEY JOURNEY</small></span>
 </a>
 <p class="programme-credit"><span class="credit-lead">由港大學生團隊</span><span class="credit-team">「搏富臨」策劃</span></p>
 </div>
 </section>
 </section>
-</div>
 <div class="hub-end">
 <a class="button button-primary" href="../game/">先玩一場理財挑戰 <svg class="icon" aria-hidden="true">
 <use href="../assets/icons.svg#arrow-right">
@@ -149,12 +156,6 @@
 <div class="footer-top">
 <div>
 <a class="brand" href="../" aria-label="富臨錢進號首頁">
-<span class="brand-mark" aria-hidden="true">
-<svg viewBox="0 0 32 32" fill="none">
-<circle cx="16" cy="16" r="11" stroke="currentColor"/>
-<path d="m8 23 16-14-9 17 1-10-8 7Z" fill="currentColor"/>
-</svg>
-</span>
 <span class="brand-name">富臨錢進號<small>FuLam · MONEY JOURNEY</small>
 </span>
 </a>

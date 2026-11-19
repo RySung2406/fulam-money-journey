@@ -1,5 +1,7 @@
 /* Traditional Chinese originals and English translations for account, hub and questionnaire pages. */
 window.FuLamI18n.register({
+ '你的答案已儲存。':'Your answer has been saved.',
+ '選擇已開放的日期打卡，或點選已提交答案的日期查閱解答。':'Choose an open day to check in, or revisit a day you answered to read its explanation when available.',
  '防機械人驗證':'Bot verification','重新發送的防機械人驗證':'Bot verification for resending','正在載入安全驗證…':'Loading security check…','請完成安全驗證。':'Please complete the security check.','安全驗證未能載入，請重新整理頁面再試。':'Security check could not load. Please refresh the page and try again.',
 
  '第 1 日和第 2 日已經開放。第 3 至 21 日在對應日期早上 6 時開放，直至 11 月 28 日；已開放的日子可隨時補做（香港時間）。點選日曆上已開放的日子，或按「開始打卡」，即可進入該日題目並選擇答案。第 1 日答案只向已完成的同學公布。':'Days 1 and 2 are open. Days 3 to 21 each open at 6:00am Hong Kong time on their own date, through 28 November. Open days stay available for make-up. Tap an open day on the calendar, or press Start check-in, to open that day’s question and choose an answer. Day 1’s answer is shown only to people who have completed it.',
@@ -120,3 +122,28 @@ window.FuLamI18n.register({
  '11 月 8–28 日，每天 06:00–23:59（香港時間）；過去已開放的日子可補做。題目與題解在 WhatsApp，紀錄保存在這裡。':'8–28 November, 06:00–23:59 Hong Kong time daily. Earlier days can be made up. Questions and explanations are on WhatsApp; your records are saved here.',
 
  '兩個 Booth 共用獎品':'Prizes shared by both booths','最高分者有獎，以下獎品由兩個 Booth 共用。':'Top scorers win prizes from the selection shared by both booths.','HKU 小熊':'HKU teddy bear','活動時間、地點及獎品領取安排稍後公布。':'Dates, locations and prize collection details will be announced later.', '暫時未能載入打卡紀錄，請重試。':'Could not load check-in records. Please try again.','了解街訪':'Explore street interviews','了解理財講解':'Explore money explainers','了解AI 劇場':'Explore AI stories','了解人物訪談':'Explore interviews'});
+
+window.FuLamI18n.register({
+  '登入富臨錢進號，參與 21 天理財計劃、填寫問卷、加入社群及查看個人打卡紀錄。': 'Sign in to FuLam Money Journey to take part in the 21-day programme, complete surveys, join the community and view your check-ins.',
+  '富臨錢進號會將一次性驗證碼寄往這個電郵地址，用以核實身分及保存個人打卡紀錄。': 'FuLam Money Journey will send a one-time code to this address to verify your account and save your check-ins.',
+  '前測問卷有助團隊了解同學的理財習慣及學習興趣。': 'The pre-survey helps the student team understand your money habits and learning interests.',
+  '前測問卷由 Microsoft Forms 收集。問卷負責人可查看你的姓名及電郵地址。': 'Microsoft Forms collects the pre-survey responses. The form owner can see your name and email address.',
+  '富臨錢進號使用 HKU 電郵建立帳戶及產生參加者編號，以保存你的打卡紀錄。你登入後可查看自己的帳戶資料，電郵地址不會在網站上公開顯示。': 'FuLam Money Journey uses your HKU email to create an account and participant ID for your check-in records. Sign in to view your account details. Your email address is never displayed publicly on the site.',
+  '理財內容、遊戲及 WhatsApp 社群開放予公眾參與。打卡、校園攤位及獎勵則供港大學生參加。': 'Everyone can explore the content, play the games and join the WhatsApp community. Check-ins, campus booths and rewards are for HKU students.',
+  '使用 HKU Connect 帳戶填寫前測及後測問卷，回顧自己的理財習慣。': 'Use your HKU Connect account to complete the pre- and post-surveys and reflect on your money habits.',
+  '查看計劃公開資料': 'View programme information',
+  '理財習慣前測問卷': 'Money habits pre-survey',
+  '請使用 HKU Connect 帳戶填寫。前測問卷由 Microsoft Forms 收集，問卷負責人可查看你的姓名及電郵地址。': 'Use your HKU Connect account. Microsoft Forms collects the pre-survey responses and the form owner can see your name and email address.',
+  '在 Microsoft Forms 填寫前測': 'Open pre-survey in Microsoft Forms',
+  '在 Microsoft Forms 填寫後測': 'Open post-survey in Microsoft Forms',
+  '在 Microsoft Forms 填寫後測（另開分頁）': 'Open post-survey in Microsoft Forms (new tab)'
+});
+
+window.FuLamI18n.register({
+  '攤位小禮物': 'Booth gifts',
+  '兩場校園聖誕攤位均設有理財遊戲，並會現場派發 HKU 小熊。': 'Play money games at either Christmas booth. HKU teddy bears will be given out on site.',
+  '日期': 'Dates',
+  '登入查看攤位獎勵': 'Sign in for booth rewards',
+  '在「我的旅程」查看打卡進度、抽獎資格及領獎安排。': 'See your check-in progress, draw eligibility and collection details in My Journey.',
+  '登入查看抽獎詳情': 'Sign in for draw details'
+});

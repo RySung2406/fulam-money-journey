@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { checkInAction, renderPublishedAnswer, renderQuestion, selectableCheckInDay } from '../site/check-in-screen.js';
+import { CHECK_IN_DAYS } from '../site/check-in-content.js';
 
 class Element {
   constructor(tag) {
@@ -81,6 +82,17 @@ test('day 2 can be chosen while day 1 is still unfinished', () => {
   assert.equal(opened.label, '請先選擇答案');
 });
 
+test('after check-ins close, only days with a saved answer can be reviewed', () => {
+  const days = [19, 20, 21].map(day_number => ({ day_number, is_open: false }));
+  const records = [{ day_number: 19, choice: null }, { day_number: 21, choice: 'A' }];
+  assert.equal(selectableCheckInDay(19, days, records), false);
+  assert.equal(selectableCheckInDay(20, days, records), false);
+  assert.equal(selectableCheckInDay(21, days, records), true);
+  const review = checkInAction({ ...ready, questionOpen: true, reviewDay: 21, savedChoice: 'A', draftChoice: 'B' });
+  assert.equal(review.showQuestion, true);
+  assert.equal(review.action, 'close');
+});
+
 test('a submitted day shows no correct choice until the server sends that reveal', () => {
   const waiting = document.createElement('div');
   renderQuestion(waiting, { day: sampleDay, en: false, choice: 'A', locked: true, revealed: false, reveal: null, submitted: true, savedChoice: 'A' });
@@ -99,4 +111,28 @@ test('a submitted day shows no correct choice until the server sends that reveal
   renderPublishedAnswer(published, { day: sampleDay, en: true, savedChoice: 'A', reveal: sampleReveal });
   assert.match(textOf(published), /Correct choice: C\. Gamma/);
   assert.match(textOf(published), /Server explanation/);
+});
+
+test('all 21 questions retain the bilingual bank text and reference links', () => {
+  for (const day of CHECK_IN_DAYS) {
+    for (const en of [false, true]) {
+      const panel = document.createElement('article');
+      renderQuestion(panel, { day, en });
+      const content = textOf(panel);
+      const lang = en ? 'En' : 'Zh';
+      for (const field of ['title', 'concept', 'bg', 'scene', 'q', 'tip']) {
+        assert.ok(content.includes(day[field + lang]));
+      }
+      for (const option of day.opts) {
+        const button = findChoice(panel, option.k);
+        assert.equal(button.children[0].textContent, option.k);
+        assert.equal(button.children[1].textContent.trim(), en ? option.en : option.zh);
+      }
+      const references = panel.children.find(child => child.className === 'check-in-learn');
+      const links = references.children.filter(child => child.tagName === 'A');
+      const expected = [[day['ifec' + lang], day['ifec' + lang + 'Url']]];
+      if (day.moreZhUrl) expected.push([day['more' + lang], day['more' + lang + 'Url']]);
+      assert.deepEqual(links.map(link => [link.textContent, link.href]), expected);
+    }
+  }
 });

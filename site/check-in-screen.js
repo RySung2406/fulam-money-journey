@@ -1,6 +1,7 @@
 // The calendar stays visible until a member chooses to start. The question opens after that.
-export function selectableCheckInDay(dayNumber, days) {
-  return days.some(day => day.day_number === dayNumber && day.is_open);
+export function selectableCheckInDay(dayNumber, days, records = []) {
+  const day = days.find(item => item.day_number === dayNumber);
+  return Boolean(day && (day.is_open || records.some(record => record.day_number === dayNumber && record.choice)));
 }
 
 export function checkInAction({ questionOpen, nextDay, reviewDay, draftChoice, savedChoice, phase, busy, saving }) {

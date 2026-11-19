@@ -10,3 +10,54 @@ window.FuLamI18n.register({
 '現已上線 ↗':'Available now ↗','將於新分頁開啟作品。':'This opens in a new tab.','走進大學與日常生活，聽聽大家怎樣看待消費、儲蓄與投資。從不同答案裡，發現值得再問一次的問題。':'Hear how people think about spending, saving and investing in daily life.','由股票、基金、保險到常見投資陷阱，把抽象概念拆開來說，用生活例子幫助理解。':'Understand stocks, funds, insurance and common investment traps through everyday examples.','透過 AI 製作的情境短片，讓角色面對不同金錢選擇。一起想想：換作是你，會怎樣決定？':'Explore money choices through short AI-created scenarios. What would you do?','細聽受訪者的真實經歷、考量與選擇，理解一個決定背後的故事。訪談內容正在準備中。':'Hear real experiences and the thinking behind people’s decisions. Interviews are in preparation.'
 });
 window.FuLamI18n.registerPatterns([[/^顯示 (\d+) 個內容欄目$/, 'Showing $1 stories'],[/^了解(.+)$/, 'Explore $1']]);
+
+window.FuLamI18n.register({
+  '校園理財誌': 'Campus money journal',
+  '即將推出': 'Coming soon',
+  '理財遊戲與校園活動': 'Money games and campus events',
+  '理財小遊戲': 'Money games',
+  '公開試玩': 'Open beta',
+  '切開錢袋，辨認理財工具和投資產品。': 'Slice money bags to identify financial tools and investment products.',
+  '捕魚補充能量，回答保險題目以升級裝備。': 'Catch fish to recharge and answer insurance questions to upgrade your gear.',
+  '操控戰機閃避攻擊，回答投資題目以升級裝備。': 'Dodge incoming fire and answer investing questions to upgrade your aircraft.',
+  '港大學生限定': 'HKU students only',
+  '校園聖誕攤位': 'Christmas campus booth',
+  '港大學生團隊「搏富臨」': 'Pok Fu Lam · HKU student team',
+  '關閉攤位通知': 'Close booth notice',
+  '11 月 20 日（五）': 'Fri 20 Nov',
+  '11 月 30 日（一）': 'Mon 30 Nov',
+  '歡迎港大同學到場參與理財小遊戲。': 'HKU students are welcome to drop by and try the money games.',
+  '查看攤位安排': 'View booth details',
+  '繼續瀏覽': 'Continue browsing',
+  '11 月 20 日': '20 November',
+  '及': 'and',
+  '30 日': '30 November',
+  '邵逸夫樓平台（鄰近 Subway）': 'Run Run Shaw Podium (near Subway)',
+  '兩場活動均設有遊戲挑戰及小禮物。': 'Drop by either event for games and small gifts.',
+  '查看活動詳情': 'Event details',
+  '攤位遊戲站': 'Booth arcade',
+  '由香港大學學生團隊「搏富臨」策劃的個人理財教育活動。': 'A personal finance education project by Pok Fu Lam, a student team at HKU.',
+  '官方計劃資料': 'Official programme information'
+});
+
+window.FuLamI18n.register({
+  '富臨錢進號 · 21 天校園理財之旅': 'FuLam Money Journey · 21 days of campus finance',
+  '富臨錢進號是港大學生團隊「搏富臨」策劃的 21 天理財教育活動。每天透過真實案例學習理財，在 WhatsApp 討論，並在網站記錄學習進度。': 'A 21-day financial education programme created by the HKU student team Pok Fu Lam. Learn from real events, discuss them on WhatsApp and check in here.',
+  '天，': 'days to',
+  '一起學理財。': 'learn about money.',
+  '「富臨錢進號」由香港大學學生團隊「搏富臨」策劃。我們是「個人理財大使計劃 2026/27」的參與隊伍，透過每日一題，與同學一起學習個人理財。': 'We’re Pok Fu Lam, the student team at the University of Hong Kong behind FuLam Money Journey. We take part in the 2026/27 Personal Finance Ambassador Programme and explore personal finance with fellow students, one question a day.',
+  '計劃背景': 'About the programme',
+  '理財專題': 'Money stories',
+  '遊戲與攤位': 'Games and booths',
+  '參加流程': 'How to take part',
+  '打卡日曆': 'Check-in calendar',
+  '2026 年 11 月': 'November 2026',
+  '週日': 'Sun', '週一': 'Mon', '週二': 'Tue', '週三': 'Wed', '週四': 'Thu', '週五': 'Fri', '週六': 'Sat',
+  '打卡日期': 'Check-in dates',
+  '填寫前測問卷': 'Take the pre-survey',
+  '約需 2 至 5 分鐘': 'Takes 2–5 minutes',
+  '參與社群討論': 'Join the discussion',
+  'WhatsApp 社群公開參加': 'WhatsApp is open to everyone',
+  '每日學習打卡': 'Check in each day',
+  '港大學生以校內電郵登入': 'For students with an HKU email'
+});
