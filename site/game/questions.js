@@ -10,19 +10,19 @@ window.QUESTIONS = [
     "action": "Pick one money tool and one everyday expense, then compare what each is for.",
     "sources": [
       {
-        "title": "IFEC · Investment products",
+        "title": "Investment products",
         "url": "https://www.ifec.org.hk/web/en/investment/investment-products/index.page"
       },
       {
-        "title": "IFEC · Bank accounts",
+        "title": "Bank accounts",
         "url": "https://www.ifec.org.hk/web/en/financial-products/personal-banking/bank-accounts.page"
       },
       {
-        "title": "IFEC · Loan basics",
+        "title": "Loan basics",
         "url": "https://www.ifec.org.hk/web/en/moneyessentials/debts-and-borrowing/loan-basics.page"
       },
       {
-        "title": "IFEC · Borrowing checklist and calculators",
+        "title": "Borrowing checklist and calculators",
         "url": "https://www.ifec.org.hk/web/en/moneyessentials/debts-and-borrowing/take-new-loan/Tips-for-borrowing.page"
       },
       {
@@ -224,15 +224,15 @@ window.QUESTIONS = [
     "action": "Pick one investment product and one non-investment tool, then compare what each is for.",
     "sources": [
       {
-        "title": "IFEC · Investment products",
+        "title": "Investment products",
         "url": "https://www.ifec.org.hk/web/en/investment/investment-products/index.page"
       },
       {
-        "title": "IFEC · Understanding funds",
+        "title": "Understanding funds",
         "url": "https://www.ifec.org.hk/web/en/investment/investment-products/funds/index.page"
       },
       {
-        "title": "IFEC · Bank accounts",
+        "title": "Bank accounts",
         "url": "https://www.ifec.org.hk/web/en/financial-products/personal-banking/bank-accounts.page"
       },
       {
@@ -609,11 +609,11 @@ window.QUESTIONS = [
     "action": "Find the actual APR, fees and total repayment in a loan example.",
     "sources": [
       {
-        "title": "IFEC · Borrowing checklist",
+        "title": "Borrowing checklist",
         "url": "https://www.ifec.org.hk/web/en/moneyessentials/debts-and-borrowing/take-new-loan/Tips-for-borrowing.page"
       },
       {
-        "title": "IFEC · Loan basics",
+        "title": "Loan basics",
         "url": "https://www.ifec.org.hk/web/en/moneyessentials/debts-and-borrowing/loan-basics.page"
       },
       {
@@ -621,7 +621,7 @@ window.QUESTIONS = [
         "url": "https://www.hkma.gov.hk/eng/smart-consumers/personal-credit/"
       },
       {
-        "title": "IFEC · Buy now, pay later costs",
+        "title": "Buy now, pay later costs",
         "url": "https://www.ifec.org.hk/web/en/blog/2024/10/buy-now-pay-later-fees.page"
       }
     ],
@@ -819,7 +819,7 @@ window.QUESTIONS = [
     "action": "Practise finding an official register and a bank's contact details independently.",
     "sources": [
       {
-        "title": "IFEC · Fraud prevention",
+        "title": "Fraud prevention",
         "url": "https://www.ifec.org.hk/web/en/moneyessentials/scams/index.page"
       },
       {
@@ -1661,11 +1661,11 @@ const translations = {
   ]
 };
 const sourceTitles = {
- tools:['投委會 · 投資產品','投委會 · 銀行戶口','投委會 · 貸款基本知識','投委會 · 借貸清單及計算機','保監局 · 保險基本知識'],
- investment:['投委會 · 投資產品','投委會 · 認識基金','投委會 · 銀行戶口','保監局 · 保險基本知識'],
+ tools:['投資產品','銀行戶口','貸款基本知識','借貸清單及計算機','保監局 · 保險基本知識'],
+ investment:['投資產品','認識基金','銀行戶口','保監局 · 保險基本知識'],
  insurance:['保監局 · 購買保險須知','保監局 · 醫療保險','保監局 · 人壽保險','保監局 · 保險詞彙'],
- borrowing:['投委會 · 借貸清單','投委會 · 貸款基本知識','金管局 · 個人信貸','投委會 · 先買後付費用'],
- scams:['投委會 · 防範詐騙','證監會 · 公開名冊','證監會 · 可疑投資產品','金管局 · 慎防詐騙','保監局 · 核查中介人']
+ borrowing:['借貸清單','貸款基本知識','金管局 · 個人信貸','先買後付費用'],
+ scams:['防範詐騙','證監會 · 公開名冊','證監會 · 可疑投資產品','金管局 · 慎防詐騙','保監局 · 核查中介人']
 };
 window.QUESTIONS_ZH = window.QUESTIONS.map(q => {
  const z = translations[q.id];

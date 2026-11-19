@@ -16,7 +16,7 @@ menu?.addEventListener('click', event => { if (event.target.closest('a')) closeM
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && menu && !menu.hidden) { closeMenu(); menuButton.focus(); }
 });
-matchMedia('(min-width:1001px)').addEventListener('change', event => { if (event.matches) closeMenu(); });
+matchMedia('(min-width:1101px)').addEventListener('change', event => { if (event.matches) closeMenu(); });
 
 const reducedMotion = matchMedia('(prefers-reduced-motion:reduce)');
 const filters = [...document.querySelectorAll('[data-filter]')];
@@ -78,3 +78,12 @@ storyDialog?.addEventListener('click', event => {
   const rect = storyDialog.getBoundingClientRect();
   if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) storyDialog.close();
 });
+
+const calendar = document.querySelector('.home-calendar');
+if (calendar) {
+  const hongKongDate = new Intl.DateTimeFormat('sv-SE', {
+    timeZone: 'Asia/Hong_Kong', day: '2-digit', month: '2-digit', year: 'numeric'
+  }).format(new Date());
+  const today = calendar.querySelector(`td time[datetime="${hongKongDate}"]`);
+  today?.setAttribute('aria-current', 'date');
+}

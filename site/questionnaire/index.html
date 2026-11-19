@@ -3,114 +3,88 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#f6f5ef">
+<meta name="theme-color" content="#f8f6ee">
 <meta name="description" content="富臨錢進號：由遊戲、街訪、理財講解與 AI 影片出發，讓大學生練習更好的理財判斷。">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'">
 <title>理財問卷 · 富臨錢進號</title>
-<link rel="icon" href="../favicon.svg">
-<link rel="stylesheet" href="../theme.css?v=20261111-audit">
-<link rel="stylesheet" href="../landing.css?v=20261111-audit">
-<link rel="stylesheet" href="../i18n.css?v=20261111-audit">
+<link rel="icon" href="../favicon.svg?v=text-only">
+<link rel="stylesheet" href="../theme.css?v=20261119">
+<link rel="stylesheet" href="../landing.css?v=20261119">
+<link rel="stylesheet" href="../i18n.css?v=20261119">
+<link rel="stylesheet" href="../programme.css?v=20261119">
   <script src="../i18n.js?v=20261111-audit" defer></script>
-  <script src="../i18n-home.js?v=20261111-audit" defer></script>
-  <script src="../i18n-pages.js?v=20261111-audit" defer></script>
+  <script src="../i18n-home.js?v=20261119-member-rewards" defer></script>
+  <script src="../i18n-pages.js?v=20261119" defer></script>
   <script src="../content-data.js" defer>
 </script>
 <script src="../ui.js" defer>
 </script>
+<link rel="stylesheet" href="../booth-notice.css?v=20261119-rewards">
+<script src="../booth-notice.js?v=20261119-member-rewards" defer></script>
 </head>
-<body>
+<body class="programme-page">
 <a class="skip-link" href="#main">跳至主要內容</a>
 <header class="site-header">
 <div class="container header-inner">
 <a class="brand" href="../" aria-label="富臨錢進號首頁">
-<span class="brand-mark" aria-hidden="true">
-<svg viewBox="0 0 32 32" fill="none">
-<circle cx="16" cy="16" r="11" stroke="currentColor"/>
-<path d="m8 23 16-14-9 17 1-10-8 7Z" fill="currentColor"/>
-</svg>
-</span>
 <span class="brand-name">富臨錢進號<small>FuLam · MONEY JOURNEY</small>
 </span>
 </a>
 <nav class="desktop-nav" aria-label="主要導覽">
-<a href="../#play">理財遊戲</a>
-<a href="../#stories">內容探索</a>
-<a href="../hub/#check-in">每日打卡</a>
-<a href="../hub/#community">社群</a>
-<a href="../account/" class="button button-outline">My Journey <svg class="icon" aria-hidden="true">
-<use href="../assets/icons.svg#arrow-up-right">
-</use>
-</svg>
-</a>
+  <a href="../#journey-steps">參加流程</a>
+  <a href="../#stories">理財專題</a>
+  <a href="../#play">遊戲與攤位</a>
+  <a href="../#programme">計劃背景</a>
 </nav>
 <button class="menu-toggle" type="button" aria-label="開啟導覽選單" aria-expanded="false" aria-controls="mobile-menu">
-<svg class="icon" aria-hidden="true">
-<use href="../assets/icons.svg#menu">
-</use>
-</svg>
+  <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#menu"></use></svg>
 </button>
+<a class="header-login" href="../account/">
+  <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#user-round"></use></svg>
+  登入
+</a>
 </div>
 <nav id="mobile-menu" class="mobile-menu container" aria-label="手機導覽" hidden>
-<a href="../#play">理財遊戲</a>
-<a href="../#stories">內容探索</a>
-<a href="../hub/#check-in">每日打卡</a>
-<a href="../hub/#community">社群與獎勵</a>
-<a href="../account/">登入 / My Journey</a>
+  <a href="../#journey-steps">參加流程</a>
+  <a href="../#stories">理財專題</a>
+  <a href="../#play">遊戲與攤位</a>
+  <a href="../#programme">計劃背景</a>
 </nav>
 </header>
-<main id="main" class="container section">
-<div class="journey-block">
-<div class="journey-copy">
-<span class="eyebrow">BEFORE WE START</span>
-<h1>2–5 分鐘，<br>認識你的理財習慣。</h1>
-<p>填妥問卷，再加入 WhatsApp 社群。</p>
-<a href="../" class="text-link">返回首頁 <svg class="icon" aria-hidden="true">
-<use href="../assets/icons.svg#arrow-up-right">
-</use>
-</svg>
-</a>
-</div>
-<section class="pretest-card">
-<div class="pretest-top">
-<svg class="icon" aria-hidden="true">
-<use href="../assets/icons.svg#clipboard-list">
-</use>
-</svg>
-<span class="coming">前測問卷已開放</span>
-</div>
-<h2>香港大學學生理財前測問卷</h2>
-<p>約需 2–5 分鐘，請使用 HKU Connect 帳戶填答。填妥前測與後測問卷，就有機會獲得獎品。</p>
-<a class="button button-primary" target="_blank" rel="noopener noreferrer" href="https://forms.cloud.microsoft/r/EtyFDy1Y7p">前往填寫問卷 <svg class="icon" aria-hidden="true">
-<use href="../assets/icons.svg#arrow-up-right">
-</use>
-</svg>
-</a>
-<a class="text-link" href="../account/">返回我的旅程 <svg class="icon" aria-hidden="true">
-<use href="../assets/icons.svg#arrow-up-right">
-</use>
-</svg>
-</a>
-<section id="posttest" class="posttest-entry" aria-labelledby="posttest-title">
-<div><span class="eyebrow">POST-SURVEY</span><h3 id="posttest-title">後測問卷</h3>
-<p class="posttest-hint">後測問卷現已開放，可直接填寫。</p></div>
-<a class="posttest-open" target="_blank" rel="noopener noreferrer" href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=dY4N6LlSOUijWIeruTs1Z-VOzApBm_VOvTm0gGA8MWtUM1Q3UVlZQlpZTlZVV05HVlo1WTNJR0JNMS4u" aria-label="填寫後測問卷（另開分頁）">填寫後測問卷 <span aria-hidden="true">↗</span></a>
-</section>
-</section>
-</div>
+<main id="main" class="container programme-main">
+  <div class="survey-layout">
+    <div class="survey-intro">
+      <span class="eyebrow">BEFORE WE START</span>
+      <h1>2–5 分鐘，<br>認識你的理財習慣。</h1>
+      <p>填妥問卷，再加入 WhatsApp 社群。</p>
+      <div class="survey-illustration" aria-hidden="true"></div>
+    </div>
+    <div class="survey-forms">
+      <section class="survey-entry" aria-labelledby="pretest-title">
+        <div class="directory-meta">
+          <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#clipboard-list"></use></svg>
+          <span>前測問卷已開放</span>
+        </div>
+        <h2 id="pretest-title">理財習慣前測問卷</h2>
+        <p>請使用 HKU Connect 帳戶填寫。前測問卷由 Microsoft Forms 收集，問卷負責人可查看你的姓名及電郵地址。</p>
+        <a class="button button-primary" target="_blank" rel="noopener noreferrer" href="https://forms.cloud.microsoft/r/EtyFDy1Y7p">在 Microsoft Forms 填寫前測 <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#arrow-up-right"></use></svg></a>
+      </section>
+      <section id="posttest" class="survey-entry" aria-labelledby="posttest-title">
+        <span class="eyebrow">POST-SURVEY</span>
+        <h2 id="posttest-title">後測問卷</h2>
+        <p>後測問卷現已開放，可直接填寫。</p>
+        <a class="button button-outline" target="_blank" rel="noopener noreferrer" href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=dY4N6LlSOUijWIeruTs1Z-VOzApBm_VOvTm0gGA8MWtUM1Q3UVlZQlpZTlZVV05HVlo1WTNJR0JNMS4u" aria-label="在 Microsoft Forms 填寫後測（另開分頁）">在 Microsoft Forms 填寫後測 <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#arrow-up-right"></use></svg></a>
+      </section>
+      <a class="text-link survey-return" href="../account/">返回我的旅程 <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#arrow-right"></use></svg></a>
+    </div>
+  </div>
 </main>
 <footer class="site-footer">
 <div class="container">
 <div class="footer-top">
 <div>
 <a class="brand" href="../" aria-label="富臨錢進號首頁">
-<span class="brand-mark" aria-hidden="true">
-<svg viewBox="0 0 32 32" fill="none">
-<circle cx="16" cy="16" r="11" stroke="currentColor"/>
-<path d="m8 23 16-14-9 17 1-10-8 7Z" fill="currentColor"/>
-</svg>
-</span>
 <span class="brand-name">富臨錢進號<small>FuLam · MONEY JOURNEY</small>
 </span>
 </a>

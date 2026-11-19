@@ -119,7 +119,7 @@ A restrained programme palette: deep green authority on warm paper, with amber a
 - **Forest Ink Deep** (#17392b): Primary hover / pressed deepening of Forest Ink.
 
 ### Secondary
-- **Amber Accent** (#ed9858): Eyebrow rules, amber CTAs, brand-mark gold, selection tint. Use sparingly so the journey still feels calm.
+- **Amber Accent** (#ed9858): Eyebrow rules, amber CTAs, selection tint. Use sparingly so the journey still feels calm.
 - **Amber Highlight** (#edb579): Reveal badges, calendar “open” days, prize warmth on dark panels.
 
 ### Neutral
@@ -161,7 +161,7 @@ Mostly **tonal layering**: paper → cream cards → forest panels. Shadows are 
 
 ## Shapes
 
-Gently rounded language: controls ~8–10px, cards ~16–20px, major panels ~22–24px, pills/status chips full radius. Circular brand mark. Avoid sharp zero-radius newspaper layouts and oversized “AI pill” clusters.
+Gently rounded language: controls ~8–10px, cards ~16–20px, major panels ~22–24px, pills/status chips full radius. The programme name appears as plain text in headers and footers. Avoid sharp zero-radius newspaper layouts and oversized “AI pill” clusters.
 
 ## Components
 

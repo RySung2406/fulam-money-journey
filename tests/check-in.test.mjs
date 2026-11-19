@@ -152,6 +152,16 @@ test('server-side closing and expired access disable subsequent submissions', as
   }
 });
 
+test('closed days never submit, including legacy records without a choice', async () => {
+  const { db, controller } = fixture();
+  db.records.set(userA, [savedRow, { ...savedRow, day_number: 2, choice: null }]);
+  db.onDays = () => response(days.map(day => ({ ...day, is_open: false })));
+  await controller.setUser(userA);
+  for (const day of [1, 2, 3]) await controller.submit(day, 'A');
+  assert.equal(controller.state.phase, 'ready');
+  assert.equal(db.submits.length, 0);
+});
+
 test('late reads cannot repopulate a signed-out or different account', async () => {
   for (const nextUser of [undefined, userB]) {
     const { db, controller } = fixture();

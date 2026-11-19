@@ -24,7 +24,7 @@ A Traditional Chinese financial-education website with an editorial content hub,
 
 The public content area has four categories: street interviews, explainers, AI videos and interviews. Each is honestly marked coming soon until a real release is supplied. `site/content-data.js` holds each category's first release title, description and URL. Set `url` to a verified HTTPS destination (for example, the team's published video) to enable the “watch” link in its detail dialog. The link opens in a new tab; no third-party player or tracking is loaded automatically. Update the matching title/copy in `site/index.html` when publishing a particular episode. Extend the catalogue and cards together for multiple releases per category. Do not label unreviewed uploads as published.
 
-The four homepage content cards open accessible detail dialogs. Dialogs support Escape and restore focus to their trigger. Most content is readable without JavaScript. Motion is limited to a brief entrance and button feedback; `prefers-reduced-motion` disables nonessential movement. Partner logos use separate original assets at approximately 2× display density; sources are recorded in `site/assets/logos/README.md`.
+The four homepage content cards open accessible detail dialogs. Dialogs support Escape and restore focus to their trigger. Most content is readable without JavaScript. Motion is limited to a brief entrance and button feedback; `prefers-reduced-motion` disables nonessential movement. The original programme logos and their sources are archived in [docs/programme-logos](docs/programme-logos/README.md) outside the published site.
 
 ### Still pending
 
@@ -115,7 +115,7 @@ For the earlier redesign, the 17 auth/session/game tests and the JavaScript synt
 
 The earlier signed-in My Journey dashboard started with the WhatsApp community invitation. The survey-first flow described below now replaces that dashboard. Questions, explanations, original content and discussion happen in WhatsApp; games and future check-in submissions remain on this website. Microsoft Forms collects the first questionnaire independently; website-side completion verification is not implemented.
 
-The homepage and activity hub show the supplied official partner strip unchanged, with the official programme name and separate co-organizer/funder credits. Source: https://www.ifec.org.hk/web/tc/other-resources/activities-and-events/personal-finance-ambassador-programme-2627-application.page . The project is created by the HKU student team 搏富臨; these are programme-level institutional roles.
+The HKU student team 搏富臨 created the project. The archived [programme references](docs/programme-logos/README.md) record the institutional roles.
 
 UI UX Pro Max guidance informed that refinement's larger body typography, contrast, spacing, responsive card layout and restrained motion. Its desktop body text was generally 18–20px and mobile body text 17–18px. Existing authentication, database policies and gameplay mechanics were preserved.
 

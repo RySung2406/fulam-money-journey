@@ -20,6 +20,7 @@ let accountUserId;
 let initializing = true;
 let restorePending = false;
 const journeySteps = ['survey', 'community', 'dashboard', 'booth'];
+const dashboardSections = ['daily-check-in', 'member-rewards'];
 const checkIns = createCheckInController({ getClient: () => client, onChange: renderCheckIns });
 let storyDay = 0;
 let questionOpen = false;
@@ -74,9 +75,9 @@ function loadCaptcha() {
 
 
 function questionAction(state, saving) {
-  const nextDay = state.days.find(day => selectableCheckInDay(day.day_number, state.days) && !state.records.some(row => row.day_number === day.day_number))?.day_number;
-  const reviewDay = [...state.days].reverse().find(day => selectableCheckInDay(day.day_number, state.days) && state.records.some(row => row.day_number === day.day_number))?.day_number;
-  const openDay = questionOpen ? storyDay : 0;
+  const nextDay = state.days.find(day => day.is_open && !state.records.some(row => row.day_number === day.day_number))?.day_number;
+  const reviewDay = [...state.days].reverse().find(day => state.records.some(row => row.day_number === day.day_number && (day.is_open || row.choice)))?.day_number;
+  const openDay = questionOpen && selectableCheckInDay(storyDay, state.days, state.records) ? storyDay : 0;
   const record = state.records.find(row => row.day_number === openDay);
   return checkInAction({
     questionOpen, nextDay: questionOpen ? 0 : nextDay, reviewDay: questionOpen ? openDay : reviewDay,
@@ -116,19 +117,26 @@ function renderCheckIns(state = checkIns.state) {
   const rewardKnown = !loading && state.phase !== 'error';
   updatePostSurvey();
   const reached = rewardKnown && completed >= rewardTarget;
-  $('rewards-progress-text').textContent = !rewardKnown
+  const progressText = !rewardKnown
     ? (loading ? '正在載入紀錄…' : '暫未能載入紀錄')
     : reached ? `已達打卡門檻 · ${completed} / 21 天（完成後測便可抽獎）` : `已完成 ${completed} / ${rewardTarget} 天 · 還差 ${rewardTarget - completed} 天`;
-  const rewardBar = $('rewards-progress-bar');
+  $('rewards-progress-text').textContent = progressText;
+  $('draw-progress-text').textContent = progressText;
   const shown = rewardKnown ? Math.min(completed, rewardTarget) : 0;
+  const rewardBar = $('rewards-progress-bar');
+  const drawBar = $('draw-progress-bar');
+  for (const meter of [rewardBar, drawBar]) {
+    meter.max = rewardTarget;
+    meter.value = shown;
+    meter.setAttribute('aria-valuetext', rewardKnown ? `已完成 ${completed} 天，抽獎門檻為 ${rewardTarget} 天` : progressText);
+  }
   rewardBar.hidden = false;
-  rewardBar.max = rewardTarget;
-  rewardBar.value = shown;
-  rewardBar.setAttribute('aria-valuetext', rewardKnown ? `已完成 ${completed} 天，抽獎門檻為 ${rewardTarget} 天` : '正在載入打卡進度');
-  rewardBar.closest('.check-in-progress-card')?.style.setProperty('--check-in-progress', String(shown / rewardTarget));
-  rewardBar.closest('.check-in-progress-card')?.classList.toggle('is-complete', reached);
+  drawBar.hidden = !rewardKnown;
+  const progressCard = rewardBar.closest('.check-in-progress-card');
+  progressCard.style.setProperty('--check-in-progress', String(shown / rewardTarget));
+  progressCard.classList.toggle('is-complete', reached);
   $('check-in-status').textContent = loading ? '正在載入…' : state.phase === 'error' ? '暫未能載入' : nextDay ? `第 ${nextDay} 日已開放` : completed ? '打卡已記錄' : '暫未開放';
-  $('check-in-description').textContent = '點選已開放的日子打卡；可隨時補做。每日 06:00 開放（香港時間）。';
+  $('check-in-description').textContent = '選擇已開放的日期打卡，或點選已提交答案的日期查閱解答。';
   $('check-in-progress').textContent = loading ? '正在讀取你的紀錄…' : state.phase === 'error' ? '請重新載入紀錄' : `已完成 ${completed} / 21 天`;
   $('check-in-calendar').setAttribute('aria-label', `21 天打卡${loading ? '，正在載入' : unavailable ? '，暫未能載入紀錄' : `，已完成 ${completed} 天`}`);
   for (const cell of $('check-in-calendar').querySelectorAll('[data-check-in-day]')) {
@@ -139,7 +147,7 @@ function renderCheckIns(state = checkIns.state) {
     cell.dataset.state = record ? 'completed' : isOpen ? 'open' : 'locked';
     cell.querySelector('small').textContent = label;
     const opener = cell.querySelector('[data-open-day]');
-    const selectable = selectableCheckInDay(day, state.days) && !loading && !unavailable;
+    const selectable = selectableCheckInDay(day, state.days, state.records) && !loading && !unavailable;
     opener.disabled = !selectable;
     opener.setAttribute('aria-label', `第 ${day} 日：${label}`);
   }
@@ -173,7 +181,7 @@ function renderCheckIns(state = checkIns.state) {
     day, en: window.FuLamI18n?.getLanguage?.() === 'en',
     choice: savedChoice || draftChoices.get(action.day) || '',
     locked: Boolean(savedChoice),
-    revealed: Boolean(reveal), reveal, submitted: Boolean(record), savedChoice
+    revealed: Boolean(reveal), reveal, submitted: Boolean(savedChoice), savedChoice
   });
 }
 function handleQuestionClick(event) {
@@ -181,7 +189,7 @@ function handleQuestionClick(event) {
   const opener = event.target.closest('[data-open-day]');
   if (opener && !opener.disabled) {
     const day = Number(opener.dataset.openDay);
-    if (selectableCheckInDay(day, checkIns.state.days)) {
+    if (selectableCheckInDay(day, checkIns.state.days, checkIns.state.records)) {
       questionOpen = true;
       storyDay = day;
       renderCheckIns();
@@ -248,10 +256,13 @@ function showView(next, focus = true) {
   renderCaptcha(next);
   if (focus) $(next === 'email' ? 'email' : next === 'otp' ? 'otp' : 'member-title').focus();
 }
-function showOnboardingStep(step, focus = true) {
-  const steps = journeySteps;
-  const current = steps.includes(step) ? step : 'survey';
-  for (const name of steps) {
+function stepForRoute(route) {
+  if (dashboardSections.includes(route)) return 'dashboard';
+  return journeySteps.includes(route) ? route : '';
+}
+function showOnboardingStep(route, focus = true) {
+  const current = stepForRoute(route) || 'survey';
+  for (const name of journeySteps) {
     $(`${name}-step`).hidden = name !== current;
     $(`${name}-step-label`).removeAttribute('aria-current');
   }
@@ -259,21 +270,26 @@ function showOnboardingStep(step, focus = true) {
   $('member-screen').classList.toggle('show-dashboard', current === 'dashboard');
   $('member-screen').classList.toggle('show-booth', current === 'booth');
   $('member-title').textContent = current === 'dashboard' || current === 'booth' ? '你的 21 天理財旅程。' : '開始你的 21 天旅程。';
-  if (focus) $({ survey: 'survey-title', community: 'community-card-title', dashboard: 'dashboard-title', booth: 'booth-title' }[current]).focus();
+  if (!focus) return;
+  const heading = route === 'member-rewards' ? 'rewards-title' :
+    { survey: 'survey-title', community: 'community-card-title', dashboard: 'dashboard-title', booth: 'booth-title' }[current];
+  $(heading).focus();
+  if (dashboardSections.includes(route)) $(route).scrollIntoView({ block: 'start' });
 }
 function savedJourneyStep() {
   const linkedStep = window.location.hash.slice(1);
-  if (journeySteps.includes(linkedStep)) return linkedStep;
+  if (stepForRoute(linkedStep)) return linkedStep;
   try { return localStorage.getItem(`fulam.journey.view.${accountUserId}`) || 'survey'; }
   catch { return 'survey'; }
 }
-function navigateJourney(step) {
-  if (busy || view !== 'member' || !accountUserId || !journeySteps.includes(step)) return;
+function navigateJourney(route) {
+  const step = stepForRoute(route);
+  if (busy || view !== 'member' || !accountUserId || !step) return;
   // This stores navigation only, never proof of Forms submission or community membership.
   try { localStorage.setItem(`fulam.journey.view.${accountUserId}`, step); }
   catch { /* The journey remains usable when browser storage is unavailable. */ }
-  showOnboardingStep(step);
-  window.history.replaceState(null, '', `#${step}`);
+  showOnboardingStep(route);
+  window.history.replaceState(null, '', `#${route}`);
 }
 $('survey-continue').addEventListener('click', () => {
   navigateJourney('community');
@@ -396,8 +412,10 @@ async function openVerifiedAccount(focus = true) {
   pendingEmail = '';
   clearMessages();
   setRestoreState('idle');
-  showOnboardingStep(savedJourneyStep(), false);
-  showView('member', focus);
+  const route = savedJourneyStep();
+  const followLink = route === window.location.hash.slice(1);
+  showView('member', focus && !followLink);
+  showOnboardingStep(route, followLink);
   showUpgradeNotice();
   void checkIns.setUser(accountUserId);
 }
