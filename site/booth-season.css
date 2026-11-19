@@ -1,0 +1,41 @@
+:root {
+  --booth-berry: #8a333b;
+  --booth-ivory: #fffbf2;
+  --booth-line: #e8dfcb;
+}
+
+.booth-season-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.booth-holly {
+  position: relative;
+  flex: 0 0 34px;
+  height: 32px;
+  --booth-holly-berry: var(--booth-berry);
+  background:
+    radial-gradient(circle at 12px 23px, var(--booth-holly-berry) 2.5px, transparent 3px),
+    radial-gradient(circle at 20px 22px, var(--booth-holly-berry) 2.5px, transparent 3px),
+    radial-gradient(circle at 17px 29px, var(--booth-holly-berry) 2.5px, transparent 3px);
+}
+
+.booth-holly::before,
+.booth-holly::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  width: 18px;
+  height: 11px;
+  border-radius: 90% 0;
+  background: var(--booth-holly-leaf, #315a44);
+}
+
+.booth-holly::before { left: 1px; transform: rotate(78deg); }
+.booth-holly::after { right: 0; transform: rotate(8deg); }
+
+.booth-season-dark .booth-holly {
+  --booth-holly-berry: #efa1a3;
+  --booth-holly-leaf: #add0aa;
+}

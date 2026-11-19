@@ -201,9 +201,6 @@
 .account-page dialog ul{padding-left:21px}
 .account-page dialog li{margin:9px 0}
 .account-page .dialog-close{position:absolute;top:12px;right:13px;width:44px;height:44px;font-size:28px;background:none;border:0;color:#65755d}
-.upgrade-dialog h2{margin:0 40px 12px 0}
-.upgrade-dialog p{margin:0 0 8px;color:#214b3b}
-.upgrade-dialog .account-secondary{margin-top:18px}
 .dialog-note{border-top:1px solid #e2e8d9;padding-top:16px}
 .account-noscript{padding:20px;text-align:center}
 
@@ -751,15 +748,26 @@ to{opacity:1;transform:translateY(0)}
   .posttest-open{font-size:16px;min-height:52px;padding-inline:16px}
 }
 
+#booth-step-label[aria-current=step] {
+  border-color: var(--booth-berry);
+  background: #f9edea;
+}
+
+#booth-step-label[aria-current=step] > .onboarding-step-number {
+  border-color: var(--booth-berry);
+  background: var(--booth-berry);
+}
+
 .booth-gift-card {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, .85fr);
   align-items: center;
   gap: clamp(24px, 4vw, 48px);
   padding: clamp(20px, 4vw, 38px);
-  border: 1px solid var(--account-line);
+  border: 1px solid var(--booth-line);
+  border-top: 4px solid var(--booth-berry);
   border-radius: 20px;
-  background: #fffef9;
+  background: var(--booth-ivory);
 }
 
 .booth-event-details {
@@ -779,6 +787,8 @@ to{opacity:1;transform:translateY(0)}
   display: inline-flex;
   gap: 8px;
   align-items: center;
+  color: var(--booth-berry);
+  border-bottom: 0;
   min-height: 44px;
   font-size: 16px;
   font-weight: 600;
@@ -792,14 +802,14 @@ to{opacity:1;transform:translateY(0)}
   width: 100%;
   max-width: 400px;
   height: auto;
-  border: 1px solid var(--account-line);
+  border: 1px solid var(--booth-line);
   border-radius: 12px;
 }
 
 @media(max-width:720px){
  .onboarding-steps{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
  .onboarding-step-button{min-height:62px;padding:10px;gap:8px;flex-direction:row;text-align:left;justify-content:flex-start;overflow-wrap:normal}
- .booth-gift-card { grid-template-columns: 1fr; gap: 12px; }
+ .booth-gift-card { grid-template-columns: 1fr; gap: 20px; padding: 24px; }
  .booth-gift-card p { font-size: 16px; }
 }
 @media(max-width:900px){.rewards-list.rewards-products{grid-template-columns:repeat(2,minmax(0,1fr))}}
