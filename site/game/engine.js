@@ -1,6 +1,6 @@
 'use strict';
 (function(root){
-  const GAME_RULES=Object.freeze({version:'continuous-v1',sprintTarget:20,wrongPenaltySeconds:3});
+  const GAME_RULES=Object.freeze({version:'continuous-v1',sprintTarget:20,wrongPenaltySeconds:3,boothSpawnRate:1.625});
   const shuffle = (list,random=Math.random) => { const a=[...list]; for(let i=a.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; };
   function shuffleBoothOptions(options,random){
     const matches=shuffle(options.filter(option=>option.good),random);
