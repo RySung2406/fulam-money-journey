@@ -21,6 +21,25 @@ test('Booth opening hits are forgiving, last-round damage is full, and supply st
  assert.deepEqual(damage.map(n=>Math.round(n)),[13,16,18,20]);
 });
 
+test('The booth transition from round two to three restores 25 armour, capped at maximum',()=>{
+ for(const mode of ['booth','standard']){
+  const s=C.createState({arcade:true,mode});
+  const run=new context.FuLamJourney.Run('fleet',mode==='booth'?'booth':'web');
+  for(const nextWave of [2,3,4]){
+   assert(run.completeRound());assert(run.choose('trajectory'));
+   assert.equal(run.wave,nextWave);
+   s.hero.hp=40;
+   C.applyRoundUpgrade(s,run,'trajectory');
+   const expected=mode==='standard'?12:nextWave===3?25:20;
+   assert.equal(s.hero.hp,40+expected);
+   s.hero.hp=s.hero.maxHp-1;
+   C.applyRoundUpgrade(s,run,'trajectory');
+   assert.equal(s.hero.hp,s.hero.maxHp);
+   s.wave=run.wave;
+  }
+ }
+});
+
 test('Emergency reserves let reactive and stationary first-time players finish all four booth rounds',()=>{
  const counts={react:0,idle:0},finished={react:0,idle:0};
  const stageEnds=Array.from(BOOTH_STAGE_TIME,(_,i)=>BOOTH_STAGE_TIME.slice(0,i+1).reduce((total,seconds)=>total+seconds,0)*60);
