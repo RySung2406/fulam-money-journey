@@ -115,7 +115,7 @@
  }
 
  class UI {
-  constructor(game,language){this.game=game;this.language=language;this.scene='booth';this.difficulty='intermediate';this.run=null;this.overlay=null;this.saved=false;this.onChoice=()=>{};this.onEnd=()=>{};this.onIntermission=()=>{};}
+  constructor(game,language){this.game=game;this.language=language;this.station=root.FuLamStation?.gameAttempt(game);this.scene='booth';this.difficulty='intermediate';this.run=null;this.overlay=null;this.saved=false;this.onChoice=()=>{};this.onEnd=()=>{};this.onIntermission=()=>{};}
   en(){return this.language()==='en';}
   text(zh,en){return this.en()?en:zh;}
   sliceHearts(){return this.scene==='booth'?5:this.difficulty==='challenge'?3:6;}
@@ -241,6 +241,11 @@
   }
   result(score,extra={},reason='defeat'){
    if(!this.run)return '';this.run.finish(reason);this.close();if(this.status)this.status.hidden=true;
+   if(this.station){
+    const points=this.run.record(score,extra).score;
+    if(this.station.finish(points))return '';
+    return `<div class="journey-result" role="alert"><b>${this.text('未能儲存。請工作人員抄下成績。','Save failed. Ask staff to write down this score.')}</b><p>UID ${esc(this.station.uid)} · ${points}</p><button type="button" data-retry-booth-save>${this.text('重新儲存','Retry save')}</button></div>`;
+   }
    if(!this.saved){let storage;try{storage=localStorage;}catch{}this.resultData=saveBoard(storage,this.run.key(this.topic,this.recordLanguage),this.run.record(score,extra));this.saved=true;}
    const r=this.run,data=this.resultData;
    if(this.game!=='knife')return this.combatResult(data);

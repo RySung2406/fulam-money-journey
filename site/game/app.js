@@ -270,6 +270,7 @@ function showQuestionGate(onStart,onBack){
 }
 function beginStream() {
  if (phase !== 'ready') return;
+ if(journey?.station && !journey.station.begin())return;
  if(journey){journey.start($('.game-wrap'),startTopic);$('.game-wrap').classList.add('journey-live');optionDeck=E.createOptionDeck(question.options,roundRandom,journey.scene==='booth');}
  phase = 'playing'; paused = false; $('#ready-overlay')?.remove(); $('#finish-session').disabled = false;
  arena.classList.add('knife-enabled'); lastTime = performance.now(); nextSpawnAt = 0;

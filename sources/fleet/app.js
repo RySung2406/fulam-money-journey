@@ -128,6 +128,7 @@
   function returnMenu(){journey?.close();if(journey?.status)journey.status.hidden=true;$('sea').classList.remove('journey-live','ultimate-mode');document.body.classList.remove('fleet-playing','ultimate-mode');document.body.classList.add('fleet-menu');phase='menu';paused=false;shopOpen=false;ultimateAnnounced=false;$('combat-layout').classList.remove('workshop-open');clearInput();game=C.createState({mode});showOverlay('menu');updateHUD();$('start').focus({preventScroll:true});}
   let ultimateAnnounced=false;
   function start() {
+    if(journey?.station && !journey.station.begin())return;
     document.body.classList.remove('fleet-menu','ultimate-mode');document.body.classList.add('fleet-playing');$('sea').classList.remove('ultimate-mode');
     shopOpen = false; deathTime = lowHealthSound = 0; fx.clear();ultimateAnnounced=false;
     $('combat-layout').classList.remove('workshop-open');

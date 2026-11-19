@@ -198,6 +198,7 @@ function showWelcome(){
 }
 function prepareStart(){document.body.classList.remove('welcome-screen');if(!journey){start();return;}closeModal();document.body.classList.add('game-active');resize();journey.guide(scene,start,showWelcome);}
 function start(){
+ if(journey?.station && !journey.station.begin())return;
  document.body.classList.remove('welcome-screen');
  if(journey){journey.start(scene);scene.classList.add('journey-live');energy=100;difficulty=journey.run.difficulty==='intermediate'?'booth':journey.run.difficulty==='challenge'?'hard':'normal';}
  fx.clear();initAudio();mode='playing';sessionStarted=true;round=0;score=wallet=caught=shots=hits=0;level=1;combo=maxCombo=0;lastCatch=-10;missionIndex=0;bossSpawned=0;carnivalBossSpawned=false;nextBossAt=20;saveClock=5;startingBest=journey?journey.best():prefs.best[difficulty];resultRecord=false;lastPressureTier=0;
