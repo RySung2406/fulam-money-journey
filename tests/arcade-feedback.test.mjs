@@ -58,6 +58,19 @@ test('Both deployed games carry audio and complete asset attribution without a r
   }
 });
 
+test('The final boss entrance preempts ordinary fire, debounces and obeys mute', async () => {
+  const { Audio } = load({ AudioContext: fakeAudio() });
+  const audio = new Audio();
+  await audio.unlock();
+  audio.play('fire');
+  assert.equal(audio.play('finalBoss'), true);
+  assert.equal(audio.voices.size, 4);
+  assert.equal(audio.play('finalBoss'), false);
+  audio.setEnabled(false);
+  assert.equal(audio.voices.size, 0);
+  assert.equal(audio.play('finalBoss'), false);
+});
+
 test('Weapon, combo and result cues work with decoded audio and respect mute/voice bounds',async()=>{
  const {Audio}=load({AudioContext:fakeAudio(),FuLamArcadeAssets:{shot:'AA==',heavy:'AA==',blast:'AA=='}}),a=new Audio();
  await a.unlock();

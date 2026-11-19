@@ -6,6 +6,11 @@ import re
 
 ROOT = Path(__file__).resolve().parent
 
+def arcade_style():
+    css = (ROOT / 'journey.css').read_text(encoding='utf-8')
+    image = (ROOT.parents[1] / 'site' / 'arcade' / 'campus-christmas.webp').read_bytes()
+    return css.replace('../arcade/campus-christmas.webp', 'data:image/webp;base64,' + base64.b64encode(image).decode('ascii'))
+
 def feedback_script():
     assets = {p.stem: base64.b64encode(p.read_bytes()).decode('ascii')
               for p in sorted((ROOT / 'audio').glob('*.mp3'))}

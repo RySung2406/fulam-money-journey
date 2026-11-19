@@ -10,6 +10,7 @@
   const panel = $('panel');
   let english = false;
   let staffOpen = false;
+  let entryGrant = null;
   try { english = localStorage.getItem('fulam-language') === 'en'; } catch {}
   const t = (zh, en) => english ? en : zh;
   const title = (value) => { $('heading').textContent = value; document.title = value + ' · FuLam'; };
@@ -37,8 +38,33 @@
     if (!ok) { error(t('工作人員 PIN 不正確。','Incorrect staff PIN.')); pin.focus(); }
     return ok;
   }
+  async function entryRpc(method, args) {
+    const local = ['localhost','127.0.0.1','[::1]'].includes(location.hostname);
+    const endpoint = local ? location.origin : window.FULIN_CONFIG.supabaseUrl;
+    try {
+      const reply = await fetch(endpoint + '/rest/v1/rpc/booth_entry_' + method, {
+        method:'POST', cache:'no-store', credentials:'omit',
+        headers:{'Content-Type':'application/json', apikey:window.FULIN_CONFIG.supabasePublishableKey},
+        body:JSON.stringify(args)
+      });
+      if (reply.status === 429) { error(t('嘗試次數過多，請於一分鐘後再試。','Too many attempts. Try again in one minute.')); return; }
+      if (!reply.ok) throw new Error();
+      return await reply.json();
+    } catch { error(t('暫時無法連接驗證服務，請再試一次。','Cannot reach the verification service. Please try again.')); }
+  }
   function entry() {
     title(t('攤位 UID 登記','Booth UID entry'));
+    if (!entryGrant) {
+      panel.innerHTML = `<section class="station-card"><form id="entry-lock"><label>${t('工作人員入口密碼','Staff entry password')}<input type="password" name="password" inputmode="numeric" required maxlength="64" autocomplete="off"></label>${submit(t('進入 UID 登記','Open UID entry'))}</form></section>`;
+      onSubmit('entry-lock', async form => {
+        const field = form.elements.password;
+        const grant = await entryRpc('unlock', {p_password:field.value});
+        field.value = '';
+        if (grant) { entryGrant = grant; render(); }
+        else if (grant === null) { error(t('入口密碼不正確。','Incorrect entry password.')); field.focus(); }
+      });
+      return;
+    }
     if (!store.hasPin()) {
       panel.innerHTML = `<section class="station-card"><h2>${t('工作人員首次設定','Staff device setup')}</h2><p>${t('請為這部裝置設定 4 至 8 位數字 PIN，用於核對後測及匯出成績。','Choose a 4–8 digit staff PIN for this device. Staff use it to confirm post-tests and export scores.')}</p><form id="setup">${pinInput(t('設定 PIN','Choose a PIN'),true)}${submit(t('啟用攤位裝置','Set up this device'))}</form></section>`;
       onSubmit('setup', async form => { await store.setupPin(form.elements.pin.value); render(); });
@@ -49,7 +75,38 @@
       <small id="uid-hint">${t('請輸入以 303 開頭的 10 位數字，例如 3031234567。','Enter 10 digits starting with 303, for example 3031234567.')}</small>
       <label>${t('選擇遊戲','Choose a game')}<select name="game">${Object.keys(names).map(key => `<option value="${key}">${gameName(key)}</option>`).join('')}</select></label>
       ${submit(t('開始挑戰','Start game'))}</form></section><div class="station-actions"><a class="station-link" href="?view=ranking" target="_blank" rel="noopener">${t('另開排行榜 ↗','Open ranking display ↗')}</a><a class="station-link" href="?view=staff">${t('工作人員紀錄','Staff records')}</a></div>`;
-    onSubmit('join', form => { location.assign(store.launch(form.elements.game.value, form.elements.uid.value)); });
+    onSubmit('join', async form => {
+      const attempt = await entryRpc('redeem', {p_token:entryGrant});
+      if (attempt === undefined) return;
+      entryGrant = null;
+      if (!attempt) { render(); error(t('請重新輸入入口密碼。','Please enter the staff password again.')); return; }
+      try { location.assign(store.launch(form.elements.game.value, form.elements.uid.value, attempt)); }
+      catch { render(); storageError(); }
+    });
+  }
+  function knifeReceipt(row) {
+    const confirmed = row.confirmed;
+    const uid = esc(row.uid);
+    return `<section class="slice-receipt" aria-labelledby="slip-title">
+      <div class="slip-score">
+        <div class="slip-top"><h2 id="slip-title">${gameName('knife')}</h2>
+          <span class="slip-status${confirmed ? ' is-confirmed' : ''}">${confirmed ? t('已核對','Confirmed') : t('待核對','Pending')}</span></div>
+        <div class="slip-points"><strong>${row.score.toLocaleString('en-HK')}</strong><span>${t('分','pts')}</span></div>
+        <div class="slip-uid"><span>UID</span> <b>${uid}</b></div>
+      </div>
+      ${confirmed ? '' : `<div class="slip-posttest station-qr">
+        <img src="post-test-qr.svg" width="171" height="171" alt="${t('後測問卷 QR 碼','Post-test QR code')}">
+        <div><h3>${t('掃碼填後測','Scan for the post-test')}</h3>
+          <p>${t('填寫上方 UID 和聯絡方法，再請工作人員核對。','Enter your UID and contact details, then ask staff to verify.')}</p>
+          <a href="${postTest}" target="_blank" rel="noopener noreferrer">${t('開啟問卷 ↗','Open form ↗')}</a></div>
+      </div>
+      <details class="slip-staff"><summary>${t('工作人員核對','Staff verification')}</summary>
+        <p>${t('核對後測內的 UID 及聯絡方法。','Match the UID and contact details in the post-test response.')}</p>
+        <form id="verify" autocomplete="off">${pinInput(t('工作人員 PIN','Staff PIN'))}${submit(t('確認並加入排名','Confirm score'))}</form>
+      </details>`}
+      <div class="slip-actions"><a class="${confirmed ? 'play' : 'slip-link'}" id="slip-next" href="station.html">${confirmed ? t('下一位參加者','Next player') : t('稍後核對，下一位','Keep pending · Next player')}</a>
+        <a class="slip-link" href="?view=ranking">${t('排行榜','Rankings')} ↗</a></div>
+    </section>`;
   }
   function receipt(rows) {
     const row = rows.find(item => item.id === review);
@@ -64,8 +121,12 @@
       return;
     }
     const confirmed = row.confirmed;
-    title(confirmed ? t('成績已確認','Score confirmed') : t('完成後測，登上排行榜','Finish the post-test to join the rankings'));
-    panel.innerHTML = `<section class="station-card"><strong>${gameName(row.game)} · UID ${esc(row.uid)}</strong><div class="station-score">${row.score.toLocaleString()}</div>
+    if (row.game === 'knife') {
+      title(t('攤位成績','Booth score'));
+      panel.innerHTML = knifeReceipt(row);
+    } else {
+      title(confirmed ? t('成績已確認','Score confirmed') : t('完成後測，登上排行榜','Finish the post-test to join the rankings'));
+      panel.innerHTML = `<section class="station-card"><strong>${gameName(row.game)} · UID ${esc(row.uid)}</strong><div class="station-score">${row.score.toLocaleString()}</div>
       ${confirmed ? `<p>${t('這局成績已獲確認。排行榜會顯示你在這款遊戲的最高分。','Your score is confirmed. The ranking shows your best score for this game.')}</p>` : `
       <p>${t('成績已儲存在本機。請用手機填寫後測，輸入上方的 UID 和聯絡方法，再請工作人員核對。如已提交，只需告知工作人員你的 UID。','Your score is saved on this device. Complete the post-test on your phone using the UID above and a contact method. If you already submitted it, give staff your UID to find your entry.')}</p>
       <div class="station-qr"><img src="post-test-qr.svg" alt="${t('後測問卷 QR 碼','Post-test QR code')}" width="164" height="164"><a class="station-link" href="${postTest}" target="_blank" rel="noopener noreferrer">${t('開啟後測問卷 ↗','Open post-test ↗')}</a></div>
@@ -73,10 +134,12 @@
       <form id="verify" autocomplete="off">${pinInput(t('工作人員 PIN','Staff PIN'))}${submit(t('確認並加入排名','Confirm and rank score'))}</form></details>`}
       <div class="station-actions"><a class="${confirmed ? 'play' : 'station-link'}" href="station.html">${confirmed ? t('下一位參加者','Next participant') : t('稍後核對，下一位','Keep pending and start next player')}</a>
       ${confirmed ? `<a class="station-link" href="?view=ranking">${t('查看排行榜','See rankings')}</a>` : ''}</div></section>`;
+    }
     if (!confirmed) onSubmit('verify', async form => {
       if (!await authorized(form)) return;
       store.confirm(localStorage, review);
       render();
+      if (row.game === 'knife') $('slip-next')?.focus();
     });
   }
   function ranking(rows) {
@@ -151,7 +214,7 @@
   window.addEventListener('storage', event => {
     if ((view === 'ranking' || (view === 'staff' && staffOpen)) && (!event.key || event.key.startsWith(store.prefix))) render();
   });
-  window.addEventListener('pageshow', event => { if (event.persisted) { staffOpen = false; render(); } });
+  window.addEventListener('pageshow', event => { if (event.persisted) { entryGrant = null; staffOpen = false; render(); } });
   if (view === 'review') document.addEventListener('click', event => {
     const link = event.target.closest('a');
     if (link && !link.target && link.origin === location.origin && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) {

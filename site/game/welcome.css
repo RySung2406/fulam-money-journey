@@ -1,0 +1,217 @@
+/* The opening screen uses the artwork as the game demonstration. */
+body:has(.slice-welcome) {
+  background: #071c20;
+  color: #fff5d9;
+}
+
+.site-shell:has(.slice-welcome, .slice-receipt) {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  width: min(100%, 1380px);
+  padding-inline: clamp(16px, 4vw, 64px);
+}
+.site-shell:has(.slice-welcome, .slice-receipt) .account-nav,
+.site-shell:has(.slice-welcome, .slice-receipt) .site-header {
+  min-height: 68px;
+  height: auto;
+  padding: 0;
+  border: 0;
+}
+.site-shell:has(.slice-welcome, .slice-receipt) .account-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 4px; border: 0; background: none;
+  color: #b7d4c9;
+}
+.site-shell:has(.slice-welcome, .slice-receipt) .site-header { display: flex; justify-content: flex-end; }
+.site-shell:has(.slice-welcome, .slice-receipt) .brand,
+.site-shell:has(.slice-welcome, .slice-receipt) .header-tag,
+.site-shell:has(.slice-welcome, .slice-receipt) .site-footer > span { display: none; }
+.site-shell:has(.slice-welcome, .slice-receipt) #app,
+.site-shell:has(.slice-welcome, .slice-receipt) .site-footer { grid-column: 1 / -1; min-height: 0; }
+.site-shell:has(.slice-welcome, .slice-receipt) .site-footer {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 18px;
+  padding: 16px 0 20px;
+  border: 0;
+}
+
+.slice-welcome {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  align-items: center;
+  min-height: clamp(440px, 74svh, 760px);
+  border-radius: clamp(18px, 2.4vw, 34px);
+  border: 1px solid #88b7a82e;
+  background: #0a2628;
+}
+.slice-welcome-scene,
+.slice-welcome-scene::after,
+.slice-welcome-art { position: absolute; inset: 0; width: 100%; height: 100%; }
+.slice-welcome-scene { z-index: -1; overflow: hidden; }
+.slice-welcome-art { object-fit: cover; object-position: center; }
+.slice-welcome-scene::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  width: 20px;
+  aspect-ratio: 1;
+  pointer-events: none;
+  opacity: 0;
+  background: #fffae3;
+  clip-path: polygon(50% 0, 58% 40%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 40%);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .slice-welcome-scene::before { animation: slice-welcome-glint 4.4s ease-out .45s 2; }
+}
+@keyframes slice-welcome-glint {
+  0% { left: 26%; top: 82%; opacity: 0; transform: scale(.3); }
+  7% { opacity: .95; transform: scale(1); }
+  17% { left: 70%; top: 41%; opacity: .92; }
+  26%, 100% { left: 85%; top: 20%; opacity: 0; transform: scale(.25); }
+}
+.slice-welcome-scene::after {
+  content: "";
+  z-index: 2;
+  background: linear-gradient(90deg, #042225f5 0%, #06272bcf 22%, #06262a79 38%, transparent 59%),
+              linear-gradient(0deg, #071e2266, transparent 28%);
+}
+.slice-welcome-content {
+  width: fit-content;
+  max-width: 51%;
+  padding: clamp(28px, 5vw, 80px);
+  padding-right: 8px;
+}
+.slice-welcome h1 { margin: 0; font-family: var(--font); }
+.slice-name-first,
+.slice-name-last { display: block; }
+.slice-name-first {
+  color: #a1e7ce;
+  font-size: clamp(23px, 3vw, 44px);
+  line-height: 1.3;
+  font-weight: 750;
+  letter-spacing: .13em;
+}
+.slice-name-last {
+  width: fit-content;
+  margin: 3px 0 0 -.07em;
+  padding-right: .12em;
+  font-size: clamp(76px, 10.8vw, 160px);
+  font-weight: 900;
+  line-height: 1.06;
+  letter-spacing: -.085em;
+  transform: skewX(-6deg);
+  color: #fff3d9;
+}
+html:lang(en) .slice-name-first {
+  text-transform: uppercase;
+  font-size: clamp(18px, 2vw, 28px);
+  letter-spacing: .18em;
+}
+html:lang(en) .slice-name-last {
+  font-size: clamp(60px, 7.3vw, 116px);
+  letter-spacing: -.07em;
+  line-height: 1.03;
+}
+.slice-welcome-hint {
+  margin: 16px 0 0;
+  color: #e0e8db;
+  font-size: clamp(15px, 1.5vw, 20px);
+  line-height: 1.5;
+  max-width: 28ch;
+}
+.slice-welcome-actions {
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 2.3vw, 30px);
+  margin-top: clamp(22px, 3vw, 42px);
+}
+.slice-welcome #start-journey {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 26px;
+  min-height: 52px;
+  min-width: 142px;
+  padding: 12px 21px;
+  border: 1px solid #d7fce5;
+  border-radius: 9px;
+  background: #acf1d1;
+  color: #102d2b;
+  font-size: 17px;
+  font-weight: 800;
+}
+.slice-welcome #start-journey svg { width: 20px; height: 20px; }
+.slice-welcome #start-journey:hover { background: #ceffe5; }
+.slice-welcome #how-to {
+  min-height: 44px;
+  padding: 2px 0;
+  border: 0;
+  background: transparent;
+  color: #e7eee4;
+  font-size: 14px;
+  text-decoration: underline;
+  text-decoration-color: #94ae9e;
+  text-underline-offset: 5px;
+}
+
+@media (max-width: 650px) {
+  .site-shell:has(.slice-welcome, .slice-receipt) { padding-inline: 12px; }
+  .site-shell:has(.slice-welcome, .slice-receipt) .account-nav,
+  .site-shell:has(.slice-welcome, .slice-receipt) .site-header { min-height: 54px; }
+  .site-shell:has(.slice-welcome, .slice-receipt) .site-footer { gap: 4px; padding: 10px 4px 18px; }
+  .slice-welcome { min-height: 0; display: grid; grid-template-rows: auto auto; align-items: end; }
+  .slice-welcome-scene { position: relative; inset: auto; width: 100%; aspect-ratio: 1.25; height: auto; }
+  .slice-welcome-art { object-position: 32% center; }
+  .slice-welcome-scene::after {
+    background: linear-gradient(0deg, #0a2628, #0a26283b 26%, transparent 52%);
+  }
+  .slice-welcome-content {
+    width: 100%;
+    max-width: none;
+    padding: 2px clamp(20px, 6vw, 38px) clamp(24px, 4svh, 36px);
+    background: linear-gradient(0deg, #0a2628 34%, #0a2628e8 54%, transparent 94%);
+  }
+  .slice-welcome h1 { display: flex; align-items: baseline; gap: 6px; }
+  .slice-name-first { font-size: clamp(30px, 8vw, 50px); letter-spacing: .01em; }
+  .slice-name-last { margin: 0; font-size: clamp(60px, 16vw, 92px); }
+  html:lang(en) .slice-welcome h1 { display: block; }
+  html:lang(en) .slice-name-first { font-size: 16px; }
+  html:lang(en) .slice-name-last { font-size: clamp(52px, 13vw, 75px); }
+  .slice-welcome-hint { margin-top: 10px; max-width: 33ch; }
+  .slice-welcome-actions { justify-content: space-between; margin-top: 19px; }
+  .slice-welcome #start-journey { min-width: 165px; }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .site-shell:has(.slice-welcome, .slice-receipt) { padding-inline: 16px; }
+  .site-shell:has(.slice-welcome, .slice-receipt) .site-header,
+  .site-shell:has(.slice-welcome, .slice-receipt) .account-nav { min-height: 44px; }
+  .slice-welcome { min-height: max(230px, calc(100svh - 66px)); align-items: center; grid-template-rows: auto; }
+  .slice-welcome-scene { position: absolute; inset: 0; height: 100%; aspect-ratio: auto; }
+  .slice-welcome-art { object-position: center 48%; }
+  .slice-welcome-scene::after { background: linear-gradient(90deg,#072528ef 4%,#073034ba 34%,transparent 69%); }
+  .slice-welcome-content { width: fit-content; max-width: 54%; padding: 16px 7px 16px 28px; background: none; }
+  .slice-welcome h1 { display: flex; align-items: baseline; gap: 5px; }
+  .slice-name-first { font-size: 23px; }
+  .slice-name-last { font-size: 56px; }
+  html:lang(en) .slice-name-first { font-size: 14px; }
+  html:lang(en) .slice-name-last { font-size: 46px; }
+  .slice-welcome-hint { margin-top: 7px; font-size: 14px; }
+  .slice-welcome-actions { margin-top: 12px; }
+  .slice-welcome #start-journey { min-height: 44px; }
+}
+
+body:has(.slice-welcome, .slice-receipt)::before {
+  background: radial-gradient(ellipse at 75% 8%, #193d3b, transparent 60%), linear-gradient(160deg, #102a31, #071921 80%);
+}
+.site-shell:has(.slice-receipt) #app { width: 100%; }
+.site-shell:has(.slice-welcome, .slice-receipt) #about-button { font-size: 12px; color: #a4beb6; min-height: 40px; }
+.site-shell:has(.slice-welcome, .slice-receipt) .icon-button,
+.site-shell:has(.slice-welcome, .slice-receipt) .language-switch { min-height: 40px; }

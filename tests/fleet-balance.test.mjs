@@ -7,6 +7,7 @@ const context=vm.createContext({console});
 vm.runInContext(fs.readFileSync(new URL('../sources/arcade/journey.js',import.meta.url),'utf8'),context);
 vm.runInContext(fs.readFileSync(new URL('../sources/fleet/core.js',import.meta.url),'utf8'),context);
 const C=context.FleetCore;
+const {BOOTH_STAGE_TIME,LIMIT}=context.FuLamJourney;
 const hostile=s=>s.entities.filter(e=>!e.dead&&e.type==='torpedo'&&e.collision.group===C.ENEMY);
 
 test('Booth opening hits are forgiving, last-round damage is full, and supply stays capped',()=>{
@@ -20,12 +21,13 @@ test('Booth opening hits are forgiving, last-round damage is full, and supply st
  assert.deepEqual(damage.map(n=>Math.round(n)),[13,16,18,20]);
 });
 
-test('A slow reactive beginner reaches R4 in most seeded runs; standing still cannot finish',()=>{
+test('Emergency reserves let reactive and stationary first-time players finish all four booth rounds',()=>{
  const counts={react:0,idle:0},finished={react:0,idle:0};
+ const stageEnds=Array.from(BOOTH_STAGE_TIME,(_,i)=>BOOTH_STAGE_TIME.slice(0,i+1).reduce((total,seconds)=>total+seconds,0)*60);
  for(const style of ['react','idle'])for(let seed=1;seed<=20;seed++){
   const s=C.createState({arcade:true,mode:'booth',seed});let input={},reached=false;
-  for(let frame=0;frame<7200&&s.running;frame++){
-   const wave=Math.min(4,Math.floor(frame/1200)+1);
+  for(let frame=0;frame<LIMIT*60&&s.running;frame++){
+   const wave=stageEnds.findIndex(end=>frame<end)+1;
    if(wave!==s.wave){s.wave=wave;s.entities=[];s.raised=[];s.bossSpawned=false;s.invulnerable=1.5;s.spawnTime=.5;C.applyRoundUpgrade(s,{weapon:wave-1,escort:wave>1?1:0,trajectory:wave>2?1:0,rate:wave>3?1:0},'trajectory');}
    if(wave===4)reached=true;
    // 600ms decisions, no prediction, aiming, shield or repair input.
@@ -34,7 +36,7 @@ test('A slow reactive beginner reaches R4 in most seeded runs; standing still ca
   }
   counts[style]+=reached?1:0;finished[style]+=s.running?1:0;
  }
- assert(counts.react>=7,JSON.stringify(counts));assert.equal(finished.idle,0,JSON.stringify(finished));
+ assert.deepEqual(counts,{react:20,idle:20});assert.deepEqual(finished,{react:20,idle:20});
 });
 
 test('An ordinary volley gives reaction time, locks aim, and can be dodged with keyboard movement',()=>{

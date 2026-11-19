@@ -76,6 +76,8 @@ a:focus-visible,button:focus-visible{outline:3px solid #ac7c27;outline-offset:4p
 .booth-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 24px}
 .booth-tabs a,.station-link{display:inline-flex;align-items:center;min-height:44px;padding:8px 14px;color:var(--green);font-weight:700;text-decoration:underline;text-underline-offset:4px}
 .booth-tabs a[aria-current="page"]{background:#e0eadd;border-radius:8px;text-decoration:none}
+.booth-campus-hero{display:flex;align-items:flex-end;min-height:clamp(155px,22vw,260px);padding:clamp(16px,3vw,32px);border-radius:16px;background:linear-gradient(90deg,#082829e8,#08282966 57%,transparent),url('../arcade/campus-christmas.webp') center / cover;color:#fff2cd}
+.booth-campus-hero h1{color:#fff2cd;font-size:clamp(28px,4vw,52px);text-wrap:balance}
 .station h1{margin:12px 0 20px}
 .station-card,.rank-card{border:1px solid var(--line);border-radius:16px;background:var(--booth-ivory);padding:clamp(18px,3vw,32px)}
 .station-card{max-width:620px}
@@ -112,3 +114,71 @@ a:focus-visible,button:focus-visible{outline:3px solid #ac7c27;outline-offset:4p
 .staff-table{overflow-x:auto}
 .station [hidden]{display:none!important}
 @media(max-width:800px){.ranks{grid-template-columns:1fr}.rank-card{padding:18px}.station input,.station select{font-size:16px}}
+
+/* The registered One Slice flow ends here, with the participant's post-test. */
+body:has(.slice-receipt){
+  min-height:100svh;color:#f4f0e4;
+  background:radial-gradient(ellipse at 50% 20%,#1b3843 0,#101f30 53%,#0b1624 100%);
+}
+body:has(.slice-receipt) > header{
+  max-width:680px;padding:14px 20px;border-bottom:1px solid #ffffff23;
+}
+body:has(.slice-receipt) #language{
+  color:#def6ef;border:1px solid #81b6ad66;background:#132b38;
+}
+.station:has(.slice-receipt){max-width:530px;padding:clamp(20px,5svh,50px) 16px 30px}
+.station:has(.slice-receipt) .booth-tabs{display:none}
+.station:has(.slice-receipt) > h1{
+  position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);margin:0;
+}
+.station:has(.slice-receipt) #message{color:#ffb3a7}
+.slice-receipt{
+  --paper:#f6f1e4;--paper-ink:#132d32;--ticket-mint:#91efd0;
+  overflow:hidden;border:1px solid #829895;border-radius:18px;
+  color:var(--paper-ink);background:var(--paper);box-shadow:0 20px 65px #020c1380;
+}
+.slip-score{
+  display:grid;gap:13px;padding:clamp(20px,6vw,32px);border-bottom:2px dashed #b6b4a8;
+  color:#f8f4e8;background-color:#142c38;
+  background-image:linear-gradient(100deg,#112530 13%,#142a36ed 50%,#162a334d 100%),
+    url('../game/slice-night.webp');
+  background-size:cover;background-position:center,70% 58%;
+}
+.slip-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.station .slip-top h2{font-size:clamp(20px,5vw,27px);line-height:1.15;margin:0}
+.slip-status{
+  display:inline-flex;align-items:center;gap:6px;padding:5px 10px;white-space:nowrap;
+  border:1px solid #ebc77880;border-radius:20px;background:#202c2f;color:#ffdb91;
+  font-size:12px;font-weight:750;
+}
+.slip-status::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+.slip-status.is-confirmed{border-color:#87d3b9;color:var(--ticket-mint)}
+.slip-points{display:flex;align-items:baseline;gap:7px}
+.slip-points strong{
+  min-width:0;font:800 clamp(52px,13vw,76px)/1 system-ui,sans-serif;letter-spacing:-.055em;
+  color:#ffdb91;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;
+}
+.slip-points > span{color:#f6dfad;font-weight:700}
+.slip-uid{display:flex;align-items:baseline;gap:8px}
+.slip-uid span{color:#a4c6bd;font-size:12px;font-weight:700;letter-spacing:.1em}
+.slip-uid b{color:#e5fff5;font:600 16px/1.4 ui-monospace,monospace;letter-spacing:.035em}
+.slip-posttest.station-qr{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(14px,3vw,22px);
+  align-items:center;padding:20px clamp(16px,5vw,26px);border-bottom:1px solid #c8c9ba;
+}
+.slip-posttest.station-qr img{width:171px;height:auto;border-radius:4px}
+@media(max-width:365px){.slip-posttest.station-qr img{width:114px}}
+.slip-posttest h3{font-size:clamp(18px,4.5vw,23px);line-height:1.22;margin:0}
+.station .slip-posttest p,.station .slip-staff p{font-size:14px;line-height:1.55;margin:8px 0 0}
+.slip-posttest a,.slip-link{
+  display:inline-flex;align-items:center;min-height:44px;color:#175e51;
+  text-underline-offset:4px;font-weight:700;font-size:14px;
+}
+.station details.slip-staff{padding:0 clamp(16px,5vw,26px);margin:0;border-bottom:1px solid #c8c9ba}
+.station .slip-staff summary{min-height:48px;padding:13px 0}
+.station .slip-staff p{margin-top:0}
+.station .slip-staff form{margin:14px 0 20px}
+.slip-actions{display:flex;align-items:center;flex-wrap:wrap;justify-content:space-between;gap:4px 14px;padding:8px clamp(16px,5vw,26px)}
+.slice-receipt .play{background:#174c47;color:#fff5d9}
+.slice-receipt .play:hover{background:#113b3a}
+.slip-actions .play{margin:6px 0;padding-inline:20px}

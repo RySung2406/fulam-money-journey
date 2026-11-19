@@ -2,12 +2,12 @@ from pathlib import Path
 import json
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "arcade"))
-from build_assets import feedback_script, icons, licences
+from build_assets import arcade_style, feedback_script, icons, licences
 p = Path(__file__).resolve().parent
 shell = (p / 'shell.html').read_text(encoding="utf-8")
 shell = icons(shell).replace("/* COMPACT_STYLE */", (p / "compact.css").read_text(encoding="utf-8"))
 shell = shell.replace("<!--ARCADE-->", "<script>" + feedback_script() + "</script>")
-shell = shell.replace('</style>', (p.parent / 'arcade' / 'journey.css').read_text(encoding='utf-8') + '</style>')
+shell = shell.replace('</style>', arcade_style() + '</style>')
 station = (p.parents[1] / 'site' / 'booth' / 'marks.js').read_text(encoding='utf-8')
 shell = shell.replace('<!--GAME-->', '<script>' + station + '\n' + (p.parent / 'arcade' / 'journey.js').read_text(encoding='utf-8') + '</script><!--GAME-->')
 license_text = (p / 'upstream-license.txt').read_text(encoding="utf-8")

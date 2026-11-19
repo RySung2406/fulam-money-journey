@@ -57,6 +57,10 @@ function insideSite(path) {
 const server = createServer(async (request, response) => {
   response.setHeader('Cache-Control', 'no-store');
   response.setHeader('X-Content-Type-Options', 'nosniff');
+  if (request.url?.startsWith('/rest/v1/rpc/booth_entry_')) {
+    const {handleBoothRpc} = await import('./booth-preview.mjs');
+    if (await handleBoothRpc(request, response)) return;
+  }
   const send = (status, text, headers = {}) => {
     response.writeHead(status, { 'Content-Type': 'text/plain; charset=utf-8', ...headers });
     response.end(request.method === 'HEAD' ? undefined : text);
@@ -81,6 +85,10 @@ const server = createServer(async (request, response) => {
     return;
   }
   if (!pathname.startsWith(base)) {
+    if (/^\/(booth|game|fishing|fleet)(?:\/|$)/.test(pathname)) {
+      send(302, 'Open arcade preview', {Location:base.slice(0,-1) + request.url});
+      return;
+    }
     send(404, 'Not found');
     return;
   }

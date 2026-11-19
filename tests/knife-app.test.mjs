@@ -120,11 +120,14 @@ const near=(actual,expected)=>assert(Math.abs(actual-expected)<1e-6,`${actual} !
 test('new bags arrive while earlier bags are still in flight',()=>{
   const game=harness();game.start();
   const original=game.state().scheduled.map(bag=>bag.id);
+  assert.equal(original.length,2,'the opening launch contains a pair');
   game.advance(2);
   const later=game.state();near(later.elapsed,2);assert.equal(later.phase,'playing');
   assert(later.scheduled.some(bag=>original.includes(bag.id)),'first flight continues');
   assert(later.scheduled.some(bag=>!original.includes(bag.id)),'new flight overlaps it');
   assert(later.scheduled.some(bag=>bag.bornAt>0),'spawn time does not reset elapsed time');
+  assert.equal(later.lastGroup.length,2,'later launches also contain a pair');
+  assert(later.lastGroup.every(bag=>bag.bornAt===later.lastGroup[0].bornAt&&bag.launch.delay===0));
 });
 
 for(const fps of [60,15])test(`endless practice runs for five minutes at ${fps} fps without rounds or clock drift`,()=>{

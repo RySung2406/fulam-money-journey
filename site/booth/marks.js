@@ -43,9 +43,8 @@
     });
   }
 
-  function launch(game, uid) {
-    if (!validUID(uid) || !Object.hasOwn(games, game)) throw new Error('Invalid booth entry');
-    const id = root.crypto.randomUUID();
+  function launch(game, uid, id) {
+    if (!validID(id) || !validUID(uid) || !Object.hasOwn(games, game)) throw new Error('Invalid booth entry');
     const probe = prefix + 'probe.' + id;
     root.localStorage.setItem(probe, 'null');
     root.localStorage.removeItem(probe);

@@ -58,11 +58,11 @@
       source.onended = () => { this.voices.delete(source); source.disconnect(); gain.disconnect(); };
       source.start(); source.stop(end);
     }
-    note(frequency, duration = .13, delay = 0, volume = .12, endFrequency = frequency) {
+    note(frequency, duration = .13, delay = 0, volume = .12, endFrequency = frequency, tone = 'sine') {
       const c = this.context;
       if (!this.enabled || !c || c.state !== 'running' || this.voices.size >= 12) return;
       const osc = c.createOscillator(), gain = c.createGain(), at = c.currentTime + delay;
-      osc.type = 'sine'; osc.frequency.setValueAtTime(frequency, at);
+      osc.type = tone; osc.frequency.setValueAtTime(frequency, at);
       osc.frequency.exponentialRampToValueAtTime(Math.max(25, endFrequency), at + duration);
       gain.gain.setValueAtTime(0, c.currentTime); gain.gain.setValueAtTime(0, at);
       gain.gain.linearRampToValueAtTime(volume, at + .012);
@@ -77,7 +77,7 @@
       if (c.currentTime - (this.last[kind] ?? -100) < interval) return false;
       this.last[kind] = c.currentTime;
       // Important warnings displace shot tails; no sound may grow the mix unbounded.
-      if (['death', 'boss', 'warning', 'end', 'upgrade'].includes(kind)) this.stop();
+      if (['death', 'boss', 'finalBoss', 'warning', 'end', 'upgrade'].includes(kind)) this.stop();
       if (this.voices.size >= 12) return false;
       const buffer = spec && this.buffers[spec[0]];
       try {
@@ -91,6 +91,13 @@
           this.note(kind === 'coin' ? 900 : kind === 'fire' ? 220 : 120, .09, 0, .07, 80);
         }
         if (kind === 'boss') [140, 210, 140].forEach((n, i) => this.note(n, .25, i * .22, .22));
+        if (kind === 'finalBoss') {
+          // A rising bell pair cuts through the gunfire, followed by the low arrival horn.
+          this.note(392, .16, 0, .12);
+          this.note(523, .22, .16, .13);
+          this.note(196, .55, .34, .18, 147, 'triangle');
+          this.note(98, .63, .34, .18, 73);
+        }
         if (kind === 'warning') [660, 440].forEach((n, i) => this.note(n, .13, i * .2, .16));
         if (kind === 'upgrade' || kind === 'end') [440, 554, 659, 880].forEach((n, i) => this.note(n, .2, i * .08, .12));
         if (kind === 'freeze') [1400, 1800].forEach((n, i) => this.note(n, .17, i * .08, .08));

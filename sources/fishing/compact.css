@@ -151,6 +151,6 @@ body.combat-score-mode .control-panel{
 body.combat-score-mode .score-value{color:#fff4cb;text-shadow:0 1px 10px #020a1466}
 body.combat-score-mode .combo b{color:#fff4cb}
 body.combat-score-mode .event{border-color:#f0d87855;background:#163a32ee;color:#fff4cb}
-body.combat-score-mode .ability{border-color:#2f8f6355;background:linear-gradient(160deg,#123d3a,#0a2428)}
-body.combat-score-mode .ability:not(:disabled){border-color:#f0d87844}
+.game-active .control-top{margin-bottom:0}
+.game-active .control-panel .effect-status:not([hidden]){display:block;margin:2px 0 0;color:#adebd3;font-size:11px}
 body.combat-score-mode .upgrade:not(:disabled){background:linear-gradient(145deg,#fff4cb,#f0d878);color:#17392b}

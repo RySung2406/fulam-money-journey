@@ -326,3 +326,31 @@
 .scene.journey-live,.sea.journey-live{
  box-shadow:inset 0 0 0 1px #f0d87822,0 18px 48px #020a1444;
 }
+/* A campus postcard marks the entrance. The playfield stays clear during a run. */
+.campus-lobby .campus-art{
+ height:clamp(80px,17svh,150px);width:100%;margin:0 auto 14px;border-radius:10px;
+ background:#163b42 url('../arcade/campus-christmas.webp') center 57% / cover no-repeat;
+ box-shadow:inset 0 0 0 1px #efd29566,inset 0 -18px 22px -20px #04191c;
+}
+.campus-lobby .badge-mark,.campus-lobby .welcome-mark,.campus-lobby .welcome-icon{display:none!important}
+.campus-lobby>p:not(.eyebrow,.label,.campus-format){font-size:clamp(15px,2vw,17px)!important;line-height:1.55!important}
+.campus-lobby .campus-format{
+ display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 12px;
+ margin:10px 0 15px!important;font-size:13px!important;color:#e2f3ed!important;line-height:1.35;
+}
+.campus-format b{color:#ffe09a}.campus-format span{padding-left:12px;border-left:1px solid #9ab6aa66}
+.campus-lobby.festive-card{border-radius:20px!important;background:linear-gradient(150deg,#153c37,#102e32 66%,#33292f)!important}
+.campus-lobby .primary{background:linear-gradient(110deg,#fff0c7,#eaba69)!important;color:#19382f!important;border:1px solid #ffe6a8!important}
+.journey-live>.journey-status{
+ font-variant-numeric:tabular-nums;letter-spacing:.035em;text-align:center;
+ background:linear-gradient(90deg,#133b37,#193f42 62%,#26343d);
+}
+.journey-live>.journey-status::after{content:"";position:absolute;bottom:0;left:0;height:3px;width:var(--time-left,100%);background:#9bdfca;transition:width 1s linear;pointer-events:none}
+.journey-live>.journey-status.final-stretch{color:#ffe4ad;background:linear-gradient(90deg,#5e3037,#503a31)}
+.journey-live>.journey-status.final-stretch::after{background:#ffd583}
+.journey-quiz-card .journey-granted,.journey-quiz-card .journey-scene-note,.journey-quiz-card .journey-next{display:none}
+.journey-card.journey-quiz-card{border-top:3px solid #e8c57e}
+.journey-quiz-card .journey-quiz-choices button:focus-visible{outline:3px solid #ffe2a0;outline-offset:2px}
+@media(max-width:600px){.campus-lobby .campus-art{height:clamp(78px,14svh,113px);margin-bottom:10px}.campus-lobby .campus-format{font-size:12px!important;gap:6px 8px}}
+@media(max-height:500px){.campus-lobby .campus-art{height:54px;margin-bottom:6px}}
+@media(prefers-reduced-motion:reduce){.journey-live>.journey-status::after{transition:none}}
