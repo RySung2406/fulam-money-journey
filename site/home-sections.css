@@ -200,6 +200,7 @@
   padding: clamp(22px, 2.6vw, 38px);
   color: #faf8eb;
   background: #214a3b;
+  border-top: 4px solid var(--booth-berry);
   border-radius: 14px;
 }
 

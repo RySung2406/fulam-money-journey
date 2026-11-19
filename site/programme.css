@@ -126,6 +126,7 @@
 .directory-item:nth-child(n + 3) { border-top: 1px solid var(--programme-rule); }
 .directory-item h2 { margin: 16px 0 10px; font-size: clamp(24px, 2.4vw, 34px); }
 .directory-item > p { max-width: 44em; }
+.directory-item .booth-prize { margin-top: 8px; }
 
 .directory-actions {
   display: flex;

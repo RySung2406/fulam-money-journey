@@ -92,10 +92,11 @@ html[lang="en"] .journey-intro h1 {
 
 .journey-byline {
   display: flex;
+  flex-basis: 100%;
   flex-wrap: wrap;
   gap: 0 10px;
   align-items: center;
-  margin-top: 14px;
+  margin: 2px 0 0;
 }
 
 .journey-byline a {
@@ -274,12 +275,13 @@ html[lang="en"] .journey-intro h1 {
 }
 
 @media (max-width: 540px) {
-  .journey-intro { padding-top: 28px; gap: 14px; }
-  .journey-intro h1 { margin-bottom: 16px; }
-  .journey-actions { margin-top: 19px; gap: 6px 18px; }
-  .journey-actions .button { min-height: 46px; padding-inline: 15px; }
-  .journey-byline { margin-top: 5px; font-size: 13px; }
-  .home-calendar-heading { padding: 15px 13px; }
+  .journey-intro { padding-block: 34px; gap: 28px; }
+  .journey-intro h1 { margin-bottom: 17px; }
+  .journey-lead { text-wrap: pretty; }
+  .journey-actions { margin-top: 22px; gap: 5px 20px; }
+  .journey-actions .button { flex-basis: 100%; justify-content: space-between; min-height: 48px; padding-inline: 16px; }
+  .journey-byline { flex-basis: auto; margin: 0; font-size: 13px; }
+  .home-calendar-heading { padding: 17px 15px; }
   .home-calendar-heading h2 { gap: 7px; font-size: 22px; }
   .home-calendar-heading .icon { width: 20px; height: 20px; }
   .home-calendar-heading time { font-size: 13px; }

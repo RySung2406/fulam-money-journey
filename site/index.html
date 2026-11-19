@@ -11,10 +11,12 @@
 <link rel="icon" href="./favicon.svg?v=text-only">
 <link rel="stylesheet" href="./theme.css?v=20261119">
 <link rel="stylesheet" href="./i18n.css?v=20261119">
-<link rel="stylesheet" href="./home-intro.css?v=20261119-dates">
-<link rel="stylesheet" href="./home-sections.css?v=20261119">
+<link rel="stylesheet" href="./home-intro.css?v=20261120-phone">
+<link rel="stylesheet" href="./home-sections.css?v=20261120-christmas-booth">
+<link rel="stylesheet" href="./booth-season.css?v=20261120">
+<link rel="stylesheet" href="./poster-prompt.css?v=20261120-verify">
 <script src="./i18n.js?v=20261111-audit" defer></script>
-<script src="./i18n-home.js?v=20261119-member-rewards" defer></script>
+<script src="./i18n-home.js?v=20261120-verify" defer></script>
 <script src="./config.js?v=20261111-audit" defer>
 </script>
 <script src="./community-links.js" defer>
@@ -23,8 +25,7 @@
 </script>
 <script src="./ui.js?v=20261119-dates" defer>
 </script>
-<link rel="stylesheet" href="./booth-notice.css?v=20261119-rewards">
-<script src="./booth-notice.js?v=20261119-member-rewards" defer></script>
+<script src="./poster-prompt.js?v=20261120" defer></script>
 </head>
 <body class="public-home">
 <a class="skip-link" href="#main">跳至主要內容</a>
@@ -64,8 +65,8 @@
           <a class="button button-primary" href="./hub/">查看活動詳情 <svg class="icon" aria-hidden="true"><use href="./assets/icons.svg#arrow-right"></use></svg></a>
           <a class="community-action" data-community-invite hidden target="_blank" rel="noopener noreferrer">加入 WhatsApp 社群 <svg class="icon" aria-hidden="true"><use href="./assets/icons.svg#arrow-up-right"></use></svg></a>
           <p data-community-pending>社群邀請連結準備中。</p>
+          <p class="journey-byline"><a href="#programme">計劃背景</a></p>
         </div>
-        <p class="journey-byline"><a href="#programme">計劃背景</a></p>
       </div>
       <section id="home-calendar" class="home-calendar" aria-labelledby="home-calendar-title">
         <div class="home-calendar-heading">
@@ -169,7 +170,7 @@
       </div>
     </section>
 
-    <section id="play" class="campus-section container" aria-labelledby="play-title">
+    <section id="play" class="campus-section container" aria-labelledby="play-title" tabindex="-1">
       <div class="journal-heading">
         <div>
           <span class="journal-kicker" lang="en">Play &amp; Meet</span>
@@ -210,15 +211,15 @@
             <svg class="icon" aria-hidden="true"><use href="./assets/icons.svg#arrow-right"></use></svg>
           </a>
         </div>
-        <article id="booth" tabindex="-1" class="campus-booth">
+        <article id="booth" tabindex="-1" class="campus-booth booth-season-dark">
           <div class="booth-overline">
             <svg class="icon" aria-hidden="true"><use href="./assets/icons.svg#calendar-days"></use></svg>
             <span>港大學生限定</span>
           </div>
-          <h3>校園聖誕攤位</h3>
+          <h3 class="booth-season-heading"><span class="booth-holly" aria-hidden="true"></span>校園聖誕攤位</h3>
           <p class="booth-date"><time datetime="2026-11-20">11 月 20 日</time><span>及</span><time datetime="2026-11-30">30 日</time></p>
           <p class="booth-place">邵逸夫樓平台（鄰近 Subway）</p>
-          <p class="booth-description">兩場活動均設有遊戲挑戰及小禮物。</p>
+          <p class="booth-description">挑戰理財遊戲，取得高分就有機會贏得 HKU 小熊。</p>
           <div class="booth-links">
             <a href="./hub/#booth">查看活動詳情 <svg class="icon" aria-hidden="true"><use href="./assets/icons.svg#arrow-right"></use></svg></a>
             <a href="./booth/">攤位遊戲站 <svg class="icon" aria-hidden="true"><use href="./assets/icons.svg#arrow-right"></use></svg></a>
@@ -227,6 +228,19 @@
       </div>
     </section>
   </main>
+<dialog class="poster-prompt" id="poster-prompt" aria-labelledby="poster-title" aria-describedby="poster-invite">
+  <button class="poster-close" type="button" aria-label="關閉海報" autofocus>×</button>
+  <a class="poster-art" href="./assets/personal-finance-ambassador-poster.png" target="_blank" rel="noopener" aria-label="查看完整計劃海報（新分頁）">
+    <img src="./assets/personal-finance-ambassador-poster.png" width="749" height="1066" alt="2026–27 個人理財大使計劃海報，介紹參與流程及獎項。">
+  </a>
+  <div class="poster-copy">
+    <h2 id="poster-title">港大同學，陪你一起學理財。</h2>
+    <p id="poster-invite">「富臨錢進號」由港大學生團隊「搏富臨」策劃，是 2026/27 個人理財大使計劃的參與項目。</p>
+    <a class="poster-source" href="https://www.ifec.org.hk/web/tc/other-resources/activities-and-events/personal-finance-ambassador-programme-2627-application.page" target="_blank" rel="noopener noreferrer">到投委會網站查看官方計劃 <span aria-hidden="true">↗</span></a>
+    <a class="poster-cta" href="#play">探索理財遊戲 <span aria-hidden="true">→</span></a>
+    <p class="poster-caption">海報上的計劃報名已截止。</p>
+  </div>
+</dialog>
 <dialog class="story-dialog" id="story-dialog" aria-labelledby="story-dialog-title">
 <button class="dialog-close" type="button" aria-label="關閉內容介紹">×</button>
 <span class="eyebrow" id="story-dialog-category">THE MONEY EDIT</span>

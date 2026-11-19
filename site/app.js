@@ -416,27 +416,7 @@ async function openVerifiedAccount(focus = true) {
   const followLink = route === window.location.hash.slice(1);
   showView('member', focus && !followLink);
   showOnboardingStep(route, followLink);
-  showUpgradeNotice();
   void checkIns.setUser(accountUserId);
-}
-let upgradeNoticeShown = false;
-let upgradeNoticeHandled = false;
-function upgradeNoticeKey() {
-  return `fulam.notice.check-in-upgrade.${accountUserId}`;
-}
-function showUpgradeNotice() {
-  const notice = $('upgrade-dialog');
-  if (!notice || notice.open || upgradeNoticeHandled || !accountUserId) return;
-  try { if (localStorage.getItem(upgradeNoticeKey()) === 'seen') return; }
-  catch { /* Show it once this visit when storage is unavailable. */ }
-  notice.showModal();
-  upgradeNoticeShown = true;
-}
-function rememberUpgradeNotice() {
-  if (!upgradeNoticeShown || !accountUserId) return;
-  upgradeNoticeHandled = true;
-  try { localStorage.setItem(upgradeNoticeKey(), 'seen'); }
-  catch { /* Closing still dismisses it for this visit. */ }
 }
 
 async function restoreSavedAccount(focus = false) {
@@ -491,9 +471,6 @@ $('otp-form').addEventListener('submit', async (event) => {
 
 function clearAccountScreen() {
   transition += 1;
-  if (upgradeDialog.open) upgradeDialog.close();
-  upgradeNoticeShown = false;
-  upgradeNoticeHandled = false;
   accountUserId = undefined;
   void checkIns.setUser(undefined);
   showOnboardingStep('survey', false);
@@ -516,15 +493,6 @@ $('signout-button').addEventListener('click', async () => {
     $('email').focus();
   } catch (error) { message('member-error', '未能完成登出，請檢查網絡後再試。此瀏覽器目前仍維持登入。'); }
   finally { busy = false; updateButtons(); }
-});
-
-const upgradeDialog = $('upgrade-dialog');
-upgradeDialog.addEventListener('close', rememberUpgradeNotice);
-$('upgrade-close').addEventListener('click', () => upgradeDialog.close());
-$('upgrade-done').addEventListener('click', () => upgradeDialog.close());
-upgradeDialog.addEventListener('click', (event) => {
-  const bounds = upgradeDialog.getBoundingClientRect();
-  if (event.target === upgradeDialog && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) upgradeDialog.close();
 });
 
 const dialog = $('privacy-dialog');
