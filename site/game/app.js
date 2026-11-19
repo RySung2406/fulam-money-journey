@@ -29,7 +29,6 @@ const cleanupTimers = new Set();
 const difficulty = () => E.DIFFICULTIES[mode];
 const totalChoices = () => QUESTIONS.reduce((sum, q) => sum + q.options.length, 0);
 const LIVE_BAG_LIMIT = 4;
-const BOOTH_SPAWN_RATE = 1.30;
 let boothGaps=[];
 let quickCutLabelUntil = -1;
 const timeLabel = milliseconds => {
@@ -280,7 +279,7 @@ function showQuestionGate(onStart,onBack){
 function prepareRoundBags(){
  const booth=journey.scene==='booth';
  optionDeck=E.createOptionDeck(question.options,roundRandom,booth);
- boothGaps=booth?E.boothLaunchGaps(question.options.length,(journey.run.roundLimit()-4)/BOOTH_SPAWN_RATE,roundRandom):[];
+ boothGaps=booth?E.boothLaunchGaps(question.options.length,(journey.run.roundLimit()-4)/E.GAME_RULES.boothSpawnRate,roundRandom):[];
 }
 function beginStream() {
  if (phase !== 'ready') return;

@@ -145,8 +145,9 @@ test('independent spawn cadence is variable and earlier than the end of a flight
   }
 });
 
-test('booth timing varies between runs within the same delivery window and reading pace', () => {
-  const windowSeconds=(45-4)/1.30;
+test('both booth decks schedule every gap 20% sooner while keeping the timing varied', () => {
+  const previousWindow=(45-4)/1.30;
+  const windowSeconds=(45-4)/E.GAME_RULES.boothSpawnRate;
   for(const question of questions.slice(0,2)){
     const count=question.options.length;
     const schedule=seed=>Array.from(E.boothLaunchGaps(count,windowSeconds,seeded(seed)));
@@ -156,7 +157,9 @@ test('booth timing varies between runs within the same delivery window and readi
     const gapCount=Math.floor(count/2)-1, beat=windowSeconds/gapCount;
     for(let seed=1;seed<=100;seed++){
       const sample=schedule(seed);
+      const previous=E.boothLaunchGaps(count,previousWindow,seeded(seed));
       assert.equal(sample.length,gapCount);
+      assert(sample.every((gap,i)=>Math.abs(gap-previous[i]*.8)<1e-9));
       assert(sample.every(gap=>gap>=beat*.64-1e-9 && gap<=beat*1.36+1e-9));
       assert(Math.abs(sample.reduce((sum,gap)=>sum+gap,0)-windowSeconds)<1e-9);
     }
