@@ -14,6 +14,20 @@ function seeded(seed) {
 }
 const plain = value => JSON.parse(JSON.stringify(value));
 
+test('quick-cut awards one bonus per pair, including simultaneous swipes and the 650ms boundary',()=>{
+  const session=E.createSession();
+  const cuts=[0,0,.1,.75,2,2.651,2.7];
+  assert.deepEqual(cuts.map(seconds=>E.quickCutBonus(session,seconds)),[0,80,0,80,0,0,80]);
+});
+
+test('a wrong slice or missed matching bag breaks a quick pair, while avoiding a decoy keeps it',()=>{
+  const session=E.createSession();
+  E.quickCutBonus(session,1);E.recordHit(session,'tools',bad,'s1');
+  assert.equal(E.quickCutBonus(session,1.1),0);
+  E.recordMiss(session,'s2',good);assert.equal(E.quickCutBonus(session,1.2),0);
+  E.recordMiss(session,'s3',bad);assert.equal(E.quickCutBonus(session,1.3),80);
+});
+
 test('continuous decks exhaust all choices before reshuffling, without recent repeats', () => {
   for (const question of questions) {
     const options = question.options, original = plain(options);
@@ -46,6 +60,33 @@ test('a one-pass deck shows every choice once and then stops', () => {
   assert.equal(new Set(order.filter(Boolean).map(option => option.id)).size, options.length);
   assert.equal(order.at(-1), null);
 });
+
+test('booth throws mix their answers and sides while giving every run the same quick-cut chances', () => {
+  for (const {options} of questions.slice(0, 2)) {
+    const wavePatterns = new Set(), openingMatches = new Set();
+    for (let seed = 1; seed <= 100; seed++) {
+      const deck = E.createOptionDeck(options, seeded(seed), true);
+      const draws = Array.from({length: options.length}, () => deck.next());
+      assert.equal(new Set(draws).size, options.length);
+      assert(draws.every(option => options.includes(option)));
+      const counts = [];
+      for (let i = 0; i < draws.length;) {
+        const size = E.spawnGroupSize(3, draws.length - i);
+        const group = draws.slice(i, i + size);
+        counts.push(group.filter(option => option.good).length);
+        if (i === 0 && counts[0] === 1) openingMatches.add(group.findIndex(option => option.good));
+        i += size;
+      }
+      assert(counts[0] > 0, 'the first throw gives the player a matching bag');
+      assert(counts.every((n, i) => n > 0 || counts[i - 1] > 0), 'decoy-only throws are separated');
+      assert.equal(counts.filter(n => n >= 2).length, 3);
+      wavePatterns.add(counts.join(''));
+    }
+    assert(wavePatterns.size > 50, 'patterns vary between runs');
+    assert.equal(openingMatches.size, 2, 'a mixed opener can place its matching bag on either side');
+  }
+});
+
 test('answer order can be reproduced for QA and changes with a different seed', () => {
   const options = questions[0].options;
   const draw = seed => {
@@ -101,13 +142,64 @@ test('independent spawn cadence is variable and earlier than the end of a flight
     const delays = Array.from({ length: 1000 }, () => E.nextSpawnDelay(mode, rng));
     assert(delays.every(delay => Number.isFinite(delay) && delay > 0 && delay < config.min));
     assert(new Set(delays.map(delay => delay.toFixed(3))).size > 50, 'not one fixed launch rhythm');
-    for (const free of [0, 1, 2, 3, 4, 7]) {
-      const sizes = Array.from({ length: 100 }, () => E.spawnGroupSize(free, rng));
-      assert(sizes.every(size => Number.isInteger(size) && size >= 0 && size <= free));
-      if (free === 0) assert(sizes.every(size => size === 0));
-      else assert(sizes.every(size => size >= 1 && size <= 3));
-      if (free >= 3) assert(new Set(sizes).size > 1, 'mixes single bags and small groups');
+  }
+});
+
+test('booth timing varies between runs within the same delivery window and reading pace', () => {
+  const windowSeconds=(45-4)/1.30;
+  for(const question of questions.slice(0,2)){
+    const count=question.options.length;
+    const schedule=seed=>Array.from(E.boothLaunchGaps(count,windowSeconds,seeded(seed)));
+    const gaps=schedule(462);
+    assert.deepEqual(gaps,schedule(462));
+    assert.notDeepEqual(gaps,schedule(463));
+    const gapCount=Math.floor(count/2)-1, beat=windowSeconds/gapCount;
+    for(let seed=1;seed<=100;seed++){
+      const sample=schedule(seed);
+      assert.equal(sample.length,gapCount);
+      assert(sample.every(gap=>gap>=beat*.64-1e-9 && gap<=beat*1.36+1e-9));
+      assert(Math.abs(sample.reduce((sum,gap)=>sum+gap,0)-windowSeconds)<1e-9);
     }
+    assert(new Set(gaps.map(gap=>gap.toFixed(2))).size>3);
+  }
+});
+
+test('launches wait for a whole pair, or for all three slots when an odd deck ends', () => {
+  for (const free of [0, 1, 2, 3, 4, 6]) {
+    assert.equal(E.spawnGroupSize(free), free >= 2 ? 2 : 0, 'endless stream');
+    for (const left of [0, 1, 2, 3, 4, 5, 24, 25]) {
+      const group = left < 2 ? 0 : left === 3 ? 3 : 2;
+      assert.equal(E.spawnGroupSize(free, left), free >= group ? group : 0,
+        `${left} remaining options and ${free} free slots`);
+    }
+  }
+});
+
+test('both booth decks launch every distinct choice in simultaneous pairs, with one closing trio for an odd total', () => {
+  for (const question of questions.slice(0, 2)) {
+    const rng = seeded(156);
+    const deck = E.createOptionDeck(question.options, rng, true);
+    let left = question.options.length;
+    const distinct = new Set(), groups = [];
+    while (left > 0) {
+      const count = E.spawnGroupSize(3, left);
+      assert(count === 2 || count === 3);
+      const flights = E.createLaunches(count, 'medium', rng);
+      assert.equal(flights.length, count);
+      assert(flights.every(plan => plan.delay === 0), 'all members take off together');
+      for (const flight of flights) {
+        const choice = deck.next();
+        assert(choice && !distinct.has(choice.id));
+        distinct.add(choice.id);
+        assert(flight.duration >= E.DIFFICULTIES.medium.min && flight.duration <= E.DIFFICULTIES.medium.max);
+      }
+      groups.push(count);
+      left -= count;
+    }
+    assert(groups.slice(0, -1).every(size => size === 2));
+    assert.equal(groups.at(-1), question.options.length % 2 ? 3 : 2);
+    assert.equal(distinct.size, question.options.length);
+    assert.equal(deck.next(), null);
   }
 });
 

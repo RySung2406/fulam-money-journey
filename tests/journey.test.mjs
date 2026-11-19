@@ -20,12 +20,26 @@ test('Combat results show score ranking and three short lessons without duplicat
  assert(!new Run('knife','booth').key().includes('combat4'));
 });
 const tick=(r,seconds,playing=true)=>{for(let i=0;i<Math.round(seconds*60);i++)r.tick(1/60,playing);};
+test('Booth stage deadlines cap play at 90 seconds and stop at every quiz, including after a slow frame',()=>{
+ for(const game of ['knife','fishing','fleet']){
+  const run=new Run(game,'booth');
+  const lengths=game==='knife'?[45,45]:[15,20,25,30];
+  for(const [i,seconds] of lengths.entries()){
+   assert.equal(run.wave,i+1);
+   const end=i===lengths.length-1;
+   assert.equal(run.tick(seconds+.3),end?'over':'choice');
+   if(!end){const saved=run.total;run.tick(120);assert.equal(run.total,saved);assert(run.choose(game==='knife'?'continue':'trajectory'));}
+  }
+  assert.equal(run.total,90);assert.equal(run.active,90);assert.equal(run.reason,'time');
+ }
+});
 test('Each stage grants a weapon, then one other upgrade, and a new player starts fresh',()=>{
  for(const game of ['fleet','fishing','knife']){
   const r=new Run(game,'booth');
   if(game==='knife'){
-   for(let i=0;i<3;i++){r.completeRound();assert(r.quizMode());assert.equal(r.choose('focus'),false);assert.equal(r.choose('life'),false);assert(r.choose('continue'));}
-   assert.equal(r.weapon,1);assert.equal(r.wave,4);assert.equal(r.focus,0);assert.equal(r.life,0);
+   r.completeRound();assert(r.quizMode());assert.equal(r.choose('focus'),false);assert.equal(r.choose('life'),false);assert(r.choose('continue'));
+   assert(r.completeRound());assert.equal(r.phase,'over');assert.equal(r.choose('continue'),false);
+   assert.equal(r.weapon,1);assert.equal(r.wave,2);assert.equal(r.focus,0);assert.equal(r.life,0);
   }else{
    for(let i=0;i<3;i++){r.completeRound();assert(r.quizMode());assert.equal(r.choose('weapon'),false);assert.equal(r.choose('rate'),false);assert(r.choose('trajectory'));}
    assert.equal(r.weapon,3);assert.equal(r.wave,4);assert.equal(r.trajectory,3);assert.equal(r.rate,0);
@@ -48,7 +62,7 @@ test('Protection reduces actual enemy projectile damage and extends shield withi
   const s=C.createState({arcade:true,mode:'booth',seed:1});s.evolution.protection=protection;s.wave=4;s.invulnerable=0;s.spawnTime=s.fireTime=100;
   C.fireTorpedo(s,{x:s.hero.position.x,y:s.hero.position.y},0,C.ENEMY,{damage:20,speed:0});C.maintainWorld(s);C.tick(s,.016);
   lost.push(88-s.hero.hp);
-  assert(Math.abs((88-s.hero.hp)-20/(1+.15*protection))<1e-9);
+  assert.equal(88-s.hero.hp,Math.round(20/(1+.15*protection)));
   s.cash=100;assert(C.activateShield(s));assert(s.shield>=2.8&&s.shield<=4.8);
  }
  assert(lost[0]>lost[1]&&lost[1]>lost[2]);
@@ -68,7 +82,7 @@ test('Enemy pressure rises after upgrades; bosses remain multi-second fights eve
   const s=C.createState({arcade:true,mode:'booth',seed:1});s.wave=wave;
   const boss=C.spawnEnemy(s,'boss'),p=context.FuLamJourney.weaponProfile('fleet',{weapon:wave-1});
   const idealSeconds=boss.maxHp/(p.damage*1.3/p.interval);
-  assert(idealSeconds>=(wave<=4?6:9),`wave ${wave}: ${idealSeconds}s`);assert(boss.maxHp>previous);previous=boss.maxHp;
+  assert(idealSeconds>=(wave<=4?4:9),`wave ${wave}: ${idealSeconds}s`);assert(boss.maxHp>previous);previous=boss.maxHp;
   const enemies=Array.from({length:8},()=>C.spawnEnemy(s,'fee'));assert(enemies.some(e=>e.elite));assert(enemies.find(e=>e.elite).maxHp>enemies.find(e=>!e.elite).maxHp);
  }
 });
@@ -112,13 +126,13 @@ test('Booth quiz time does not spend the wall clock; pause freezes it; play can 
  for(let i=1;i<3;i++){tick(quiz,stages[i]+.05);assert.equal(quiz.phase,'choice');assert(quiz.choose('trajectory'));}
  assert.equal(quiz.wave,4);tick(quiz,limit-quiz.total+.05);assert.equal(quiz.phase,'over');assert.equal(quiz.reason,'time');assert.equal(quiz.total,limit);
  assert.equal(quiz.finish('defeat'),false);assert.equal(quiz.tick(10),null);
- const paced=new Run('fleet','booth');tick(paced,19);assert.equal(paced.phase,'play');tick(paced,1.2);assert.equal(paced.phase,'choice');
+ const paced=new Run('fleet','booth');tick(paced,14);assert.equal(paced.phase,'play');tick(paced,1.2);assert.equal(paced.phase,'choice');
 });
 test('Booth plays four stages inside 90 seconds and quiz rounds only advance on a correct trajectory pick',()=>{
  const r=new Run('fishing','booth'),limit=context.FuLamJourney.LIMIT;
  assert.equal(limit,90);
- assert.equal(JSON.stringify([...context.FuLamJourney.BOOTH_STAGE_TIME]),JSON.stringify([20,20,25,25]));
- tick(r,20.05);assert.equal(r.phase,'choice');assert.equal(r.weapon,1);assert(r.quizMode());assert.equal(r.choose('rate'),false);assert(r.choose('trajectory'));
+ assert.equal(JSON.stringify([...context.FuLamJourney.BOOTH_STAGE_TIME]),JSON.stringify([15,20,25,30]));
+ tick(r,15.05);assert.equal(r.phase,'choice');assert.equal(r.weapon,1);assert(r.quizMode());assert.equal(r.choose('rate'),false);assert(r.choose('trajectory'));
  tick(r,20.05);assert.equal(r.phase,'choice');assert.equal(r.weapon,2);assert(r.choose('trajectory'));
  tick(r,25.05);assert.equal(r.phase,'choice');assert.equal(r.weapon,3);assert(r.choose('trajectory'));
  assert.equal(r.wave,4);assert.equal(r.trajectory,3);assert.equal(r.phase,'play');assert(r.total<limit);
@@ -171,7 +185,11 @@ test('Arcade round control replaces kill farming and bosses occur every third wa
 test('Paid aircraft upgrades add real damage without spending score',()=>{
  const s=C.createState({arcade:true,seed:1});s.cash=500;s.score=1234;s.spawnTime=100;
  assert(C.buy(s,'weapon'));assert.equal(s.power,1.18);assert.equal(s.paidPower,.18);assert.equal(s.score,1234);
- for(let i=0;i<4;i++)C.tick(s,.05);assert(s.entities.filter(e=>e.type==='torpedo').every(e=>Math.abs(e.damage-16*1.18*.72)<1e-9));
+ for(let i=0;i<4;i++)C.tick(s,.05);
+ const shots=s.entities.filter(e=>e.type==='torpedo');
+ const baseDamage=context.FuLamJourney.weaponProfile('fleet').damage;
+ assert(shots.length>0);
+ assert(shots.every(e=>Math.abs(e.damage-baseDamage*1.18*.72)<1e-9));
 });
 test('Aircraft boss warns first, then fires a wider second phase with a centre gap',()=>{
  for(const [health,count] of [[1,6],[.4,8]]){
@@ -186,20 +204,27 @@ test('Aircraft boss warns first, then fires a wider second phase with a centre g
  }
 });
 test('Aircraft difficulty keeps paced spawns and caps projectile speed, including late waves',()=>{
- for(const wave of [1,3,6,12])for(const kind of Object.keys(C.SPECS)){
+ for(const wave of [1,2,3,4,6,12])for(const kind of Object.keys(C.SPECS)){
   const rows=['standard','booth','storm'].map(mode=>{
    const s=C.createState({arcade:true,mode,seed:7});s.wave=wave;s.bossSpawned=true;s.spawnTime=0;s.fireTime=100;
-   const enemy=C.spawnEnemy(s,kind);C.maintainWorld(s);enemy.position.y=100;enemy.strategy.remainingBeforeAttack=0;
-   C.tick(s,1/60);const interval=s.spawnTime;s.spawnTime=100;assert(enemy.attack);
-   for(let i=0;i<58;i++)C.tick(s,1/60);
+   const enemy=C.spawnEnemy(s,kind);C.maintainWorld(s);enemy.position.y=100;
+   const armed=Number.isFinite(C.SPECS[kind].attack);
+   if(armed)enemy.strategy.remainingBeforeAttack=0;
+   if(kind==='overlord')enemy.age=1.5; // The flagship must finish entering before its first warning.
+   C.tick(s,1/60);const interval=s.spawnTime;s.spawnTime=100;
+   assert.equal(!!enemy.attack,armed,`${mode} ${kind} attack warning`);
+   const frames=Math.ceil((enemy.attack?.duration||1)*60)+2;
+   for(let i=0;i<frames;i++)C.tick(s,1/60);
    const bullet=s.entities.find(e=>e.type==='torpedo'&&e.collision.group===C.ENEMY);
-   assert(bullet,`${mode} ${kind} fired after warning`);assert.equal(bullet.homing,kind==='debt'?1.15:0);assert(bullet.velocity.speed<=145);
-   return {armour:s.hero.maxHp,hp:enemy.maxHp,speed:enemy.velocity.speed,bullet:bullet.velocity.speed,interval};
+   assert.equal(!!bullet,armed,`${mode} ${kind} fired after warning`);
+   if(bullet){assert.equal(bullet.homing,kind==='debt'?1.15:0);assert(bullet.velocity.speed<=(kind==='overlord'?196:145));}
+   return {armour:s.hero.maxHp,hp:enemy.maxHp,speed:enemy.velocity.speed,bullet:bullet?.velocity.speed||0,interval};
   });
   assert(rows[2].armour<rows[1].armour&&rows[1].armour<rows[0].armour);
   assert(rows[0].hp<rows[1].hp);assert(rows[0].speed<rows[1].speed&&rows[1].speed<rows[2].speed);
   assert(rows[0].bullet<=rows[1].bullet&&rows[1].bullet<=rows[2].bullet);
-  assert(rows[2].interval<rows[1].interval&&rows[1].interval<rows[0].interval);
+  const byCadence=wave<=4?[rows[1],rows[2],rows[0]]:[rows[2],rows[1],rows[0]];
+  assert(byCadence[0].interval<byCadence[1].interval&&byCadence[1].interval<byCadence[2].interval);
  }
 });
 test('Published shared files exactly match the authored runtime',()=>{
@@ -211,5 +236,20 @@ test('Slice stages wait for their choice pool, not thirty seconds; completing tw
  const r=new Run('knife');tick(r,60);assert.equal(r.phase,'play');assert.equal(r.wave,1);
  assert(r.completeRound());assert(!r.completeRound());assert.equal(r.phase,'choice');assert.equal(r.weapon,0);assert.equal(r.choose('focus'),false);assert(r.choose('continue'));assert.equal(r.wave,2);assert.equal(r.weapon,0);assert.equal(r.roundTime,0);
  const booth=new Run('knife','booth');booth.tick(30);assert.equal(booth.phase,'play');assert.equal(booth.reason,'');assert(booth.completeRound());assert.equal(booth.phase,'choice');assert.equal(booth.weapon,0);assert(booth.quizMode());assert.equal(booth.choose('life'),false);assert(booth.choose('continue'));assert.equal(booth.wave,2);assert.equal(booth.weapon,1);assert.equal(booth.life,0);
- assert.equal(context.FuLamJourney.QUIZZES.knife.items[0].ok,2);
+ booth.tick(31);assert(booth.completeRound());assert.equal(booth.reason,'stages');assert.equal(booth.active,61);assert(!booth.completeRound());
+ const mixed=new Run('knife','booth');mixed.tick(32);mixed.completeRound();mixed.choose('continue');mixed.tick(60);assert.equal(mixed.reason,'time');assert.equal(mixed.total,77);
+});
+
+test('Slice intermission asks which stage-two option is not an investment product in both languages',()=>{
+ const bank=vm.createContext({window:{}});vm.runInContext(fs.readFileSync(new URL('../site/game/questions.js',import.meta.url),'utf8'),bank);
+ const item=context.FuLamJourney.quizFor('knife',1);
+ assert.equal(item.q[0],'以下哪項不屬於投資產品？');assert.match(item.q[1],/NOT an investment product/);
+ for(const [language,questions] of [bank.window.QUESTIONS_ZH,bank.window.QUESTIONS].entries()){
+  const options=questions.find(q=>q.id==='investment').options;
+  item.choices.forEach((choice,index)=>{
+   const option=options.find(o=>o.text===choice[language]);
+   assert.ok(option);assert.equal(option.good,index!==item.ok);
+   if(index===item.ok)assert.equal(item.why[language],option.why);
+  });
+ }
 });

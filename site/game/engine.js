@@ -2,23 +2,53 @@
 (function(root){
   const GAME_RULES=Object.freeze({version:'continuous-v1',sprintTarget:20,wrongPenaltySeconds:3});
   const shuffle = (list,random=Math.random) => { const a=[...list]; for(let i=a.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; };
-  // A shuffled bag guarantees variety while independently randomising launch timing.
+  function shuffleBoothOptions(options,random){
+    const matches=shuffle(options.filter(option=>option.good),random);
+    const decoys=shuffle(options.filter(option=>!option.good),random);
+    if(!matches.length||!decoys.length)return matches.concat(decoys);
+
+    // An odd deck ends in a trio. Reserve its extra bag before pairing the rest.
+    const largerPool=matches.length>decoys.length?matches:decoys;
+    const extra=options.length%2?largerPool.pop():null;
+    const possibleMixed=Math.min(matches.length,decoys.length);
+    // Exchange two mixed pairs for one quick-cut opportunity and one decoy pair.
+    const mixedCount=possibleMixed-2*Math.floor(possibleMixed/4);
+    const playable=[];
+    for(let i=0;i<mixedCount;i++)playable.push([matches.pop(),decoys.pop()]);
+    while(matches.length)playable.push([matches.pop(),matches.pop()]);
+
+    const waves=shuffle(playable,random).map(pair=>[pair]);
+    // Give each playable throw at most one decoy-only follower before reusing a gap.
+    const gaps=shuffle(waves,random);
+    for(let i=0;decoys.length;i++)gaps[i%gaps.length].push([decoys.pop(),decoys.pop()]);
+    const groups=waves.flat();
+    if(extra)groups[groups.length-1].push(extra);
+    return groups.flatMap(group=>shuffle(group,random));
+  }
   function createOptionDeck(options,random=Math.random,once=false){
     if(!options.length)throw new Error('A topic needs answer options.');
     let deck=[],recent=[],drawn=false;
     return {
       next(){
-        if(!deck.length){if(once&&drawn)return null;deck=shuffle(options,random);drawn=true;}
+        if(!deck.length){if(once&&drawn)return null;deck=once?shuffleBoothOptions(options,random):shuffle(options,random);drawn=true;}
+        if(once)return deck.shift();
         const eligible=deck.findIndex(option=>!recent.includes(option.id));
         const option=deck.splice(eligible<0?0:eligible,1)[0];
         if(!option)return null;
-        recent.push(option.id);if(!once&&recent.length>2)recent.shift();
+        recent.push(option.id);if(recent.length>2)recent.shift();
         return option;
       },
       get remaining(){return deck.length;}
     };
   }
-  function createSession(){return {score:0,combo:0,bestCombo:0,correct:0,wrong:0,missed:0,avoided:0,records:[],seen:new Set()};}
+  function createSession(){return {score:0,combo:0,bestCombo:0,correct:0,wrong:0,missed:0,avoided:0,quickCutAt:null,records:[],seen:new Set()};}
+  // A bag can belong to one quick-cut pair. Use active play time so pauses cost nothing.
+  function quickCutBonus(session,seconds){
+    const gap=seconds-session.quickCutAt;
+    const paired=session.quickCutAt!==null && gap>=0 && gap<=.65+1e-9;
+    session.quickCutAt=paired?null:seconds;
+    return paired?80:0;
+  }
   function remember(session,key){
     if(session.seen.has(key))return false;
     session.seen.add(key);
@@ -30,13 +60,13 @@
     const key=instanceId===undefined?questionId+':'+option.id:'instance:'+instanceId;
     if(!remember(session,key))return null;
     let delta;
-    if(option.good){session.correct++;session.combo++;session.bestCombo=Math.max(session.bestCombo,session.combo);delta=100+Math.min(30,(session.combo-1)*10);}else{session.wrong++;session.combo=0;delta=-150;}
+    if(option.good){session.correct++;session.combo++;session.bestCombo=Math.max(session.bestCombo,session.combo);delta=100+Math.min(30,(session.combo-1)*10);}else{session.wrong++;session.combo=0;session.quickCutAt=null;delta=-150;}
     session.score+=delta;return {delta,combo:session.combo};
   }
   function recordMiss(session,instanceId,option){
     if(!remember(session,'instance:'+instanceId))return null;
     const status=option.good?'missed':'avoided';session[status]++;
-    if(option.good)session.combo=0;
+    if(option.good){session.combo=0;session.quickCutAt=null;}
     return {status};
   }
   function sprintTimeMs(elapsedSeconds,wrong){
@@ -78,22 +108,38 @@
     const c=DIFFICULTIES[mode]||DIFFICULTIES.easy;
     return c.pauseMin+random()*(c.pauseMax-c.pauseMin);
   }
-  function spawnGroupSize(available,random=Math.random){
-    if(available<1)return 0;
-    const roll=random();return Math.min(Math.floor(available),roll<.62?1:roll<.94?2:3);
+  function boothLaunchGaps(optionCount,deliveryWindow,random=Math.random){
+    const gaps=[];
+    const gapCount=Math.floor(optionCount/2)-1;
+    const beat=deliveryWindow/Math.max(1,gapCount);
+    let previous=0;
+    for(let i=1;i<=gapCount;i++){
+      // Shift each interior beat up to 18%. The first and last launches stay anchored.
+      const offset=i===gapCount?0:(random()-.5)*.36;
+      const at=(i+offset)*beat;
+      gaps.push(at-previous);
+      previous=at;
+    }
+    return gaps;
+  }
+  function spawnGroupSize(available,remaining=Infinity){
+    if(remaining<2)return 0;
+    // Keep the last three together when a stage has an odd number of choices.
+    const count=remaining===3?3:2;
+    return available>=count?count:0;
   }
   // Continuous positions, angle bands and velocities replace the old six slots.
   // Each trajectory is sampled once and evaluated analytically at any frame rate.
   function createLaunches(count,mode,random=Math.random){
     const config=DIFFICULTIES[mode]||DIFFICULTIES.easy;
-    return Array.from({length:count},(_,i)=>{
+    return Array.from({length:count},(_,lane)=>{
       const startX=.04+random()*.92;
       const radians=pickLaunchAngle(startX,random)*Math.PI/180;
       const velocity=(.65+random()*.5)*Math.cos(radians);
       const endX=Math.max(.02,Math.min(.98,startX+velocity));
       return {startX,endX,depth:random()*.18,
         duration:config.min+random()*(config.max-config.min),
-        delay:i*(.12+random()*.22),rotation:(random()-.5)*config.spin*2};
+        lane,lanes:count,delay:0,rotation:(random()-.5)*config.spin*2};
     });
   }
   function arcadePosition(plan,progress,width,height,bagWidth,bagHeight,ceiling){
@@ -102,6 +148,6 @@
     const room=Math.max(0,height-bagHeight-85-top);
     return flightPosition(progress,startX,endX,height+24,top+room*Math.min(.9,plan.depth));
   }
-  root.GameEngine={GAME_RULES,createOptionDeck,nextSpawnDelay,spawnGroupSize,sprintTimeMs,recordMiss,shuffle,createSession,recordHit,decisions,summarise,segmentIntersectsRect,flightPosition,DIFFICULTIES,createWaves,createLaunches,arcadePosition};
+  root.GameEngine={GAME_RULES,createOptionDeck,nextSpawnDelay,boothLaunchGaps,spawnGroupSize,sprintTimeMs,recordMiss,shuffle,createSession,recordHit,quickCutBonus,decisions,summarise,segmentIntersectsRect,flightPosition,DIFFICULTIES,createWaves,createLaunches,arcadePosition};
 })(typeof window==='undefined'?globalThis:window);
 

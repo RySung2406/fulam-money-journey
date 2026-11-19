@@ -22,7 +22,7 @@ function device() {
   return {...env, api:env.FuLamStation};
 }
 function open(d, game, uid) {
-  const url = new URL(d.api.launch(game,uid),'https://example.org/booth/');
+  const url = new URL(d.api.launch(game,uid,webcrypto.randomUUID()),'https://example.org/booth/');
   d.location.search = url.search;
   const attempt = d.api.gameAttempt(game);
   assert(attempt.begin());
@@ -31,7 +31,7 @@ function open(d, game, uid) {
 test('Entry and game tickets accept only ten digits beginning with 303', () => {
   const d = device();
   for (const uid of ['303123456','30312345678','3021234567','303123456X','30312-4567','3031234567 ','３０３１２３４５６７']) {
-    assert.throws(() => d.api.launch('knife',uid));
+    assert.throws(() => d.api.launch('knife',uid,webcrypto.randomUUID()));
     const id = webcrypto.randomUUID();
     d.sessionStorage.setItem('fulam.booth.ticket.v1',JSON.stringify({id, uid, game:'knife'}));
     d.location.search = '?station=' + id;
@@ -52,7 +52,7 @@ test('Every booth finish is saved once, even below the top ten. Tickets are boun
   assert.equal(rows.length, 12);
   assert(Math.max(...rows.map(r => r.score)) === 11);
   assert.equal(d.api.leaderboard(rows,'knife').length,0);
-  const url = new URL(d.api.launch('fleet','3030000007'),'https://example.org/booth/');
+  const url = new URL(d.api.launch('fleet','3030000007',webcrypto.randomUUID()),'https://example.org/booth/');
   d.location.search = url.search;
   assert.equal(d.api.gameAttempt('fishing').begin(),false);
   const first = d.api.gameAttempt('fleet');

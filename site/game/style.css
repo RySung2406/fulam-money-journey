@@ -388,3 +388,75 @@ body.immersive-game .game-wrap .arena-footer>#knife-level{grid-column:auto;min-w
 @media (hover:none) and (pointer:coarse) and (max-width:650px){.immersive-game .choice-target .bag-svg{width:124px;height:130px;left:12px}}
 @media (hover:none) and (pointer:coarse) and (max-width:350px){.immersive-game .choice-target .bag-svg{width:119px;height:125px;left:10px}}
 @media (hover:none) and (pointer:coarse) and (max-height:500px) and (orientation:landscape){.immersive-game .choice-target .bag-svg{width:85px;height:89px;left:31px}}
+.immersive-game .game-wrap.journey-live .arena::before{
+ top:13%;bottom:auto;height:34%;pointer-events:none;
+ background:url('../arcade/campus-christmas.webp') 62% 55% / cover no-repeat;
+ opacity:.47;mask-image:linear-gradient(transparent,#000 27%,#000 66%,transparent);
+}
+.feedback-tag.savings-bonus{color:#fff3bd;text-shadow:0 2px 5px #27170c,0 0 14px #e4b359}
+.feedback-tag.savings-bonus small{color:#ffe3a1;font-weight:800}
+.feedback-tag.savings-bonus:before{content:'✦';position:absolute;right:100%;top:6px;color:#ffcf75}
+.combo-block.quick-cut{color:#9ff8db;text-shadow:0 0 9px #69e6c790;font-weight:800}
+.combo-block.quick-cut::before{content:'✦ ';color:#ffda83}
+
+.game-wrap .slice-interlude {
+  position: fixed; inset: 0; z-index: 60;
+  display: grid; place-items: center; overflow: auto;
+  padding: max(18px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom));
+  background: #071f25ed;
+  backdrop-filter: blur(5px);
+}
+.game-wrap .slice-interlude::before { content: none; }
+.slice-prompt-card {
+  width: min(100%, 440px); margin: auto; padding: clamp(23px, 5vw, 38px);
+  color: #fff3de; text-align: start;
+  background: linear-gradient(142deg, #193e40, #102a32 73%);
+  border: 1px solid #547775; border-radius: 20px;
+  box-shadow: 0 22px 66px #030d1670;
+}
+.slice-stage-ribbon { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.slice-stage-progress { display: inline-flex; align-items: baseline; gap: 9px; color: #b3cfc8; font: 600 13px/1 system-ui,sans-serif; }
+.slice-stage-progress b { font-size: 36px; letter-spacing: -.05em; color: #ffe0a4; font-variant-numeric: tabular-nums; }
+.slice-blade-mark { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: #0d262a; border: 1px solid #668a80; }
+.slice-blade-mark img { display: block; width: 34px; height: 40px; object-fit: contain; }
+.game-wrap .slice-prompt-card h2 {
+  margin: 22px 0 29px; padding: 0; color: #fffaeb; background: none; border: 0;
+  font-size: clamp(21px, 4vw, 30px); line-height: 1.44; letter-spacing: -.025em;
+  text-align: start; text-wrap: pretty;
+}
+.slice-prompt-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.slice-back,.slice-go { min-height: 46px; line-height: 1.2; font-weight: 750; border-radius: 10px; }
+.slice-back { padding: 8px 12px; color: #d1e6dc; background: transparent; }
+.slice-go { display: flex; align-items: center; gap: 22px; padding: 10px 18px; color: #102f2d; background: #a2f0cd; }
+.slice-go span { font-size: 22px; }
+.slice-answer-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+.slice-answer-grid button {
+  display: flex; gap: 8px; align-items: center; min-height: 54px; padding: 10px;
+  border: 1px solid #537472; border-radius: 9px; text-align: left;
+  color: #fff6e7; background: #163438; font-weight: 650; font-size: 15px; line-height: 1.35;
+}
+.slice-answer-grid button span { font: 750 12px/1 system-ui,sans-serif; color: #9de5c8; }
+.slice-answer-grid button:hover { background: #214544; }
+.slice-answer-grid button.is-wrong { background: #432c30; border-color: #ca8686; color: #ffd3cb; opacity: 1; text-decoration: line-through; }
+.slice-quiz .journey-quiz-tip { margin: 14px 0 0; background: transparent; border: 0; border-inline-start: 2px solid #e8bb7c; border-radius: 0; color: #f2dcc1; }
+.slice-rules p { display: flex; align-items: center; gap: 12px; }
+.slice-rules p b { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 9px; background: #204443; color: #a2f0cd; }
+.slice-rules-bonus { display: flex; flex-wrap: wrap; gap: 10px 18px; padding: 11px 0; border-block: 1px solid #365251; }
+.slice-rules-bonus b { color: #ffdd97; }
+.slice-key-hint kbd { color: #d2ece3; }
+@media (max-width: 520px) {
+  .immersive-game .choice-target.trio-target { --bag-width: min(148px, calc(33.333vw - 16px)); }
+  .immersive-game .trio-target .bag-svg { width: 80%; height: 84px; left: 10%; }
+  .immersive-game .trio-target .option-label {
+    top: 77px; padding: 5px 3px; font-size: 15px; line-height: 1.25;
+    white-space: normal; overflow-wrap: anywhere;
+  }
+}
+@media(max-height: 430px) {
+  .game-wrap .slice-interlude { padding-block: 10px; }
+  .slice-prompt-card { padding: 14px 22px; }
+  .slice-blade-mark { width: 36px; height: 36px; }
+  .slice-blade-mark img { width: 24px; height: 28px; }
+  .game-wrap .slice-prompt-card h2 { margin: 10px 0 14px; font-size: 20px; }
+  .slice-answer-grid button { min-height: 44px; }
+}

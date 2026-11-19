@@ -5,6 +5,11 @@
  let language='zh-Hant';
  try { language=localStorage.getItem(key)==='en'?'en':'zh-Hant'; } catch {}
  const pairs={
+ 'Both stages cleared':'兩關完成','Run ended early':'提前結算','Sprint complete':'競速完成','Practice complete':'練習完成',
+ 'Local rank':'本機排名','Correct cuts':'切中','Best streak':'最高連擊','Play time':'用時','Game score':'遊戲分數',
+ 'New personal best':'刷新個人紀錄','Personal best':'個人最佳','Play again':'再玩一局','Back to menu':'返回選單',
+ 'Run details':'本局詳情','Local leaderboard':'本機排行榜','Play on your phone':'手機再玩','This run':'本局',
+ 'Score could not be saved on this device.':'此裝置未能儲存成績。','No missed or incorrect cuts.':'本局沒有錯切或漏切紀錄。',
  'Standard':'標準','Challenge':'挑戰','Booth intermediate':'Booth 中等',
   'FuLam One Slice':'富臨一刀','FuLam One Slice home':'富臨一刀主頁','← FuLam home':'← 返回富臨主頁',
   'Beta · The Money Journey · FuLam':'測試版 · 富臨錢進號','FINANCE MEETS ARCADE':'理財 × 遊戲',

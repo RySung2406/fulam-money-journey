@@ -94,6 +94,9 @@
 #sea.ultimate-mode{box-shadow:inset 0 0 0 2px #ffd24a88,inset 0 0 42px #ffb84a28}
 #sea.ultimate-mode .journey-status{background:#5a3a12;color:#ffe7a8;border-bottom-color:#ffd24a88}
 body.ultimate-mode .event-banner{background:#5a3a12ee;border-color:#ffd24a;color:#fff4c8}
+#sea.ultimate-mode .boss-bar{left:8%;right:8%;color:#ffe8bd;font-weight:750;text-shadow:0 1px 3px #151018}
+#sea.ultimate-mode .boss-bar>div{height:7px;border:1px solid #b58766;background:#281b2b}
+#sea.ultimate-mode .boss-bar i{background:linear-gradient(90deg,#c74561,#ff9561,#ffe09c)}
 @media(max-height:500px){.combat-score-mode .hud #score{font-size:23px}}
 
 /* Winter Booth arcade — menu / quiz host / end */
@@ -141,4 +144,23 @@ body.ultimate-mode .event-banner{background:#5a3a12ee;border-color:#ffd24a;color
 }
 .fleet-playing.combat-score-mode .sea{
  box-shadow:inset 0 0 0 1px #f0d87822;
+}
+.support-legend { display:flex;align-items:center;justify-content:center;gap:clamp(6px,2vw,18px) }
+#menu .support-legend { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));justify-items:start;max-width:276px;margin:10px auto 0;gap:7px 8px }
+#flight-chip-status { flex:1;min-width:0;justify-content:flex-end }
+.support-item { --support-colour:#ffda76;display:flex;align-items:center;gap:4px;text-align:left;min-width:0 }
+.support-item[hidden] { display:none }
+.support-item.echo { --support-colour:#8de6ff }
+.support-item.boost { --support-colour:#9df4b0 }
+.support-item.wingman { --support-colour:#dcc2ff }
+#support-wait { color:#d6e6df;font-size:11px }
+.support-item canvas { display:block;width:27px;height:27px;flex:0 0 27px;cursor:inherit;touch-action:auto }
+.support-item b,.support-item small { display:block;line-height:1.15 }
+.support-item b { color:var(--support-colour);font-size:12px }
+.support-item small { margin-top:2px;color:#d6e6df;font-size:11px }
+#flight-chip-status .deployed canvas { filter:drop-shadow(0 0 3px var(--support-colour)) }
+@media(max-width:380px) {
+  #flight-chip-status { gap:5px }
+  #flight-chip-status .support-item { gap:2px }
+  #flight-chip-status canvas { width:21px;height:21px;flex-basis:21px }
 }
