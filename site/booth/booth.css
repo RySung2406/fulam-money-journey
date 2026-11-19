@@ -73,3 +73,42 @@ a:focus-visible,button:focus-visible{outline:3px solid #ac7c27;outline-offset:4p
 @media(max-width:350px){
   h1{font-size:31px}
 }
+.booth-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 24px}
+.booth-tabs a,.station-link{display:inline-flex;align-items:center;min-height:44px;padding:8px 14px;color:var(--green);font-weight:700;text-decoration:underline;text-underline-offset:4px}
+.booth-tabs a[aria-current="page"]{background:#e0eadd;border-radius:8px;text-decoration:none}
+.station h1{margin:12px 0 20px}
+.station-card,.rank-card{border:1px solid var(--line);border-radius:16px;background:var(--booth-ivory);padding:clamp(18px,3vw,32px)}
+.station-card{max-width:620px}
+.station h2{font-size:clamp(20px,3vw,28px);margin:0 0 8px}
+.station p{margin:8px 0 18px}
+.station form{display:grid;gap:14px}
+.station label{display:grid;gap:6px;font-weight:700}
+.station input,.station select{background:white;border:1px solid #8f9e91;border-radius:8px;padding:12px;color:var(--green-deep);font:inherit;min-height:48px;width:100%;min-width:0}
+.station .play{border:0;font:inherit;font-weight:700;cursor:pointer}
+.station small{color:#52675a}
+.station details{margin-top:20px}
+.station summary{cursor:pointer;font-weight:700;padding:10px 0}
+.station details form{margin:10px 0}
+.station #message{color:#932f29;font-weight:700}
+.station-score{font-size:clamp(44px,8vw,78px);font-weight:800;line-height:1.1;color:var(--green-deep);font-variant-numeric:tabular-nums}
+.station-qr{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.station-qr img{width:164px;height:164px;background:white}
+.station-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:18px}
+.ranks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.ranking-intro{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.ranking-intro p{margin:0;max-width:750px}
+:fullscreen:has(.ranks) header,:fullscreen:has(.ranks) .booth-tabs,:fullscreen #display{display:none}
+:fullscreen:has(.ranks) main{max-width:1600px}
+:fullscreen .rank-card td{font-size:clamp(18px,2vw,30px)}
+.rank-card{padding:20px;align-self:start;border-top:4px solid var(--green)}
+.rank-card h2{font-size:23px}
+.station table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.station th,.station td{text-align:left;padding:12px 4px;border-bottom:1px solid var(--line)}
+.station th{font-size:13px;color:var(--muted)}
+.rank-card td:first-child{font-weight:700}
+.rank-card td:last-child,.rank-card th:last-child{text-align:right}
+.rank-card td:last-child{font-size:22px;font-weight:750}
+.rank-card tr.first td{color:#845512}
+.staff-table{overflow-x:auto}
+.station [hidden]{display:none!important}
+@media(max-width:800px){.ranks{grid-template-columns:1fr}.rank-card{padding:18px}.station input,.station select{font-size:16px}}
