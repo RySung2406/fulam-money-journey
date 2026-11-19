@@ -4,13 +4,15 @@
   const params = new URLSearchParams(location.search);
   const review = params.get('review');
   const view = review !== null ? 'review' : params.get('view') || 'entry';
+  const entryURL = 'station.html?v=5';
+  const entrySessionKey = 'fulam.booth.entry-session.v1';
   const postTest = 'https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=dY4N6LlSOUijWIeruTs1Z-VOzApBm_VOvTm0gGA8MWtUM1Q3UVlZQlpZTlZVV05HVlo1WTNJR0JNMS4u';
   const names = {knife: ['富臨一刀', 'One Slice'], fishing: ['捕財達人', 'FuLam Catch'], fleet: ['財富戰機', 'Wealth Wings']};
   const $ = id => document.getElementById(id);
   const panel = $('panel');
   let english = false;
   let staffOpen = false;
-  let entryGrant = null;
+  const pendingForms = new Set();
   try { english = localStorage.getItem('fulam-language') === 'en'; } catch {}
   const t = (zh, en) => english ? en : zh;
   const title = (value) => { $('heading').textContent = value; document.title = value + ' · FuLam'; };
@@ -25,10 +27,14 @@
       event.preventDefault();
       const form = event.currentTarget;
       const button = form.querySelector('button[type=submit]');
-      if (button.disabled) return;
+      if (pendingForms.has(id)) return;
+      pendingForms.add(id);
       button.disabled = true;
       error('');
-      try { await action(form); } catch { storageError(); } finally { button.disabled = false; }
+      try { await action(form); } catch { storageError(); } finally {
+        pendingForms.delete(id);
+        button.disabled = false;
+      }
     };
   }
   async function authorized(form) {
@@ -52,16 +58,29 @@
       return await reply.json();
     } catch { error(t('暫時無法連接驗證服務，請再試一次。','Cannot reach the verification service. Please try again.')); }
   }
+  function readEntrySession() {
+    const raw = sessionStorage.getItem(entrySessionKey);
+    if (!raw) return null;
+    let session;
+    try { session = JSON.parse(raw); } catch { /* Discard unreadable session data. */ }
+    if (typeof session?.token === 'string' && Date.parse(session.expiresAt) > Date.now()) return session;
+    sessionStorage.removeItem(entrySessionKey);
+    return null;
+  }
   function entry() {
     title(t('攤位 UID 登記','Booth UID entry'));
-    if (!entryGrant) {
+    const session = readEntrySession();
+    if (!session) {
       panel.innerHTML = `<section class="station-card"><form id="entry-lock"><label>${t('工作人員入口密碼','Staff entry password')}<input type="password" name="password" inputmode="numeric" required maxlength="64" autocomplete="off"></label>${submit(t('進入 UID 登記','Open UID entry'))}</form></section>`;
       onSubmit('entry-lock', async form => {
         const field = form.elements.password;
-        const grant = await entryRpc('unlock', {p_password:field.value});
+        const opened = await entryRpc('open_session', {p_password:field.value});
         field.value = '';
-        if (grant) { entryGrant = grant; render(); }
-        else if (grant === null) { error(t('入口密碼不正確。','Incorrect entry password.')); field.focus(); }
+        if (opened) {
+          sessionStorage.setItem(entrySessionKey, JSON.stringify(opened));
+          render();
+          $('join')?.elements.uid.focus();
+        } else if (opened === null) { error(t('入口密碼不正確。','Incorrect entry password.')); field.focus(); }
       });
       return;
     }
@@ -70,18 +89,25 @@
       onSubmit('setup', async form => { await store.setupPin(form.elements.pin.value); render(); });
       return;
     }
-    panel.innerHTML = `<section class="station-card"><p>${t('以 UID 作為玩家名稱。遊戲後請在後測填寫相同的 UID 和聯絡方法，以便得獎時通知你。','Your UID is your player name. Use the same UID in the post-test and leave a contact method so we can reach you if you win.')}</p><form id="join" autocomplete="off">
+    const confirmed = params.get('confirmed') === '1'
+      ? `<p role="status">${t('上一局成績已加入排行榜。','The last score was added to the rankings.')}</p>` : '';
+    panel.innerHTML = `<section class="station-card">${confirmed}<p>${t('以 UID 作為玩家名稱。遊戲後請在後測填寫相同的 UID 和聯絡方法，以便得獎時通知你。','Your UID is your player name. Use the same UID in the post-test and leave a contact method so we can reach you if you win.')}</p><form id="join" autocomplete="off">
       <label>${t('玩家 UID','Player UID')}<input name="uid" type="text" inputmode="numeric" required pattern="${store.uidPattern}" placeholder="303xxxxxxx" spellcheck="false" aria-describedby="uid-hint"></label>
       <small id="uid-hint">${t('請輸入以 303 開頭的 10 位數字，例如 3031234567。','Enter 10 digits starting with 303, for example 3031234567.')}</small>
       <label>${t('選擇遊戲','Choose a game')}<select name="game">${Object.keys(names).map(key => `<option value="${key}">${gameName(key)}</option>`).join('')}</select></label>
       ${submit(t('開始挑戰','Start game'))}</form></section><div class="station-actions"><a class="station-link" href="?view=ranking" target="_blank" rel="noopener">${t('另開排行榜 ↗','Open ranking display ↗')}</a><a class="station-link" href="?view=staff">${t('工作人員紀錄','Staff records')}</a></div>`;
     onSubmit('join', async form => {
-      const attempt = await entryRpc('redeem', {p_token:entryGrant});
+      const uid = form.elements.uid.value, game = form.elements.game.value;
+      if (!store.validUID(uid)) return;
+      const attempt = await entryRpc('session_attempt', {p_token:session.token});
       if (attempt === undefined) return;
-      entryGrant = null;
-      if (!attempt) { render(); error(t('請重新輸入入口密碼。','Please enter the staff password again.')); return; }
-      try { location.assign(store.launch(form.elements.game.value, form.elements.uid.value, attempt)); }
-      catch { render(); storageError(); }
+      if (!attempt) {
+        sessionStorage.removeItem(entrySessionKey);
+        render();
+        error(t('入口驗證已到期，請重新輸入密碼。','The booth session expired. Enter the staff password again.'));
+        return;
+      }
+      location.assign(store.launch(game, uid, attempt));
     });
   }
   function knifeReceipt(row) {
@@ -104,7 +130,7 @@
         <p>${t('核對後測內的 UID 及聯絡方法。','Match the UID and contact details in the post-test response.')}</p>
         <form id="verify" autocomplete="off">${pinInput(t('工作人員 PIN','Staff PIN'))}${submit(t('確認並加入排名','Confirm score'))}</form>
       </details>`}
-      <div class="slip-actions"><a class="${confirmed ? 'play' : 'slip-link'}" id="slip-next" href="station.html">${confirmed ? t('下一位參加者','Next player') : t('稍後核對，下一位','Keep pending · Next player')}</a>
+      <div class="slip-actions"><a class="play" id="slip-next" href="${entryURL}">${confirmed ? t('下一位參加者','Next player') : t('稍後核對，下一位','Keep pending · Next player')}</a>
         <a class="slip-link" href="?view=ranking">${t('排行榜','Rankings')} ↗</a></div>
     </section>`;
   }
@@ -117,7 +143,7 @@
     }
     if (!store.validUID(row.uid)) {
       title(t('舊有攤位紀錄','Archived booth score'));
-      panel.innerHTML = `<section class="station-card"><strong>${gameName(row.game)} · UID ${esc(row.uid)}</strong><div class="station-score">${row.score.toLocaleString()}</div><p>${t('此成績使用舊格式 UID，已保留在工作人員紀錄內。','This score uses the previous UID format and is available in staff records.')}</p><a class="station-link" href="station.html">${t('下一位參加者','Next participant')}</a></section>`;
+      panel.innerHTML = `<section class="station-card"><strong>${gameName(row.game)} · UID ${esc(row.uid)}</strong><div class="station-score">${row.score.toLocaleString()}</div><p>${t('此成績使用舊格式 UID，已保留在工作人員紀錄內。','This score uses the previous UID format and is available in staff records.')}</p><a class="station-link" href="${entryURL}">${t('下一位參加者','Next participant')}</a></section>`;
       return;
     }
     const confirmed = row.confirmed;
@@ -132,12 +158,16 @@
       <div class="station-qr"><img src="post-test-qr.svg" alt="${t('後測問卷 QR 碼','Post-test QR code')}" width="164" height="164"><a class="station-link" href="${postTest}" target="_blank" rel="noopener noreferrer">${t('開啟後測問卷 ↗','Open post-test ↗')}</a></div>
       <details><summary>${t('工作人員核對','Staff verification')}</summary><p>${t('在後測回覆中找出 UID ' + row.uid + '，核對該回覆已填寫聯絡方法，再輸入工作人員 PIN。','Find UID ' + row.uid + ' in the submitted post-tests. Check that the matching entry includes a contact method, then enter your staff PIN.')}</p>
       <form id="verify" autocomplete="off">${pinInput(t('工作人員 PIN','Staff PIN'))}${submit(t('確認並加入排名','Confirm and rank score'))}</form></details>`}
-      <div class="station-actions"><a class="${confirmed ? 'play' : 'station-link'}" href="station.html">${confirmed ? t('下一位參加者','Next participant') : t('稍後核對，下一位','Keep pending and start next player')}</a>
+      <div class="station-actions"><a class="play" href="${entryURL}">${confirmed ? t('下一位參加者','Next participant') : t('稍後核對，下一位','Keep pending and start next player')}</a>
       ${confirmed ? `<a class="station-link" href="?view=ranking">${t('查看排行榜','See rankings')}</a>` : ''}</div></section>`;
     }
     if (!confirmed) onSubmit('verify', async form => {
       if (!await authorized(form)) return;
       store.confirm(localStorage, review);
+      if (readEntrySession()) {
+        location.replace(entryURL + '&confirmed=1');
+        return;
+      }
       render();
       if (row.game === 'knife') $('slip-next')?.focus();
     });
@@ -214,7 +244,7 @@
   window.addEventListener('storage', event => {
     if ((view === 'ranking' || (view === 'staff' && staffOpen)) && (!event.key || event.key.startsWith(store.prefix))) render();
   });
-  window.addEventListener('pageshow', event => { if (event.persisted) { entryGrant = null; staffOpen = false; render(); } });
+  window.addEventListener('pageshow', event => { if (event.persisted) { staffOpen = false; render(); } });
   if (view === 'review') document.addEventListener('click', event => {
     const link = event.target.closest('a');
     if (link && !link.target && link.origin === location.origin && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) {

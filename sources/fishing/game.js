@@ -186,7 +186,8 @@ function spawn(type,opts={}){
  const value=Math.round(d.value*(boss?1+Math.min(1.5,(level-1)*.10):1));
  const armored=!!(journey?.run&&boss&&!opts.demo&&journey.run.wave<3&&type!=='midas');
  const bossSpeed=journey?.run&&boss&&!opts.demo?(type==='shark'?36:type==='midas'?22:26):d.speed;
- fish.push({uid:++fishSerial,type,elite,armored,swim:d.swim,swimTime:0,x:opts.x??(dir===1?-sz*3:w+sz*3),y,baseY:y,size:sz,angle:dir===1?0:Math.PI,dir,speed:opts.speed??bossSpeed*(opts.demo?.55:modes[difficulty].speed*pressure().speed),phase:opts.phase??gameRnd(0,TAU),hp,maxHp:hp,damageCarry:0,chipHp:hp,value,hit:0,dead:false,age:0,seen:false,school:!!opts.school});return true;
+ const patrolScale = journey?.run?.scene === 'booth' && boss && !opts.demo ? .8 : 1;
+ fish.push({uid:++fishSerial,type,elite,armored,swim:d.swim,swimTime:0,x:opts.x??(dir===1?-sz*3:w+sz*3),y,baseY:y,size:sz,angle:dir===1?0:Math.PI,dir,speed:opts.speed??bossSpeed*patrolScale*(opts.demo?.55:modes[difficulty].speed*pressure().speed),phase:opts.phase??gameRnd(0,TAU),hp,maxHp:hp,damageCarry:0,chipHp:hp,value,hit:0,dead:false,age:0,seen:false,school:!!opts.school});return true;
 }
 function carnivalActive(){
  if(!journey?.run||journey.run.scene!=='booth'||journey.run.phase!=='play')return false;
@@ -221,7 +222,7 @@ function updateWhaleTide(whale,dt){
  const loss=enraged?24:18;
  energy=Math.max(0,energy-loss*survival().multiplier);
  combo=0;lastCatch=-10;
- tide.phase='surge';tide.left=.85;tide.side*=-1;
+ tide.phase='surge';tide.left=1.35;tide.side*=-1;
  rings.push({x:whale.x,y:whale.y,end:Math.hypot(w,h),life:.95,max:.95,color:'#ffb67c',tide:true});
  floater(whale.x,whale.y-whale.size*.55,journey.text('巨浪','Wave')+' −'+Math.round(loss*survival().multiplier),'#ffb67c');
  sound('heavy');shake=reduced?0:4;
@@ -376,7 +377,7 @@ function damage(f,amount,impact='direct',shotAim=angle){
  if(tide?.phase==='charge'&&focused){
   tide.damage+=dealt;
   if(tide.damage>=tide.target){
-   tide.phase='wait';tide.left=tide.enraged?1:1.7;tide.side*=-1;
+   tide.phase='wait';tide.left=tide.enraged?1.8:2.5;
    score+=60;
    fx.shatter(f.x,f.y,'#a9ffed',f.size*.7);
    rings.push({x:f.x,y:f.y,end:f.size*1.3,life:.55,max:.55,color:'#adffec',stars:true});
@@ -563,13 +564,21 @@ function updateHud(){
  $('event').classList.toggle('visible',eventTime>0&&mode==='playing');
 }
 function moveFish(dt,demo=false){
+ const booth=journey?.run?.scene==='booth'&&!demo;
  for(const f of fish){
   f.age+=dt;f.tagged=Math.max(0,(f.tagged||0)-dt);
   const net=fields.freeze,netted=!demo&&net&&Math.hypot(f.x-net.x,f.y-net.y)<net.radius;
   const slow=netted?(defs[f.type].boss?.72:.18):1;f.swimTime+=dt*slow;
   const t=f.swimTime,phase=f.phase,profile=f.swim||defs[f.type].swim;
   let speedFactor=1,offset=0,tilt=0;
-  if(profile==='dash'){const cycle=(t+phase)%3.6;speedFactor=cycle<.65?2.45:.68;offset=Math.sin(t*1.7+phase)*16;tilt=Math.cos(t*1.7+phase)*.08;f.dashing=cycle<.65;}
+  if(profile==='dash'){
+   const boothShark=booth&&f.type==='shark';
+   const cycle=(t+phase)%(boothShark?5.4:3.6);
+   f.dashing=cycle<.65;
+   speedFactor=f.dashing?(boothShark?2:2.45):.68;
+   const bob=t*(boothShark?1.35:1.7)+phase;
+   offset=Math.sin(bob)*16;tilt=Math.cos(bob)*.08;
+  }
   else if(profile==='zigzag'){offset=Math.asin(Math.sin(t*2.2+phase))*29;tilt=Math.cos(t*2.2+phase)>0?.20:-.20;}
   else if(profile==='glide'){offset=Math.sin(t*.8+phase)*(f.type==='ray'?38:18);tilt=Math.cos(t*.8+phase)*.1;}
   else if(profile==='pulse'){speedFactor=.65+(Math.sin(t*3+phase)+1)*.52;offset=Math.sin(t*2.4+phase)*28;tilt=Math.cos(t*2.4+phase)*.12;}
@@ -593,18 +602,18 @@ function moveFish(dt,demo=false){
   if(f.tide){
    if(!f.tide.enraged&&(f.hp<=f.maxHp*.45||journey.run.total>=window.FuLamJourney.LIMIT-6)){
     f.tide.enraged=true;
-    if(f.tide.phase==='wait')f.tide.left=Math.min(f.tide.left,.75);
+    if(f.tide.phase==='wait')f.tide.left=Math.min(f.tide.left,1.35);
     notify(journey.text('金鯨暴怒 · 巨浪加快！','Whale enraged · faster waves!'),1.5);
    }
    if(f.tide.phase==='surge'){
     f.tide.left-=dt;
-    if(f.tide.left<=0){f.tide.phase='wait';f.tide.left=f.tide.enraged?.75:1.5;}
+    if(f.tide.left<=0){f.tide.phase='wait';f.tide.left=f.tide.enraged?1.65:2.4;}
    }else{
     updateWhaleTide(f,dt);
    }
-   // Hold a flank while charging, and cross after every wave or interruption.
+   // An interrupted wave leaves the whale on its current flank.
    const anchor=whaleFlank(f.tide.side,f.size),delta=anchor-f.x;
-   const travel=w*dt*(f.tide.phase==='surge'?.96:.75)*slow;
+   const travel=w*dt*(f.tide.phase==='surge'?.54:.40)*slow;
    f.x+=clamp(delta,-travel,travel);
    f.dir=Math.abs(delta)>2?Math.sign(delta):-f.tide.side;
   }else{

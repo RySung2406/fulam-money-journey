@@ -152,6 +152,7 @@ test('Golden whale telegraphs a wave, rewards a timely interrupt and surges fast
  g.run("difficulty='booth';journey={run:Object.assign(new FuLamJourney.Run('fishing','booth'),{wave:4,total:76}),text:zh=>zh,name:()=>'QA'};fish=[];energy=70;spawnCarnivalBoss()");
  const swim=seconds=>g.run(`for(let i=0;i<${Math.round(seconds*120)};i++)moveFish(1/120)`);
  const tide=()=>clone(g.run('fish[0].tide'));
+ const initialSide=tide().side;
  assert.equal(tide().phase,'wait');
  swim(1.55);
  assert.equal(tide().phase,'charge');assert.equal(tide().duration,2.5);
@@ -159,17 +160,60 @@ test('Golden whale telegraphs a wave, rewards a timely interrupt and surges fast
  assert.equal(tide().damage,0,'splash and off-axis glancing shots cannot interrupt');
  g.run("angle=Math.atan2(fish[0].y-origin().y,fish[0].x-origin().x);damage(fish[0],6)");assert.equal(tide().damage,6);
  g.run('damage(fish[0],10)');assert.equal(tide().phase,'wait');
+ assert.equal(tide().side,initialSide,'breaking a wave holds the whale on its flank');
+ near(tide().left,2.5);
  assert.equal(g.run('score'),60);assert.equal(g.run('energy'),70);
- g.run('journey.run.total=85;combo=5');swim(.8);
+ g.run('journey.run.total=85;combo=5');swim(1);
+ assert.equal(tide().phase,'wait');
+ swim(.4);
  assert.equal(tide().phase,'charge');assert.equal(tide().duration,1.85);
  swim(1.9);assert.equal(tide().phase,'surge');assert.equal(g.run('energy'),46);
+ assert.equal(tide().side,-initialSide,'a completed wave still sends the whale across');
  assert.equal(g.run('combo'),0);assert.equal(g.run('score'),60);
- swim(.95);assert.equal(tide().phase,'wait');assert.equal(g.run('energy'),46);
+ swim(1.35);assert.equal(tide().phase,'wait');assert.equal(g.run('energy'),46);
  g.run("journey.run.total=78;fish=[];carnivalBossSpawned=false;spawn('shark');spawnCarnivalBoss();damage(fish[0],fish[0].maxHp*.57,'bomb')");
  assert.equal(g.run("fish.some(f=>f.type==='shark')||spawnRoundBoss()"),false);
- swim(.8);assert.equal(tide().phase,'charge');assert.equal(tide().duration,1.85,'a skilled player also triggers rage with damage');
+ swim(1.4);assert.equal(tide().phase,'charge');assert.equal(tide().duration,1.85,'a skilled player also triggers rage with damage');
  g.run("damage(fish[0],fish[0].hp,'bomb')");
  assert(g.run('rings.some(r=>r.stars&&r.max>1)'),'capturing the finale displays its golden star reward');
+});
+
+test('Booth sharks rush less often, whales patrol more slowly, and the final whale crosses twice in fifteen seconds',()=>{
+ const g=harness();g.click('start');g.installEvolution();
+ const patrol=scene=>clone(g.run(`(()=>{
+  difficulty='booth';journey={run:new FuLamJourney.Run('fishing','${scene}'),text:zh=>zh};
+  fish=[];spawn('shark',{x:350,y:270,dir:1,phase:0});spawn('whale',{x:650,y:270,dir:-1,phase:0});
+  const [shark,whale]=fish;
+  let rushes=0,wasDashing=false,peak=0;
+  for(let frame=0;frame<12*120;frame++){
+   const x=shark.x;
+   moveFish(1/120);
+   if(shark.dashing&&!wasDashing)rushes++;
+   wasDashing=shark.dashing;
+   peak=Math.max(peak,Math.abs(shark.x-x)*120);
+  }
+  return {rushes,peak,whaleSpeed:whale.speed};
+ })()`));
+ const previous=patrol('web'),booth=patrol('booth');
+ assert.equal(previous.rushes,4);assert.equal(booth.rushes,3);
+ near(booth.peak,previous.peak*.8*2/2.45);
+ near(booth.whaleSpeed,previous.whaleSpeed*.8);
+
+ g.run("journey={run:Object.assign(new FuLamJourney.Run('fishing','booth'),{wave:4,total:75}),text:zh=>zh};fish=[];spawnCarnivalBoss()");
+ const finale=clone(g.run(`(()=>{
+  const whale=fish[0];
+  let crossings=0,peak=0;
+  for(let frame=0;frame<15*120;frame++){
+   const {x}=whale,side=whale.tide.side;
+   moveFish(1/120);
+   if(whale.tide.side!==side)crossings++;
+   peak=Math.max(peak,Math.abs(whale.x-x)*120);
+   journey.run.total+=1/120;
+  }
+  return {crossings,peak};
+ })()`));
+ assert.equal(finale.crossings,2);
+ near(finale.peak,1000*.54);
 });
 
 test('On touch, tracking the whale across its flanks earns the catch; leaving the cannon centred does not',()=>{

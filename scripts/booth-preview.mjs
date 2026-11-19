@@ -7,24 +7,29 @@ import {pgcrypto} from '@electric-sql/pglite/contrib/pgcrypto';
 
 const directory = fileURLToPath(new URL('../.openai/booth-postgres', import.meta.url));
 const migration = new URL('../supabase/migrations/20261119210102_booth_staff_entry.sql', import.meta.url);
+const sessionMigration = new URL('../supabase/migrations/20261119213351_booth_entry_sessions.sql', import.meta.url);
 let database;
 async function openDatabase() {
   await mkdir(directory, {recursive: true});
   const pg = await PGlite.create({dataDir: directory, extensions: {pgcrypto}});
-  const {rows} = await pg.query("select to_regprocedure('public.booth_entry_unlock(text)') is not null as ready");
-  if (!rows[0].ready) {
-    const schema = await readFile(migration, 'utf8');
-    await pg.transaction(async tx => {
+  await pg.transaction(async tx => {
+    const {rows:[schema]} = await tx.query(`select
+      to_regprocedure('public.booth_entry_unlock(text)') is not null as ready,
+      to_regprocedure('public.booth_entry_open_session(text)') is not null as sessions`);
+    if (!schema.ready) {
       await tx.exec('create role anon; create role authenticated; create schema extensions; create extension pgcrypto with schema extensions;');
-      await tx.exec(schema);
-    });
-  }
+      await tx.exec(await readFile(migration, 'utf8'));
+    }
+    if (!schema.sessions) await tx.exec(await readFile(sessionMigration, 'utf8'));
+  });
   return pg;
 }
 
 const rpc = new Map([
   ['/rest/v1/rpc/booth_entry_unlock', ['select public.booth_entry_unlock($1) as value', 'p_password']],
-  ['/rest/v1/rpc/booth_entry_redeem', ['select public.booth_entry_redeem($1) as value', 'p_token']]
+  ['/rest/v1/rpc/booth_entry_redeem', ['select public.booth_entry_redeem($1) as value', 'p_token']],
+  ['/rest/v1/rpc/booth_entry_open_session', ['select public.booth_entry_open_session($1) as value', 'p_password']],
+  ['/rest/v1/rpc/booth_entry_session_attempt', ['select public.booth_entry_session_attempt($1) as value', 'p_token']]
 ]);
 
 export async function handleBoothRpc(req, res) {

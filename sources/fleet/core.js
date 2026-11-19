@@ -409,7 +409,9 @@
     s.evolution={weapon:run.weapon,rate:run.rate,trajectory:run.trajectory,escort:run.escort||0,life:run.life||0,protection:run.protection||0};
     s.escort=run.escort||0;
     const p=root.FuLamJourney.survivalProfile('fleet',s.evolution,MODE_RULES[s.mode].armour);
-    s.hero.maxHp=p.max;s.hero.hp=Math.min(p.max,s.hero.hp+(s.arcade&&s.mode==='booth'?20:12)+(kind==='life'?35:0));
+    let recovery = 12;
+    if (s.arcade && s.mode === 'booth') recovery = run.wave === 3 ? 25 : 20;
+    s.hero.maxHp=p.max;s.hero.hp=Math.min(p.max,s.hero.hp+recovery+(kind==='life'?35:0));
   }
   function hitShip(s, ship, amount, style, blast = 0) {
     takeHullDamage(ship,amount);
