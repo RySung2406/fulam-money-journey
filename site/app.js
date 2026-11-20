@@ -159,8 +159,8 @@ function renderCheckIns(state = checkIns.state) {
   const button = $('check-in-button');
   button.textContent = action.label;
   button.disabled = action.disabled;
-  // Avoid two identical "返回日曆" controls when the story panel already has a back button.
-  button.hidden = action.showQuestion && action.action === 'close';
+  // Keep the footer control visible after a completed check-in so members can return from the bottom of the story.
+  button.hidden = false;
   button.setAttribute('aria-busy', String(saving));
   $('check-in-message').textContent = state.message;
   $('check-in-message').hidden = !state.message;
