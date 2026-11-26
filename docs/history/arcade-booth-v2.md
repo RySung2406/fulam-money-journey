@@ -1,5 +1,7 @@
 # FuLam arcade and Booth — v6 survival choices and taller welcome
 
+> Historical release notes. See the [games and booth guide](../games.md) for current rules and build instructions.
+
 Latest Catch/Wings controls and balance: [four-round combat update](combat-balance-2026-11-04.md).
 The historical rules below are superseded where that update and the later four-round notes differ.
 

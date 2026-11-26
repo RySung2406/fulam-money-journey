@@ -1,4 +1,4 @@
-> Current v2 gameplay, Booth rules, storage and build instructions: [arcade-booth-v2.md](../../docs/arcade-booth-v2.md). The original implementation notes below describe the retained pre-v2 fallback.
+> For current game rules, booth entry and build steps, see the [games and booth guide](../../docs/games.md). The original implementation notes below describe the retained pre-v2 fallback.
 
 # FuLam Wealth Fleet / 富臨財富艦隊
 
