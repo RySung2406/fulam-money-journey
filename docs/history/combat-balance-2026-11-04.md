@@ -1,5 +1,7 @@
 # Catch and Wings: four-round balance update
 
+> Historical release notes. See the [games and booth guide](../games.md) for current rules and build instructions.
+
 This update follows the four-round, two-minute Booth version at `ad8c6c3`.
 It also compares the earlier aircraft patterns at `b782ffb`, before Booth
 multiplied the enemy count, volley size and firing frequency together.
